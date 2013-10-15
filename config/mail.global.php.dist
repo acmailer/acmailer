@@ -1,0 +1,15 @@
+<?php
+return array(
+	
+	'mailParams' => array(
+		'mailAdapter'     => 'Zend\Mail\Transport\Sendmail', // Zend\Mail\Transport\Smtp or Zend\Mail\Transport\Sendmail
+		'server'          => '',
+		'fromName'        => '',
+		'from'            => '',
+		'to'              => '',
+		'password'        => '',
+		'subject'         => '',
+		'port'            => 25,
+    ),
+	
+);
