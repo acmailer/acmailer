@@ -1,28 +1,33 @@
 {
-    "name": "acelaya/zf2-acmailer",
-    "type": "library",
-    "description": "Mailings for Zend Framework 2",
-    "keywords": ["mail","zend","php"],
-    "homepage": "https://github.com/acelaya/ZF2-AcMailer",
-    "license": "BSD",
-    "authors": [
-        {
-            "name": "Alejandro Celaya Alastrué",
-            "email": "alejandro@alejandrocelaya.com",
-            "homepage": "http://www.alejandrocelaya.com",
-            "role": "Developer"
-        }
-    ],
-    "require": {
-        "php": ">=5.3.0",
-		"zendframework/zendframework": ">=2.2.2"
-    },
-	"autoload": {
-        "psr-0": {
-            "AcMailer": "src/"
-        },
-        "classmap": [
-            "./Module.php"
-        ]
-    }
+	"name" : "acelaya/zf2-acmailer",
+	"description" : "Mail sending module for Zend Framework 2",
+	"type" : "library",
+	"authors" : [{
+			"name" : "Alejandro Celaya AlastruÃ©",
+			"email" : "alejandro@alejandrocelaya.com",
+			"homepage" : "http://www.alejandrocelaya.com",
+			"role" : "Developer"
+		}
+	],
+	"keywords" : [
+		"mail",
+		"zend",
+		"php"
+	],
+	"homepage" : "https://github.com/acelaya/ZF2-AcMailer",
+	"license" : [
+		"BSD"
+	],
+	"require" : {
+		"php" : ">=5.3.0",
+		"zendframework/zendframework" : ">=2.2.2"
+	},
+	"autoload" : {
+		"psr-0" : {
+			"AcMailer" : "src/"
+		},
+		"classmap" : [
+			"./Module.php"
+		]
+	}
 }
