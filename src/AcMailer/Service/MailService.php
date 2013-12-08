@@ -2,8 +2,8 @@
 namespace AcMailer\Service;
 
 use Zend\Mail\Transport\TransportInterface;
-use \Zend\Mail\Message;
-use \Zend\Mail\Transport\Exception\RuntimeException;
+use Zend\Mail\Message;
+use Zend\Mail\Transport\Exception\RuntimeException;
 use AcMailer\Result\ResultInterface;
 use AcMailer\Result\MailResult;
 
@@ -31,7 +31,7 @@ class MailService implements MailServiceInterface
      * @param Message $message
      * @param TransportInterface $transport
      */
-    public function __construct(Message $message, TransportInterface $transport) {
+    public function __construct(Message $message, TransportInterfac $transport) {
         $this->message      = $message;
         $this->transport    = $transport;
     }
