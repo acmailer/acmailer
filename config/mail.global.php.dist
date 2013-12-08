@@ -28,19 +28,19 @@ return array(
         // 'from_name' => '',
         
         /*
-         * Destination addresses of sent emails.
-         * Default value is an empty array
+         * Destination addresses of sent emails. It can be an email address as string or an array of email addresses.
+         * Default value is an empty array.
          */
         // 'to' => array(),
         
         /*
-         * Copy destination addresses of sent emails
+         * Copy destination addresses of sent emails. It can be an email address as string or an array of email addresses.
          * Default value is an empty array
          */
         // 'cc' => array(),
 
         /*
-         * Hidden copy destination addresses of sent emails
+         * Hidden copy destination addresses of sent emails. It can be an email address as string or an array of email addresses.
          * Default value is an empty array
          */
         // 'bcc' => array(),
