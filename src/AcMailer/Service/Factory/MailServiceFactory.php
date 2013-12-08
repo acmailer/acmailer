@@ -48,7 +48,8 @@ class MailServiceFactory implements FactoryInterface
 	    
 	    // Prepare MailService
 	    $mailService = new MailService($message, $transport);
-	    $mailService->setSubject($this->mailOptions->getSubject());
+	    $mailService->setSubject($this->mailOptions->getSubject())
+	                ->setBody($this->mailOptions->getBody());
 	    return $mailService;
 	}
     
