@@ -28,7 +28,9 @@ class MailServiceFactory implements FactoryInterface
 	    $message           = new Message();
 	    $message->setSubject($this->mailOptions->getSubject())
         	    ->setFrom($this->mailOptions->getFrom(), $this->mailOptions->getFromName())
-        	    ->setTo($this->mailOptions->getTo());
+        	    ->setTo($this->mailOptions->getTo())
+	            ->setCc($this->mailOptions->getCc())
+	            ->setBcc($this->mailOptions->getBcc());
 	    
 	    // Prepare Mail Transport
 	    $transport = $this->mailOptions->getMailAdapter();

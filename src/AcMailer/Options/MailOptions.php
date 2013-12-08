@@ -31,22 +31,36 @@ class MailOptions extends AbstractOptions
     /**
      * @var array
      */
-    protected $to = array(); // TODO Refactor this to be an empty array by default
-    
-//     protected $cc = array();
-
-//     protected $bcc = array();
-    
+    protected $to = array();
+    /**
+     * @var array
+     */
+    protected $cc = array();
+    /**
+     * @var array
+     */
+    protected $bcc = array();
+    /**
+     * @var string
+     */
     protected $smtpUser = '';
-    
+    /**
+     * @var string
+     */
     protected $smtpPassword = '';
-    
+    /**
+     * @var string
+     */
     protected $body = '';
-    
+    /**
+     * @var string
+     */
     protected $subject = '';
     
 //     protected $attachmentsDir = 'data/mail/attachments';
-    
+    /**
+     * @var int
+     */
     protected $port = 25;
     
 	/**
@@ -126,6 +140,42 @@ class MailOptions extends AbstractOptions
 	 */
 	public function setTo($to) {
 		$this->to = $to;
+		return $this;
+	}
+	
+	/**
+	 * @return array $cc
+	 */
+	public function getCc() {
+	    if (is_string($this->cc))
+	        $this->cc = array($this->cc);
+	    
+		return $this->cc;
+	}
+	/**
+	 * @param array $cc
+	 * @return MailOptions
+	 */
+	public function setCc($cc) {
+		$this->cc = $cc;
+		return $this;
+	}
+	
+	/**
+	 * @return array $bcc
+	 */
+	public function getBcc() {
+	    if (is_string($this->bcc))
+	        $this->bcc = array($this->bcc);
+	    
+		return $this->bcc;
+	}
+	/**
+	 * @param array $bcc
+	 * @return MailOptions
+	 */
+	public function setBcc($bcc) {
+		$this->bcc = $bcc;
 		return $this;
 	}
 

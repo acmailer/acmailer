@@ -34,14 +34,16 @@ return array(
         // 'to' => array(),
         
         /*
-         * Not yet supported
+         * Copy destination addresses of sent emails
+         * Default value is an empty array
          */
-//         'cc' => array(),
+        // 'cc' => array(),
 
         /*
-         * Not yet supported
+         * Hidden copy destination addresses of sent emails
+         * Default value is an empty array
          */
-//         'bcc' => array(),
+        // 'bcc' => array(),
         
         /*
          * Not yet supported
