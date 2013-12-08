@@ -2,13 +2,13 @@
 namespace AcMailer\Service;
 
 use AcMailer\Service\MailServiceInterface;
-use AcMailer\Entity\MailResult;
+use AcMailer\Result\MailResult;
 use Zend\Mail\Message;
 
 /**
  * 
  * @author Alejandro Celaya Alastrué 
- *
+ * @link http://www.alejandrocelaya.com
  */
 class MailServiceMock implements MailServiceInterface
 {

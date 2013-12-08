@@ -4,12 +4,13 @@ namespace AcMailer\Service;
 use Zend\Mail\Transport\TransportInterface;
 use \Zend\Mail\Message;
 use \Zend\Mail\Transport\Exception\RuntimeException;
-use AcMailer\Entity\MailResult;
+use AcMailer\Result\ResultInterface;
+use AcMailer\Result\MailResult;
 
 /**
  * 
- * @author Calat Sistemas y Comunicaciones
- *
+ * @author Alejandro Celaya Alastrué
+ * @link http://www.alejandrocelaya.com
  */
 class MailService implements MailServiceInterface
 {
@@ -46,7 +47,7 @@ class MailService implements MailServiceInterface
     
     /**
      * Sends the mail and
-     * @return \AcMailer\Entity\MailResult
+     * @return ResultInterface
      * @see \AcMailer\Service\MailServiceInterface::send()
      */
     public function send() {        

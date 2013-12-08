@@ -1,17 +1,19 @@
 <?php
 namespace AcMailer\Service;
 
+use AcMailer\Result\ResultInterface;
+
 /**
  * 
  * @author Alejandro Celaya Alastrué
- *
+ * @link http://www.alejandrocelaya.com
  */
 interface MailServiceInterface
 {
     
     /**
      * Tries to send the message, returning a MailResult object
-     * @return \Application\Entity\MailResult
+     * @return ResultInterface
      */
     public function send();
     

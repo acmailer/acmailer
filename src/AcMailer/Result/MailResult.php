@@ -1,13 +1,13 @@
 <?php
-namespace AcMailer\Entity;
+namespace AcMailer\Result;
 
 /**
  * Object returned by send method in MailService
  * @see \AcMailer\Service\MailServiceInterface
  * @author Alejandro Celaya Alastrué
- * @see http://www.alejandrocelaya.com
+ * @link http://www.alejandrocelaya.com
  */
-class MailResult
+class MailResult implements ResultInterface
 {
     
     /**
@@ -28,13 +28,15 @@ class MailResult
         return $this->result;
     }
     
+    /**
+     * @see \AcMailer\Result\ResultInterface::getMessage()
+     */
     public function getMessage() {
         return $this->message;
     }
     
     /**
-     * Tells if the MailService that produced this result was properly sent
-     * @return boolean
+     * @see \AcMailer\Result\ResultInterface::isValid()
      */
     public function isValid() {
         return $this->getResult();
