@@ -4,14 +4,14 @@ namespace AcMailer\Service;
 /**
  * 
  * @author Alejandro Celaya Alastrué
- *
+ * @link http://www.alejandrocelaya.com
  */
 interface MailServiceInterface
 {
     
     /**
      * Tries to send the message, returning a MailResult object
-     * @return \Application\Entity\MailResult
+     * @return \Application\Result\ResultInterface
      */
     public function send();
     

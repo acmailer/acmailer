@@ -4,12 +4,12 @@ namespace AcMailer\Service;
 use Zend\Mail\Transport\TransportInterface;
 use \Zend\Mail\Message;
 use \Zend\Mail\Transport\Exception\RuntimeException;
-use AcMailer\Entity\MailResult;
+use AcMailer\Result\MailResult;
 
 /**
  * 
- * @author Calat Sistemas y Comunicaciones
- *
+ * @author Alejandro Celaya Alastrué
+ * @link http://www.alejandrocelaya.com
  */
 class MailService implements MailServiceInterface
 {

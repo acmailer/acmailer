@@ -10,7 +10,7 @@ use AcMailer\Service\MailService;
 /**
  * Constructs a new MailService injecting on it a Message and Transport object constructed with configuration params
  * @author Alejandro Celaya Alastrué
- *
+ * @link http://www.alejandrocelaya.com
  */
 class MailServiceFactory implements FactoryInterface
 {
