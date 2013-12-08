@@ -28,28 +28,28 @@ return array(
         // 'from_name' => '',
         
         /*
-         * Destination addresses of sent emails.
-         * Default value is an empty array
+         * Destination addresses of sent emails. It can be an email address as string or an array of email addresses.
+         * Default value is an empty array.
          */
         // 'to' => array(),
         
         /*
-         * Copy destination addresses of sent emails
+         * Copy destination addresses of sent emails. It can be an email address as string or an array of email addresses.
          * Default value is an empty array
          */
         // 'cc' => array(),
 
         /*
-         * Hidden copy destination addresses of sent emails
+         * Hidden copy destination addresses of sent emails. It can be an email address as string or an array of email addresses.
          * Default value is an empty array
          */
         // 'bcc' => array(),
         
         /*
-         * Not yet supported
-         * If Zend\Mail\Transport\Smtp adapter is used, this is the SMTP authentication identity.
+         * If Zend\Mail\Transport\Smtp adapter is used, this is the SMTP authentication identity. If this is not set, from option is used.
+         * Default value is an empty string
          */
-//         'smtp_user' => '',
+        // 'smtp_user' => '',
         
         /*
          * If Zend\Mail\Transport\Smtp adapter is used, this is the SMTP authentication credential.
@@ -71,8 +71,8 @@ return array(
         
         /*
          * Not yet supported
-         * Attachments directory. If this is a valid directory path, it will be iterated recursively and all found files will be attached.
-         * Default value is data/mail/attachments relative to project's root path
+         * Attachments directory. If this is a valid directory path, it will be iterated recursively and all found files will be attached to the mail.
+         * Default value is data/mail/attachments, relative to project's root path
          */
 //         'attachments_dir' => 'data/mail/attachments',
         

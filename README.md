@@ -38,7 +38,7 @@ Once you get the `AcMailer\Service\MailService` service, a new MailService insta
 		echo 'An error occured. Exception message: ' . $result->getMessage();
 ```
 
-If mail configuration does not fit your needs (multiple "to" addresses are needed, files should be attached...) the message wrapped by MailService can be customized by getting it before calling send method.
+If mail options does not fit your needs or you need to update them at runtime, the message wrapped by MailService can be customized by getting it before calling send method.
 
 ```php
 	$message = $mailService->getMessage();

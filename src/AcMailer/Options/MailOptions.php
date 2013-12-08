@@ -56,12 +56,12 @@ class MailOptions extends AbstractOptions
      * @var string
      */
     protected $subject = '';
-    
-//     protected $attachmentsDir = 'data/mail/attachments';
     /**
      * @var int
      */
     protected $port = 25;
+    
+//     protected $attachmentsDir = 'data/mail/attachments';
     
 	/**
 	 * @return TransportInterface the $mailAdapter
@@ -183,6 +183,9 @@ class MailOptions extends AbstractOptions
 	 * @return string $smtpUser
 	 */
 	public function getSmtpUser() {
+	    if (!isset($this->smtpUser) || $this->smtpUser == "")
+	        return $this->from;
+	    
 		return $this->smtpUser;
 	}
 	/**
