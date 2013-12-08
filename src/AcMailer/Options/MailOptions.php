@@ -15,7 +15,7 @@ class MailOptions extends AbstractOptions
     /**
      * @var string
      */
-    protected $mailAdapter = 'Zend\Mail\Transport\Sendmail';
+    protected $mailAdapter = '\Zend\Mail\Transport\Sendmail';
     /**
      * @var string
      */
@@ -73,10 +73,10 @@ class MailOptions extends AbstractOptions
 		return $this->mailAdapter;
 	}
 	/**
-	 * @param TransportInterface $mailAdapter
+	 * @param string $mailAdapter class name
 	 * @return MailOptions
 	 */
-	public function setMailAdapter(TransportInterface $mailAdapter) {
+	public function setMailAdapter($mailAdapter) {
 		$this->mailAdapter = $mailAdapter;
 		return $this;
 	}

@@ -31,7 +31,7 @@ class MailService implements MailServiceInterface
      * @param Message $message
      * @param TransportInterface $transport
      */
-    public function __construct(Message $message, TransportInterfac $transport) {
+    public function __construct(Message $message, TransportInterface $transport) {
         $this->message      = $message;
         $this->transport    = $transport;
     }
