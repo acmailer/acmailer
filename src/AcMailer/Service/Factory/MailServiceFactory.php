@@ -6,6 +6,7 @@ use Zend\Mail\Message;
 use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\SmtpOptions;
 use AcMailer\Service\MailService;
+use AcMailer\Options\MailOptions;
 
 /**
  * Constructs a new MailService injecting on it a Message and Transport object constructed with configuration params
@@ -15,32 +16,37 @@ use AcMailer\Service\MailService;
 class MailServiceFactory implements FactoryInterface
 {
 	
+    /**
+     * @var MailOptions
+     */
+    private $mailOptions;
+    
 	public function createService(\Zend\ServiceManager\ServiceLocatorInterface $sm) {
-	    $config        = $sm->get('Config');
-	    if (!isset($config['mailParams']))
-	        throw new \Exception("Mail configuration has not been provided. Include a mailParams section in one of your configuration files");
+	    $this->mailOptions = $sm->get('AcMailer\Options\MailOptions');
 	    
-	    $mailParams    = $config['mailParams'];
-	    $message       = new Message();
-	    $message->setSubject($mailParams['subject'])
-        	    ->setFrom($mailParams['from'], $mailParams['fromName'])
-        	    ->setTo($mailParams['to']);
+	    // Prepare Mail Message
+	    $message           = new Message();
+	    $message->setSubject($this->mailOptions->getSubject())
+        	    ->setFrom($this->mailOptions->getFrom(), $this->mailOptions->getFromName())
+        	    ->setTo($this->mailOptions->getTo());
 	    
-	    $transport = new $mailParams['mailAdapter']();
+	    // Prepare Mail Transport
+	    $transport = $this->mailOptions->getMailAdapter();
 	    if ($transport instanceof Smtp) {
 	    	$transport->setOptions(new SmtpOptions(array(
-    			'host'              => $mailParams['server'],
-    			'port'              => $mailParams['port'],
+    			'host'              => $this->mailOptions->getServer(),
+    			'port'              => $this->mailOptions->getPort(),
     			'connection_class'  => 'login',
     			'connection_config' => array(
-					'username' => $mailParams['from'],
-					'password' => $mailParams['password'],
+					'username' => $this->mailOptions->getFrom(),
+					'password' => $this->mailOptions->getSmtpPassword(),
     			),
 	    	)));
 	    }
 	    
+	    // Prepare MailService
 	    $mailService = new MailService($message, $transport);
-	    $mailService->setSubject($mailParams['subject']);
+	    $mailService->setSubject($this->mailOptions->getSubject());
 	    return $mailService;
 	}
     

@@ -29,9 +29,9 @@ class MailOptions extends AbstractOptions
      */
     protected $fromName = '';
     /**
-     * @var string // TODO Refactor this to be an empty array by default
+     * @var array
      */
-    protected $to = ''; // TODO Refactor this to be an empty array by default
+    protected $to = array(); // TODO Refactor this to be an empty array by default
     
 //     protected $cc = array();
 
