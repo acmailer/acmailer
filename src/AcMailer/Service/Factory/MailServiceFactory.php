@@ -22,7 +22,7 @@ class MailServiceFactory implements FactoryInterface
     private $mailOptions;
     
 	public function createService(\Zend\ServiceManager\ServiceLocatorInterface $sm) {
-	    $this->mailOptions = $sm->get('AcMailer\Options\MailOptions');
+	    $this->mailOptions = $sm->get('AcMailer\Option\MailOptions');
 	    
 	    // Prepare Mail Message
 	    $message = new Message();
