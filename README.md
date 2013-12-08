@@ -22,4 +22,14 @@ Finally install dependencies
 
 After installation, copy `module/AcMailer/config/mail.global.php.dist` to `config/autoload/mail.global.php` and customize any of the params.
 
-Once you get the `MailService` service, a new MailService instance will be returned and you will be allowed to set the body, set the subject and then send the message.
+Once you get the `AcMailer\Service\MailService` service, a new MailService instance will be returned and you will be allowed to set the body, set the subject and then send the message.
+
+	$mailService = $serviceManager->get('AcMailer\Service\MailService');
+	$mailService->setSubject('This is the subject');
+	$mailService->setBody('This is the body');
+	
+	$result = $mailService->send();
+	if ($result->isValid() 
+		echo 'Message sent. Congratulations!';
+	else
+		echo 'An error occured. Exception message: ' . $result->getMessage();
