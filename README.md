@@ -35,3 +35,14 @@ Once you get the `AcMailer\Service\MailService` service, a new MailService insta
 	else
 		echo 'An error occured. Exception message: ' . $result->getMessage();
 ```
+
+If mail configuration does not fit your needs (multiple "to" addresses are needed, files should be attached...) the message wrapped by MailService can be customized by getting it before calling send method.
+
+```php
+	$message = $mailService->getMessage();
+	$message->addTo("foobar@example.com")
+			->addTo("another@example.com")
+			->addBcc("hidden@domain.com");
+			
+	$result = $mailService->send();
+```
