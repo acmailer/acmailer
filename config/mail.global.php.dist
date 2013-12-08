@@ -1,15 +1,84 @@
 <?php
 return array(
 	
-	'mailParams' => array(
-		'mailAdapter'     => 'Zend\Mail\Transport\Sendmail', // Zend\Mail\Transport\Smtp or Zend\Mail\Transport\Sendmail
-		'server'          => '',
-		'fromName'        => '',
-		'from'            => '',
-		'to'              => '',
-		'password'        => '',
-		'subject'         => '',
-		'port'            => 25,
-    ),
+    'mail_options' => array(
+        
+        /*
+         * The mail adapter to be used. Valid options are Zend\Mail\Transport\Smtp and Zend\Mail\Transport\Sendmail
+         * Default value is Zend\Mail\Transport\Sendmail
+         */
+		// 'mail_adapter' => 'Zend\Mail\Transport\Sendmail',
+        
+        /*
+         * Hostname or IP address of mail server to be used.
+         * Default value is localhost
+         */
+        // 'server' => 'localhost',
+        
+        /*
+         * From email address of the email. It would be used as SMTP username if mail_adapter is set to Zend\Mail\Transport\Smtp
+         * Default value is an empty string
+         */
+        // 'from' => '',
+        
+        /*
+         * From name to be displayed instead of from address.
+         * Default value is an empty string
+         */
+        // 'from_name' => '',
+        
+        /*
+         * Destination address of this message.
+         * Default value is an empty string
+         */
+        // 'to' => '',
+        
+        /*
+         * Not yet supported
+         */
+//         'cc' => array(),
+
+        /*
+         * Not yet supported
+         */
+//         'bcc' => array(),
+        
+        /*
+         * Not yet supported
+         * If Zend\Mail\Transport\Smtp adapter is used, this is the SMTP authentication identity.
+         */
+//         'smtp_user' => '',
+        
+        /*
+         * If Zend\Mail\Transport\Smtp adapter is used, this is the SMTP authentication credential.
+         * Default value is an empty string
+         */
+        // 'smtp_password' => '',
+        
+        /*
+         * Email body. Can be a string or hardcoded HTML. If a more complex value is nedded it will have to be done in the code.
+         * Default value is an empty string.
+         */
+        // 'body' => '',
+        
+        /*
+         * Email subject.
+         * Default value is an empty string
+         */
+        // 'subject' => '',
+        
+        /*
+         * Not yet supported
+         * Attachments directory. If this is a valid directory path, it will be iterated recursively and all found files will be attached.
+         * Default value is data/mail/attachments relative to project's root path
+         */
+//         'attachments_dir' => 'data/mail/attachments',
+        
+        /*
+         * If Zend\Mail\Transport\Smtp adapter is used, this is the SMTP server port
+         */
+        // 'port' => 25
+        
+	)
 	
 );
