@@ -46,10 +46,10 @@ return array(
         // 'bcc' => array(),
         
         /*
-         * Not yet supported
-         * If Zend\Mail\Transport\Smtp adapter is used, this is the SMTP authentication identity.
+         * If Zend\Mail\Transport\Smtp adapter is used, this is the SMTP authentication identity. If this is not set, from option is used.
+         * Default value is an empty string
          */
-//         'smtp_user' => '',
+        // 'smtp_user' => '',
         
         /*
          * If Zend\Mail\Transport\Smtp adapter is used, this is the SMTP authentication credential.
@@ -71,8 +71,8 @@ return array(
         
         /*
          * Not yet supported
-         * Attachments directory. If this is a valid directory path, it will be iterated recursively and all found files will be attached.
-         * Default value is data/mail/attachments relative to project's root path
+         * Attachments directory. If this is a valid directory path, it will be iterated recursively and all found files will be attached to the mail.
+         * Default value is data/mail/attachments, relative to project's root path
          */
 //         'attachments_dir' => 'data/mail/attachments',
         

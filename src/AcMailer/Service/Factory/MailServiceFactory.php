@@ -9,7 +9,7 @@ use AcMailer\Service\MailService;
 use AcMailer\Options\MailOptions;
 
 /**
- * Constructs a new MailService injecting on it a Message and Transport object constructed with configuration params
+ * Constructs a new MailService injecting on it a Message and Transport object constructed with mail options
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
@@ -25,7 +25,7 @@ class MailServiceFactory implements FactoryInterface
 	    $this->mailOptions = $sm->get('AcMailer\Options\MailOptions');
 	    
 	    // Prepare Mail Message
-	    $message           = new Message();
+	    $message = new Message();
 	    $message->setSubject($this->mailOptions->getSubject())
         	    ->setFrom($this->mailOptions->getFrom(), $this->mailOptions->getFromName())
         	    ->setTo($this->mailOptions->getTo())
@@ -40,7 +40,7 @@ class MailServiceFactory implements FactoryInterface
     			'port'              => $this->mailOptions->getPort(),
     			'connection_class'  => 'login',
     			'connection_config' => array(
-					'username' => $this->mailOptions->getFrom(),
+					'username' => $this->mailOptions->getSmtpUser(),
 					'password' => $this->mailOptions->getSmtpPassword(),
     			),
 	    	)));
