@@ -3,6 +3,9 @@ namespace AcMailer\Options;
 
 use Zend\Stdlib\AbstractOptions;
 use Zend\Mail\Transport\TransportInterface;
+use Zend\Mail\Transport\Smtp;
+use Zend\Mail\Transport\Sendmail;
+use AcMailer\Exception\InvalidArgumentException;
 
 /**
  * Module options
@@ -11,6 +14,17 @@ use Zend\Mail\Transport\TransportInterface;
  */
 class MailOptions extends AbstractOptions
 {
+    
+    /**
+     * Mail adapter should be one of this types
+     * @var array
+     */
+    private $validAdapters = array(
+    	'Zend\Mail\Transport\Sendmail' => 'Zend\Mail\Transport\Sendmail',
+    	'Sendmail'                     => 'Zend\Mail\Transport\Sendmail',
+    	'Zend\Mail\Transport\Smtp'     => 'Zend\Mail\Transport\Smtp',
+    	'Smtp'                         => 'Zend\Mail\Transport\Smtp',
+    );
     
     /**
      * @var string
@@ -73,11 +87,21 @@ class MailOptions extends AbstractOptions
 		return $this->mailAdapter;
 	}
 	/**
-	 * @param string $mailAdapter class name
+	 * @param string|Zend\Mail\Transport\Smtp|Zend\Mail\Transport\Sendmail $mailAdapter class name
 	 * @return MailOptions
 	 */
 	public function setMailAdapter($mailAdapter) {
-		$this->mailAdapter = $mailAdapter;
+	    if (is_string($mailAdapter)) {
+	        $mailAdapter = ucfirst($mailAdapter);
+	        if (array_key_exists($mailAdapter, $this->validAdapters)) 
+	            $this->mailAdapter = $this->validAdapters[$mailAdapter];
+	        else 
+	            throw new InvalidArgumentException('Defined adapter as string is not a valid adapter. Value should be one of "Zend\Mail\Transport\Smtp", "Smtp", "Zend\Mail\Transport\Sendmail" or "Sendmail"');
+	    } elseif ($mailAdapter instanceof Sendmail || $mailAdapter instanceof Smtp)
+	       $this->mailAdapter = $mailAdapter;
+	    else 
+	       throw new InvalidArgumentException('Defined adapter should be an instance of "Zend\Mail\Transport\Smtp" or "Zend\Mail\Transport\Sendmail"');
+	    
 		return $this;
 	}
 
