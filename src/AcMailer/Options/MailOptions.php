@@ -3,6 +3,9 @@ namespace AcMailer\Options;
 
 use Zend\Stdlib\AbstractOptions;
 use Zend\Mail\Transport\TransportInterface;
+use Zend\Mail\Transport\Smtp;
+use Zend\Mail\Transport\Sendmail;
+use AcMailer\Exception\InvalidArgumentException;
 
 /**
  * Module options
@@ -11,6 +14,21 @@ use Zend\Mail\Transport\TransportInterface;
  */
 class MailOptions extends AbstractOptions
 {
+    
+    /**
+     * Mail adapter should be one of this types
+     * @var array
+     */
+    private $validAdapters = array(
+    	'Zend\Mail\Transport\Sendmail' => 'Zend\Mail\Transport\Sendmail',
+    	'Sendmail'                     => 'Zend\Mail\Transport\Sendmail',
+    	'Zend\Mail\Transport\Smtp'     => 'Zend\Mail\Transport\Smtp',
+    	'Smtp'                         => 'Zend\Mail\Transport\Smtp',
+    );
+    private $validSsl = array(
+    	'ssl',
+    	'tls',
+    );
     
     /**
      * @var string
@@ -49,6 +67,10 @@ class MailOptions extends AbstractOptions
      */
     protected $smtpPassword = '';
     /**
+     * @var string|bool
+     */
+    protected $ssl = false;
+    /**
      * @var string
      */
     protected $body = '';
@@ -73,11 +95,21 @@ class MailOptions extends AbstractOptions
 		return $this->mailAdapter;
 	}
 	/**
-	 * @param string $mailAdapter class name
+	 * @param string|Zend\Mail\Transport\Smtp|Zend\Mail\Transport\Sendmail $mailAdapter class name
 	 * @return MailOptions
 	 */
 	public function setMailAdapter($mailAdapter) {
-		$this->mailAdapter = $mailAdapter;
+	    if (is_string($mailAdapter)) {
+	        $mailAdapter = ucfirst($mailAdapter);
+	        if (array_key_exists($mailAdapter, $this->validAdapters)) 
+	            $this->mailAdapter = $this->validAdapters[$mailAdapter];
+	        else 
+	            throw new InvalidArgumentException('Defined adapter as string is not a valid adapter. Value should be one of "Zend\Mail\Transport\Smtp", "Smtp", "Zend\Mail\Transport\Sendmail" or "Sendmail"');
+	    } elseif ($mailAdapter instanceof Sendmail || $mailAdapter instanceof Smtp)
+	       $this->mailAdapter = $mailAdapter;
+	    else 
+	       throw new InvalidArgumentException('Defined adapter should be an instance of "Zend\Mail\Transport\Smtp" or "Zend\Mail\Transport\Sendmail"');
+	    
 		return $this;
 	}
 
@@ -196,7 +228,29 @@ class MailOptions extends AbstractOptions
 		$this->smtpUser = $smtpUser;
 		return $this;
 	}
-
+    
+	/**
+	 * @return Ambigous <string, boolean>
+	 */
+	public function getSsl() {
+	    return $this->ssl;
+	}
+	/**
+	 * @param string|boolean $ssl
+	 * @return MailOptions
+	 */
+	public function setSsl($ssl) {
+	    if (!is_bool($ssl) && !is_string($ssl))
+	        throw new InvalidArgumentException('SSL value should be false, "ssl" or "tls".');
+	    elseif (is_bool($ssl) && $ssl !== false)
+	        throw new InvalidArgumentException('Boolean true value for SSL is not supported. Only false can be used to disable SSL, otherwise "ssl" or "tls" values should be used.');
+	    elseif (is_string($ssl) && !in_array($ssl, $this->validSsl))
+	       throw new InvalidArgumentException('SSL valid values are "ssl" or "tls".');
+	    
+	    $this->ssl = $ssl;
+	    return $this;
+	}
+	
 	/**
 	 * @return string $smtpPassword
 	 */

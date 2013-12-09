@@ -8,7 +8,7 @@ use Zend\Mvc\MvcEvent;
 /**
  * 
  * @author Alejandro Celaya Alastrué
- *
+ * @link http://www.alejandrocelaya.com
  */
 class Module implements AutoloaderProviderInterface
 {
