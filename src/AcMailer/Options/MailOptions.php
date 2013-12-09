@@ -25,6 +25,10 @@ class MailOptions extends AbstractOptions
     	'Zend\Mail\Transport\Smtp'     => 'Zend\Mail\Transport\Smtp',
     	'Smtp'                         => 'Zend\Mail\Transport\Smtp',
     );
+    private $validSsl = array(
+    	'ssl',
+    	'tls',
+    );
     
     /**
      * @var string
@@ -62,6 +66,10 @@ class MailOptions extends AbstractOptions
      * @var string
      */
     protected $smtpPassword = '';
+    /**
+     * @var string|bool
+     */
+    protected $ssl = false;
     /**
      * @var string
      */
@@ -220,7 +228,29 @@ class MailOptions extends AbstractOptions
 		$this->smtpUser = $smtpUser;
 		return $this;
 	}
-
+    
+	/**
+	 * @return Ambigous <string, boolean>
+	 */
+	public function getSsl() {
+	    return $this->ssl;
+	}
+	/**
+	 * @param string|boolean $ssl
+	 * @return MailOptions
+	 */
+	public function setSsl($ssl) {
+	    if (!is_bool($ssl) && !is_string($ssl))
+	        throw new InvalidArgumentException('SSL value should be false, "ssl" or "tls".');
+	    elseif (is_bool($ssl) && $ssl !== false)
+	        throw new InvalidArgumentException('Boolean true value for SSL is not supported. Only false can be used to disable SSL, otherwise "ssl" or "tls" values should be used.');
+	    elseif (is_string($ssl) && !in_array($ssl, $this->validSsl))
+	       throw new InvalidArgumentException('SSL valid values are "ssl" or "tls".');
+	    
+	    $this->ssl = $ssl;
+	    return $this;
+	}
+	
 	/**
 	 * @return string $smtpPassword
 	 */
