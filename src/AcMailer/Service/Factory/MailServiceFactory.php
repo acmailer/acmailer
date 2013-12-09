@@ -7,6 +7,7 @@ use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\SmtpOptions;
 use AcMailer\Service\MailService;
 use AcMailer\Options\MailOptions;
+use Zend\Debug\Debug;
 
 /**
  * Constructs a new MailService injecting on it a Message and Transport object constructed with mail options
@@ -26,8 +27,7 @@ class MailServiceFactory implements FactoryInterface
 	    
 	    // Prepare Mail Message
 	    $message = new Message();
-	    $message->setSubject($this->mailOptions->getSubject())
-        	    ->setFrom($this->mailOptions->getFrom(), $this->mailOptions->getFromName())
+	    $message->setFrom($this->mailOptions->getFrom(), $this->mailOptions->getFromName())
         	    ->setTo($this->mailOptions->getTo())
 	            ->setCc($this->mailOptions->getCc())
 	            ->setBcc($this->mailOptions->getBcc());
@@ -35,14 +35,21 @@ class MailServiceFactory implements FactoryInterface
 	    // Prepare Mail Transport
 	    $transport = $this->mailOptions->getMailAdapter();
 	    if ($transport instanceof Smtp) {
+	        $connConfig = array(
+	            'username' => $this->mailOptions->getSmtpUser(),
+	            'password' => $this->mailOptions->getSmtpPassword(),
+	        );
+	        
+	        // Check if SSL should be used
+	        if ($this->mailOptions->getSsl() !== false)
+	            $connConfig['ssl'] = $this->mailOptions->getSsl();
+	        
+	        // Set SMTP transport options
 	    	$transport->setOptions(new SmtpOptions(array(
     			'host'              => $this->mailOptions->getServer(),
     			'port'              => $this->mailOptions->getPort(),
     			'connection_class'  => 'login',
-    			'connection_config' => array(
-					'username' => $this->mailOptions->getSmtpUser(),
-					'password' => $this->mailOptions->getSmtpPassword(),
-    			),
+    			'connection_config' => $connConfig,
 	    	)));
 	    }
 	    
