@@ -25,6 +25,10 @@ class MailOptions extends AbstractOptions
     	'Zend\Mail\Transport\Smtp'     => 'Zend\Mail\Transport\Smtp',
     	'Smtp'                         => 'Zend\Mail\Transport\Smtp',
     );
+    /**
+     * Valid SSL values
+     * @var array
+     */
     private $validSsl = array(
     	'ssl',
     	'tls',
@@ -82,8 +86,10 @@ class MailOptions extends AbstractOptions
      * @var int
      */
     protected $port = 25;
-    
-//     protected $attachmentsDir = 'data/mail/attachments';
+    /**
+     * @var string
+     */
+    protected $attachmentsDir = 'data/mail/attachments';
     
 	/**
 	 * @return TransportInterface the $mailAdapter
@@ -308,6 +314,22 @@ class MailOptions extends AbstractOptions
 	 */
 	public function setPort($port) {
 		$this->port = (int) $port;
+		return $this;
+	}
+    
+	/**
+	 * @return string
+	 */
+	public function getAttachmentsDir() {
+		return $this->attachmentsDir;
+	}
+	/**
+	 * Sets attachments dir
+	 * @param string $attachmentsDir
+	 * @return \AcMailer\Options\MailOptions
+	 */
+	public function setAttachmentsDir($attachmentsDir) {
+		$this->attachmentsDir = $attachmentsDir;
 		return $this;
 	}
 	

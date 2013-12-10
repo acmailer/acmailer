@@ -57,6 +57,21 @@ class MailServiceFactory implements FactoryInterface
 	    $mailService = new MailService($message, $transport);
 	    $mailService->setSubject($this->mailOptions->getSubject())
 	                ->setBody($this->mailOptions->getBody());
+	    
+	    // Attach files
+	    $dir = $this->mailOptions->getAttachmentsDir();
+	    if (is_string($dir) && is_dir($dir)) {
+	        $files = new \RecursiveIteratorIterator(
+        		new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
+        		\RecursiveIteratorIterator::CHILD_FIRST
+	        );
+	        
+	        foreach ($files as $fileInfo) {
+	            if ($fileInfo->isDir()) continue;
+	            $mailService->addAttachment($fileInfo->getPathname());
+	        }
+	    }
+	    
 	    return $mailService;
 	}
     

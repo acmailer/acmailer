@@ -10,11 +10,13 @@ Install composer in your project
 	
 Define dependencies in your composer.json file
 
+```json
 	{
     	"require": {
 	        "acelaya/zf2-acmailer": "dev-master"
 	    }
 	}
+```
 	
 Finally install dependencies
 
