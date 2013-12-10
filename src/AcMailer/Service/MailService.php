@@ -165,6 +165,5 @@ class MailService implements MailServiceInterface
 		$this->attachments = $paths;
 		return $this;
 	}
-
     
 }

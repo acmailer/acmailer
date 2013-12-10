@@ -76,11 +76,11 @@ return array(
         // 'subject' => '',
         
         /*
-         * Not yet supported
-         * Attachments directory. If this is a valid directory path, it will be iterated recursively and all found files will be attached to the mail.
-         * Default value is data/mail/attachments, relative to project's root path
+         * Attachments directory. If this is a valid directory path, it will be iterated recursively and all found files will be attached to the email.
+         * Set this to a non string value (like false) to disable automatic attachments.
+         * Default value is data/mail/attachments, relative to project's root path.
          */
-//         'attachments_dir' => 'data/mail/attachments',
+        // 'attachments_dir' => 'data/mail/attachments',
         
         /*
          * If Zend\Mail\Transport\Smtp adapter is used, this is the SMTP server port
