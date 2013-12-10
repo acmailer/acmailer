@@ -48,3 +48,30 @@ If mail options does not fit your needs or you need to update them at runtime, t
 			
 	$result = $mailService->send();
 ```
+
+### Testing
+
+`AcMailer\Service\MailService` should be injected into Controllers or other Services which you probably need to test. It implements `AcMailer\Service\MailServiceInterface` for this purpose, but even a `MailServiceMock` is included.
+It allows user to define if the message should or should not fail when `send` method is called, by calling `setForceError` method.
+You can even know if `send` method was called after any action by calling `isSendMethodCalled`.
+
+```php
+	...
+	
+	$mailServiceMock = new \AcMailer\Service\MailServiceMock();
+	$mailServiceMock->isSendMethodCalled(); // This will return false at this point
+	
+	// Force an error
+	$mailServiceMock->setForceError(true);
+	$result = $mailService->send();
+	$result->isValid(); // This will return false because we forced an error
+	
+	$mailServiceMock->isSendMethodCalled(); // This will return true at this point
+	
+	// Force a success
+	$mailServiceMock->setForceError(false);
+	$result = $mailService->send();
+	$result->isValid(); // This will return true in this case
+	
+	...
+```
