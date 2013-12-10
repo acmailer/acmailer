@@ -68,5 +68,25 @@ class MailServiceMock implements MailServiceInterface
 	public function setForceError($forceError) {
 	    $this->forceError = (bool) $forceError;
 	}
+	
+	/* (non-PHPdoc)
+	 * @see \AcMailer\Service\MailServiceInterface::addAttachment()
+	 */
+	public function addAttachment($path) {
+		// Do nothing
+	}
+	/* (non-PHPdoc)
+	 * @see \AcMailer\Service\MailServiceInterface::addAttachments()
+	 */
+	public function addAttachments(array $paths) {
+		// Do nothing
+	}
+	/* (non-PHPdoc)
+	 * @see \AcMailer\Service\MailServiceInterface::setAttachments()
+	 */
+	public function setAttachments(array $paths) {
+		// Do nothing
+	}
+
 
 }
