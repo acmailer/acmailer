@@ -4,7 +4,7 @@ namespace AcMailer\Service;
 use AcMailer\Result\ResultInterface;
 
 /**
- * 
+ * Provides methods to be implemented by a valid MailService
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
@@ -24,7 +24,16 @@ interface MailServiceInterface
      */
     public function getMessage();
     
+    /**
+     * Sets the message body
+     * @param \Zend\Mime\Part|\Zend\Mime\Message|string $body
+     */
     public function setBody($body);
+    
+    /**
+     * Sets the message subject
+     * @param string $subject
+     */
     public function setSubject($subject);
     
 }
