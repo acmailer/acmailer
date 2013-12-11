@@ -77,11 +77,19 @@ class MailOptions extends AbstractOptions
     /**
      * @var string
      */
-    protected $body = '';
+    protected $subject = '';
     /**
      * @var string
      */
-    protected $subject = '';
+    protected $body = '';
+    /**
+     * @var array
+     */
+    protected $template = array(
+    	'use_template'  => false,
+        'path'          => 'ac-mailer/mail-templates/mail',
+        'params'        => array(),
+    );
     /**
      * @var int
      */
@@ -330,6 +338,21 @@ class MailOptions extends AbstractOptions
 	 */
 	public function setAttachmentsDir($attachmentsDir) {
 		$this->attachmentsDir = $attachmentsDir;
+		return $this;
+	}
+    
+	/**
+	 * @return array
+	 */
+	public function getTemplate() {
+		return $this->template;
+	}
+	/**
+	 * @param array $template
+	 * @return \AcMailer\Options\MailOptions
+	 */
+	public function setTemplate(array $template) {
+		$this->template = $template;
 		return $this;
 	}
 	
