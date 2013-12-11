@@ -28,23 +28,26 @@ class MailServiceMock implements MailServiceInterface
 	    else
 	        return new MailResult();
 	}
-
-	/**
-	 * (non-PHPdoc)
+    
+	/* (non-PHPdoc)
 	 * @see \AcMailer\Service\MailServiceInterface::setBody()
 	 */
 	public function setBody($body) {
-		
+		// Do nothing
 	}
-	/**
-	 * (non-PHPdoc)
+	/* (non-PHPdoc)
+	 * @see \AcMailer\Service\MailServiceInterface::setTemplate()
+	 */
+	public function setTemplate($template, array $params = array()) {
+		// Do nothing
+	}
+	/* (non-PHPdoc)
 	 * @see \AcMailer\Service\MailServiceInterface::setSubject()
 	 */
 	public function setSubject($subject) {
-		
+		// Do nothing
 	}
-	/**
-	 * (non-PHPdoc)
+	/* (non-PHPdoc)
 	 * @see \AcMailer\Service\MailServiceInterface::getMessage()
 	 */
 	public function getMessage() {
@@ -87,6 +90,5 @@ class MailServiceMock implements MailServiceInterface
 	public function setAttachments(array $paths) {
 		// Do nothing
 	}
-
-
+	
 }

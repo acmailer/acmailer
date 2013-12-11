@@ -9,6 +9,10 @@ use Zend\Mail\Transport\Exception\RuntimeException;
 use AcMailer\Result\ResultInterface;
 use AcMailer\Result\MailResult;
 use Zend\Mime\Mime;
+use Zend\View\Renderer\PhpRenderer;
+use Zend\View\Model\ViewModel;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\View\Renderer\RendererInterface;
 
 /**
  * 
@@ -27,6 +31,10 @@ class MailService implements MailServiceInterface
      */
     private $transport;
     /**
+     * @var \Zend\View\Renderer\PhpRenderer
+     */
+    private $renderer;
+    /**
      * @var array
      */
     private $attachments = array();
@@ -35,10 +43,12 @@ class MailService implements MailServiceInterface
      * Creates a new MailService
      * @param Message $message
      * @param TransportInterface $transport
+     * @param $renderer Renderer used to render templates, typically a PhpRenderer
      */
-    public function __construct(Message $message, TransportInterface $transport) {
+    public function __construct(Message $message, TransportInterface $transport, RendererInterface $renderer) {
         $this->message      = $message;
         $this->transport    = $transport;
+        $this->renderer     = $renderer;
     }
     
     /**
@@ -125,6 +135,18 @@ class MailService implements MailServiceInterface
         }
         return $this;
     }
+    
+    /**
+     * Sets the body of this message from a template
+     * @see \AcMailer\Service\MailServiceInterface::setTemplate()
+     */
+    public function setTemplate($template, array $params = array()) {
+        $view = new ViewModel();
+        $view->setTemplate($template)
+             ->setVariables($params);
+        $this->setBody($this->renderer->render($view));
+    }
+    
     /**
      * Sets the message subject
      * @param $subject The subject of the message
@@ -165,5 +187,5 @@ class MailService implements MailServiceInterface
 		$this->attachments = $paths;
 		return $this;
 	}
-    
+	
 }
