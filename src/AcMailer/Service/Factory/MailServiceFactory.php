@@ -56,6 +56,8 @@ class MailServiceFactory implements FactoryInterface
 	    // Prepare MailService
 	    $mailService = new MailService($message, $transport, $sm->get('viewrenderer'));
 	    $mailService->setSubject($this->mailOptions->getSubject());
+	    
+	    // Set body, either by using a template or the body option
 	    $template = $this->mailOptions->getTemplate();
 	    if ($template['use_template'] === true)
 	        $mailService->setTemplate($template['path'], $template['params']);
