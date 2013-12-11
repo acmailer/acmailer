@@ -9,9 +9,7 @@ use Zend\Mail\Transport\Exception\RuntimeException;
 use AcMailer\Result\ResultInterface;
 use AcMailer\Result\MailResult;
 use Zend\Mime\Mime;
-use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Model\ViewModel;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Renderer\RendererInterface;
 
 /**

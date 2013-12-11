@@ -16,7 +16,7 @@ return array(
         // 'server' => 'localhost',
         
         /*
-         * From email address of the email. It would be used as SMTP username if mail_adapter is set to Zend\Mail\Transport\Smtp
+         * From email address of the email. It would be used as SMTP username if mail_adapter is set to Zend\Mail\Transport\Smtp and no smtp_user is provided
          * Default value is an empty string
          */
         // 'from' => '',

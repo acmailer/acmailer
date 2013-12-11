@@ -25,7 +25,7 @@ Finally install dependencies
 
 ### Usage
 
-After installation, copy `module/AcMailer/config/mail.global.php.dist` to `config/autoload/mail.global.php` and customize any of the params.
+After installation, copy `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` to `config/autoload/mail.global.php` and customize any of the params. Configuration options are explained later.
 
 Once you get the `AcMailer\Service\MailService` service, a new MailService instance will be returned and you will be allowed to set the body, set the subject and then send the message.
 
@@ -89,6 +89,35 @@ If mail options does not fit your needs or you need to update them at runtime, t
 			
 	$result = $mailService->send();
 ```
+
+### Configuration options
+
+The mail service can be automatically configured by using provided global configuration file. Supported options are fully explained at that file. This is what they are for.
+
+- **mail_adapter**: Tells mail service what type of transport adapter should be used. SMTP and Sendmail are supported and values for this option can be any of these:
+	- `Zend\Mail\Transport\Sendmail`
+	- `Sendmail`
+	- `sendmail`
+	- `Zend\Mail\Transport\Smtp`
+	- `Smtp`
+	- `smtp`
+- **server**: IP address or server name to be used while using an SMTP server. Will be ignored while using Sendmail.
+- **port**: SMTP server port while using SMTP server. Will be ignored while using Sendmail.
+- **from**: From email address.
+- **from_name**: From name to be displayed.
+- **to**: It can be an string with one destination email address or an array of multiple addresses.
+- **cc**: It can be an string with one carbon copy email address or an array of multiple addresses.
+- **bcc**: It can be an string with one blind carbon copy email address or an array of multiple addresses.
+- **smtp_user**: Username to be used for authentication against SMTP server. If none is provided the `from` option will be used for this purpose.
+- **smtp_password**: Password to be used for authentication against SMTP server.
+- **ssl**: Defines type of connection encryption against SMTP server. Values are `false` to disable SSL, and 'ssl' or 'tls'.
+- **body**: Default body to be used. Usually this will be generated at runtime, but can be set as a string at config file. It can contain HTML too.
+- **subject**: Default email subject.
+- **template**: Array with template configuration. It has 3 child options.
+	- *use_template*: True or false. Tells if template should be used, making body option to be ignored.
+	- *path*: Path of the template. The same used while setting the template of a ViewModel ('application/index/list').
+	- *params*: Array with key-value pairs with parameters to be sent to the template.
+- **attachments_dir**: Path to a directory that will be recursively iterated. All found files will be attached to the email automatically. Will be ignored if it is not a string or is not an existing directory.
 
 ### Testing
 
