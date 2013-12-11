@@ -16,7 +16,7 @@ return array(
         // 'server' => 'localhost',
         
         /*
-         * From email address of the email. It would be used as SMTP username if mail_adapter is set to Zend\Mail\Transport\Smtp
+         * From email address of the email. It would be used as SMTP username if mail_adapter is set to Zend\Mail\Transport\Smtp and no smtp_user is provided
          * Default value is an empty string
          */
         // 'from' => '',
@@ -64,16 +64,28 @@ return array(
         // 'ssl' => false,
         
         /*
+         * Email subject.
+         * Default value is an empty string
+         */
+        // 'subject' => '',
+        
+        /*
          * Email body. Can be a string or hardcoded HTML. If a more complex value is nedded it will have to be done in the code.
          * Default value is an empty string.
          */
         // 'body' => '',
         
         /*
-         * Email subject.
-         * Default value is an empty string
+         * Defines information to create the email body from a view partial. It defines template path and template params. 
+         * The path will be resolved by the TemplateMapResolver, so you need to place mail templates inside a view folder of one of your modules or customize your template map and template path stack.
+         * Params will be a group of key-value pairs.
+         * It has a use_template property wich tells if template should be used automatically, ignoring anything defined at 'body' option. It is false by default.
          */
-        // 'subject' => '',
+        // 'template' => array(
+        //     'use_template'  => false,
+        //     'path'          => 'ac-mailer/mail-templates/mail',
+        //     'params'        => array(),
+        // ),
         
         /*
          * Attachments directory. If this is a valid directory path, it will be iterated recursively and all found files will be attached to the email.
@@ -85,7 +97,7 @@ return array(
         /*
          * If Zend\Mail\Transport\Smtp adapter is used, this is the SMTP server port
          */
-        // 'port' => 25
+        // 'port' => 25,
         
 	)
 	

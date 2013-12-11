@@ -31,6 +31,13 @@ interface MailServiceInterface
     public function setBody($body);
     
     /**
+     * Sets the template to be used to create the body of the email
+     * @param string $template
+     * @param array $params
+     */
+    public function setTemplate($template, array $params = array());
+    
+    /**
      * Sets the message subject
      * @param string $subject
      */
