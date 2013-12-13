@@ -168,7 +168,7 @@ class MailOptions extends AbstractOptions
 	 */
 	public function setFromName($fromName) {
 		$this->fromName = $fromName;
-		
+		return $this;
 	}
 
 	/**
