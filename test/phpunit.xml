@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="./Bootstrap.php">
+    <testsuites>
+    
+        <testsuite name="AcMailer options test suite">
+            <directory>./AcMailerTest/Options</directory>
+        </testsuite>
+        <testsuite name="AcMailer result test suite">
+            <directory>./AcMailerTest/Result</directory>
+        </testsuite>
+        
+    </testsuites>
+</phpunit>
