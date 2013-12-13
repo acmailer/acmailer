@@ -35,7 +35,7 @@ Once you get the `AcMailer\Service\MailService` service, a new MailService insta
 				->setBody('This is the body'); // This can be a string, HTML or even a zend\Mime\Message or a Zend\Mime\Part
 	
 	$result = $mailService->send();
-	if ($result->isValid() 
+	if ($result->isValid())
 		echo 'Message sent. Congratulations!';
 	else
 		echo 'An error occured. Exception message: ' . $result->getMessage();
