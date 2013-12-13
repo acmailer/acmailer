@@ -6,6 +6,9 @@
         <testsuite name="AcMailer options test suite">
             <directory>./AcMailerTest/Options</directory>
         </testsuite>
+        <testsuite name="AcMailer result test suite">
+            <directory>./AcMailerTest/Result</directory>
+        </testsuite>
         
     </testsuites>
 </phpunit>
