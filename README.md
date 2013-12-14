@@ -41,7 +41,7 @@ Once you get the `AcMailer\Service\MailService` service, a new MailService insta
 		echo 'An error occured. Exception message: ' . $result->getMessage();
 ```
 
-Alternativey, the body of the message can be set from a view script by using `setTemplate` instead of `setBody`. It will use a renderer to render defined template and then set it as the email body internally.
+Alternatively, the body of the message can be set from a view script by using `setTemplate` instead of `setBody`. It will use a renderer to render defined template and then set it as the email body internally.
 
 ```php
 	$mailService = $serviceManager->get('AcMailer\Service\MailService');
@@ -105,9 +105,9 @@ The mail service can be automatically configured by using provided global config
 - **port**: SMTP server port while using SMTP server. Will be ignored while using Sendmail.
 - **from**: From email address.
 - **from_name**: From name to be displayed.
-- **to**: It can be an string with one destination email address or an array of multiple addresses.
-- **cc**: It can be an string with one carbon copy email address or an array of multiple addresses.
-- **bcc**: It can be an string with one blind carbon copy email address or an array of multiple addresses.
+- **to**: It can be a string with one destination email address or an array of multiple addresses.
+- **cc**: It can be a string with one carbon copy email address or an array of multiple addresses.
+- **bcc**: It can be a string with one blind carbon copy email address or an array of multiple addresses.
 - **smtp_user**: Username to be used for authentication against SMTP server. If none is provided the `from` option will be used for this purpose.
 - **smtp_password**: Password to be used for authentication against SMTP server.
 - **ssl**: Defines type of connection encryption against SMTP server. Values are `false` to disable SSL, and 'ssl' or 'tls'.
@@ -117,7 +117,7 @@ The mail service can be automatically configured by using provided global config
 	- *use_template*: True or false. Tells if template should be used, making body option to be ignored.
 	- *path*: Path of the template. The same used while setting the template of a ViewModel ('application/index/list').
 	- *params*: Array with key-value pairs with parameters to be sent to the template.
-- **attachments_dir**: Path to a directory that will be recursively iterated. All found files will be attached to the email automatically. Will be ignored if it is not a string or is not an existing directory.
+- **attachments_dir**: Path to a directory that will be recursively iterated. All found files will be attached to the email automatically. Will be ignored if it is not a string or is not an existing directory. This means that you could set it to `false` to disable this option.
 
 ### Testing
 
