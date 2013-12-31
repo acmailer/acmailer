@@ -8,7 +8,7 @@ use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\File;
 
 /**
- * 
+ * Mail options test case
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */

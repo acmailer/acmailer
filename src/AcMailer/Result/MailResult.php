@@ -10,6 +10,8 @@ namespace AcMailer\Result;
 class MailResult implements ResultInterface
 {
     
+    const DEFAULT_MESSAGE = "Success!!";
+    
     /**
      * @var boolean
      */
@@ -19,7 +21,7 @@ class MailResult implements ResultInterface
      */
     private $message;
     
-    public function __construct($result = true, $message = "Success!!") {
+    public function __construct($result = true, $message = self::DEFAULT_MESSAGE) {
         $this->result   = $result;
         $this->message  = $message;
     }
