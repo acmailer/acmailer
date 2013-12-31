@@ -4,7 +4,7 @@ namespace AcMailerTest\Result;
 use AcMailer\Result\MailResult;
 
 /**
- * 
+ * Mail result test case
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
