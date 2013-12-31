@@ -11,4 +11,9 @@ return array(
   'AcMailer\Service\MailService'                => __DIR__ . '/src/AcMailer/Service/MailService.php',
   'AcMailer\Service\MailServiceInterface'       => __DIR__ . '/src/AcMailer/Service/MailServiceInterface.php',
   'AcMailer\Service\MailServiceMock'            => __DIR__ . '/src/AcMailer/Service/MailServiceMock.php',
+  'AcMailerTest\Mail\Transport\MockTransport'   => __DIR__ . '/test/AcMailerTest/Mail/Transport/MockTransport.php',
+  'AcMailerTest\Options\MailOptionsTest'        => __DIR__ . '/test/AcMailerTest/Options/MailOptionsTest.php',
+  'AcMailerTest\Result\MailResultTest'          => __DIR__ . '/test/AcMailerTest/Result/MailResultTest.php',
+  'AcMailerTest\Service\MailServiceTest'        => __DIR__ . '/test/AcMailerTest/Service/MailServiceTest.php',
+  'AcMailerTest\Bootstrap'                      => __DIR__ . '/test/Bootstrap.php',
 );
