@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="zf2-acmailer">
+
+    <property name="data.dir" value="data" />
+    <property name="test.dir" value="test" />
+    <property name="phpdox.docs.dir" value="${data.dir}/phpdox/docs" />
+    <property name="phpdox.bin.dir" value="${data.dir}/phpdox/bin" />
+
+    <target name="build"
+            depends="clean, basic"
+            description="Main building target" />
+
+    <target name="basic"
+            depends="clean, test, docs"
+            description="Basic build operations" />
+
+    <target name="clean"
+            description="Cleans-up workspace before building">
+
+        <delete dir="${data.dir}" />
+        <mkdir dir="${data.dir}" />
+
+    </target>
+
+    <target name="test"
+            description="Runs PHPUnit test cases">
+
+        <exec executable="phpunit" dir="${test.dir}" osfamily="unix" failonerror="true" />
+
+    </target>
+
+    <target name="docs">
+
+        <mkdir dir="${phpdox.bin.dir}" />
+        <mkdir dir="${phpdox.docs.dir}" />
+        <exec executable="phpdox" osfamily="unix" />
+
+    </target>
+
+</project>
