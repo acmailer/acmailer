@@ -8,6 +8,7 @@ use Zend\Stdlib\ArrayUtils;
 use RuntimeException;
 
 error_reporting(E_ALL | E_STRICT);
+ini_set("date.timezone", "Europe/Madrid");
 chdir(__DIR__);
 
 class Bootstrap
