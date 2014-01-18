@@ -83,13 +83,9 @@ class MailOptions extends AbstractOptions
      */
     protected $body = '';
     /**
-     * @var array
+     * @var TemplateOptions
      */
-    protected $template = array(
-    	'use_template'  => false,
-        'path'          => 'ac-mailer/mail-templates/mail',
-        'params'        => array(),
-    );
+    protected $template;
     /**
      * @var int
      */
@@ -348,17 +344,28 @@ class MailOptions extends AbstractOptions
 	}
     
 	/**
-	 * @return array
+	 * @return TemplateOptions
 	 */
 	public function getTemplate() {
+		if (!isset($this->template))
+			$this->setTemplate(array());
+
 		return $this->template;
 	}
+
 	/**
-	 * @param array $template
-	 * @return \AcMailer\Options\MailOptions
+	 * @param array|TemplateOptions $template
+	 * @return $this
+	 * @throws \AcMailer\Exception\InvalidArgumentException
 	 */
-	public function setTemplate(array $template) {
-		$this->template = $template;
+	public function setTemplate($template) {
+		if (is_array($template))
+			$this->template = new TemplateOptions($template);
+		elseif ($template instanceof TemplateOptions)
+			$this->template = $template;
+		else
+			throw new InvalidArgumentException('Template should be an array or a TemplateOptions object.');
+
 		return $this;
 	}
 	

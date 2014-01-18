@@ -1,25 +1,27 @@
 <?php
 namespace AcMailer\Options;
 
+use Zend\Stdlib\AbstractOptions;
+
 /**
  * Template specific options
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class TemplateOptions {
+class TemplateOptions extends AbstractOptions {
 
 	/**
 	 * @var bool
 	 */
-	private $useTemplate = false;
+	protected $useTemplate = false;
 	/**
 	 * @var string
 	 */
-	private $path = 'ac-mailer/mail-templates/mail';
+	protected $path = 'ac-mailer/mail-templates/mail';
 	/**
 	 * @var array
 	 */
-	private $params = array();
+	protected $params = array();
 
 	/**
 	 * @param $params
