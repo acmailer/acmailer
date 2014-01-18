@@ -7,7 +7,7 @@ use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\SmtpOptions;
 use AcMailer\Service\MailService;
 use AcMailer\Options\MailOptions;
-use Zend\Debug\Debug;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Constructs a new MailService injecting on it a Message and Transport object constructed with mail options
@@ -22,7 +22,7 @@ class MailServiceFactory implements FactoryInterface
      */
     private $mailOptions;
     
-	public function createService(\Zend\ServiceManager\ServiceLocatorInterface $sm) {
+	public function createService(ServiceLocatorInterface $sm) {
 	    $this->mailOptions = $sm->get('AcMailer\Options\MailOptions');
 	    
 	    // Prepare Mail Message
@@ -59,8 +59,8 @@ class MailServiceFactory implements FactoryInterface
 	    
 	    // Set body, either by using a template or the body option
 	    $template = $this->mailOptions->getTemplate();
-	    if ($template['use_template'] === true)
-	        $mailService->setTemplate($template['path'], $template['params']);
+	    if ($template->getUseTemplate() === true)
+	        $mailService->setTemplate($template->getPath(), $template->getParams());
 	    else
 	        $mailService->setBody($this->mailOptions->getBody());
 	    
