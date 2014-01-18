@@ -3,6 +3,7 @@ namespace AcMailerTest\Options;
 
 use AcMailer\Options\MailOptions;
 use AcMailer\Exception\InvalidArgumentException;
+use AcMailer\Options\TemplateOptions;
 use Zend\Mail\Transport\Sendmail;
 use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\File;
@@ -88,5 +89,16 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
     public function testSslInvalidBooleanValueThrowException() {
         $this->mailOptions->setSsl(true);
     }
-    
+
+	public function testTemplateArrayIsCastToTemplateOptions() {
+		$this->mailOptions->setTemplate(array());
+		$this->assertTrue($this->mailOptions->getTemplate() instanceof TemplateOptions);
+	}
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testTemplateInvalidValueThrowsException() {
+		$this->mailOptions->setTemplate("foo");
+	}
+
 }

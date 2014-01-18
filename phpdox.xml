@@ -1,0 +1,13 @@
+<phpdox xmlns="http://phpdox.de/config">
+	<project name="ZF2-AcMailer" source="${basedir}" workdir="${basedir}/data/phpdox/bin">
+		<collector publiconly="false">
+			<include mask="*.php"/>
+			<exclude mask="*Autoload.php"/>
+			<exclude mask="${basedir}/vendor/**"/>
+		</collector>
+		
+		<generator output="${basedir}/data/phpdox">
+			<build engine="html" enabled="true" output="docs"/>
+		</generator>
+	</project>
+</phpdox>
