@@ -108,14 +108,16 @@ class MailOptions extends AbstractOptions
 	    
 		return $this->mailAdapter;
 	}
+
 	/**
-	 * @param string|Zend\Mail\Transport\Smtp|Zend\Mail\Transport\Sendmail $mailAdapter class name
-	 * @return MailOptions
+	 * @param string|\Zend\Mail\Transport\Smtp|\Zend\Mail\Transport\Sendmail $mailAdapter class name
+	 * @return $this
+	 * @throws \AcMailer\Exception\InvalidArgumentException
 	 */
 	public function setMailAdapter($mailAdapter) {
 	    if (is_string($mailAdapter)) {
 	        $mailAdapter = ucfirst($mailAdapter);
-	        if (array_key_exists($mailAdapter, $this->validAdapters)) 
+	        if (array_key_exists($mailAdapter, $this->validAdapters))
 	            $this->mailAdapter = $this->validAdapters[$mailAdapter];
 	        else 
 	            throw new InvalidArgumentException('Defined adapter as string is not a valid adapter. Value should be one of "Zend\Mail\Transport\Smtp", "Smtp", "Zend\Mail\Transport\Sendmail" or "Sendmail"');
@@ -163,8 +165,10 @@ class MailOptions extends AbstractOptions
 	public function getFromName() {
 		return $this->fromName;
 	}
+
 	/**
-	 * @param string $fromName
+	 * @param $fromName
+	 * @return $this
 	 */
 	public function setFromName($fromName) {
 		$this->fromName = $fromName;
@@ -249,9 +253,11 @@ class MailOptions extends AbstractOptions
 	public function getSsl() {
 	    return $this->ssl;
 	}
+
 	/**
 	 * @param string|boolean $ssl
-	 * @return MailOptions
+	 * @return $this
+	 * @throws \AcMailer\Exception\InvalidArgumentException
 	 */
 	public function setSsl($ssl) {
 	    if (!is_bool($ssl) && !is_string($ssl))
