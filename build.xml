@@ -25,7 +25,7 @@
     <target name="test"
             description="Runs PHPUnit test cases">
 
-        <exec executable="phpunit" dir="${test.dir}" osfamily="unix" failonerror="true" />
+        <exec executable="phpunit" dir="${test.dir}" />
 
     </target>
 
@@ -33,7 +33,7 @@
 
         <mkdir dir="${phpdox.bin.dir}" />
         <mkdir dir="${phpdox.docs.dir}" />
-        <exec executable="phpdox" osfamily="unix" />
+        <exec executable="phpdox" />
 
     </target>
 
