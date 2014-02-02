@@ -133,14 +133,14 @@ $mailServiceMock->isSendMethodCalled(); // This will return false at this point
 
 // Force an error
 $mailServiceMock->setForceError(true);
-$result = $mailService->send();
+$result = $mailServiceMock->send();
 $result->isValid(); // This will return false because we forced an error
 
 $mailServiceMock->isSendMethodCalled(); // This will return true at this point
 
 // Force a success
 $mailServiceMock->setForceError(false);
-$result = $mailService->send();
+$result = $mailServiceMock->send();
 $result->isValid(); // This will return true in this case
 
 [...]
