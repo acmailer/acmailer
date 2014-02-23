@@ -48,12 +48,12 @@ interface MailServiceInterface
      * @param string $path
      */
     public function addAttachment($path);
-    
-    /**
-     * Provides an array of paths of files that will be attached to the message while sending it, as well as other previously defined attachments
-     * @param array $path
-     */
-    public function addAttachments(array $paths);
+
+	/**
+	 * Provides an array of paths of files that will be attached to the message while sending it, as well as other previously defined attachments
+	 * @param array $paths
+	 */
+	public function addAttachments(array $paths);
     
     /**
      * Sets the list of paths of files that will be attached to the message while sending it, discarding any previously defined attachment

@@ -1,6 +1,12 @@
 <?php
 namespace AcMailer\Service;
 
+use AcMailer\Event\MailEvent;
+use AcMailer\Event\MailListener;
+use AcMailer\Event\MailListenerAwareInterface;
+use Zend\EventManager\EventManager;
+use Zend\EventManager\EventManagerAwareInterface;
+use Zend\EventManager\EventManagerInterface;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mail\Message;
 use Zend\Mime\Message as MimeMessage;
@@ -13,11 +19,11 @@ use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\RendererInterface;
 
 /**
- * 
+ * Wraps Zend\Mail functionality
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailService implements MailServiceInterface
+class MailService implements MailServiceInterface, EventManagerAwareInterface, MailListenerAwareInterface
 {
     
     /**
@@ -32,18 +38,22 @@ class MailService implements MailServiceInterface
      * @var \Zend\View\Renderer\PhpRenderer
      */
     private $renderer;
+	/**
+	 * @var EventManagerInterface
+	 */
+	private $events;
     /**
      * @var array
      */
     private $attachments = array();
-    
-    /**
-     * Creates a new MailService
-     * @param Message $message
-     * @param TransportInterface $transport
-     * @param $renderer Renderer used to render templates, typically a PhpRenderer
-     */
-    public function __construct(Message $message, TransportInterface $transport, RendererInterface $renderer) {
+
+	/**
+	 * Creates a new MailService
+	 * @param Message $message
+	 * @param TransportInterface $transport
+	 * @param RendererInterface $renderer Renderer used to render templates, typically a PhpRenderer
+	 */
+	public function __construct(Message $message, TransportInterface $transport, RendererInterface $renderer) {
         $this->message      = $message;
         $this->transport    = $transport;
         $this->renderer     = $renderer;
@@ -94,17 +104,34 @@ class MailService implements MailServiceInterface
         
         // Send the email
         try {
+			// Trigger pre send event
+			$event = new MailEvent($this);
+			$this->getEventManager()->trigger($event);
+
             $this->transport->send($this->message);
+
+			// Trigger post send event
+			$event = new MailEvent($this, MailEvent::EVENT_MAIL_POST_SEND);
+			$this->getEventManager()->trigger($event);
+
             return new MailResult();
         } catch (RuntimeException $e) {
+			// Trigger send error event
+			$event = new MailEvent($this, MailEvent::EVENT_MAIL_SEND_ERROR);
+			$this->getEventManager()->trigger($event);
+
             return new MailResult(false, $e->getMessage());
-        }
+        } catch (\Exception $e) {
+			// Trigger send error event
+			$event = new MailEvent($this, MailEvent::EVENT_MAIL_SEND_ERROR);
+			$this->getEventManager()->trigger($event);
+		}
     }
     
     /**
      * Sets the message body
      * @param \Zend\Mime\Part|\Zend\Mime\Message|string $body Email body
-     * @return Returns this MailService for chaining purposes
+     * @return $this Returns this MailService for chaining purposes
      * @see \AcMailer\Service\MailServiceInterface::setBody()
      */
     public function setBody($body) {
@@ -147,8 +174,8 @@ class MailService implements MailServiceInterface
     
     /**
      * Sets the message subject
-     * @param $subject The subject of the message
-     * @return Returns this MailService for chaining purposes
+     * @param string $subject The subject of the message
+     * @return $this Returns this MailService for chaining purposes
      * @see \AcMailer\Service\MailServiceInterface::setSubject()
      */
     public function setSubject($subject) {
@@ -156,34 +183,74 @@ class MailService implements MailServiceInterface
         return $this;
     }
     
-	/** 
-	 * 
-     * @return Returns this MailService for chaining purposes
-	 * @see \AcMailer\Service\MailServiceInterface::addAttachment()
+	/**
+	 * @param string $path
+	 * @return $this
 	 */
 	public function addAttachment($path) {
 		$this->attachments[] = $path;
 		return $this;
 	}
 
-	/** 
-	 * 
-     * @return Returns this MailService for chaining purposes
-	 * @see \AcMailer\Service\MailServiceInterface::addAttachments()
+	/**
+	 * @param array $paths
+	 * @return $this
 	 */
 	public function addAttachments(array $paths) {
 		$this->attachments = array_merge($this->attachments, $paths);
 		return $this;
 	}
 
-	/** 
-	 * 
-     * @return Returns this MailService for chaining purposes
-	 * @see \AcMailer\Service\MailServiceInterface::setAttachments()
+	/**
+	 * @param array $paths
+	 * @return $this
 	 */
 	public function setAttachments(array $paths) {
 		$this->attachments = $paths;
 		return $this;
 	}
-	
+
+	/**
+	 * Inject an EventManager instance
+	 * @param EventManagerInterface $events
+	 * @return $this|void
+	 */
+	public function setEventManager(EventManagerInterface $events) {
+		$events->setIdentifiers(array(
+			__CLASS__,
+			get_called_class(),
+		));
+		$this->events = $events;
+		return $this;
+	}
+	/**
+	 * Retrieve the event manager
+	 * Lazy-loads an EventManager instance if none registered.
+	 * @return EventManagerInterface
+	 */
+	public function getEventManager() {
+		if (!isset($this->events))
+			$this->setEventManager(new EventManager());
+
+		return $this->events;
+	}
+
+	/**
+	 * Attaches a new MailListener
+	 * @param MailListener $mailListener
+	 * @param int $priority
+	 * @return mixed|void
+	 */
+	public function attachMailListener(MailListener $mailListener, $priority = 1) {
+		$this->getEventManager()->attach(MailEvent::EVENT_MAIL_PRE_SEND, function(MailEvent $e) use ($mailListener) {
+			$mailListener->onPreSend($e);
+		}, $priority);
+		$this->getEventManager()->attach(MailEvent::EVENT_MAIL_POST_SEND, function(MailEvent $e) use ($mailListener) {
+			$mailListener->onPostSend($e);
+		}, $priority);
+		$this->getEventManager()->attach(MailEvent::EVENT_MAIL_SEND_ERROR, function(MailEvent $e) use ($mailListener) {
+			$mailListener->onSendError($e);
+		}, $priority);
+	}
+
 }
