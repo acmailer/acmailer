@@ -119,6 +119,22 @@ The mail service can be automatically configured by using provided global config
 	- *params*: Array with key-value pairs with parameters to be sent to the template.
 - **attachments_dir**: Path to a directory that will be recursively iterated. All found files will be attached to the email automatically. Will be ignored if it is not a string or is not an existing directory. This means that you could set it to `false` to disable this option.
 
+### Event management
+
+This module comes with a built-in event system.
+An event is triggered before the mail is sent (`MailEvent::EVENT_MAIL_PRE_SEND`). If everything was OK another event is triggered (`MailEvent::EVENT_MAIL_POST_SEND`). If an error occured, an error event is triggered (`MailEvent::EVENT_MAIL_SEND_ERROR`).
+
+Managing mail events is as easy as implementing `AcMailer\Event\MailListener`. It provides the `onPreSend`, `onPostSend` and `onSendError` methods, which get a `MailEvent` parameter that can be used to get the MailService who produced the event.
+
+Then attach the object to the `MailService` and the corresponding method will be automatically called when calling the `send` method.
+
+```php
+$mailListener = new \Application\Event\MyMailListener();
+$mailService->attachMailListener($mailListener);
+
+$mailService->send(); // Mail events will be triggered at this moment
+```
+
 ### Testing
 
 `AcMailer\Service\MailService` should be injected into Controllers or other Services which you probably need to test. It implements `AcMailer\Service\MailServiceInterface` for this purpose, but even a `MailServiceMock` is included.
