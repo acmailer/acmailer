@@ -1,6 +1,7 @@
 <?php
 namespace AcMailerTest\Service;
 
+use AcMailerTest\Event\MailListenerMock;
 use Zend\Mail\Message;
 use AcMailerTest\Mail\Transport\MockTransport;
 use Zend\View\Renderer\PhpRenderer;
@@ -80,5 +81,26 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($result->isValid());
         $this->assertEquals(MockTransport::ERROR_MESSAGE, $result->getMessage());
     }
-    
+
+	public function testSuccesfulMailEvent() {
+		$mailListener = new MailListenerMock();
+		$this->mailService->attachMailListener($mailListener);
+		$result = $this->mailService->send();
+
+		$this->assertTrue($mailListener->isOnPreSendCalled());
+		$this->assertTrue($mailListener->isOnPostSendCalled());
+		$this->assertFalse($mailListener->isOnSendErrorCalled());
+	}
+
+	public function testMailEventWithError() {
+		$mailListener = new MailListenerMock();
+		$this->transport->setForceError(true);
+		$this->mailService->attachMailListener($mailListener);
+		$result = $this->mailService->send();
+
+		$this->assertTrue($mailListener->isOnPreSendCalled());
+		$this->assertFalse($mailListener->isOnPostSendCalled());
+		$this->assertTrue($mailListener->isOnSendErrorCalled());
+	}
+
 }
