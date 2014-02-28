@@ -125,6 +125,8 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
 			// Trigger send error event
 			$event = new MailEvent($this, MailEvent::EVENT_MAIL_SEND_ERROR);
 			$this->getEventManager()->trigger($event);
+
+            throw $e;
 		}
     }
     
