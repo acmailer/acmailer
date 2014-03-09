@@ -8,6 +8,7 @@ use Zend\Mail\Transport\SmtpOptions;
 use AcMailer\Service\MailService;
 use AcMailer\Options\MailOptions;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\View\Renderer\PhpRenderer;
 
 /**
  * Constructs a new MailService injecting on it a Message and Transport object constructed with mail options
@@ -54,7 +55,8 @@ class MailServiceFactory implements FactoryInterface
 	    }
 	    
 	    // Prepare MailService
-	    $mailService = new MailService($message, $transport, $sm->get('viewrenderer'));
+        $renderer       = $sm->has('viewrenderer') ? $sm->get('viewrenderer') : new PhpRenderer();
+	    $mailService    = new MailService($message, $transport, $renderer);
 	    $mailService->setSubject($this->mailOptions->getSubject());
 	    
 	    // Set body, either by using a template or the body option
