@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="build" name="zf2-acmailer">
 
-    <property name="data.dir" value="data" />
-    <property name="test.dir" value="test" />
+    <property name="data.dir" value="${application.startdir}/data" />
+    <property name="test.dir" value="${application.startdir}/test" />
     <property name="phpdox.docs.dir" value="${data.dir}/phpdox/docs" />
     <property name="phpdox.bin.dir" value="${data.dir}/phpdox/bin" />
+    <property name="phpunit.dir" value="${data.dir}/phpunit" />
 
     <target name="build"
-            depends="clean, basic"
+            depends="basic"
             description="Main building target" />
 
     <target name="basic"
-            depends="clean, test, docs"
+            depends="clean, install-dependencies, test, docs"
             description="Basic build operations" />
 
     <target name="clean"
@@ -22,10 +23,28 @@
 
     </target>
 
+    <target name="install-dependencies"
+            description="Installs dependencies by using composer">
+        <exec executable="composer" logoutput="true">
+            <arg value="update" />
+            <arg value="--no-dev" />
+        </exec>
+    </target>
+
     <target name="test"
             description="Runs PHPUnit test cases">
 
-        <exec executable="phpunit" dir="${test.dir}" />
+        <mkdir dir="${phpunit.dir}" />
+        <exec executable="phpunit" logoutput="true">
+            <arg value="-c"/>
+            <arg value="${test.dir}/phpunit.xml"/>
+            <arg value="--coverage-clover"/>
+            <arg value="${phpunit.dir}/clover.xml"/>
+            <arg value="--coverage-html"/>
+            <arg value="${phpunit.dir}/coverage"/>
+            <arg value="--log-junit"/>
+            <arg value="${phpunit.dir}/junit.xml"/>
+        </exec>
 
     </target>
 
@@ -33,7 +52,7 @@
 
         <mkdir dir="${phpdox.bin.dir}" />
         <mkdir dir="${phpdox.docs.dir}" />
-        <exec executable="phpdox" />
+        <exec executable="phpdox" logoutput="true" />
 
     </target>
 
