@@ -1,5 +1,9 @@
 ## AcMailer
 
+Master: [![Build Status](https://travis-ci.org/acelaya/ZF2-AcMailer.svg?branch=master)](https://travis-ci.org/acelaya/ZF2-AcMailer)
+
+Develop: [![Build Status](https://travis-ci.org/acelaya/ZF2-AcMailer.svg?branch=develop)](https://travis-ci.org/acelaya/ZF2-AcMailer)
+
 This module, once enabled, registers a service with the key `AcMailer\Service\MailService` that wraps ZF2 mailing functionality, allowing to configure mail information to be used to send emails.
 It supports file attachment and template email composition.
 
