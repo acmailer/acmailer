@@ -12,7 +12,7 @@
             description="Main building target" />
 
     <target name="basic"
-            depends="clean, install-dependencies, test, docs"
+            depends="clean, install-dependencies, generate-autoload, test, docs"
             description="Basic build operations" />
 
     <target name="clean"
@@ -25,10 +25,24 @@
 
     <target name="install-dependencies"
             description="Installs dependencies by using composer">
+
         <exec executable="composer" logoutput="true">
             <arg value="update" />
             <arg value="--no-dev" />
         </exec>
+
+    </target>
+
+    <target name="generate-autoload"
+            description="Regenerates autoload_classmapt.php script">
+
+        <exec executable="php" logoutput="true">
+            <arg value="${application.startdir}/vendor/bin/classmap_generator.php" />
+            <arg value="${application.startdir}" />
+            <arg value="-i" />
+            <arg value="Zend,Composer,AcMailerTest" />
+        </exec>
+
     </target>
 
     <target name="test"
