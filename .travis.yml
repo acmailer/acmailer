@@ -1,0 +1,16 @@
+language: php
+
+branches:
+  only:
+    - master
+    - develop
+
+php:
+  - 5.3
+  - 5.4
+  - 5.5
+
+before_script:
+  - wget http://www.phing.info/get/phing-latest.phar
+
+script: php phing-latest.phar
