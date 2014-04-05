@@ -17,10 +17,4 @@ return array(
   'AcMailer\Result\MailResult'                  => __DIR__ . '/src/AcMailer/Result/MailResult.php',
   'AcMailer\Result\ResultInterface'             => __DIR__ . '/src/AcMailer/Result/ResultInterface.php',
   'AcMailer\Module'                             => __DIR__ . '/Module.php',
-  'AcMailerTest\Bootstrap'                      => __DIR__ . '/test/Bootstrap.php',
-  'AcMailerTest\Service\MailServiceTest'        => __DIR__ . '/test/AcMailerTest/Service/MailServiceTest.php',
-  'AcMailerTest\Event\MailListenerMock'         => __DIR__ . '/test/AcMailerTest/Event/MailListenerMock.php',
-  'AcMailerTest\Mail\Transport\MockTransport'   => __DIR__ . '/test/AcMailerTest/Mail/Transport/MockTransport.php',
-  'AcMailerTest\Options\MailOptionsTest'        => __DIR__ . '/test/AcMailerTest/Options/MailOptionsTest.php',
-  'AcMailerTest\Result\MailResultTest'          => __DIR__ . '/test/AcMailerTest/Result/MailResultTest.php',
 );
