@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="build" name="zf2-acmailer">
 
-    <property name="data.dir" value="${application.startdir}/data" />
+    <property name="build.out.dir" value="${application.startdir}/data/build" />
     <property name="test.dir" value="${application.startdir}/test" />
-    <property name="phpdox.docs.dir" value="${data.dir}/phpdox/docs" />
-    <property name="phpdox.bin.dir" value="${data.dir}/phpdox/bin" />
-    <property name="phpunit.dir" value="${data.dir}/phpunit" />
+    <property name="phpdox.docs.dir" value="${build.out.dir}/phpdox/docs" />
+    <property name="phpdox.bin.dir" value="${build.out.dir}/phpdox/bin" />
+    <property name="phpunit.dir" value="${build.out.dir}/phpunit" />
 
     <target name="build"
-            depends="basic"
+            depends="basic, docs"
             description="Main building target" />
 
     <target name="basic"
-            depends="clean, install-dependencies, generate-autoload, test, docs"
+            depends="clean, install-dependencies, generate-autoload, test, metrics"
             description="Basic build operations" />
 
     <target name="clean"
             description="Cleans-up workspace before building">
 
-        <delete dir="${data.dir}" />
-        <mkdir dir="${data.dir}" />
+        <delete dir="${build.out.dir}" />
+        <mkdir dir="${build.out.dir}" />
 
     </target>
 
@@ -67,6 +67,13 @@
         <mkdir dir="${phpdox.bin.dir}" />
         <mkdir dir="${phpdox.docs.dir}" />
         <exec executable="phpdox" logoutput="true" />
+
+    </target>
+
+    <target name="metrics"
+            description="Executes metrics tools">
+
+
 
     </target>
 
