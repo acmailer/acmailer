@@ -19,7 +19,7 @@
             description="Main building target" />
 
     <target name="basic"
-            depends="clean, install-dependencies, generate-autoload, test, metrics"
+            depends="clean, install-dependencies, generate-autoload, install-dev-dependencies, test, metrics"
             description="Basic build operations" />
 
     <target name="clean"
@@ -42,6 +42,16 @@
 
         <exec executable="composer" logoutput="true" checkreturn="true">
             <arg value="update" />
+            <arg value="--no-dev" />
+        </exec>
+
+    </target>
+    <target name="install-dev-dependencies"
+            description="Installs dependencies by using composer">
+
+        <!-- Development dependencies are executed after autoload classmap generation, to avoid third party classes to be included on it -->
+        <exec executable="composer" logoutput="true" checkreturn="true">
+            <arg value="update" />
         </exec>
 
     </target>
@@ -50,7 +60,7 @@
             description="Regenerates autoload_classmapt.php script">
 
         <exec executable="php" logoutput="true" checkreturn="true">
-            <arg value="${application.startdir}/vendor/bin/classmap_generator.php" />
+            <arg value="${vendor.dir}/bin/classmap_generator.php" />
             <arg value="${application.startdir}" />
             <arg value="-i" />
             <arg value="Zend,Composer,AcMailerTest" />
