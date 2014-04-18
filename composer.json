@@ -29,7 +29,8 @@
         "phploc/phploc": "*",
         "pdepend/pdepend" : "1.1.0",
         "phpmd/phpmd" : "1.4.*",
-        "sebastian/phpcpd": "*"
+        "sebastian/phpcpd": "*",
+        "theseer/phpdox": "0.6.5"
     },
 	"autoload" : {
 		"psr-0" : {

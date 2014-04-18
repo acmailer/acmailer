@@ -75,18 +75,18 @@
             <arg value="-c"/>
             <arg value="${test.dir}/phpunit.xml"/>
             <arg value="--coverage-clover"/>
-            <arg value="${phpunit.out.dir}/clover.xml"/>
+            <arg value="${application.startdir}/${phpunit.out.dir}/clover.xml"/>
             <arg value="--coverage-html"/>
-            <arg value="${phpunit.out.dir}/coverage"/>
+            <arg value="${application.startdir}/${phpunit.out.dir}/coverage"/>
             <arg value="--log-junit"/>
-            <arg value="${phpunit.out.dir}/junit.xml"/>
+            <arg value="${application.startdir}/${phpunit.out.dir}/junit.xml"/>
         </exec>
 
     </target>
 
     <target name="docs">
 
-        <exec executable="phpdox" logoutput="true" />
+        <exec executable="${vendor.dir}/bin/phpdox" logoutput="true" />
 
     </target>
 
@@ -106,11 +106,11 @@
               logoutput="true" />
 
         <echo msg="Executing PHP Mess Detector..." />
-        <exec command="${vendor.dir}/bin/phpmd ${src.dir} text codesize,controversial,design,naming,unusedcode --reportfile ${phpmd.out.dir}/phpmd.txt"
+        <exec command="${vendor.dir}/bin/phpmd ${src.dir} xml codesize,controversial,design,naming,unusedcode --reportfile ${phpmd.out.dir}/phpmd.xml"
               logoutput="true" />
 
         <echo msg="Executing PHP Loc..." />
-        <exec command="${vendor.dir}/bin/phploc --progress --log-xml=${phploc.out.dir}/phploc.xml ${src.dir}"
+        <exec command="${vendor.dir}/bin/phploc --progress --log-xml=${phploc.out.dir}/phploc.xml --log-csv=${phploc.out.dir}/phploc.csv ${src.dir}"
               logoutput="true" />
 
     </target>
