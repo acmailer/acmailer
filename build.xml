@@ -110,7 +110,7 @@
               logoutput="true" />
 
         <echo msg="Executing PHP Loc..." />
-        <exec command="${vendor.dir}/bin/phploc --progress --log-xml=${phploc.out.dir}/phploc.xml ${src.dir}"
+        <exec command="${vendor.dir}/bin/phploc --progress --log-xml=${phploc.out.dir}/phploc.xml --log-csv=${phploc.out.dir}/phploc.csv ${src.dir}"
               logoutput="true" />
 
     </target>
