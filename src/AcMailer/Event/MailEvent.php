@@ -9,7 +9,8 @@ use Zend\EventManager\Event;
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailEvent extends Event {
+class MailEvent extends Event
+{
 
 	const EVENT_MAIL_PRE_SEND 	= 'event.mail.pre.send';
 	const EVENT_MAIL_POST_SEND 	= 'event.mail.post.send';
@@ -20,7 +21,8 @@ class MailEvent extends Event {
 	 */
 	protected $mailService;
 
-	public function __construct(MailServiceInterface $mailService, $name = self::EVENT_MAIL_PRE_SEND) {
+	public function __construct(MailServiceInterface $mailService, $name = self::EVENT_MAIL_PRE_SEND)
+    {
 		parent::__construct($name);
 		$this->mailService = $mailService;
 	}
@@ -29,14 +31,16 @@ class MailEvent extends Event {
 	 * @param $mailService
 	 * @return $this
 	 */
-	public function setMailService($mailService) {
+	public function setMailService($mailService)
+    {
 		$this->mailService = $mailService;
 		return $this;
 	}
 	/**
 	 * @return \AcMailer\Service\MailServiceInterface
 	 */
-	public function getMailService() {
+	public function getMailService()
+    {
 		return $this->mailService;
 	}
 

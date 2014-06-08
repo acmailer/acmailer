@@ -102,7 +102,7 @@
               logoutput="true" />
 
         <echo msg="Executing PHP Code Sniffer..." />
-        <exec command="${vendor.dir}/bin/phpcs --standard=Zend -p -s --report-full=${phpcs.out.dir}/codesniffer-full.txt --report-summary=${phpcs.out.dir}/codesniffer-summary.txt --report-xml=${phpcs.out.dir}/codesniffer.xml --report-checkstyle=${phpcs.out.dir}/codesniffer-checkstyle.xml --report-gitblame=${phpcs.out.dir}/codesniffer-gitblame.txt ${src.dir}"
+        <exec command="${vendor.dir}/bin/phpcs --standard=PSR2 -p -s --report-full=${phpcs.out.dir}/codesniffer-full.txt --report-summary=${phpcs.out.dir}/codesniffer-summary.txt --report-xml=${phpcs.out.dir}/codesniffer.xml --report-checkstyle=${phpcs.out.dir}/codesniffer-checkstyle.xml --report-gitblame=${phpcs.out.dir}/codesniffer-gitblame.txt ${src.dir}"
               logoutput="true" />
 
         <echo msg="Executing PHP Mess Detector..." />

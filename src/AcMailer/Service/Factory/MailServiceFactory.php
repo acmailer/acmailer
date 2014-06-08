@@ -18,7 +18,8 @@ use Zend\View\Renderer\PhpRenderer;
 class MailServiceFactory implements FactoryInterface
 {
 	    
-	public function createService(ServiceLocatorInterface $sm) {
+	public function createService(ServiceLocatorInterface $sm)
+    {
         /* @var MailOptions $mailOptions */
         $mailOptions = $sm->get('AcMailer\Options\MailOptions');
 	    
@@ -38,8 +39,9 @@ class MailServiceFactory implements FactoryInterface
 	        );
 	        
 	        // Check if SSL should be used
-	        if ($mailOptions->getSsl() !== false)
+	        if ($mailOptions->getSsl() !== false) {
 	            $connConfig['ssl'] = $mailOptions->getSsl();
+            }
 	        
 	        // Set SMTP transport options
 	    	$transport->setOptions(new SmtpOptions(array(
@@ -57,10 +59,11 @@ class MailServiceFactory implements FactoryInterface
 	    
 	    // Set body, either by using a template or the body option
 	    $template = $mailOptions->getTemplate();
-	    if ($template->getUseTemplate() === true)
+	    if ($template->getUseTemplate() === true) {
 	        $mailService->setTemplate($template->getPath(), $template->getParams());
-	    else
+        } else {
 	        $mailService->setBody($mailOptions->getBody());
+        }
 	    
 	    // Attach files
 	    $dir = $mailOptions->getAttachmentsDir();

@@ -20,23 +20,27 @@ class MockTransport implements TransportInterface
      */
     private $forceError = false;
     
-    public function send(Message $message) {
-        if ($this->forceError)
+    public function send(Message $message)
+    {
+        if ($this->forceError) {
             throw new RuntimeException(self::ERROR_MESSAGE, -1);
+        }
     }
     
     /**
      * If force error is set to true, the method send will throw a RuntimeException when is called
      * @param boolean $forceError
      */
-    public function setForceError($forceError) {
+    public function setForceError($forceError)
+    {
         $this->forceError = $forceError;
     }
     /**
      * Tells if a RuntimeException will be thrown when the method send is called
      * @return boolean
      */
-    public function isForceError() {
+    public function isForceError()
+    {
         return $this->forceError;
     }
     
