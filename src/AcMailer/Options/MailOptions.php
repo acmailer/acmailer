@@ -33,6 +33,12 @@ class MailOptions extends AbstractOptions
     	'ssl',
     	'tls',
     );
+    private $validConnectionClasses = array(
+        'smtp',
+        'plain',
+        'login',
+        'crammd5',
+    );
     
     /**
      * @var string
@@ -74,6 +80,10 @@ class MailOptions extends AbstractOptions
      * @var string|bool
      */
     protected $ssl = false;
+    /**
+     * @var string
+     */
+    protected $connectionClass = 'login';
     /**
      * @var string
      */
@@ -244,7 +254,7 @@ class MailOptions extends AbstractOptions
 	}
     
 	/**
-	 * @return Ambigous <string, boolean>
+	 * @return string|boolean
 	 */
 	public function getSsl() {
 	    return $this->ssl;
@@ -352,7 +362,6 @@ class MailOptions extends AbstractOptions
 
 		return $this->template;
 	}
-
 	/**
 	 * @param array|TemplateOptions $template
 	 * @return $this
@@ -364,9 +373,35 @@ class MailOptions extends AbstractOptions
 		elseif ($template instanceof TemplateOptions)
 			$this->template = $template;
 		else
-			throw new InvalidArgumentException('Template should be an array or a TemplateOptions object.');
+			throw new InvalidArgumentException('Template should be an array or an AcMailer\Options\TemplateOptions object.');
 
 		return $this;
 	}
+
+    /**
+     * @param $connectionClass
+     * @return $this
+     * @throws \AcMailer\Exception\InvalidArgumentException
+     */
+    public function setConnectionClass($connectionClass)
+    {
+        if (!in_array($connectionClass, $this->validConnectionClasses)) {
+            throw new InvalidArgumentException(sprintf(
+                "Connection class should be one of '%s'. %s provided",
+                implode("', '", $this->validConnectionClasses),
+                $connectionClass
+            ));
+        }
+
+        $this->connectionClass = $connectionClass;
+        return $this;
+    }
+    /**
+     * @return string
+     */
+    public function getConnectionClass()
+    {
+        return $this->connectionClass;
+    }
 	
 }
