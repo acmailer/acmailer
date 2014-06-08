@@ -6,10 +6,12 @@ namespace AcMailer\Service;
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-interface MailServiceAwareInterface {
+interface MailServiceAwareInterface
+{
 
 	/**
 	 * @param MailServiceInterface $mailService
+     * @return $this
 	 */
 	public function setMailService(MailServiceInterface $mailService);
 

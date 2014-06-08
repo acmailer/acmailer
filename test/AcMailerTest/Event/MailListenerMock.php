@@ -4,7 +4,8 @@ namespace AcMailerTest\Event;
 use AcMailer\Event\MailEvent;
 use AcMailer\Event\MailListener;
 
-class MailListenerMock implements MailListener {
+class MailListenerMock implements MailListener
+{
 
 	private $onPreSendCalled 	= false;
 	private $onPostSendCalled 	= false;

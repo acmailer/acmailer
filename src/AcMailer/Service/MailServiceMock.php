@@ -21,36 +21,42 @@ class MailServiceMock implements MailServiceInterface
 	 * (non-PHPdoc)
 	 * @see \AcMailer\Service\MailServiceInterface::send()
 	 */
-	public function send() {
+	public function send()
+    {
 	    $this->sendMethodCalled = true;
-	    if ($this->forceError)
+	    if ($this->forceError) {
             return new MailResult(false, "Error!!");
-	    else
+        } else {
 	        return new MailResult();
+        }
 	}
     
 	/* (non-PHPdoc)
 	 * @see \AcMailer\Service\MailServiceInterface::setBody()
 	 */
-	public function setBody($body) {
+	public function setBody($body)
+    {
 		// Do nothing
 	}
 	/* (non-PHPdoc)
 	 * @see \AcMailer\Service\MailServiceInterface::setTemplate()
 	 */
-	public function setTemplate($template, array $params = array()) {
+	public function setTemplate($template, array $params = array())
+    {
 		// Do nothing
 	}
 	/* (non-PHPdoc)
 	 * @see \AcMailer\Service\MailServiceInterface::setSubject()
 	 */
-	public function setSubject($subject) {
+	public function setSubject($subject)
+    {
 		// Do nothing
 	}
 	/* (non-PHPdoc)
 	 * @see \AcMailer\Service\MailServiceInterface::getMessage()
 	 */
-	public function getMessage() {
+	public function getMessage()
+    {
 	    return new Message();
 	}
 	
@@ -59,7 +65,8 @@ class MailServiceMock implements MailServiceInterface
 	 * @see \AcMailer\Service\MailServiceMock::send()
 	 * @return boolean True if send() was called, false otherwise
 	 */
-	public function isSendMethodCalled() {
+	public function isSendMethodCalled()
+    {
 	    return $this->sendMethodCalled;
 	}
 	
@@ -68,26 +75,30 @@ class MailServiceMock implements MailServiceInterface
 	 * @see \AcMailer\Service\MailServiceMock::send()
 	 * @param boolean $forceError True if an error should occur. False otherwise
 	 */
-	public function setForceError($forceError) {
+	public function setForceError($forceError)
+    {
 	    $this->forceError = (bool) $forceError;
 	}
 	
 	/* (non-PHPdoc)
 	 * @see \AcMailer\Service\MailServiceInterface::addAttachment()
 	 */
-	public function addAttachment($path) {
+	public function addAttachment($path)
+    {
 		// Do nothing
 	}
 	/* (non-PHPdoc)
 	 * @see \AcMailer\Service\MailServiceInterface::addAttachments()
 	 */
-	public function addAttachments(array $paths) {
+	public function addAttachments(array $paths)
+    {
 		// Do nothing
 	}
 	/* (non-PHPdoc)
 	 * @see \AcMailer\Service\MailServiceInterface::setAttachments()
 	 */
-	public function setAttachments(array $paths) {
+	public function setAttachments(array $paths)
+    {
 		// Do nothing
 	}
 	

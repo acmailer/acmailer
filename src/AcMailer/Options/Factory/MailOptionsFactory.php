@@ -10,7 +10,8 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailOptionsFactory implements FactoryInterface {
+class MailOptionsFactory implements FactoryInterface
+{
 
 	/**
 	 * Create service

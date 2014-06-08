@@ -15,14 +15,42 @@ use Zend\Mail\Transport\File;
  */
 class MailOptionsTest extends \PHPUnit_Framework_TestCase
 {
-    
+
+    /**
+     * @var MailOptions
+     */
     private $mailOptions;
     
-    public function setUp() {
+    public function setUp()
+    {
         $this->mailOptions = new MailOptions(array());
     }
-    
-    public function testMailAdapterNameConversion() {
+
+    public function testDefaultMailOptionsValues()
+    {
+        $this->assertInstanceOf('\Zend\Mail\Transport\Sendmail', $this->mailOptions->getMailAdapter());
+        $this->assertEquals('localhost', $this->mailOptions->getServer());
+        $this->assertEquals('', $this->mailOptions->getFrom());
+        $this->assertEquals('', $this->mailOptions->getFromName());
+        $this->assertEquals(array(), $this->mailOptions->getTo());
+        $this->assertCount(0, $this->mailOptions->getTo());
+        $this->assertEquals(array(), $this->mailOptions->getCc());
+        $this->assertCount(0, $this->mailOptions->getCc());
+        $this->assertEquals(array(), $this->mailOptions->getBcc());
+        $this->assertCount(0, $this->mailOptions->getBcc());
+        $this->assertEquals('', $this->mailOptions->getSmtpUser());
+        $this->assertEquals('', $this->mailOptions->getSmtpPassword());
+        $this->assertFalse($this->mailOptions->getSsl());
+        $this->assertEquals('login', $this->mailOptions->getConnectionClass());
+        $this->assertEquals('', $this->mailOptions->getSubject());
+        $this->assertEquals('', $this->mailOptions->getBody());
+        $this->assertEquals(25, $this->mailOptions->getPort());
+        $this->assertEquals('data/mail/attachments', $this->mailOptions->getAttachmentsDir());
+        $this->assertInstanceOf('AcMailer\Options\TemplateOptions', $this->mailOptions->getTemplate());
+    }
+
+    public function testMailAdapterNameConversion()
+    {
         $this->mailOptions->setMailAdapter("Sendmail");
         $this->assertTrue($this->mailOptions->getMailAdapter() instanceof Sendmail);
         
@@ -33,17 +61,20 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testMailAdapterInvalidNameThrowAnException() {
+    public function testMailAdapterInvalidNameThrowAnException()
+    {
         $this->mailOptions->setMailAdapter("foo"); // Foo is not a valid adapter name
     }
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testMailAdapterInvalidInstanceThrowAnException() {
+    public function testMailAdapterInvalidInstanceThrowAnException()
+    {
         $this->mailOptions->setMailAdapter(new File()); // File transport is not a valid mail adapter
     }
     
-    public function testOneDestinationAddressIsCastToArray() {
+    public function testOneDestinationAddressIsCastToArray()
+    {
         $this->mailOptions->setTo("one-address");
         $this->assertTrue(is_array($this->mailOptions->getTo()));
         
@@ -54,7 +85,8 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_array($this->mailOptions->getBcc()));
     }
     
-    public function testSettersReturnItself() {
+    public function testSettersReturnItself()
+    {
         $this->assertEquals($this->mailOptions, $this->mailOptions->setServer("foo-server"));
         
         $this->assertEquals($this->mailOptions, $this->mailOptions->setPort(25));
@@ -62,7 +94,8 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->mailOptions, $this->mailOptions->setFromName("foo-name"));
     }
     
-    public function testGetSmtpServer() {
+    public function testGetSmtpServer()
+    {
         $expected = "foo@bar.com";
         $this->mailOptions->setFrom($expected);
         $this->assertEquals($expected, $this->mailOptions->getSmtpUser());
@@ -74,31 +107,44 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testSslInvalidValuesThrowException() {
+    public function testSslInvalidValuesThrowException()
+    {
         $this->mailOptions->setSsl("foo");
     }
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testSslIntValueThrowException() {
+    public function testSslIntValueThrowException()
+    {
         $this->mailOptions->setSsl(25);
     }
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testSslInvalidBooleanValueThrowException() {
+    public function testSslInvalidBooleanValueThrowException()
+    {
         $this->mailOptions->setSsl(true);
     }
 
-	public function testTemplateArrayIsCastToTemplateOptions() {
+	public function testTemplateArrayIsCastToTemplateOptions()
+    {
 		$this->mailOptions->setTemplate(array());
 		$this->assertTrue($this->mailOptions->getTemplate() instanceof TemplateOptions);
 	}
 	/**
 	 * @expectedException InvalidArgumentException
 	 */
-	public function testTemplateInvalidValueThrowsException() {
+	public function testTemplateInvalidValueThrowsException()
+    {
 		$this->mailOptions->setTemplate("foo");
 	}
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testMailConnectionInvalidValueThrowsAnException()
+    {
+        $this->mailOptions->setConnectionClass("Foo");
+    }
 
 }
