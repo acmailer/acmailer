@@ -11,6 +11,7 @@ interface MailServiceAwareInterface
 
 	/**
 	 * @param MailServiceInterface $mailService
+     * @return $this
 	 */
 	public function setMailService(MailServiceInterface $mailService);
 
