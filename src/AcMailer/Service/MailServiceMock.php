@@ -24,10 +24,11 @@ class MailServiceMock implements MailServiceInterface
 	public function send()
     {
 	    $this->sendMethodCalled = true;
-	    if ($this->forceError)
+	    if ($this->forceError) {
             return new MailResult(false, "Error!!");
-	    else
+        } else {
 	        return new MailResult();
+        }
 	}
     
 	/* (non-PHPdoc)

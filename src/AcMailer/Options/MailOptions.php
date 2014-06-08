@@ -110,8 +110,9 @@ class MailOptions extends AbstractOptions
 	 */
 	public function getMailAdapter()
     {
-	    if (!$this->mailAdapter instanceof TransportInterface)
+	    if (!$this->mailAdapter instanceof TransportInterface) {
 	        $this->mailAdapter = new $this->mailAdapter();
+        }
 	    
 		return $this->mailAdapter;
 	}
@@ -125,14 +126,16 @@ class MailOptions extends AbstractOptions
     {
 	    if (is_string($mailAdapter)) {
 	        $mailAdapter = ucfirst($mailAdapter);
-	        if (array_key_exists($mailAdapter, $this->validAdapters))
+	        if (array_key_exists($mailAdapter, $this->validAdapters)) {
 	            $this->mailAdapter = $this->validAdapters[$mailAdapter];
-	        else 
+            } else {
 	            throw new InvalidArgumentException('Defined adapter as string is not a valid adapter. Value should be one of "Zend\Mail\Transport\Smtp", "Smtp", "Zend\Mail\Transport\Sendmail" or "Sendmail"');
-	    } elseif ($mailAdapter instanceof Sendmail || $mailAdapter instanceof Smtp)
+            }
+	    } elseif ($mailAdapter instanceof Sendmail || $mailAdapter instanceof Smtp) {
 	       $this->mailAdapter = $mailAdapter;
-	    else 
+        } else {
 	       throw new InvalidArgumentException('Defined adapter should be an instance of "Zend\Mail\Transport\Smtp" or "Zend\Mail\Transport\Sendmail"');
+        }
 	    
 		return $this;
 	}
@@ -194,10 +197,7 @@ class MailOptions extends AbstractOptions
 	 */
 	public function getTo()
     {
-	    if (is_string($this->to))
-	        $this->to = array($this->to);
-	    
-		return $this->to;
+	    return $this->to;
 	}
 	/**
 	 * @param array $to
@@ -205,7 +205,7 @@ class MailOptions extends AbstractOptions
 	 */
 	public function setTo($to)
     {
-		$this->to = $to;
+		$this->to = (array) $to;
 		return $this;
 	}
 	
@@ -214,10 +214,7 @@ class MailOptions extends AbstractOptions
 	 */
 	public function getCc()
     {
-	    if (is_string($this->cc))
-	        $this->cc = array($this->cc);
-	    
-		return $this->cc;
+	    return $this->cc;
 	}
 	/**
 	 * @param array $cc
@@ -225,7 +222,7 @@ class MailOptions extends AbstractOptions
 	 */
 	public function setCc($cc)
     {
-		$this->cc = $cc;
+		$this->cc = (array) $cc;
 		return $this;
 	}
 	
@@ -234,10 +231,7 @@ class MailOptions extends AbstractOptions
 	 */
 	public function getBcc()
     {
-	    if (is_string($this->bcc))
-	        $this->bcc = array($this->bcc);
-	    
-		return $this->bcc;
+	    return $this->bcc;
 	}
 	/**
 	 * @param array $bcc
@@ -245,7 +239,7 @@ class MailOptions extends AbstractOptions
 	 */
 	public function setBcc($bcc)
     {
-		$this->bcc = $bcc;
+		$this->bcc = (array) $bcc;
 		return $this;
 	}
 
@@ -254,8 +248,9 @@ class MailOptions extends AbstractOptions
 	 */
 	public function getSmtpUser()
     {
-	    if (!isset($this->smtpUser) || $this->smtpUser == "")
+	    if (!isset($this->smtpUser) || $this->smtpUser == "") {
 	        return $this->from;
+        }
 	    
 		return $this->smtpUser;
 	}
@@ -284,12 +279,13 @@ class MailOptions extends AbstractOptions
 	 */
 	public function setSsl($ssl)
     {
-	    if (!is_bool($ssl) && !is_string($ssl))
+	    if (!is_bool($ssl) && !is_string($ssl)) {
 	        throw new InvalidArgumentException('SSL value should be false, "ssl" or "tls".');
-	    elseif (is_bool($ssl) && $ssl !== false)
+        } elseif (is_bool($ssl) && $ssl !== false) {
 	        throw new InvalidArgumentException('Boolean true value for SSL is not supported. Only false can be used to disable SSL, otherwise "ssl" or "tls" values should be used.');
-	    elseif (is_string($ssl) && !in_array($ssl, $this->validSsl))
+        } elseif (is_string($ssl) && !in_array($ssl, $this->validSsl)) {
 	       throw new InvalidArgumentException('SSL valid values are "ssl" or "tls".');
+        }
 	    
 	    $this->ssl = $ssl;
 	    return $this;
@@ -386,8 +382,9 @@ class MailOptions extends AbstractOptions
 	 */
 	public function getTemplate()
     {
-		if (!isset($this->template))
+		if (!isset($this->template)) {
 			$this->setTemplate(array());
+        }
 
 		return $this->template;
 	}
@@ -398,12 +395,13 @@ class MailOptions extends AbstractOptions
 	 */
 	public function setTemplate($template)
     {
-		if (is_array($template))
+		if (is_array($template)) {
 			$this->template = new TemplateOptions($template);
-		elseif ($template instanceof TemplateOptions)
+        } elseif ($template instanceof TemplateOptions) {
 			$this->template = $template;
-		else
+        } else {
 			throw new InvalidArgumentException('Template should be an array or an AcMailer\Options\TemplateOptions object.');
+        }
 
 		return $this;
 	}

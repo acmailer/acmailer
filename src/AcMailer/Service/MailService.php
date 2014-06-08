@@ -90,7 +90,9 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
             $attachmentParts    = array();
             $info               = new \finfo(FILEINFO_MIME_TYPE);
             foreach ($this->attachments as $attachment) {
-                if (!is_file($attachment)) continue; // If checked file is not valid, continue to the next
+                if (!is_file($attachment)) {
+                    continue; // If checked file is not valid, continue to the next
+                }
                 
                 $part               = new MimePart(fopen($attachment, 'r'));
                 $part->filename     = basename($attachment);
@@ -142,11 +144,11 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     public function setBody($body)
     {
         // Is Mime\Message. Set it as the body
-        if ($body instanceof MimeMessage)
+        if ($body instanceof MimeMessage) {
             $this->message->setBody($body);
         
         // Is a Mime\Part. Wrap it into a Mime\Message
-        elseif ($body instanceof MimePart) {
+        } elseif ($body instanceof MimePart) {
             $mimeMessage = new MimeMessage();
             $mimeMessage->setParts(array($body));
             $this->message->setBody($mimeMessage);
@@ -161,8 +163,9 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
                 $mimeMessage->setParts(array($mimePart));
                 $this->message->setBody($mimeMessage);
             // Is a plain string. Set it as a plain text body
-            } else
+            } else {
                 $this->message->setBody($body);
+            }
         }
         return $this;
     }
@@ -242,8 +245,9 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
 	 */
 	public function getEventManager()
     {
-		if (!isset($this->events))
+		if (!isset($this->events)) {
 			$this->setEventManager(new EventManager());
+        }
 
 		return $this->events;
 	}
