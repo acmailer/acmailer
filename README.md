@@ -106,7 +106,7 @@ The mail service can be automatically configured by using provided global config
 	- `Zend\Mail\Transport\Smtp`
 	- `Smtp`
 	- `smtp`
-- **server**: IP address or server name to be used while using an SMTP server. Will be ignored while using Sendmail.
+- **server**: IP address or server name to be used while using a SMTP server. Will be ignored while using Sendmail.
 - **port**: SMTP server port while using SMTP server. Will be ignored while using Sendmail.
 - **from**: From email address.
 - **from_name**: From name to be displayed.
@@ -116,6 +116,7 @@ The mail service can be automatically configured by using provided global config
 - **smtp_user**: Username to be used for authentication against SMTP server. If none is provided the `from` option will be used for this purpose.
 - **smtp_password**: Password to be used for authentication against SMTP server.
 - **ssl**: Defines type of connection encryption against SMTP server. Values are `false` to disable SSL, and 'ssl' or 'tls'.
+- **connection_class**: The connection class used for authentication while using a SMTP. Values are 'smtp', 'plain', 'login' or 'crammd5'
 - **body**: Default body to be used. Usually this will be generated at runtime, but can be set as a string at config file. It can contain HTML too.
 - **subject**: Default email subject.
 - **template**: Array with template configuration. It has 3 child options.

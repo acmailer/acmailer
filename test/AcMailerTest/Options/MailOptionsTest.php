@@ -15,13 +15,39 @@ use Zend\Mail\Transport\File;
  */
 class MailOptionsTest extends \PHPUnit_Framework_TestCase
 {
-    
+
+    /**
+     * @var MailOptions
+     */
     private $mailOptions;
     
     public function setUp() {
         $this->mailOptions = new MailOptions(array());
     }
-    
+
+    public function testDefaultMailOptionsValues()
+    {
+        $this->assertInstanceOf('\Zend\Mail\Transport\Sendmail', $this->mailOptions->getMailAdapter());
+        $this->assertEquals('localhost', $this->mailOptions->getServer());
+        $this->assertEquals('', $this->mailOptions->getFrom());
+        $this->assertEquals('', $this->mailOptions->getFromName());
+        $this->assertEquals(array(), $this->mailOptions->getTo());
+        $this->assertCount(0, $this->mailOptions->getTo());
+        $this->assertEquals(array(), $this->mailOptions->getCc());
+        $this->assertCount(0, $this->mailOptions->getCc());
+        $this->assertEquals(array(), $this->mailOptions->getBcc());
+        $this->assertCount(0, $this->mailOptions->getBcc());
+        $this->assertEquals('', $this->mailOptions->getSmtpUser());
+        $this->assertEquals('', $this->mailOptions->getSmtpPassword());
+        $this->assertFalse($this->mailOptions->getSsl());
+        $this->assertEquals('login', $this->mailOptions->getConnectionClass());
+        $this->assertEquals('', $this->mailOptions->getSubject());
+        $this->assertEquals('', $this->mailOptions->getBody());
+        $this->assertEquals(25, $this->mailOptions->getPort());
+        $this->assertEquals('data/mail/attachments', $this->mailOptions->getAttachmentsDir());
+        $this->assertInstanceOf('AcMailer\Options\TemplateOptions', $this->mailOptions->getTemplate());
+    }
+
     public function testMailAdapterNameConversion() {
         $this->mailOptions->setMailAdapter("Sendmail");
         $this->assertTrue($this->mailOptions->getMailAdapter() instanceof Sendmail);
@@ -100,5 +126,13 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
 	public function testTemplateInvalidValueThrowsException() {
 		$this->mailOptions->setTemplate("foo");
 	}
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testMailConnectionInvalidValueThrowsAnException()
+    {
+        $this->mailOptions->setConnectionClass("Foo");
+    }
 
 }
