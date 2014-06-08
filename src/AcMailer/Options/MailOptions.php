@@ -33,6 +33,10 @@ class MailOptions extends AbstractOptions
     	'ssl',
     	'tls',
     );
+    /**
+     * Valid connection class values
+     * @var array
+     */
     private $validConnectionClasses = array(
         'smtp',
         'plain',

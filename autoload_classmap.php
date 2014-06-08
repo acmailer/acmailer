@@ -5,6 +5,7 @@ return array(
   'AcMailer\Service\MailService'                => __DIR__ . '/src/AcMailer/Service/MailService.php',
   'AcMailer\Service\MailServiceAwareInterface'  => __DIR__ . '/src/AcMailer/Service/MailServiceAwareInterface.php',
   'AcMailer\Service\MailServiceMock'            => __DIR__ . '/src/AcMailer/Service/MailServiceMock.php',
+  'AcMailer\Service\MailServiceAwareTrait'      => __DIR__ . '/src/AcMailer/Service/MailServiceAwareTrait.php',
   'AcMailer\Service\MailServiceInterface'       => __DIR__ . '/src/AcMailer/Service/MailServiceInterface.php',
   'AcMailer\Event\MailListener'                 => __DIR__ . '/src/AcMailer/Event/MailListener.php',
   'AcMailer\Event\MailListenerAwareInterface'   => __DIR__ . '/src/AcMailer/Event/MailListenerAwareInterface.php',
