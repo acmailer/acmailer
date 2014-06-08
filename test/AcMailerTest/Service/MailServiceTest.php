@@ -27,22 +27,26 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
      */
     private $mailService;
     
-    public function setUp() {
+    public function setUp()
+    {
         $this->transport    = new MockTransport();
         $this->mailService  = new MailService(new Message(), $this->transport, new PhpRenderer());
     }
     
-    public function testMimePartBodyCasting() {
+    public function testMimePartBodyCasting()
+    {
         $this->mailService->setBody(new MimePart("Foo"));
         $this->assertTrue($this->mailService->getMessage()->getBody() instanceof MimeMessage);
     }
     
-    public function testHtmlBodyCasting() {
+    public function testHtmlBodyCasting()
+    {
         $this->mailService->setBody("<div>Html body</div>");
         $this->assertTrue($this->mailService->getMessage()->getBody() instanceof MimeMessage);
     }
     
-    public function testStringBodyRemainsUnchanged() {
+    public function testStringBodyRemainsUnchanged()
+    {
         $expected = "String body";
         $this->mailService->setBody($expected);
         
@@ -50,7 +54,8 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->mailService->getMessage()->getBody());
     }
     
-    public function testMimeMessageBodyRemainsUnchanged() {
+    public function testMimeMessageBodyRemainsUnchanged()
+    {
         $part       = new MimePart("Foo");
         $message    = new MimeMessage();
         $message->addPart($part);
@@ -60,21 +65,24 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($message, $this->mailService->getMessage()->getBody());
     }
     
-    public function testSetSubject() {
+    public function testSetSubject()
+    {
         $expected = "This is the subject";
         
         $this->assertEquals($this->mailService, $this->mailService->setSubject($expected));
         $this->assertEquals($expected, $this->mailService->getMessage()->getSubject());
     }
     
-    public function testSuccessfulSending() {
+    public function testSuccessfulSending()
+    {
         $result = $this->mailService->send();
         
         $this->assertTrue($result->isValid());
         $this->assertEquals(MailResult::DEFAULT_MESSAGE, $result->getMessage());
     }
     
-    public function testSendingWithError() {
+    public function testSendingWithError()
+    {
         $this->transport->setForceError(true);
         $result = $this->mailService->send();
         
@@ -82,7 +90,8 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(MockTransport::ERROR_MESSAGE, $result->getMessage());
     }
 
-	public function testSuccesfulMailEvent() {
+	public function testSuccesfulMailEvent()
+    {
 		$mailListener = new MailListenerMock();
 		$this->mailService->attachMailListener($mailListener);
 		$result = $this->mailService->send();
@@ -92,7 +101,8 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($mailListener->isOnSendErrorCalled());
 	}
 
-	public function testMailEventWithError() {
+	public function testMailEventWithError()
+    {
 		$mailListener = new MailListenerMock();
 		$this->transport->setForceError(true);
 		$this->mailService->attachMailListener($mailListener);
