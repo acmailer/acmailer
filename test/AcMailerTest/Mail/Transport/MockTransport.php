@@ -22,8 +22,9 @@ class MockTransport implements TransportInterface
     
     public function send(Message $message)
     {
-        if ($this->forceError)
+        if ($this->forceError) {
             throw new RuntimeException(self::ERROR_MESSAGE, -1);
+        }
     }
     
     /**
