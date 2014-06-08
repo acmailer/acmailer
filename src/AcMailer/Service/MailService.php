@@ -17,6 +17,7 @@ use AcMailer\Result\MailResult;
 use Zend\Mime\Mime;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\RendererInterface;
+use AcMailer\Exception\InvalidArgumentException;
 
 /**
  * Wraps Zend\Mail functionality
@@ -139,34 +140,34 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      * Sets the message body
      * @param \Zend\Mime\Part|\Zend\Mime\Message|string $body Email body
      * @return $this Returns this MailService for chaining purposes
+     * @throws InvalidArgumentException
      * @see \AcMailer\Service\MailServiceInterface::setBody()
      */
     public function setBody($body)
     {
-        // Is Mime\Message. Set it as the body
-        if ($body instanceof MimeMessage) {
-            $this->message->setBody($body);
-        
-        // Is a Mime\Part. Wrap it into a Mime\Message
+        // The body is HTML. Create a Mime\Part and wrap it into a Mime\Message
+        if (is_string($body) && $body != strip_tags($body)) {
+            $mimePart = new MimePart($body);
+            $mimePart->charset  = "utf-8"; // TODO Allow this to be configured by options
+            $mimePart->type     = Mime::TYPE_HTML;
+            $body = new MimeMessage();
+            $body->setParts(array($mimePart));
+        // The body is a Mime\Part. Wrap it into a Mime\Message
         } elseif ($body instanceof MimePart) {
             $mimeMessage = new MimeMessage();
             $mimeMessage->setParts(array($body));
-            $this->message->setBody($mimeMessage);
-            
-        } elseif (is_string($body)) {
-            // Is HTML. Create a Mime\Part and wrap it into a Mime\Message
-            if (strlen($body) != strlen(strip_tags($body))) {
-                $mimePart = new MimePart($body);
-                $mimePart->charset  = "utf-8"; // TODO Allow this to be configured by options
-                $mimePart->type     = Mime::TYPE_HTML;
-                $mimeMessage = new MimeMessage();
-                $mimeMessage->setParts(array($mimePart));
-                $this->message->setBody($mimeMessage);
-            // Is a plain string. Set it as a plain text body
-            } else {
-                $this->message->setBody($body);
-            }
+            $body = $mimeMessage;
         }
+
+        // If the body is not a string or a MimeMessage at this point, it is not a valid argument
+        if (!is_string($body) && !($body instanceof MimeMessage)) {
+            throw new InvalidArgumentException(sprintf(
+                "Provided body is not valid. It should be a string, a Zend\\Mime\\Part or a Zend\\Mime\\Message. %s provided",
+                is_object($body) ? get_class($body) : gettype($body)
+            ));
+        }
+
+        $this->message->setBody($body);
         return $this;
     }
     

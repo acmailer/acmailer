@@ -1,6 +1,7 @@
 <?php
 namespace AcMailer\Service;
 
+use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Result\ResultInterface;
 
 /**
@@ -27,6 +28,7 @@ interface MailServiceInterface
     /**
      * Sets the message body
      * @param \Zend\Mime\Part|\Zend\Mime\Message|string $body
+     * @throws InvalidArgumentException
      */
     public function setBody($body);
     
