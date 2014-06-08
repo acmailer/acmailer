@@ -8,7 +8,8 @@ use Zend\Stdlib\AbstractOptions;
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class TemplateOptions extends AbstractOptions {
+class TemplateOptions extends AbstractOptions
+{
 
 	/**
 	 * @var bool
@@ -27,14 +28,16 @@ class TemplateOptions extends AbstractOptions {
 	 * @param $params
 	 * @return $this
 	 */
-	public function setParams($params) {
+	public function setParams($params)
+    {
 		$this->params = $params;
 		return $this;
 	}
 	/**
 	 * @return array
 	 */
-	public function getParams() {
+	public function getParams()
+    {
 		return $this->params;
 	}
 
@@ -42,14 +45,16 @@ class TemplateOptions extends AbstractOptions {
 	 * @param $path
 	 * @return $this
 	 */
-	public function setPath($path) {
+	public function setPath($path)
+    {
 		$this->path = $path;
 		return $this;
 	}
 	/**
 	 * @return string
 	 */
-	public function getPath() {
+	public function getPath()
+    {
 		return $this->path;
 	}
 
@@ -57,14 +62,16 @@ class TemplateOptions extends AbstractOptions {
 	 * @param $useTemplate
 	 * @return $this
 	 */
-	public function setUseTemplate($useTemplate) {
+	public function setUseTemplate($useTemplate)
+    {
 		$this->useTemplate = $useTemplate;
 		return $this;
 	}
 	/**
 	 * @return boolean
 	 */
-	public function getUseTemplate() {
+	public function getUseTemplate()
+    {
 		return $this->useTemplate;
 	}
 

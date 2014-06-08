@@ -18,7 +18,8 @@ use Zend\View\Renderer\PhpRenderer;
 class MailServiceFactory implements FactoryInterface
 {
 	    
-	public function createService(ServiceLocatorInterface $sm) {
+	public function createService(ServiceLocatorInterface $sm)
+    {
         /* @var MailOptions $mailOptions */
         $mailOptions = $sm->get('AcMailer\Options\MailOptions');
 	    

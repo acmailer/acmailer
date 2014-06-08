@@ -6,7 +6,8 @@ namespace AcMailer\Service;
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-interface MailServiceAwareInterface {
+interface MailServiceAwareInterface
+{
 
 	/**
 	 * @param MailServiceInterface $mailService

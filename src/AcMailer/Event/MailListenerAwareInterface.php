@@ -6,7 +6,8 @@ namespace AcMailer\Event;
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-interface MailListenerAwareInterface {
+interface MailListenerAwareInterface
+{
 
 	/**
 	 * Attaches a new MailListener

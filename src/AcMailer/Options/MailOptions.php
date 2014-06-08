@@ -108,7 +108,8 @@ class MailOptions extends AbstractOptions
 	/**
 	 * @return TransportInterface the $mailAdapter
 	 */
-	public function getMailAdapter() {
+	public function getMailAdapter()
+    {
 	    if (!$this->mailAdapter instanceof TransportInterface)
 	        $this->mailAdapter = new $this->mailAdapter();
 	    
@@ -120,7 +121,8 @@ class MailOptions extends AbstractOptions
 	 * @return $this
 	 * @throws \AcMailer\Exception\InvalidArgumentException
 	 */
-	public function setMailAdapter($mailAdapter) {
+	public function setMailAdapter($mailAdapter)
+    {
 	    if (is_string($mailAdapter)) {
 	        $mailAdapter = ucfirst($mailAdapter);
 	        if (array_key_exists($mailAdapter, $this->validAdapters))
@@ -138,14 +140,16 @@ class MailOptions extends AbstractOptions
 	/**
 	 * @return string $server
 	 */
-	public function getServer() {
+	public function getServer()
+    {
 		return $this->server;
 	}
 	/**
 	 * @param string $server
 	 * @return MailOptions
 	 */
-	public function setServer($server) {
+	public function setServer($server)
+    {
 		$this->server = $server;
 		return $this;
 	}
@@ -153,14 +157,16 @@ class MailOptions extends AbstractOptions
 	/**
 	 * @return string $from
 	 */
-	public function getFrom() {
+	public function getFrom()
+    {
 		return $this->from;
 	}
 	/**
 	 * @param string $from
 	 * @return MailOptions
 	 */
-	public function setFrom($from) {
+	public function setFrom($from)
+    {
 		$this->from = $from;
 		return $this;
 	}
@@ -168,7 +174,8 @@ class MailOptions extends AbstractOptions
 	/**
 	 * @return string $fromName
 	 */
-	public function getFromName() {
+	public function getFromName()
+    {
 		return $this->fromName;
 	}
 
@@ -176,7 +183,8 @@ class MailOptions extends AbstractOptions
 	 * @param $fromName
 	 * @return $this
 	 */
-	public function setFromName($fromName) {
+	public function setFromName($fromName)
+    {
 		$this->fromName = $fromName;
 		return $this;
 	}
@@ -184,7 +192,8 @@ class MailOptions extends AbstractOptions
 	/**
 	 * @return array $to
 	 */
-	public function getTo() {
+	public function getTo()
+    {
 	    if (is_string($this->to))
 	        $this->to = array($this->to);
 	    
@@ -194,7 +203,8 @@ class MailOptions extends AbstractOptions
 	 * @param array $to
 	 * @return MailOptions
 	 */
-	public function setTo($to) {
+	public function setTo($to)
+    {
 		$this->to = $to;
 		return $this;
 	}
@@ -202,7 +212,8 @@ class MailOptions extends AbstractOptions
 	/**
 	 * @return array $cc
 	 */
-	public function getCc() {
+	public function getCc()
+    {
 	    if (is_string($this->cc))
 	        $this->cc = array($this->cc);
 	    
@@ -212,7 +223,8 @@ class MailOptions extends AbstractOptions
 	 * @param array $cc
 	 * @return MailOptions
 	 */
-	public function setCc($cc) {
+	public function setCc($cc)
+    {
 		$this->cc = $cc;
 		return $this;
 	}
@@ -220,7 +232,8 @@ class MailOptions extends AbstractOptions
 	/**
 	 * @return array $bcc
 	 */
-	public function getBcc() {
+	public function getBcc()
+    {
 	    if (is_string($this->bcc))
 	        $this->bcc = array($this->bcc);
 	    
@@ -230,7 +243,8 @@ class MailOptions extends AbstractOptions
 	 * @param array $bcc
 	 * @return MailOptions
 	 */
-	public function setBcc($bcc) {
+	public function setBcc($bcc)
+    {
 		$this->bcc = $bcc;
 		return $this;
 	}
@@ -238,7 +252,8 @@ class MailOptions extends AbstractOptions
 	/**
 	 * @return string $smtpUser
 	 */
-	public function getSmtpUser() {
+	public function getSmtpUser()
+    {
 	    if (!isset($this->smtpUser) || $this->smtpUser == "")
 	        return $this->from;
 	    
@@ -248,7 +263,8 @@ class MailOptions extends AbstractOptions
 	 * @param string $smtpUser
 	 * @return MailOptions
 	 */
-	public function setSmtpUser($smtpUser) {
+	public function setSmtpUser($smtpUser)
+    {
 		$this->smtpUser = $smtpUser;
 		return $this;
 	}
@@ -256,7 +272,8 @@ class MailOptions extends AbstractOptions
 	/**
 	 * @return string|boolean
 	 */
-	public function getSsl() {
+	public function getSsl()
+    {
 	    return $this->ssl;
 	}
 
@@ -265,7 +282,8 @@ class MailOptions extends AbstractOptions
 	 * @return $this
 	 * @throws \AcMailer\Exception\InvalidArgumentException
 	 */
-	public function setSsl($ssl) {
+	public function setSsl($ssl)
+    {
 	    if (!is_bool($ssl) && !is_string($ssl))
 	        throw new InvalidArgumentException('SSL value should be false, "ssl" or "tls".');
 	    elseif (is_bool($ssl) && $ssl !== false)
@@ -280,29 +298,33 @@ class MailOptions extends AbstractOptions
 	/**
 	 * @return string $smtpPassword
 	 */
-	public function getSmtpPassword() {
+	public function getSmtpPassword()
+    {
 		return $this->smtpPassword;
 	}
 	/**
 	 * @param string $smtpPassword
 	 * @return MailOptions
 	 */
-	public function setSmtpPassword($smtpPassword) {
+	public function setSmtpPassword($smtpPassword)
+    {
 		$this->smtpPassword = $smtpPassword;
 		return $this;
 	}
 
 	/**
-	 * @return the $body
+	 * @return string $body
 	 */
-	public function getBody() {
+	public function getBody()
+    {
 		return $this->body;
 	}
 	/**
 	 * @param string $body
 	 * @return MailOptions
 	 */
-	public function setBody($body) {
+	public function setBody($body)
+    {
 		$this->body = $body;
 		return $this;
 	}
@@ -310,14 +332,16 @@ class MailOptions extends AbstractOptions
 	/**
 	 * @return string $subject
 	 */
-	public function getSubject() {
+	public function getSubject()
+    {
 		return $this->subject;
 	}
 	/**
 	 * @param string $subject
 	 * @return MailOptions
 	 */
-	public function setSubject($subject) {
+	public function setSubject($subject)
+    {
 		$this->subject = $subject;
 		return $this;
 	}
@@ -325,14 +349,16 @@ class MailOptions extends AbstractOptions
 	/**
 	 * @return int $port
 	 */
-	public function getPort() {
+	public function getPort()
+    {
 		return (int) $this->port;
 	}
 	/**
 	 * @param int $port
 	 * @return MailOptions
 	 */
-	public function setPort($port) {
+	public function setPort($port)
+    {
 		$this->port = (int) $port;
 		return $this;
 	}
@@ -340,7 +366,8 @@ class MailOptions extends AbstractOptions
 	/**
 	 * @return string
 	 */
-	public function getAttachmentsDir() {
+	public function getAttachmentsDir()
+    {
 		return $this->attachmentsDir;
 	}
 	/**
@@ -348,7 +375,8 @@ class MailOptions extends AbstractOptions
 	 * @param string $attachmentsDir
 	 * @return \AcMailer\Options\MailOptions
 	 */
-	public function setAttachmentsDir($attachmentsDir) {
+	public function setAttachmentsDir($attachmentsDir)
+    {
 		$this->attachmentsDir = $attachmentsDir;
 		return $this;
 	}
@@ -356,7 +384,8 @@ class MailOptions extends AbstractOptions
 	/**
 	 * @return TemplateOptions
 	 */
-	public function getTemplate() {
+	public function getTemplate()
+    {
 		if (!isset($this->template))
 			$this->setTemplate(array());
 
@@ -367,7 +396,8 @@ class MailOptions extends AbstractOptions
 	 * @return $this
 	 * @throws \AcMailer\Exception\InvalidArgumentException
 	 */
-	public function setTemplate($template) {
+	public function setTemplate($template)
+    {
 		if (is_array($template))
 			$this->template = new TemplateOptions($template);
 		elseif ($template instanceof TemplateOptions)

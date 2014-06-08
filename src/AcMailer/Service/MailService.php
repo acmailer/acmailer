@@ -53,7 +53,8 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
 	 * @param TransportInterface $transport
 	 * @param RendererInterface $renderer Renderer used to render templates, typically a PhpRenderer
 	 */
-	public function __construct(Message $message, TransportInterface $transport, RendererInterface $renderer) {
+	public function __construct(Message $message, TransportInterface $transport, RendererInterface $renderer)
+    {
         $this->message      = $message;
         $this->transport    = $transport;
         $this->renderer     = $renderer;
@@ -64,16 +65,18 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      * @return \Zend\Mail\Message
      * @see \AcMailer\Service\MailServiceInterface::getMessage()
      */
-    public function getMessage() {
+    public function getMessage()
+    {
         return $this->message;
     }
-    
+
     /**
-     * Sends the mail and
+     * Sends the mail
      * @return ResultInterface
-     * @see \AcMailer\Service\MailServiceInterface::send()
+     * @throws \Exception
      */
-    public function send() {
+    public function send()
+    {
         // Attach files before sending the email
         if (count($this->attachments) > 0) {
             $mimeMessage = $this->message->getBody();
@@ -136,7 +139,8 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      * @return $this Returns this MailService for chaining purposes
      * @see \AcMailer\Service\MailServiceInterface::setBody()
      */
-    public function setBody($body) {
+    public function setBody($body)
+    {
         // Is Mime\Message. Set it as the body
         if ($body instanceof MimeMessage)
             $this->message->setBody($body);
@@ -167,7 +171,8 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      * Sets the body of this message from a template
      * @see \AcMailer\Service\MailServiceInterface::setTemplate()
      */
-    public function setTemplate($template, array $params = array()) {
+    public function setTemplate($template, array $params = array())
+    {
         $view = new ViewModel();
         $view->setTemplate($template)
              ->setVariables($params);
@@ -180,7 +185,8 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      * @return $this Returns this MailService for chaining purposes
      * @see \AcMailer\Service\MailServiceInterface::setSubject()
      */
-    public function setSubject($subject) {
+    public function setSubject($subject)
+    {
         $this->message->setSubject($subject);
         return $this;
     }
@@ -189,7 +195,8 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
 	 * @param string $path
 	 * @return $this
 	 */
-	public function addAttachment($path) {
+	public function addAttachment($path)
+    {
 		$this->attachments[] = $path;
 		return $this;
 	}
@@ -198,7 +205,8 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
 	 * @param array $paths
 	 * @return $this
 	 */
-	public function addAttachments(array $paths) {
+	public function addAttachments(array $paths)
+    {
 		$this->attachments = array_merge($this->attachments, $paths);
 		return $this;
 	}
@@ -207,7 +215,8 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
 	 * @param array $paths
 	 * @return $this
 	 */
-	public function setAttachments(array $paths) {
+	public function setAttachments(array $paths)
+    {
 		$this->attachments = $paths;
 		return $this;
 	}
@@ -217,7 +226,8 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
 	 * @param EventManagerInterface $events
 	 * @return $this|void
 	 */
-	public function setEventManager(EventManagerInterface $events) {
+	public function setEventManager(EventManagerInterface $events)
+    {
 		$events->setIdentifiers(array(
 			__CLASS__,
 			get_called_class(),
@@ -230,7 +240,8 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
 	 * Lazy-loads an EventManager instance if none registered.
 	 * @return EventManagerInterface
 	 */
-	public function getEventManager() {
+	public function getEventManager()
+    {
 		if (!isset($this->events))
 			$this->setEventManager(new EventManager());
 
@@ -243,14 +254,15 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
 	 * @param int $priority
 	 * @return mixed|void
 	 */
-	public function attachMailListener(MailListener $mailListener, $priority = 1) {
-		$this->getEventManager()->attach(MailEvent::EVENT_MAIL_PRE_SEND, function(MailEvent $e) use ($mailListener) {
+	public function attachMailListener(MailListener $mailListener, $priority = 1)
+    {
+		$this->getEventManager()->attach(MailEvent::EVENT_MAIL_PRE_SEND, function (MailEvent $e) use ($mailListener) {
 			$mailListener->onPreSend($e);
 		}, $priority);
-		$this->getEventManager()->attach(MailEvent::EVENT_MAIL_POST_SEND, function(MailEvent $e) use ($mailListener) {
+		$this->getEventManager()->attach(MailEvent::EVENT_MAIL_POST_SEND, function (MailEvent $e) use ($mailListener) {
 			$mailListener->onPostSend($e);
 		}, $priority);
-		$this->getEventManager()->attach(MailEvent::EVENT_MAIL_SEND_ERROR, function(MailEvent $e) use ($mailListener) {
+		$this->getEventManager()->attach(MailEvent::EVENT_MAIL_SEND_ERROR, function (MailEvent $e) use ($mailListener) {
 			$mailListener->onSendError($e);
 		}, $priority);
 	}
