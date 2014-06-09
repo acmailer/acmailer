@@ -1,6 +1,8 @@
 <?php
 namespace AcMailer\Service\Factory;
 
+use AcMailer\Options\TemplateOptions;
+use AcMailer\Util\Utils;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\Smtp;
@@ -8,6 +10,7 @@ use Zend\Mail\Transport\SmtpOptions;
 use AcMailer\Service\MailService;
 use AcMailer\Options\MailOptions;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer;
 
 /**
@@ -60,7 +63,7 @@ class MailServiceFactory implements FactoryInterface
 	    // Set body, either by using a template or the body option
 	    $template = $mailOptions->getTemplate();
 	    if ($template->getUseTemplate() === true) {
-	        $mailService->setTemplate($template->getPath(), $template->getParams());
+	        $mailService->setTemplate(Utils::optionsToViewModel($template));
         } else {
 	        $mailService->setBody($mailOptions->getBody());
         }
@@ -82,5 +85,5 @@ class MailServiceFactory implements FactoryInterface
 	    
 	    return $mailService;
 	}
-    
+
 }
