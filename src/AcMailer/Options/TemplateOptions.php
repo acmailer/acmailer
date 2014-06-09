@@ -23,6 +23,10 @@ class TemplateOptions extends AbstractOptions
 	 * @var array
 	 */
 	protected $params = array();
+    /**
+     * @var array
+     */
+    protected $childs = array();
 
 	/**
 	 * @param $params
@@ -74,5 +78,32 @@ class TemplateOptions extends AbstractOptions
     {
 		return $this->useTemplate;
 	}
+
+    /**
+     * @param array $childs
+     * @return $this;
+     */
+    public function setChilds($childs)
+    {
+        $childs         = (array) $childs;
+        $this->childs   = array();
+        // Cast each child to a TemplateOptions object
+        foreach ($childs as $captureTo => $child) {
+            $this->childs[$captureTo] = new TemplateOptions($child);
+            // Recursively add childs
+            if (array_key_exists('childs', $child)) {
+                $this->childs[$captureTo]->setChilds($child['childs']);
+            }
+        }
+
+        return $this;
+    }
+    /**
+     * @return array
+     */
+    public function getChilds()
+    {
+        return $this->childs;
+    }
 
 } 
