@@ -2,13 +2,14 @@
 namespace AcMailer\Options;
 
 use Zend\Stdlib\AbstractOptions;
+use Zend\View\Model\ViewModel;
 
 /**
  * Template specific options
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class TemplateOptions extends AbstractOptions
+class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInterface
 {
 
 	/**
@@ -106,4 +107,22 @@ class TemplateOptions extends AbstractOptions
         return $this->childs;
     }
 
-} 
+    /**
+     * @return ViewModel
+     */
+    public function toViewModel()
+    {
+        // Create the base ViewModel
+        $model = new ViewModel($this->getParams());
+        $model->setTemplate($this->getPath());
+
+        // Add childs recursively
+        /* @var TemplateOptions $child */
+        foreach ($this->getChilds() as $captureTo => $child) {
+            $model->addChild($child->toViewModel(), $captureTo);
+        }
+
+        return $model;
+    }
+
+}

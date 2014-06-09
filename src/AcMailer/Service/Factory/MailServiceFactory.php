@@ -63,7 +63,7 @@ class MailServiceFactory implements FactoryInterface
 	    // Set body, either by using a template or the body option
 	    $template = $mailOptions->getTemplate();
 	    if ($template->getUseTemplate() === true) {
-	        $mailService->setTemplate(Utils::optionsToViewModel($template));
+	        $mailService->setTemplate($template->toViewModel());
         } else {
 	        $mailService->setBody($mailOptions->getBody());
         }
