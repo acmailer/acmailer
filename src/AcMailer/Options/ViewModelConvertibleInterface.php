@@ -16,4 +16,4 @@ interface ViewModelConvertibleInterface
      */
     public function toViewModel();
 
-} 
+}

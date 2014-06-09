@@ -20,18 +20,18 @@ class MailOptions extends AbstractOptions
      * @var array
      */
     private $validAdapters = array(
-    	'Zend\Mail\Transport\Sendmail' => 'Zend\Mail\Transport\Sendmail',
-    	'Sendmail'                     => 'Zend\Mail\Transport\Sendmail',
-    	'Zend\Mail\Transport\Smtp'     => 'Zend\Mail\Transport\Smtp',
-    	'Smtp'                         => 'Zend\Mail\Transport\Smtp',
+        'Zend\Mail\Transport\Sendmail' => 'Zend\Mail\Transport\Sendmail',
+        'Sendmail'                     => 'Zend\Mail\Transport\Sendmail',
+        'Zend\Mail\Transport\Smtp'     => 'Zend\Mail\Transport\Smtp',
+        'Smtp'                         => 'Zend\Mail\Transport\Smtp',
     );
     /**
      * Valid SSL values
      * @var array
      */
     private $validSsl = array(
-    	'ssl',
-    	'tls',
+        'ssl',
+        'tls',
     );
     /**
      * Valid connection class values
@@ -109,306 +109,316 @@ class MailOptions extends AbstractOptions
      */
     protected $attachmentsDir = 'data/mail/attachments';
     
-	/**
-	 * @return TransportInterface the $mailAdapter
-	 */
-	public function getMailAdapter()
+    /**
+     * @return TransportInterface the $mailAdapter
+     */
+    public function getMailAdapter()
     {
-	    if (!$this->mailAdapter instanceof TransportInterface) {
-	        $this->mailAdapter = new $this->mailAdapter();
+        if (!$this->mailAdapter instanceof TransportInterface) {
+            $this->mailAdapter = new $this->mailAdapter();
         }
-	    
-		return $this->mailAdapter;
-	}
 
-	/**
-	 * @param string|\Zend\Mail\Transport\Smtp|\Zend\Mail\Transport\Sendmail $mailAdapter class name
-	 * @return $this
-	 * @throws \AcMailer\Exception\InvalidArgumentException
-	 */
-	public function setMailAdapter($mailAdapter)
+        return $this->mailAdapter;
+    }
+
+    /**
+     * @param string|\Zend\Mail\Transport\Smtp|\Zend\Mail\Transport\Sendmail $mailAdapter class name
+     * @return $this
+     * @throws \AcMailer\Exception\InvalidArgumentException
+     */
+    public function setMailAdapter($mailAdapter)
     {
-	    if (is_string($mailAdapter)) {
-	        $mailAdapter = ucfirst($mailAdapter);
-	        if (array_key_exists($mailAdapter, $this->validAdapters)) {
-	            $this->mailAdapter = $this->validAdapters[$mailAdapter];
+        if (is_string($mailAdapter)) {
+            $mailAdapter = ucfirst($mailAdapter);
+            if (array_key_exists($mailAdapter, $this->validAdapters)) {
+                $this->mailAdapter = $this->validAdapters[$mailAdapter];
             } else {
-	            throw new InvalidArgumentException('Defined adapter as string is not a valid adapter. Value should be one of "Zend\Mail\Transport\Smtp", "Smtp", "Zend\Mail\Transport\Sendmail" or "Sendmail"');
+                throw new InvalidArgumentException(sprintf(
+                    "Defined adapter as string is not a valid adapter. Value should be one of '%s'",
+                    implode("', '", array_keys($this->validAdapters))
+                ));
             }
-	    } elseif ($mailAdapter instanceof Sendmail || $mailAdapter instanceof Smtp) {
-	       $this->mailAdapter = $mailAdapter;
+        } elseif ($mailAdapter instanceof Sendmail || $mailAdapter instanceof Smtp) {
+           $this->mailAdapter = $mailAdapter;
         } else {
-	       throw new InvalidArgumentException('Defined adapter should be an instance of "Zend\Mail\Transport\Smtp" or "Zend\Mail\Transport\Sendmail"');
+           throw new InvalidArgumentException(
+               "Defined adapter should be an instance of 'Zend\\Mail\\Transport\\Smtp' or 'Zend\\Mail\\Transport\\Sendmail'"
+           );
         }
-	    
-		return $this;
-	}
 
-	/**
-	 * @return string $server
-	 */
-	public function getServer()
-    {
-		return $this->server;
-	}
-	/**
-	 * @param string $server
-	 * @return MailOptions
-	 */
-	public function setServer($server)
-    {
-		$this->server = $server;
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @return string $from
-	 */
-	public function getFrom()
+    /**
+     * @return string $server
+     */
+    public function getServer()
     {
-		return $this->from;
-	}
-	/**
-	 * @param string $from
-	 * @return MailOptions
-	 */
-	public function setFrom($from)
+        return $this->server;
+    }
+    /**
+     * @param string $server
+     * @return MailOptions
+     */
+    public function setServer($server)
     {
-		$this->from = $from;
-		return $this;
-	}
+        $this->server = $server;
+        return $this;
+    }
 
-	/**
-	 * @return string $fromName
-	 */
-	public function getFromName()
+    /**
+     * @return string $from
+     */
+    public function getFrom()
     {
-		return $this->fromName;
-	}
+        return $this->from;
+    }
+    /**
+     * @param string $from
+     * @return MailOptions
+     */
+    public function setFrom($from)
+    {
+        $this->from = $from;
+        return $this;
+    }
 
-	/**
-	 * @param $fromName
-	 * @return $this
-	 */
-	public function setFromName($fromName)
+    /**
+     * @return string $fromName
+     */
+    public function getFromName()
     {
-		$this->fromName = $fromName;
-		return $this;
-	}
+        return $this->fromName;
+    }
 
-	/**
-	 * @return array $to
-	 */
-	public function getTo()
+    /**
+     * @param $fromName
+     * @return $this
+     */
+    public function setFromName($fromName)
     {
-	    return $this->to;
-	}
-	/**
-	 * @param array $to
-	 * @return MailOptions
-	 */
-	public function setTo($to)
-    {
-		$this->to = (array) $to;
-		return $this;
-	}
-	
-	/**
-	 * @return array $cc
-	 */
-	public function getCc()
-    {
-	    return $this->cc;
-	}
-	/**
-	 * @param array $cc
-	 * @return MailOptions
-	 */
-	public function setCc($cc)
-    {
-		$this->cc = (array) $cc;
-		return $this;
-	}
-	
-	/**
-	 * @return array $bcc
-	 */
-	public function getBcc()
-    {
-	    return $this->bcc;
-	}
-	/**
-	 * @param array $bcc
-	 * @return MailOptions
-	 */
-	public function setBcc($bcc)
-    {
-		$this->bcc = (array) $bcc;
-		return $this;
-	}
+        $this->fromName = $fromName;
+        return $this;
+    }
 
-	/**
-	 * @return string $smtpUser
-	 */
-	public function getSmtpUser()
+    /**
+     * @return array $to
+     */
+    public function getTo()
     {
-	    if (!isset($this->smtpUser) || $this->smtpUser == "") {
-	        return $this->from;
+        return $this->to;
+    }
+    /**
+     * @param array $to
+     * @return MailOptions
+     */
+    public function setTo($to)
+    {
+        $this->to = (array) $to;
+        return $this;
+    }
+
+    /**
+     * @return array $cc
+     */
+    public function getCc()
+    {
+        return $this->cc;
+    }
+    /**
+     * @param array $cc
+     * @return MailOptions
+     */
+    public function setCc($cc)
+    {
+        $this->cc = (array) $cc;
+        return $this;
+    }
+
+    /**
+     * @return array $bcc
+     */
+    public function getBcc()
+    {
+        return $this->bcc;
+    }
+    /**
+     * @param array $bcc
+     * @return MailOptions
+     */
+    public function setBcc($bcc)
+    {
+        $this->bcc = (array) $bcc;
+        return $this;
+    }
+
+    /**
+     * @return string $smtpUser
+     */
+    public function getSmtpUser()
+    {
+        if (!isset($this->smtpUser) || $this->smtpUser == "") {
+            return $this->from;
         }
-	    
-		return $this->smtpUser;
-	}
-	/**
-	 * @param string $smtpUser
-	 * @return MailOptions
-	 */
-	public function setSmtpUser($smtpUser)
+
+        return $this->smtpUser;
+    }
+    /**
+     * @param string $smtpUser
+     * @return MailOptions
+     */
+    public function setSmtpUser($smtpUser)
     {
-		$this->smtpUser = $smtpUser;
-		return $this;
-	}
+        $this->smtpUser = $smtpUser;
+        return $this;
+    }
     
-	/**
-	 * @return string|boolean
-	 */
-	public function getSsl()
+    /**
+     * @return string|boolean
+     */
+    public function getSsl()
     {
-	    return $this->ssl;
-	}
+        return $this->ssl;
+    }
 
-	/**
-	 * @param string|boolean $ssl
-	 * @return $this
-	 * @throws \AcMailer\Exception\InvalidArgumentException
-	 */
-	public function setSsl($ssl)
+    /**
+     * @param string|boolean $ssl
+     * @return $this
+     * @throws \AcMailer\Exception\InvalidArgumentException
+     */
+    public function setSsl($ssl)
     {
-	    if (!is_bool($ssl) && !is_string($ssl)) {
-	        throw new InvalidArgumentException('SSL value should be false, "ssl" or "tls".');
+        if (!is_bool($ssl) && !is_string($ssl)) {
+            throw new InvalidArgumentException('SSL value should be false, "ssl" or "tls".');
         } elseif (is_bool($ssl) && $ssl !== false) {
-	        throw new InvalidArgumentException('Boolean true value for SSL is not supported. Only false can be used to disable SSL, otherwise "ssl" or "tls" values should be used.');
+            throw new InvalidArgumentException(
+                'Boolean true value for SSL is not supported. Only false can be used to disable SSL, otherwise "ssl" or "tls" values should be used.'
+            );
         } elseif (is_string($ssl) && !in_array($ssl, $this->validSsl)) {
-	       throw new InvalidArgumentException('SSL valid values are "ssl" or "tls".');
-        }
-	    
-	    $this->ssl = $ssl;
-	    return $this;
-	}
-	
-	/**
-	 * @return string $smtpPassword
-	 */
-	public function getSmtpPassword()
-    {
-		return $this->smtpPassword;
-	}
-	/**
-	 * @param string $smtpPassword
-	 * @return MailOptions
-	 */
-	public function setSmtpPassword($smtpPassword)
-    {
-		$this->smtpPassword = $smtpPassword;
-		return $this;
-	}
-
-	/**
-	 * @return string $body
-	 */
-	public function getBody()
-    {
-		return $this->body;
-	}
-	/**
-	 * @param string $body
-	 * @return MailOptions
-	 */
-	public function setBody($body)
-    {
-		$this->body = $body;
-		return $this;
-	}
-
-	/**
-	 * @return string $subject
-	 */
-	public function getSubject()
-    {
-		return $this->subject;
-	}
-	/**
-	 * @param string $subject
-	 * @return MailOptions
-	 */
-	public function setSubject($subject)
-    {
-		$this->subject = $subject;
-		return $this;
-	}
-
-	/**
-	 * @return int $port
-	 */
-	public function getPort()
-    {
-		return (int) $this->port;
-	}
-	/**
-	 * @param int $port
-	 * @return MailOptions
-	 */
-	public function setPort($port)
-    {
-		$this->port = (int) $port;
-		return $this;
-	}
-    
-	/**
-	 * @return string
-	 */
-	public function getAttachmentsDir()
-    {
-		return $this->attachmentsDir;
-	}
-	/**
-	 * Sets attachments dir
-	 * @param string $attachmentsDir
-	 * @return \AcMailer\Options\MailOptions
-	 */
-	public function setAttachmentsDir($attachmentsDir)
-    {
-		$this->attachmentsDir = $attachmentsDir;
-		return $this;
-	}
-    
-	/**
-	 * @return TemplateOptions
-	 */
-	public function getTemplate()
-    {
-		if (!isset($this->template)) {
-			$this->setTemplate(array());
+           throw new InvalidArgumentException('SSL valid values are "ssl" or "tls".');
         }
 
-		return $this->template;
-	}
-	/**
-	 * @param array|TemplateOptions $template
-	 * @return $this
-	 * @throws \AcMailer\Exception\InvalidArgumentException
-	 */
-	public function setTemplate($template)
+        $this->ssl = $ssl;
+        return $this;
+    }
+
+    /**
+     * @return string $smtpPassword
+     */
+    public function getSmtpPassword()
     {
-		if (is_array($template)) {
-			$this->template = new TemplateOptions($template);
+        return $this->smtpPassword;
+    }
+    /**
+     * @param string $smtpPassword
+     * @return MailOptions
+     */
+    public function setSmtpPassword($smtpPassword)
+    {
+        $this->smtpPassword = $smtpPassword;
+        return $this;
+    }
+
+    /**
+     * @return string $body
+     */
+    public function getBody()
+    {
+        return $this->body;
+    }
+    /**
+     * @param string $body
+     * @return MailOptions
+     */
+    public function setBody($body)
+    {
+        $this->body = $body;
+        return $this;
+    }
+
+    /**
+     * @return string $subject
+     */
+    public function getSubject()
+    {
+        return $this->subject;
+    }
+    /**
+     * @param string $subject
+     * @return MailOptions
+     */
+    public function setSubject($subject)
+    {
+        $this->subject = $subject;
+        return $this;
+    }
+
+    /**
+     * @return int $port
+     */
+    public function getPort()
+    {
+        return (int) $this->port;
+    }
+    /**
+     * @param int $port
+     * @return MailOptions
+     */
+    public function setPort($port)
+    {
+        $this->port = (int) $port;
+        return $this;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getAttachmentsDir()
+    {
+        return $this->attachmentsDir;
+    }
+    /**
+     * Sets attachments dir
+     * @param string $attachmentsDir
+     * @return \AcMailer\Options\MailOptions
+     */
+    public function setAttachmentsDir($attachmentsDir)
+    {
+        $this->attachmentsDir = $attachmentsDir;
+        return $this;
+    }
+    
+    /**
+     * @return TemplateOptions
+     */
+    public function getTemplate()
+    {
+        if (!isset($this->template)) {
+            $this->setTemplate(array());
+        }
+
+        return $this->template;
+    }
+    /**
+     * @param array|TemplateOptions $template
+     * @return $this
+     * @throws \AcMailer\Exception\InvalidArgumentException
+     */
+    public function setTemplate($template)
+    {
+        if (is_array($template)) {
+            $this->template = new TemplateOptions($template);
         } elseif ($template instanceof TemplateOptions) {
-			$this->template = $template;
+            $this->template = $template;
         } else {
-			throw new InvalidArgumentException('Template should be an array or an AcMailer\Options\TemplateOptions object.');
+            throw new InvalidArgumentException(sprintf(
+                'Template should be an array or an AcMailer\Options\TemplateOptions object. %s provided.',
+                is_object($template) ? get_class($template) : gettype($template)
+            ));
         }
 
-		return $this;
-	}
+        return $this;
+    }
 
     /**
      * @param $connectionClass
@@ -435,5 +445,5 @@ class MailOptions extends AbstractOptions
     {
         return $this->connectionClass;
     }
-	
+
 }
