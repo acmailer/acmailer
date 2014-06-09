@@ -34,7 +34,7 @@ interface MailServiceInterface
     
     /**
      * Sets the template to be used to create the body of the email
-     * @param string $template
+     * @param string|\Zend\View\Model\ViewModel $template
      * @param array $params
      */
     public function setTemplate($template, array $params = array());

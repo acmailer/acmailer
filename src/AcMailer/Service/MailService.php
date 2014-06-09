@@ -173,14 +173,52 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     
     /**
      * Sets the body of this message from a template
+     * @param string|\Zend\View\Model\ViewModel $template
+     * @param array $params
      * @see \AcMailer\Service\MailServiceInterface::setTemplate()
      */
     public function setTemplate($template, array $params = array())
     {
+        if ($template instanceof ViewModel) {
+            if ($template->hasChildren()) {
+                $this->renderChildren($template);
+            }
+            $this->setBody($this->renderer->render($template));
+            return;
+        }
+
         $view = new ViewModel();
         $view->setTemplate($template)
              ->setVariables($params);
         $this->setBody($this->renderer->render($view));
+    }
+
+    /**
+     * Renders template childrens.
+     * Inspired on Zend\View\View implementation to recursively render child models
+     * @param ViewModel $model
+     * @see Zend\View\View::renderChildren
+     */
+    protected function renderChildren(ViewModel $model)
+    {
+        /* @var ViewModel $child */
+        foreach ($model as $child) {
+            $capture = $child->captureTo();
+            if (!empty($capture)) {
+                // Recursively render children
+                if ($child->hasChildren()) {
+                    $this->renderChildren($child);
+                }
+                $result = $this->renderer->render($child);
+
+                if ($child->isAppend()) {
+                    $oldResult=$model->{$capture};
+                    $model->setVariable($capture, $oldResult . $result);
+                } else {
+                    $model->setVariable($capture, $result);
+                }
+            }
+        }
     }
     
     /**

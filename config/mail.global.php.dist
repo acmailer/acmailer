@@ -87,11 +87,22 @@ return array(
          * The path will be resolved by the TemplateMapResolver, so you need to place mail templates inside a view folder of one of your modules or customize your template map and template path stack.
          * Params will be a group of key-value pairs.
          * It has a use_template property wich tells if template should be used automatically, ignoring anything defined at 'body' option. It is false by default.
+         *
+         * The 'children' property allows to define children for the template, in case you want to use layouts. You can define any number of children. The key is the 'capture_to' property.
+         * If you set the key 'content' to the child, you should have something like echo $this->content in you layout.
+         * Any child can have its own children, so you can nest views into other views recursively.
+         * By default no children are used
          */
         //'template' => array(
         //    'use_template'  => false,
-        //    'path'          => 'ac-mailer/mail-templates/mail',
+        //    'path'          => 'ac-mailer/mail-templates/layout',
         //    'params'        => array(),
+        //    'children'      => array(
+        //        'content'   => array(
+        //            'path'   => 'ac-mailer/mail-templates/mail',
+        //            'params' => array(),
+        //        )
+        //    )
         //),
         
         /*
