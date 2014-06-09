@@ -9,15 +9,15 @@ namespace AcMailer\Service;
 interface MailServiceAwareInterface
 {
 
-	/**
-	 * @param MailServiceInterface $mailService
+    /**
+     * @param MailServiceInterface $mailService
      * @return $this
-	 */
-	public function setMailService(MailServiceInterface $mailService);
+     */
+    public function setMailService(MailServiceInterface $mailService);
 
-	/**
-	 * @return MailServiceInterface
-	 */
-	public function getMailService();
+    /**
+     * @return MailServiceInterface
+     */
+    public function getMailService();
 
-} 
+}
