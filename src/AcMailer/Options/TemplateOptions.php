@@ -27,7 +27,7 @@ class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInt
     /**
      * @var array
      */
-    protected $childs = array();
+    protected $children = array();
 
 	/**
 	 * @param $params
@@ -81,19 +81,19 @@ class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInt
 	}
 
     /**
-     * @param array $childs
+     * @param array $children
      * @return $this;
      */
-    public function setChilds($childs)
+    public function setChildren($children)
     {
-        $childs         = (array) $childs;
-        $this->childs   = array();
+        $children         = (array) $children;
+        $this->children   = array();
         // Cast each child to a TemplateOptions object
-        foreach ($childs as $captureTo => $child) {
-            $this->childs[$captureTo] = new TemplateOptions($child);
+        foreach ($children as $captureTo => $child) {
+            $this->children[$captureTo] = new TemplateOptions($child);
             // Recursively add childs
-            if (array_key_exists('childs', $child)) {
-                $this->childs[$captureTo]->setChilds($child['childs']);
+            if (array_key_exists('children', $child)) {
+                $this->children[$captureTo]->setChildren($child['children']);
             }
         }
 
@@ -102,9 +102,9 @@ class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInt
     /**
      * @return array
      */
-    public function getChilds()
+    public function getChildren()
     {
-        return $this->childs;
+        return $this->children;
     }
 
     /**
@@ -118,7 +118,7 @@ class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInt
 
         // Add childs recursively
         /* @var TemplateOptions $child */
-        foreach ($this->getChilds() as $captureTo => $child) {
+        foreach ($this->getChildren() as $captureTo => $child) {
             $model->addChild($child->toViewModel(), $captureTo);
         }
 
