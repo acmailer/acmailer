@@ -173,10 +173,17 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     
     /**
      * Sets the body of this message from a template
+     * @param string|\Zend\View\Model\ViewModel $template
+     * @param array $params
      * @see \AcMailer\Service\MailServiceInterface::setTemplate()
      */
     public function setTemplate($template, array $params = array())
     {
+        if ($template instanceof ViewModel) {
+            $this->setBody($this->renderer->render($template));
+            return;
+        }
+
         $view = new ViewModel();
         $view->setTemplate($template)
              ->setVariables($params);
