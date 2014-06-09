@@ -13,16 +13,16 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class MailOptionsFactory implements FactoryInterface
 {
 
-	/**
-	 * Create service
-	 *
-	 * @param ServiceLocatorInterface $serviceLocator
-	 * @return mixed
-	 */
-	public function createService(ServiceLocatorInterface $serviceLocator)
-	{
-		$config = $serviceLocator->get('Config');
-		return new MailOptions(isset($config['mail_options']) ? $config['mail_options'] : array());
-	}
+    /**
+     * Create service
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     * @return mixed
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $config = $serviceLocator->get('Config');
+        return new MailOptions(isset($config['mail_options']) ? $config['mail_options'] : array());
+    }
 
 }

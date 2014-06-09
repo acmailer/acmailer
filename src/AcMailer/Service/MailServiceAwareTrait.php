@@ -3,6 +3,11 @@ namespace AcMailer\Service;
 
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
+/**
+ * Class MailServiceAwareTrait
+ * @author Alejandro Celaya Alastrué
+ * @link http://www.alejandrocelaya.com
+ */
 trait MailServiceAwareTrait
 {
 
@@ -38,4 +43,4 @@ trait MailServiceAwareTrait
         return $this->mailService;
     }
 
-} 
+}

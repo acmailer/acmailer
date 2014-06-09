@@ -1,6 +1,7 @@
 <?php
 namespace AcMailerTest\Service;
 
+use AcMailer\Exception\InvalidArgumentException;
 use AcMailerTest\Event\MailListenerMock;
 use Zend\Mail\Message;
 use AcMailerTest\Mail\Transport\MockTransport;
@@ -63,6 +64,14 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue($this->mailService->getMessage()->getBody() instanceof MimeMessage);
         $this->assertEquals($message, $this->mailService->getMessage()->getBody());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testInvalidBodyThrowsException()
+    {
+        $this->mailService->setBody(new \stdClass());
     }
     
     public function testSetSubject()

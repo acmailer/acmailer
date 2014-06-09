@@ -1,6 +1,7 @@
 <?php
 namespace AcMailer\Service;
 
+use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Result\ResultInterface;
 
 /**
@@ -27,12 +28,13 @@ interface MailServiceInterface
     /**
      * Sets the message body
      * @param \Zend\Mime\Part|\Zend\Mime\Message|string $body
+     * @throws InvalidArgumentException
      */
     public function setBody($body);
     
     /**
      * Sets the template to be used to create the body of the email
-     * @param string $template
+     * @param string|\Zend\View\Model\ViewModel $template
      * @param array $params
      */
     public function setTemplate($template, array $params = array());
@@ -44,19 +46,22 @@ interface MailServiceInterface
     public function setSubject($subject);
     
     /**
-     * Provides the path of a file that will be attached to the message while sending it, as well as other previously defined attachments
+     * Provides the path of a file that will be attached to the message while sending it,
+     * as well as other previously defined attachments
      * @param string $path
      */
     public function addAttachment($path);
 
-	/**
-	 * Provides an array of paths of files that will be attached to the message while sending it, as well as other previously defined attachments
-	 * @param array $paths
-	 */
-	public function addAttachments(array $paths);
+    /**
+     * Provides an array of paths of files that will be attached to the message while sending it,
+     * as well as other previously defined attachments
+     * @param array $paths
+     */
+    public function addAttachments(array $paths);
     
     /**
-     * Sets the list of paths of files that will be attached to the message while sending it, discarding any previously defined attachment
+     * Sets the list of paths of files that will be attached to the message while sending it,
+     * discarding any previously defined attachment
      * @param array $paths
      */
     public function setAttachments(array $paths);

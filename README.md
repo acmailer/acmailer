@@ -123,6 +123,7 @@ The mail service can be automatically configured by using provided global config
 	- *use_template*: True or false. Tells if template should be used, making body option to be ignored.
 	- *path*: Path of the template. The same used while setting the template of a ViewModel ('application/index/list').
 	- *params*: Array with key-value pairs with parameters to be sent to the template.
+	- *children*: Array with child templates to be used within the main template (layout). Each one of them can have its own children. Look at `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` for details.
 - **attachments_dir**: Path to a directory that will be recursively iterated. All found files will be attached to the email automatically. Will be ignored if it is not a string or is not an existing directory. This means that you could set it to `false` to disable this option.
 
 ### Event management
