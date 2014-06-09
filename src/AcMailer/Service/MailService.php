@@ -39,22 +39,22 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      * @var \Zend\View\Renderer\PhpRenderer
      */
     private $renderer;
-	/**
-	 * @var EventManagerInterface
-	 */
-	private $events;
+    /**
+     * @var EventManagerInterface
+     */
+    private $events;
     /**
      * @var array
      */
     private $attachments = array();
 
-	/**
-	 * Creates a new MailService
-	 * @param Message $message
-	 * @param TransportInterface $transport
-	 * @param RendererInterface $renderer Renderer used to render templates, typically a PhpRenderer
-	 */
-	public function __construct(Message $message, TransportInterface $transport, RendererInterface $renderer)
+    /**
+     * Creates a new MailService
+     * @param Message $message
+     * @param TransportInterface $transport
+     * @param RendererInterface $renderer Renderer used to render templates, typically a PhpRenderer
+     */
+    public function __construct(Message $message, TransportInterface $transport, RendererInterface $renderer)
     {
         $this->message      = $message;
         $this->transport    = $transport;
@@ -110,30 +110,27 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         
         // Send the email
         try {
-			// Trigger pre send event
-			$event = new MailEvent($this);
-			$this->getEventManager()->trigger($event);
+            // Trigger pre send event
+            $this->getEventManager()->trigger(new MailEvent($this));
 
+            // Try to send the message
             $this->transport->send($this->message);
 
-			// Trigger post send event
-			$event = new MailEvent($this, MailEvent::EVENT_MAIL_POST_SEND);
-			$this->getEventManager()->trigger($event);
+            // Trigger post send event
+            $this->getEventManager()->trigger(new MailEvent($this, MailEvent::EVENT_MAIL_POST_SEND));
 
             return new MailResult();
         } catch (RuntimeException $e) {
-			// Trigger send error event
-			$event = new MailEvent($this, MailEvent::EVENT_MAIL_SEND_ERROR);
-			$this->getEventManager()->trigger($event);
+            // Trigger send error event
+            $this->getEventManager()->trigger(new MailEvent($this, MailEvent::EVENT_MAIL_SEND_ERROR));
 
             return new MailResult(false, $e->getMessage());
         } catch (\Exception $e) {
-			// Trigger send error event
-			$event = new MailEvent($this, MailEvent::EVENT_MAIL_SEND_ERROR);
-			$this->getEventManager()->trigger($event);
+            // Trigger send error event
+            $this->getEventManager()->trigger(new MailEvent($this, MailEvent::EVENT_MAIL_SEND_ERROR));
 
             throw $e;
-		}
+        }
     }
     
     /**
@@ -180,9 +177,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     public function setTemplate($template, array $params = array())
     {
         if ($template instanceof ViewModel) {
-            if ($template->hasChildren()) {
-                $this->renderChildren($template);
-            }
+            $this->renderChildren($template);
             $this->setBody($this->renderer->render($template));
             return;
         }
@@ -201,14 +196,16 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      */
     protected function renderChildren(ViewModel $model)
     {
+        if (!$model->hasChildren()) {
+            return;
+        }
+
         /* @var ViewModel $child */
         foreach ($model as $child) {
             $capture = $child->captureTo();
             if (!empty($capture)) {
                 // Recursively render children
-                if ($child->hasChildren()) {
-                    $this->renderChildren($child);
-                }
+                $this->renderChildren($child);
                 $result = $this->renderer->render($child);
 
                 if ($child->isAppend()) {
@@ -233,81 +230,81 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         return $this;
     }
     
-	/**
-	 * @param string $path
-	 * @return $this
-	 */
-	public function addAttachment($path)
+    /**
+     * @param string $path
+     * @return $this
+     */
+    public function addAttachment($path)
     {
-		$this->attachments[] = $path;
-		return $this;
-	}
+        $this->attachments[] = $path;
+        return $this;
+    }
 
-	/**
-	 * @param array $paths
-	 * @return $this
-	 */
-	public function addAttachments(array $paths)
+    /**
+     * @param array $paths
+     * @return $this
+     */
+    public function addAttachments(array $paths)
     {
-		$this->attachments = array_merge($this->attachments, $paths);
-		return $this;
-	}
+        $this->attachments = array_merge($this->attachments, $paths);
+        return $this;
+    }
 
-	/**
-	 * @param array $paths
-	 * @return $this
-	 */
-	public function setAttachments(array $paths)
+    /**
+     * @param array $paths
+     * @return $this
+     */
+    public function setAttachments(array $paths)
     {
-		$this->attachments = $paths;
-		return $this;
-	}
+        $this->attachments = $paths;
+        return $this;
+    }
 
-	/**
-	 * Inject an EventManager instance
-	 * @param EventManagerInterface $events
-	 * @return $this|void
-	 */
-	public function setEventManager(EventManagerInterface $events)
+    /**
+     * Inject an EventManager instance
+     * @param EventManagerInterface $events
+     * @return $this|void
+     */
+    public function setEventManager(EventManagerInterface $events)
     {
-		$events->setIdentifiers(array(
-			__CLASS__,
-			get_called_class(),
-		));
-		$this->events = $events;
-		return $this;
-	}
-	/**
-	 * Retrieve the event manager
-	 * Lazy-loads an EventManager instance if none registered.
-	 * @return EventManagerInterface
-	 */
-	public function getEventManager()
+        $events->setIdentifiers(array(
+            __CLASS__,
+            get_called_class(),
+        ));
+        $this->events = $events;
+        return $this;
+    }
+    /**
+     * Retrieve the event manager
+     * Lazy-loads an EventManager instance if none registered.
+     * @return EventManagerInterface
+     */
+    public function getEventManager()
     {
-		if (!isset($this->events)) {
-			$this->setEventManager(new EventManager());
+        if (!isset($this->events)) {
+            $this->setEventManager(new EventManager());
         }
 
-		return $this->events;
-	}
+        return $this->events;
+    }
 
-	/**
-	 * Attaches a new MailListener
-	 * @param MailListener $mailListener
-	 * @param int $priority
-	 * @return mixed|void
-	 */
-	public function attachMailListener(MailListener $mailListener, $priority = 1)
+    /**
+     * Attaches a new MailListener
+     * @param MailListener $mailListener
+     * @param int $priority
+     * @return mixed|void
+     */
+    public function attachMailListener(MailListener $mailListener, $priority = 1)
     {
-		$this->getEventManager()->attach(MailEvent::EVENT_MAIL_PRE_SEND, function (MailEvent $e) use ($mailListener) {
-			$mailListener->onPreSend($e);
-		}, $priority);
-		$this->getEventManager()->attach(MailEvent::EVENT_MAIL_POST_SEND, function (MailEvent $e) use ($mailListener) {
-			$mailListener->onPostSend($e);
-		}, $priority);
-		$this->getEventManager()->attach(MailEvent::EVENT_MAIL_SEND_ERROR, function (MailEvent $e) use ($mailListener) {
-			$mailListener->onSendError($e);
-		}, $priority);
-	}
+        $this->getEventManager()->attach(MailEvent::EVENT_MAIL_PRE_SEND, function (MailEvent $e) use ($mailListener) {
+            $mailListener->onPreSend($e);
+        }, $priority);
+        $this->getEventManager()->attach(MailEvent::EVENT_MAIL_POST_SEND, function (MailEvent $e) use ($mailListener) {
+            $mailListener->onPostSend($e);
+        }, $priority);
+        $this->getEventManager()->attach(MailEvent::EVENT_MAIL_SEND_ERROR, function (MailEvent $e) use ($mailListener) {
+            $mailListener->onSendError($e);
+        }, $priority);
+    }
 
 }
