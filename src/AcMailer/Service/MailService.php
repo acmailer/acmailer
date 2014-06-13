@@ -96,6 +96,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
                 }
                 
                 $part               = new MimePart(fopen($attachment, 'r'));
+                $part->id	        = $attachment;
                 $part->filename     = basename($attachment);
                 $part->type         = $info->file($attachment);
                 $part->encoding     = Mime::ENCODING_BASE64;
