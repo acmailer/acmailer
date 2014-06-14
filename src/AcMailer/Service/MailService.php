@@ -95,9 +95,11 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
                     continue; // If checked file is not valid, continue to the next
                 }
                 
+                $basename = basename($attachment);
+                
                 $part               = new MimePart(fopen($attachment, 'r'));
-                $part->id	        = $attachment;
-                $part->filename     = basename($attachment);
+                $part->id           = $basename;
+                $part->filename     = $basename;
                 $part->type         = $info->file($attachment);
                 $part->encoding     = Mime::ENCODING_BASE64;
                 $part->disposition  = Mime::DISPOSITION_ATTACHMENT;
