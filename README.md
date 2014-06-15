@@ -40,10 +40,15 @@ $mailService->setSubject('This is the subject')
             ->setBody('This is the body'); // This can be a string, HTML or even a zend\Mime\Message or a Zend\Mime\Part
 
 $result = $mailService->send();
-if ($result->isValid())
+if ($result->isValid()) {
     echo 'Message sent. Congratulations!';
-else
-    echo 'An error occured. Exception message: ' . $result->getMessage();
+} else {
+    if ($result->hasException()) {
+        echo sprintf('An error occurred. Exception: \n %s', $result->getException()->getTraceAsString());
+    } else {
+        echo sprintf('An error occurred. Message: %s', $result->getMessage());
+    }
+}
 ```
 
 Alternatively, the body of the message can be set from a view script by using `setTemplate` instead of `setBody`. It will use a renderer to render defined template and then set it as the email body internally.
