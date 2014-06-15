@@ -105,11 +105,6 @@ class MailOptions extends AbstractOptions
      */
     protected $port = 25;
     /**
-     * @var string
-     * @deprecated
-     */
-    protected $attachmentsDir = 'data/mail/attachments';
-    /**
      * @var AttachmentsOptions
      */
     protected $attachments;
@@ -381,7 +376,8 @@ class MailOptions extends AbstractOptions
      */
     public function getAttachmentsDir()
     {
-        return $this->attachmentsDir;
+        $dir = $this->getAttachments()->getDir();
+        return isset($dir['path']) ? $dir['path'] : AttachmentsOptions::DEFAULT_PATH;
     }
     /**
      * Sets attachments dir
@@ -391,7 +387,9 @@ class MailOptions extends AbstractOptions
      */
     public function setAttachmentsDir($attachmentsDir)
     {
-        $this->attachmentsDir = $attachmentsDir;
+        $dir = $this->getAttachments()->getDir();
+        $dir['path'] = $attachmentsDir;
+        $this->getAttachments()->setDir($dir);
         return $this;
     }
     
