@@ -105,9 +105,9 @@ class MailOptions extends AbstractOptions
      */
     protected $port = 25;
     /**
-     * @var string
+     * @var AttachmentsOptions
      */
-    protected $attachmentsDir = 'data/mail/attachments';
+    protected $attachments;
     
     /**
      * @return TransportInterface the $mailAdapter
@@ -372,19 +372,24 @@ class MailOptions extends AbstractOptions
     
     /**
      * @return string
+     * @deprecated
      */
     public function getAttachmentsDir()
     {
-        return $this->attachmentsDir;
+        $dir = $this->getAttachments()->getDir();
+        return isset($dir['path']) ? $dir['path'] : AttachmentsOptions::DEFAULT_PATH;
     }
     /**
      * Sets attachments dir
      * @param string $attachmentsDir
      * @return \AcMailer\Options\MailOptions
+     * @deprecated
      */
     public function setAttachmentsDir($attachmentsDir)
     {
-        $this->attachmentsDir = $attachmentsDir;
+        $dir = $this->getAttachments()->getDir();
+        $dir['path'] = $attachmentsDir;
+        $this->getAttachments()->setDir($dir);
         return $this;
     }
     
@@ -444,6 +449,38 @@ class MailOptions extends AbstractOptions
     public function getConnectionClass()
     {
         return $this->connectionClass;
+    }
+
+    /**
+     * @param array|AttachmentsOptions $attachments
+     * @return $this
+     * @throws \AcMailer\Exception\InvalidArgumentException
+     */
+    public function setAttachments($attachments)
+    {
+        if (is_array($attachments)) {
+            $this->attachments = new AttachmentsOptions($attachments);
+        } else if ($attachments instanceof AttachmentsOptions) {
+            $this->attachments = $attachments;
+        } else {
+            throw new InvalidArgumentException(sprintf(
+                "Attachments should be an array or an AcMailer\\Options\\AttachmentsOptions, %s provided",
+                is_object($attachments) ? get_class($attachments) : gettype($attachments)
+            ));
+        }
+
+        return $this;
+    }
+    /**
+     * @return AttachmentsOptions
+     */
+    public function getAttachments()
+    {
+        if (!isset($this->attachments)) {
+            $this->setAttachments(array());
+        }
+
+        return $this->attachments;
     }
 
 }

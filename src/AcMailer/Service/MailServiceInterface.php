@@ -58,6 +58,12 @@ interface MailServiceInterface
      * @param array $paths
      */
     public function addAttachments(array $paths);
+
+    /**
+     * Returns the list of attachments
+     * @return array
+     */
+    public function getAttachments();
     
     /**
      * Sets the list of paths of files that will be attached to the message while sending it,

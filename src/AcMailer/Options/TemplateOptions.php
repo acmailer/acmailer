@@ -12,73 +12,73 @@ use Zend\View\Model\ViewModel;
 class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInterface
 {
 
-	/**
-	 * @var bool
-	 */
-	protected $useTemplate = false;
-	/**
-	 * @var string
-	 */
-	protected $path = 'ac-mailer/mail-templates/mail';
-	/**
-	 * @var array
-	 */
-	protected $params = array();
+    /**
+     * @var bool
+     */
+    protected $useTemplate = false;
+    /**
+     * @var string
+     */
+    protected $path = 'ac-mailer/mail-templates/mail';
+    /**
+     * @var array
+     */
+    protected $params = array();
     /**
      * @var array
      */
     protected $children = array();
 
-	/**
-	 * @param $params
-	 * @return $this
-	 */
-	public function setParams($params)
+    /**
+     * @param $params
+     * @return $this
+     */
+    public function setParams($params)
     {
-		$this->params = $params;
-		return $this;
-	}
-	/**
-	 * @return array
-	 */
-	public function getParams()
+        $this->params = $params;
+        return $this;
+    }
+    /**
+     * @return array
+     */
+    public function getParams()
     {
-		return $this->params;
-	}
+        return $this->params;
+    }
 
-	/**
-	 * @param $path
-	 * @return $this
-	 */
-	public function setPath($path)
+    /**
+     * @param $path
+     * @return $this
+     */
+    public function setPath($path)
     {
-		$this->path = $path;
-		return $this;
-	}
-	/**
-	 * @return string
-	 */
-	public function getPath()
+        $this->path = $path;
+        return $this;
+    }
+    /**
+     * @return string
+     */
+    public function getPath()
     {
-		return $this->path;
-	}
+        return $this->path;
+    }
 
-	/**
-	 * @param $useTemplate
-	 * @return $this
-	 */
-	public function setUseTemplate($useTemplate)
+    /**
+     * @param $useTemplate
+     * @return $this
+     */
+    public function setUseTemplate($useTemplate)
     {
-		$this->useTemplate = $useTemplate;
-		return $this;
-	}
-	/**
-	 * @return boolean
-	 */
-	public function getUseTemplate()
+        $this->useTemplate = $useTemplate;
+        return $this;
+    }
+    /**
+     * @return boolean
+     */
+    public function getUseTemplate()
     {
-		return $this->useTemplate;
-	}
+        return $this->useTemplate;
+    }
 
     /**
      * @param array $children

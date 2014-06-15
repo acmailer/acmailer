@@ -127,7 +127,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
             // Trigger send error event
             $this->getEventManager()->trigger(new MailEvent($this, MailEvent::EVENT_MAIL_SEND_ERROR));
 
-            return new MailResult(false, $e->getMessage());
+            return new MailResult(false, $e->getMessage(), $e);
         } catch (\Exception $e) {
             // Trigger send error event
             $this->getEventManager()->trigger(new MailEvent($this, MailEvent::EVENT_MAIL_SEND_ERROR));
@@ -249,8 +249,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      */
     public function addAttachments(array $paths)
     {
-        $this->attachments = array_merge($this->attachments, $paths);
-        return $this;
+        return $this->setAttachments(array_merge($this->attachments, $paths));
     }
 
     /**
@@ -261,6 +260,15 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     {
         $this->attachments = $paths;
         return $this;
+    }
+
+    /**
+     * Returns the list of attachments
+     * @return array
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
     }
 
     /**

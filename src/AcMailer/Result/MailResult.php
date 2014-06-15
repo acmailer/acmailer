@@ -1,6 +1,8 @@
 <?php
 namespace AcMailer\Result;
 
+use Exception;
+
 /**
  * Object returned by send method in MailService
  * @see \AcMailer\Service\MailServiceInterface
@@ -20,32 +22,57 @@ class MailResult implements ResultInterface
      * @var string
      */
     private $message;
+    /**
+     * @var Exception
+     */
+    private $exception;
     
-    public function __construct($result = true, $message = self::DEFAULT_MESSAGE)
+    public function __construct($result = true, $message = self::DEFAULT_MESSAGE, $exception = null)
     {
-        $this->result   = $result;
-        $this->message  = $message;
+        $this->result       = (bool) $result;
+        $this->message      = $message;
+        $this->exception    = $exception;
     }
     
     public function getResult()
     {
         return $this->result;
     }
-    
+
     /**
-     * @see \AcMailer\Result\ResultInterface::getMessage()
+     * Returns error message when an error occurs
+     * @return string
      */
     public function getMessage()
     {
         return $this->message;
     }
-    
+
     /**
-     * @see \AcMailer\Result\ResultInterface::isValid()
+     * Tells if the MailService that produced this result was properly sent
+     * @return bool
      */
     public function isValid()
     {
         return $this->getResult();
     }
-    
+
+    /**
+     * Tells if this Result has an exception. Usually only non-valid result should wrap an exception
+     * @return bool
+     */
+    public function hasException()
+    {
+        return $this->exception instanceof Exception;
+    }
+
+    /**
+     * Returns the exception wraped by this Result
+     * @return \Exception
+     */
+    public function getException()
+    {
+        return $this->exception;
+    }
+
 }
