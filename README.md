@@ -89,6 +89,8 @@ $mailService->setAttachments(array());
 [...]
 ```
 
+**Attention!!** Be careful on when attaching files to your email.
+
 If mail options does not fit your needs or you need to update them at runtime, the message wrapped by MailService can be customized by getting it before calling send method.
 
 ```php
@@ -129,7 +131,13 @@ The mail service can be automatically configured by using provided global config
     - *path*: Path of the template. The same used while setting the template of a ViewModel ('application/index/list').
     - *params*: Array with key-value pairs with parameters to be sent to the template.
     - *children*: Array with child templates to be used within the main template (layout). Each one of them can have its own children. Look at `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` for details.
-- **attachments_dir**: Path to a directory that will be recursively iterated. All found files will be attached to the email automatically. Will be ignored if it is not a string or is not an existing directory. This means that you could set it to `false` to disable this option.
+- **attachments**: Allows to define an array of files that will be attached to the message, or even a directory that will be iterated to attach all found files.
+    - *files*: Array of files to be attached
+    - *dir*: Directory to iterate.
+        - *iterate*: If it is not true, the directory won't be iterated.
+        - *path*: The path of the directory to iterate looking for files.
+        - *recursive*: True or false. Tells if nested directories should be iterated too.
+- ~~attachments_dir~~: **DEPRECATED**. Use 'attachments' => 'dir' => 'path' instead.
 
 ### Event management
 
