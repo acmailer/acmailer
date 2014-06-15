@@ -99,27 +99,27 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(MockTransport::ERROR_MESSAGE, $result->getMessage());
     }
 
-	public function testSuccesfulMailEvent()
+    public function testSuccesfulMailEvent()
     {
-		$mailListener = new MailListenerMock();
-		$this->mailService->attachMailListener($mailListener);
-		$result = $this->mailService->send();
+        $mailListener = new MailListenerMock();
+        $this->mailService->attachMailListener($mailListener);
+        $result = $this->mailService->send();
 
-		$this->assertTrue($mailListener->isOnPreSendCalled());
-		$this->assertTrue($mailListener->isOnPostSendCalled());
-		$this->assertFalse($mailListener->isOnSendErrorCalled());
-	}
+        $this->assertTrue($mailListener->isOnPreSendCalled());
+        $this->assertTrue($mailListener->isOnPostSendCalled());
+        $this->assertFalse($mailListener->isOnSendErrorCalled());
+    }
 
-	public function testMailEventWithError()
+    public function testMailEventWithError()
     {
-		$mailListener = new MailListenerMock();
-		$this->transport->setForceError(true);
-		$this->mailService->attachMailListener($mailListener);
-		$result = $this->mailService->send();
+        $mailListener = new MailListenerMock();
+        $this->transport->setForceError(true);
+        $this->mailService->attachMailListener($mailListener);
+        $result = $this->mailService->send();
 
-		$this->assertTrue($mailListener->isOnPreSendCalled());
-		$this->assertFalse($mailListener->isOnPostSendCalled());
-		$this->assertTrue($mailListener->isOnSendErrorCalled());
-	}
+        $this->assertTrue($mailListener->isOnPreSendCalled());
+        $this->assertFalse($mailListener->isOnPostSendCalled());
+        $this->assertTrue($mailListener->isOnSendErrorCalled());
+    }
 
 }

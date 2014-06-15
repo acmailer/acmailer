@@ -12,21 +12,21 @@ It supports file attachment and template email composition.
 
 Install composer in your project
 
-	curl -s http://getcomposer.org/installer | php
-	
+    curl -s http://getcomposer.org/installer | php
+
 Define dependencies in your composer.json file
 
 ```json
 {
-	"require": {
+    "require": {
         "acelaya/zf2-acmailer": "1.*"
     }
 }
 ```
-	
+
 Finally install dependencies
 
-	php composer.phar install
+    php composer.phar install
 
 ### Usage
 
@@ -37,13 +37,13 @@ Once you get the `AcMailer\Service\MailService` service, a new MailService insta
 ```php
 $mailService = $serviceManager->get('AcMailer\Service\MailService');
 $mailService->setSubject('This is the subject')
-			->setBody('This is the body'); // This can be a string, HTML or even a zend\Mime\Message or a Zend\Mime\Part
+            ->setBody('This is the body'); // This can be a string, HTML or even a zend\Mime\Message or a Zend\Mime\Part
 
 $result = $mailService->send();
 if ($result->isValid())
-	echo 'Message sent. Congratulations!';
+    echo 'Message sent. Congratulations!';
 else
-	echo 'An error occured. Exception message: ' . $result->getMessage();
+    echo 'An error occured. Exception message: ' . $result->getMessage();
 ```
 
 Alternatively, the body of the message can be set from a view script by using `setTemplate` instead of `setBody`. It will use a renderer to render defined template and then set it as the email body internally.
@@ -51,7 +51,7 @@ Alternatively, the body of the message can be set from a view script by using `s
 ```php
 $mailService = $serviceManager->get('AcMailer\Service\MailService');
 $mailService->setSubject('This is the subject')
-			->setTemplate('application/emails/merry-christmas', array('name' => 'John Doe', 'date' => date('Y-m-d'));
+            ->setTemplate('application/emails/merry-christmas', array('name' => 'John Doe', 'date' => date('Y-m-d'));
 
 [...]
 ```
@@ -67,15 +67,15 @@ $mailService->addAttachment('data/mail/attachments/file2.pdf'); // This will add
 
 // Add two more attachments to the list
 $mailService->addAttachments(array(
-	'data/mail/attachments/file3.pdf',
-	'data/mail/attachments/file4.pdf'
+    'data/mail/attachments/file3.pdf',
+    'data/mail/attachments/file4.pdf'
 ));
 // At this point there is 4 attachments ready to be sent with the email
 
 // If we call this, all previous attachments will be discarded
 $mailService->setAttachments(array(
-	'data/mail/attachments/another-file1.pdf',
-	'data/mail/attachments/another-file2.pdf'
+    'data/mail/attachments/another-file1.pdf',
+    'data/mail/attachments/another-file2.pdf'
 ));
 
 // A good way to remove all attachments is to call this
@@ -89,9 +89,9 @@ If mail options does not fit your needs or you need to update them at runtime, t
 ```php
 $message = $mailService->getMessage();
 $message->addTo("foobar@example.com")
-		->addTo("another@example.com")
-		->addBcc("hidden@domain.com");
-		
+        ->addTo("another@example.com")
+        ->addBcc("hidden@domain.com");
+
 $result = $mailService->send();
 ```
 
@@ -100,12 +100,12 @@ $result = $mailService->send();
 The mail service can be automatically configured by using provided global configuration file. Supported options are fully explained at that file. This is what they are for.
 
 - **mail_adapter**: Tells mail service what type of transport adapter should be used. SMTP and Sendmail are supported and values for this option can be any of these:
-	- `Zend\Mail\Transport\Sendmail`
-	- `Sendmail`
-	- `sendmail`
-	- `Zend\Mail\Transport\Smtp`
-	- `Smtp`
-	- `smtp`
+    - `Zend\Mail\Transport\Sendmail`
+    - `Sendmail`
+    - `sendmail`
+    - `Zend\Mail\Transport\Smtp`
+    - `Smtp`
+    - `smtp`
 - **server**: IP address or server name to be used while using a SMTP server. Will be ignored while using Sendmail.
 - **port**: SMTP server port while using SMTP server. Will be ignored while using Sendmail.
 - **from**: From email address.
@@ -120,10 +120,10 @@ The mail service can be automatically configured by using provided global config
 - **body**: Default body to be used. Usually this will be generated at runtime, but can be set as a string at config file. It can contain HTML too.
 - **subject**: Default email subject.
 - **template**: Array with template configuration. It has 3 child options.
-	- *use_template*: True or false. Tells if template should be used, making body option to be ignored.
-	- *path*: Path of the template. The same used while setting the template of a ViewModel ('application/index/list').
-	- *params*: Array with key-value pairs with parameters to be sent to the template.
-	- *children*: Array with child templates to be used within the main template (layout). Each one of them can have its own children. Look at `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` for details.
+    - *use_template*: True or false. Tells if template should be used, making body option to be ignored.
+    - *path*: Path of the template. The same used while setting the template of a ViewModel ('application/index/list').
+    - *params*: Array with key-value pairs with parameters to be sent to the template.
+    - *children*: Array with child templates to be used within the main template (layout). Each one of them can have its own children. Look at `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` for details.
 - **attachments_dir**: Path to a directory that will be recursively iterated. All found files will be attached to the email automatically. Will be ignored if it is not a string or is not an existing directory. This means that you could set it to `false` to disable this option.
 
 ### Event management

@@ -126,18 +126,18 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
         $this->mailOptions->setSsl(true);
     }
 
-	public function testTemplateArrayIsCastToTemplateOptions()
+    public function testTemplateArrayIsCastToTemplateOptions()
     {
-		$this->mailOptions->setTemplate(array());
-		$this->assertTrue($this->mailOptions->getTemplate() instanceof TemplateOptions);
-	}
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
-	public function testTemplateInvalidValueThrowsException()
+        $this->mailOptions->setTemplate(array());
+        $this->assertTrue($this->mailOptions->getTemplate() instanceof TemplateOptions);
+    }
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testTemplateInvalidValueThrowsException()
     {
-		$this->mailOptions->setTemplate("foo");
-	}
+        $this->mailOptions->setTemplate("foo");
+    }
 
     /**
      * @expectedException InvalidArgumentException

@@ -7,57 +7,57 @@ use AcMailer\Event\MailListener;
 class MailListenerMock implements MailListener
 {
 
-	private $onPreSendCalled 	= false;
-	private $onPostSendCalled 	= false;
-	private $onSendErrorCalled	= false;
+    private $onPreSendCalled    = false;
+    private $onPostSendCalled   = false;
+    private $onSendErrorCalled  = false;
 
-	/**
-	 * Called before sending the email
-	 * @param MailEvent $e
-	 * @return mixed
-	 */
-	public function onPreSend(MailEvent $e)
-	{
-		$this->onPreSendCalled = true;
-	}
+    /**
+     * Called before sending the email
+     * @param MailEvent $e
+     * @return mixed
+     */
+    public function onPreSend(MailEvent $e)
+    {
+        $this->onPreSendCalled = true;
+    }
 
-	/**
-	 * Called after sending the email
-	 * @param MailEvent $e
-	 * @return mixed
-	 */
-	public function onPostSend(MailEvent $e)
-	{
-		$this->onPostSendCalled = true;
-	}
+    /**
+     * Called after sending the email
+     * @param MailEvent $e
+     * @return mixed
+     */
+    public function onPostSend(MailEvent $e)
+    {
+        $this->onPostSendCalled = true;
+    }
 
-	/**
-	 * Called if an error occurs while sending the email
-	 * @param MailEvent $e
-	 * @return mixed
-	 */
-	public function onSendError(MailEvent $e)
-	{
-		$this->onSendErrorCalled = true;
-	}
+    /**
+     * Called if an error occurs while sending the email
+     * @param MailEvent $e
+     * @return mixed
+     */
+    public function onSendError(MailEvent $e)
+    {
+        $this->onSendErrorCalled = true;
+    }
 
-	/**
-	 * @return bool
-	 */
-	public function isOnPreSendCalled() {
-		return $this->onPreSendCalled;
-	}
-	/**
-	 * @return bool
-	 */
-	public function isOnPostSendCalled() {
-		return $this->onPostSendCalled;
-	}
-	/**
-	 * @return bool
-	 */
-	public function isOnSendErrorCalled() {
-		return $this->onSendErrorCalled;
-	}
+    /**
+     * @return bool
+     */
+    public function isOnPreSendCalled() {
+        return $this->onPreSendCalled;
+    }
+    /**
+     * @return bool
+     */
+    public function isOnPostSendCalled() {
+        return $this->onPostSendCalled;
+    }
+    /**
+     * @return bool
+     */
+    public function isOnSendErrorCalled() {
+        return $this->onSendErrorCalled;
+    }
 
 }
