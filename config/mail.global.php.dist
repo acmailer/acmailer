@@ -1,13 +1,13 @@
 <?php
 return array(
-	
+
     'mail_options' => array(
         
         /*
          * The mail adapter to be used. Valid options are Zend\Mail\Transport\Smtp and Zend\Mail\Transport\Sendmail
          * Default value is Zend\Mail\Transport\Sendmail
          */
-		//'mail_adapter' => 'Zend\Mail\Transport\Sendmail',
+        //'mail_adapter' => 'Zend\Mail\Transport\Sendmail',
         
         /*
          * Hostname or IP address of mail server to be used.
@@ -106,17 +106,31 @@ return array(
         //),
         
         /*
-         * Attachments directory. If this is a valid directory path, it will be iterated recursively and all found files will be attached to the email.
-         * Set this to a non string value (like false) to disable automatic attachments.
-         * Default value is data/mail/attachments, relative to project's root path.
+         * DEPRECATED. Use 'attachments' => 'dir' => 'path' instead
          */
         //'attachments_dir' => 'data/mail/attachments',
+
+        /*
+         * Attachments config.
+         * Allows to define an array of files that will be attached to the message, or even a directory that will be iterated to attach all found files.
+         * Set directory will only be iterated if 'iterate' property is true and 'path' is a valid directory. If 'recursive' is true all nested directories will be iterated too.
+         * If both files and dir are set, all files will be merged without duplication
+         * By default the files array is empty and the directory won't be iterated
+         */
+        //'attachments' => array(
+        //    'files' => array(),
+        //    'dir' => array(
+        //        'iterate'   => false,
+        //        'path'      => 'data/mail/attachments',
+        //        'recursive' => false,
+        //    ),
+        //),
         
         /*
          * If Zend\Mail\Transport\Smtp adapter is used, this is the SMTP server port
          */
         //'port' => 25,
         
-	)
-	
+    )
+
 );
