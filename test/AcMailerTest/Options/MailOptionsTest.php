@@ -45,7 +45,7 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('', $this->mailOptions->getSubject());
         $this->assertEquals('', $this->mailOptions->getBody());
         $this->assertEquals(25, $this->mailOptions->getPort());
-        $this->assertEquals('data/mail/attachments', $this->mailOptions->getAttachmentsDir());
+        $this->assertInstanceOf('AcMailer\Options\AttachmentsOptions', $this->mailOptions->getAttachments());
         $this->assertInstanceOf('AcMailer\Options\TemplateOptions', $this->mailOptions->getTemplate());
     }
 
@@ -145,6 +145,19 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
     public function testMailConnectionInvalidValueThrowsAnException()
     {
         $this->mailOptions->setConnectionClass("Foo");
+    }
+
+    public function testDeprecatedAttachmentsDirIsMapped()
+    {
+        $expected = 'bar/foo';
+        $this->mailOptions = new MailOptions(array('attachments_dir' => $expected));
+        $dir = $this->mailOptions->getAttachments()->getDir();
+        $this->assertEquals($expected, $dir['path']);
+
+        $expected = 'foo/bar';
+        $this->mailOptions->setAttachmentsDir($expected);
+        $dir = $this->mailOptions->getAttachments()->getDir();
+        $this->assertEquals($expected, $dir['path']);
     }
 
 }

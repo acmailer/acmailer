@@ -69,16 +69,28 @@ class MailServiceFactory implements FactoryInterface
         }
 
         // Attach files
-        $dir = $mailOptions->getAttachmentsDir();
-        if (is_string($dir) && is_dir($dir)) {
-            $files = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
-                \RecursiveIteratorIterator::CHILD_FIRST
-            );
+        $files = $mailOptions->getAttachments()->getFiles();
+        foreach ($files as $file) {
+            if (!is_file($file)) {
+                continue;
+            }
+            $mailService->addAttachment($file);
+        }
+        // Attach files from dir
+        $dir = $mailOptions->getAttachments()->getDir();
+        if ($dir['iterate'] === true && is_string($dir['path']) && is_dir($dir['path'])) {
+            $files = $dir['recursive'] === true ?
+                new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator($dir['path'], \RecursiveDirectoryIterator::SKIP_DOTS),
+                    \RecursiveIteratorIterator::CHILD_FIRST
+                ):
+                new \DirectoryIterator($dir['path']);
 
             /* @var \SplFileInfo $fileInfo */
             foreach ($files as $fileInfo) {
-                if ($fileInfo->isDir()) continue;
+                if ($fileInfo->isDir()) {
+                    continue;
+                }
                 $mailService->addAttachment($fileInfo->getPathname());
             }
         }
