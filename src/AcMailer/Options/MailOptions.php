@@ -476,6 +476,10 @@ class MailOptions extends AbstractOptions
      */
     public function getAttachments()
     {
+        if (!isset($this->attachments)) {
+            $this->setAttachments(array());
+        }
+
         return $this->attachments;
     }
 

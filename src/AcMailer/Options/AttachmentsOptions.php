@@ -35,15 +35,13 @@ class AttachmentsOptions extends AbstractOptions
     public function setDir($dir)
     {
         $this->dir = $dir;
-        return $this;
+        return $this->normalizeDirArray();
     }
-
     /**
      * @return array
      */
     public function getDir()
     {
-        $this->normalizeDirArray();
         return $this->dir;
     }
 
@@ -51,18 +49,34 @@ class AttachmentsOptions extends AbstractOptions
      * @param array $files
      * @return $this;
      */
-    public function setFiles($files)
+    public function setFiles(array $files)
     {
         $this->files = $files;
         return $this;
     }
-
     /**
      * @return array
      */
     public function getFiles()
     {
         return $this->files;
+    }
+    /**
+     * @param $filePath
+     * @return $this
+     */
+    public function addFile($filePath)
+    {
+        $this->files[] = $filePath;
+        return $this;
+    }
+    /**
+     * @param array $files
+     * @return $this
+     */
+    public function addFiles(array $files)
+    {
+        return $this->setFiles(array_merge($this->files, $files));
     }
 
     /**

@@ -45,7 +45,7 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('', $this->mailOptions->getSubject());
         $this->assertEquals('', $this->mailOptions->getBody());
         $this->assertEquals(25, $this->mailOptions->getPort());
-        $this->assertEquals('data/mail/attachments', $this->mailOptions->getAttachmentsDir());
+        $this->assertInstanceOf('AcMailer\Options\AttachmentsOptions', $this->mailOptions->getAttachments());
         $this->assertInstanceOf('AcMailer\Options\TemplateOptions', $this->mailOptions->getTemplate());
     }
 
