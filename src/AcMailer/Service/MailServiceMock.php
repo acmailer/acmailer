@@ -107,5 +107,13 @@ class MailServiceMock implements MailServiceInterface
     {
         // Do nothing
     }
+    /**
+     * Returns the list of attachments
+     * @return array
+     */
+    public function getAttachments()
+    {
+        // Do nothing
+    }
 
 }
