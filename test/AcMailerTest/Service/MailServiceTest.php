@@ -18,7 +18,6 @@ use AcMailer\Result\MailResult;
  */
 class MailServiceTest extends \PHPUnit_Framework_TestCase
 {
-    
     /**
      * @var \AcMailerTest\Mail\Transport\MockTransport
      */
@@ -121,5 +120,4 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($mailListener->isOnPostSendCalled());
         $this->assertTrue($mailListener->isOnSendErrorCalled());
     }
-
 }

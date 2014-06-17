@@ -10,7 +10,6 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
  */
 trait MailServiceAwareTrait
 {
-
     /**
      * @var MailServiceInterface
      */
@@ -42,5 +41,4 @@ trait MailServiceAwareTrait
 
         return $this->mailService;
     }
-
 }

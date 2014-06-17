@@ -26,7 +26,6 @@ use AcMailer\Exception\InvalidArgumentException;
  */
 class MailService implements MailServiceInterface, EventManagerAwareInterface, MailListenerAwareInterface
 {
-    
     /**
      * @var \Zend\Mail\Message
      */
@@ -162,7 +161,8 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         // If the body is not a string or a MimeMessage at this point, it is not a valid argument
         if (!is_string($body) && !($body instanceof MimeMessage)) {
             throw new InvalidArgumentException(sprintf(
-                "Provided body is not valid. It should be a string, a Zend\\Mime\\Part or a Zend\\Mime\\Message. %s provided",
+                "Provided body is not valid. It should be one of '%s'. %s provided",
+                implode("', '", array("string", "Zend\\Mime\\Part", "Zend\\Mime\\Message")),
                 is_object($body) ? get_class($body) : gettype($body)
             ));
         }
@@ -317,5 +317,4 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
             $mailListener->onSendError($e);
         }, $priority);
     }
-
 }

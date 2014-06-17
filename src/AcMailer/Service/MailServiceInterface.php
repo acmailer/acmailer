@@ -11,7 +11,6 @@ use AcMailer\Result\ResultInterface;
  */
 interface MailServiceInterface
 {
-    
     /**
      * Tries to send the message, returning a MailResult object
      * @return ResultInterface
@@ -71,5 +70,4 @@ interface MailServiceInterface
      * @param array $paths
      */
     public function setAttachments(array $paths);
-    
 }

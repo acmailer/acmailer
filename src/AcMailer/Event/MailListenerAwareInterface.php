@@ -8,7 +8,6 @@ namespace AcMailer\Event;
  */
 interface MailListenerAwareInterface
 {
-
     /**
      * Attaches a new MailListener
      * @param MailListener $mailListener
@@ -16,5 +15,4 @@ interface MailListenerAwareInterface
      * @return mixed
      */
     public function attachMailListener(MailListener $mailListener, $priority = 1);
-
-} 
+}

@@ -14,7 +14,6 @@ use AcMailer\Exception\InvalidArgumentException;
  */
 class MailOptions extends AbstractOptions
 {
-    
     /**
      * Mail adapter should be one of this types
      * @var array
@@ -139,11 +138,13 @@ class MailOptions extends AbstractOptions
                 ));
             }
         } elseif ($mailAdapter instanceof Sendmail || $mailAdapter instanceof Smtp) {
-           $this->mailAdapter = $mailAdapter;
+            $this->mailAdapter = $mailAdapter;
         } else {
-           throw new InvalidArgumentException(
-               "Defined adapter should be an instance of 'Zend\\Mail\\Transport\\Smtp' or 'Zend\\Mail\\Transport\\Sendmail'"
-           );
+            throw new InvalidArgumentException(sprintf(
+                "Defined adapter should be an instance of '' or '%s'",
+                "Zend\\Mail\\Transport\\Smtp",
+                "Zend\\Mail\\Transport\\Sendmail"
+            ));
         }
 
         return $this;
@@ -291,11 +292,12 @@ class MailOptions extends AbstractOptions
         if (!is_bool($ssl) && !is_string($ssl)) {
             throw new InvalidArgumentException('SSL value should be false, "ssl" or "tls".');
         } elseif (is_bool($ssl) && $ssl !== false) {
-            throw new InvalidArgumentException(
-                'Boolean true value for SSL is not supported. Only false can be used to disable SSL, otherwise "ssl" or "tls" values should be used.'
-            );
+            throw new InvalidArgumentException(sprintf(
+                'Supported values are boolean false, "ssl" or "tls", %s provided',
+                is_object(($ssl)) ? get_class($ssl) : gettype($ssl)
+            ));
         } elseif (is_string($ssl) && !in_array($ssl, $this->validSsl)) {
-           throw new InvalidArgumentException('SSL valid values are "ssl" or "tls".');
+            throw new InvalidArgumentException('SSL valid values are "ssl" or "tls".');
         }
 
         $this->ssl = $ssl;
@@ -460,7 +462,7 @@ class MailOptions extends AbstractOptions
     {
         if (is_array($attachments)) {
             $this->attachments = new AttachmentsOptions($attachments);
-        } else if ($attachments instanceof AttachmentsOptions) {
+        } elseif ($attachments instanceof AttachmentsOptions) {
             $this->attachments = $attachments;
         } else {
             throw new InvalidArgumentException(sprintf(
@@ -482,5 +484,4 @@ class MailOptions extends AbstractOptions
 
         return $this->attachments;
     }
-
 }

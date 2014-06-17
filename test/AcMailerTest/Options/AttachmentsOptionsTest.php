@@ -10,7 +10,6 @@ use AcMailer\Options\AttachmentsOptions;
  */
 class AttachmentsOptionsTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var AttachmentsOptions
      */
@@ -47,5 +46,4 @@ class AttachmentsOptionsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(AttachmentsOptions::DEFAULT_ITERATE, $dir['iterate']);
         $this->assertEquals(true, $dir['recursive']);
     }
-
-} 
+}

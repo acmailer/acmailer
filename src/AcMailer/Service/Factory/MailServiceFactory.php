@@ -20,7 +20,6 @@ use Zend\View\Renderer\PhpRenderer;
  */
 class MailServiceFactory implements FactoryInterface
 {
-
     public function createService(ServiceLocatorInterface $sm)
     {
         /* @var MailOptions $mailOptions */
@@ -97,5 +96,4 @@ class MailServiceFactory implements FactoryInterface
 
         return $mailService;
     }
-
 }

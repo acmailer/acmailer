@@ -12,7 +12,6 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  */
 class MailOptionsFactory implements FactoryInterface
 {
-
     /**
      * Create service
      *
@@ -24,5 +23,4 @@ class MailOptionsFactory implements FactoryInterface
         $config = $serviceLocator->get('Config');
         return new MailOptions(isset($config['mail_options']) ? $config['mail_options'] : array());
     }
-
 }

@@ -6,7 +6,6 @@ use AcMailer\Event\MailListener;
 
 class MailListenerMock implements MailListener
 {
-
     private $onPreSendCalled    = false;
     private $onPostSendCalled   = false;
     private $onSendErrorCalled  = false;
@@ -44,20 +43,22 @@ class MailListenerMock implements MailListener
     /**
      * @return bool
      */
-    public function isOnPreSendCalled() {
+    public function isOnPreSendCalled()
+    {
         return $this->onPreSendCalled;
     }
     /**
      * @return bool
      */
-    public function isOnPostSendCalled() {
+    public function isOnPostSendCalled()
+    {
         return $this->onPostSendCalled;
     }
     /**
      * @return bool
      */
-    public function isOnSendErrorCalled() {
+    public function isOnSendErrorCalled()
+    {
         return $this->onSendErrorCalled;
     }
-
 }

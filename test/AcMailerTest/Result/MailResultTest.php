@@ -2,6 +2,7 @@
 namespace AcMailerTest\Result;
 
 use AcMailer\Result\MailResult;
+use AcMailer\Result\ResultInterface;
 
 /**
  * Mail result test case
@@ -10,7 +11,9 @@ use AcMailer\Result\MailResult;
  */
 class MailResultTest extends \PHPUnit_Framework_TestCase
 {
-    
+    /**
+     * @var ResultInterface
+     */
     private $mailResult;
     
     public function testDefaultValues()
@@ -41,5 +44,4 @@ class MailResultTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->mailResult->hasException());
         $this->assertEquals($e, $this->mailResult->getException());
     }
-    
 }

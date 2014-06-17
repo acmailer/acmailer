@@ -8,7 +8,6 @@ namespace AcMailer\Result;
  */
 interface ResultInterface
 {
-    
     /**
      * Returns error message when an error occurs
      * @return string
@@ -32,5 +31,4 @@ interface ResultInterface
      * @return \Exception
      */
     public function getException();
-    
 }

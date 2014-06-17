@@ -13,7 +13,6 @@ use Zend\Mail\Message;
  */
 class MailServiceMock implements MailServiceInterface
 {
-
     /**
      * @var bool
      */
@@ -115,5 +114,4 @@ class MailServiceMock implements MailServiceInterface
     {
         // Do nothing
     }
-
 }
