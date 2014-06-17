@@ -8,7 +8,6 @@ namespace AcMailer\Options;
  */
 interface MailOptionsAwareInterface
 {
-    
     /**
      * @return MailOptions
      */
@@ -18,5 +17,4 @@ interface MailOptionsAwareInterface
      * @param MailOptions $options
      */
     public function setMailOptions(MailOptions $options);
-    
 }

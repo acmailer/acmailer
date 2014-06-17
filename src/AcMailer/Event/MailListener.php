@@ -8,7 +8,6 @@ namespace AcMailer\Event;
  */
 interface MailListener
 {
-
     /**
      * Called before sending the email
      * @param MailEvent $e
@@ -29,5 +28,4 @@ interface MailListener
      * @return mixed
      */
     public function onSendError(MailEvent $e);
-
 }

@@ -10,10 +10,8 @@ use Zend\View\Model\ViewModel;
  */
 interface ViewModelConvertibleInterface
 {
-
     /**
      * @return ViewModel
      */
     public function toViewModel();
-
 }

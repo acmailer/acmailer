@@ -11,7 +11,6 @@ use Exception;
  */
 class MailResult implements ResultInterface
 {
-    
     const DEFAULT_MESSAGE = "Success!!";
     
     /**
@@ -74,5 +73,4 @@ class MailResult implements ResultInterface
     {
         return $this->exception;
     }
-
 }

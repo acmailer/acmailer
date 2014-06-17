@@ -11,7 +11,6 @@ use Zend\EventManager\Event;
  */
 class MailEvent extends Event
 {
-
     const EVENT_MAIL_PRE_SEND   = 'event.mail.pre.send';
     const EVENT_MAIL_POST_SEND 	= 'event.mail.post.send';
     const EVENT_MAIL_SEND_ERROR	= 'event.mail.send.error';
@@ -43,5 +42,4 @@ class MailEvent extends Event
     {
         return $this->mailService;
     }
-
 }

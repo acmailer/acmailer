@@ -53,10 +53,38 @@ if ($result->isValid()) {
 
 Alternatively, the body of the message can be set from a view script by using `setTemplate` instead of `setBody`. It will use a renderer to render defined template and then set it as the email body internally.
 
+You can set the template as a string and pass the arguments for it.
+
 ```php
+[...]
+
 $mailService = $serviceManager->get('AcMailer\Service\MailService');
 $mailService->setSubject('This is the subject')
             ->setTemplate('application/emails/merry-christmas', array('name' => 'John Doe', 'date' => date('Y-m-d'));
+
+[...]
+```
+
+You can also set the template as a `Zend\View\Model\ViewModel` object, which will render child templates too.
+
+```php
+[...]
+
+$mailService = $serviceManager->get('AcMailer\Service\MailService');
+
+$layout = new \Zend\View\Model\ViewModel(array(
+    'name' => 'John Doe',
+    'date' => date('Y-m-d')
+));
+$layout->setTemplate("application/emails/merry-christmas");
+
+$footer = new \Zend\View\Model\ViewModel();
+$footer->setTemplate("application/emails/footer");
+
+$layout->addChild($footer, "footer");
+
+$mailService->setSubject('This is the subject')
+            ->setTemplate($layout);
 
 [...]
 ```
@@ -89,7 +117,7 @@ $mailService->setAttachments(array());
 [...]
 ```
 
-**Attention!!** Be careful on when attaching files to your email.
+**Attention!!** Be careful when attaching files to your email programatically.
 
 If mail options does not fit your needs or you need to update them at runtime, the message wrapped by MailService can be customized by getting it before calling send method.
 

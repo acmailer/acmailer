@@ -15,7 +15,6 @@ use Zend\Mail\Transport\File;
  */
 class MailOptionsTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var MailOptions
      */
@@ -159,5 +158,4 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
         $dir = $this->mailOptions->getAttachments()->getDir();
         $this->assertEquals($expected, $dir['path']);
     }
-
 }

@@ -8,7 +8,6 @@ namespace AcMailer\Service;
  */
 interface MailServiceAwareInterface
 {
-
     /**
      * @param MailServiceInterface $mailService
      * @return $this
@@ -19,5 +18,4 @@ interface MailServiceAwareInterface
      * @return MailServiceInterface
      */
     public function getMailService();
-
 }

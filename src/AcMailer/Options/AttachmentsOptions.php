@@ -10,7 +10,6 @@ use Zend\Stdlib\AbstractOptions;
  */
 class AttachmentsOptions extends AbstractOptions
 {
-
     const DEFAULT_ITERATE   = false;
     const DEFAULT_PATH      = 'data/mail/attachments';
     const DEFAULT_RECURSIVE = false;
@@ -97,5 +96,4 @@ class AttachmentsOptions extends AbstractOptions
 
         return $this;
     }
-
-} 
+}

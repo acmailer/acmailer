@@ -11,7 +11,6 @@ use Zend\View\Model\ViewModel;
  */
 class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInterface
 {
-
     /**
      * @var bool
      */
@@ -124,5 +123,4 @@ class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInt
 
         return $model;
     }
-
 }

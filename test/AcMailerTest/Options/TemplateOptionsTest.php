@@ -5,7 +5,6 @@ use AcMailer\Options\TemplateOptions;
 
 class TemplateOptionsTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var TemplateOptions
      */
@@ -61,5 +60,4 @@ class TemplateOptionsTest extends \PHPUnit_Framework_TestCase
             $this->recursiveChildAssert($child->getChildren());
         }
     }
-
-} 
+}
