@@ -6,6 +6,9 @@ return array(
             'AcMailer\Service\MailService'	=> 'AcMailer\Service\Factory\MailServiceFactory',
             'AcMailer\Options\MailOptions' 	=> 'AcMailer\Options\Factory\MailOptionsFactory'
         ),
+        'aliases' => array(
+            'mailservice' => 'AcMailer\Service\MailService'
+        )
     ),
 
     'view_manager' => array(
