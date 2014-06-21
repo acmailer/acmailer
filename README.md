@@ -119,6 +119,12 @@ $mailService->setAttachments(array());
 
 **Attention!!** Be careful when attaching files to your email programatically.
 
+Attached images can be displayed inmail by setting the `cid` to the image filename in the image tag like this (thanks to [omarev](https://github.com/acelaya/ZF2-AcMailer/pull/32)).
+
+```html
+<img alt="This is an attached image" src="cid:image-filename.jpg">
+```
+
 If mail options does not fit your needs or you need to update them at runtime, the message wrapped by MailService can be customized by getting it before calling send method.
 
 ```php
