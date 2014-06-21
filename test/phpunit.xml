@@ -2,7 +2,13 @@
 
 <phpunit bootstrap="./Bootstrap.php">
     <testsuites>
-    
+
+        <testsuite name="AcMailer Module">
+            <file>./AcMailerTest/ModuleTest.php</file>
+        </testsuite>
+        <testsuite name="AcMailer event test suite">
+            <directory>./AcMailerTest/Event</directory>
+        </testsuite>
         <testsuite name="AcMailer options test suite">
             <directory>./AcMailerTest/Options</directory>
         </testsuite>
