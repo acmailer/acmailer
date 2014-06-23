@@ -2,24 +2,15 @@
 namespace AcMailer;
 
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
-use Zend\Mvc\ModuleRouteListener;
-use Zend\Mvc\MvcEvent;
+use Zend\ModuleManager\Feature\ConfigProviderInterface;
 
 /**
- * 
+ * Module class
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class Module implements AutoloaderProviderInterface
+class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {
-    public function onBootstrap(MvcEvent $e)
-    {
-        // You may not need to do this if you're doing it elsewhere in your application
-        $eventManager        = $e->getApplication()->getEventManager();
-        $moduleRouteListener = new ModuleRouteListener();
-        $moduleRouteListener->attach($eventManager);
-    }
-    
     public function getAutoloaderConfig()
     {
         return array(
