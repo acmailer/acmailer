@@ -178,7 +178,7 @@ The mail service can be automatically configured by using provided global config
 This module comes with a built-in event system.
 An event is triggered before the mail is sent (`MailEvent::EVENT_MAIL_PRE_SEND`). If everything was OK another event is triggered (`MailEvent::EVENT_MAIL_POST_SEND`). If an error occured, an error event is triggered (`MailEvent::EVENT_MAIL_SEND_ERROR`).
 
-Managing mail events is as easy as implementing `AcMailer\Event\MailListener`. It provides the `onPreSend`, `onPostSend` and `onSendError` methods, which get a `MailEvent` parameter that can be used to get the MailService who produced the event.
+Managing mail events is as easy as extending `AcMailer\Event\AbstractMailListener`. It provides the `onPreSend`, `onPostSend` and `onSendError` methods, which get a `MailEvent` parameter that can be used to get the MailService who produced the event.
 
 Then attach the object to the `MailService` and the corresponding method will be automatically called when calling the `send` method.
 
@@ -187,6 +187,18 @@ $mailListener = new \Application\Event\MyMailListener();
 $mailService->attachMailListener($mailListener);
 
 $mailService->send(); // Mail events will be triggered at this moment
+```
+
+If you want to detach a previously attached event manager, just call detach MailListener like this.
+
+```php
+$mailListener = new \Application\Event\MyMailListener();
+$mailService->attachMailListener($mailListener);
+
+// Some conditions occurred which made us not to want the events to be triggered any more on this listener
+$mailService->detachMailListener($mailListener);
+
+$mailService->send(); // The events on the $mailListener won't be triggered.
 ```
 
 ### Testing

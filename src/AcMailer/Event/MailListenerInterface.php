@@ -1,12 +1,14 @@
 <?php
 namespace AcMailer\Event;
 
+use Zend\EventManager\ListenerAggregateInterface;
+
 /**
- * Interface MailListener
+ * Interface MailListenerInterface
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-interface MailListener
+interface MailListenerInterface extends ListenerAggregateInterface
 {
     /**
      * Called before sending the email
