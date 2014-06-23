@@ -178,7 +178,7 @@ The mail service can be automatically configured by using provided global config
 This module comes with a built-in event system.
 An event is triggered before the mail is sent (`MailEvent::EVENT_MAIL_PRE_SEND`). If everything was OK another event is triggered (`MailEvent::EVENT_MAIL_POST_SEND`). If an error occured, an error event is triggered (`MailEvent::EVENT_MAIL_SEND_ERROR`).
 
-Managing mail events is as easy as implementing `AcMailer\Event\MailListener`. It provides the `onPreSend`, `onPostSend` and `onSendError` methods, which get a `MailEvent` parameter that can be used to get the MailService who produced the event.
+Managing mail events is as easy as implementing `AcMailer\Event\MailListenerInterface`. It provides the `onPreSend`, `onPostSend` and `onSendError` methods, which get a `MailEvent` parameter that can be used to get the MailService who produced the event.
 
 Then attach the object to the `MailService` and the corresponding method will be automatically called when calling the `send` method.
 

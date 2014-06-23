@@ -2,11 +2,11 @@
 namespace AcMailer\Event;
 
 /**
- * Interface MailListener
+ * Interface MailListenerInterface
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-interface MailListener
+interface MailListenerInterface
 {
     /**
      * Called before sending the email
