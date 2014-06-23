@@ -1,10 +1,10 @@
 <?php
 namespace AcMailerTest\Event;
 
+use AcMailer\Event\AbstractMailListener;
 use AcMailer\Event\MailEvent;
-use AcMailer\Event\MailListenerInterface;
 
-class MailListenerMock implements MailListenerInterface
+class MailListenerMock extends AbstractMailListener
 {
     private $onPreSendCalled    = false;
     private $onPostSendCalled   = false;

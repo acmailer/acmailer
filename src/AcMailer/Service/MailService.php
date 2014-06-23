@@ -307,14 +307,18 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      */
     public function attachMailListener(MailListenerInterface $mailListener, $priority = 1)
     {
-        $this->getEventManager()->attach(MailEvent::EVENT_MAIL_PRE_SEND, function (MailEvent $e) use ($mailListener) {
-            $mailListener->onPreSend($e);
-        }, $priority);
-        $this->getEventManager()->attach(MailEvent::EVENT_MAIL_POST_SEND, function (MailEvent $e) use ($mailListener) {
-            $mailListener->onPostSend($e);
-        }, $priority);
-        $this->getEventManager()->attach(MailEvent::EVENT_MAIL_SEND_ERROR, function (MailEvent $e) use ($mailListener) {
-            $mailListener->onSendError($e);
-        }, $priority);
+        $this->getEventManager()->attach($mailListener, $priority);
+        return $this;
+    }
+
+    /**
+     * Detaches provided MailListener
+     * @param MailListenerInterface $mailListener
+     * @return $this
+     */
+    public function detachMailListener(MailListenerInterface $mailListener)
+    {
+        $mailListener->detach($this->getEventManager());
+        return $this;
     }
 }
