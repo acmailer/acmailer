@@ -1,12 +1,12 @@
 <phpdox xmlns="http://phpdox.net/config">
-    <project name="ZF2-AcMailer" source="${basedir}/src" workdir="${basedir}/data/build/phpdox/bin">
+    <project name="ZF2-AcMailer" source="${basedir}/src" workdir="${basedir}/build/phpdox/bin">
         <collector publiconly="false">
             <include mask="*.php"/>
             <exclude mask="*Autoload.php"/>
             <exclude mask="${basedir}/vendor/**"/>
         </collector>
 
-        <generator output="${basedir}/data/build/phpdox">
+        <generator output="${basedir}/build/phpdox">
             <build engine="html" enabled="true" output="docs"/>
         </generator>
     </project>

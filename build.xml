@@ -5,7 +5,7 @@
     <property name="test.dir" value="${application.startdir}/test" />
     <property name="vendor.dir" value="vendor" />
 
-    <property name="build.out.dir" value="data/build" />
+    <property name="build.out.dir" value="build" />
     <property name="phpdox.out.dir" value="${build.out.dir}/phpdox/bin" />
     <property name="phpunit.out.dir" value="${build.out.dir}/phpunit" />
     <property name="phpcpd.out.dir" value="${build.out.dir}/phpcpd" />

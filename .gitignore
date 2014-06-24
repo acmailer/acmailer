@@ -1,5 +1,9 @@
+# Tests config
 config/mail.global.php
+
+# Build
 data
+build
 vendor
-composer.lock
 phing*.phar
+composer.lock
