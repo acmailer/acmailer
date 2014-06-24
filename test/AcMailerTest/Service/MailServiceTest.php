@@ -10,6 +10,7 @@ use AcMailer\Service\MailService;
 use Zend\Mime\Part as MimePart;
 use Zend\Mime\Message as MimeMessage;
 use AcMailer\Result\MailResult;
+use Zend\View\Resolver\TemplatePathStack;
 
 /**
  * Mail service test case
@@ -104,6 +105,7 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
         $this->mailService->attachMailListener($mailListener);
         $result = $this->mailService->send();
 
+        $this->assertTrue($result->isValid());
         $this->assertTrue($mailListener->isOnPreSendCalled());
         $this->assertTrue($mailListener->isOnPostSendCalled());
         $this->assertFalse($mailListener->isOnSendErrorCalled());
@@ -116,8 +118,76 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
         $this->mailService->attachMailListener($mailListener);
         $result = $this->mailService->send();
 
+        $this->assertFalse($result->isValid());
         $this->assertTrue($mailListener->isOnPreSendCalled());
         $this->assertFalse($mailListener->isOnPostSendCalled());
         $this->assertTrue($mailListener->isOnSendErrorCalled());
+    }
+
+    public function testDetachedMailListenerIsNotTriggered()
+    {
+        $mailListener = new MailListenerMock();
+        $this->mailService->attachMailListener($mailListener);
+        $this->mailService->detachMailListener($mailListener);
+        $result = $this->mailService->send();
+
+        $this->assertTrue($result->isValid());
+        $this->assertFalse($mailListener->isOnPreSendCalled());
+        $this->assertFalse($mailListener->isOnPostSendCalled());
+        $this->assertFalse($mailListener->isOnSendErrorCalled());
+    }
+
+    public function testValidTemplateMakesBodyToBeMimeMessage()
+    {
+        $resolver = new TemplatePathStack();
+        $resolver->addPath(__DIR__ . '/../../../view');
+        $this->mailService->getRenderer()->setResolver($resolver);
+        $this->mailService->setTemplate('ac-mailer/mail-templates/mail.phtml');
+
+        $this->assertInstanceOf('Zend\Mime\Message', $this->mailService->getMessage()->getBody());
+    }
+
+    /**
+     * @expectedException \Zend\View\Exception\RuntimeException
+     */
+    public function testInvalidTemplateThrowsException()
+    {
+        $this->mailService->setTemplate('foo/bar');
+    }
+
+    public function testAttachmentsTotal()
+    {
+        $this->assertCount(0, $this->mailService->getAttachments());
+
+        $this->mailService->setAttachments(array('one', 'two', 'three'));
+        $this->mailService->addAttachments(array('four', 'five', 'six'));
+        $this->mailService->addAttachment('seven');
+        $this->mailService->addAttachment('eight');
+        $this->assertCount(8, $this->mailService->getAttachments());
+
+        $this->mailService->setAttachments(array('one', 'two'));
+        $this->assertCount(2, $this->mailService->getAttachments());
+
+        $this->mailService->addAttachments(array('three', 'four'));
+        $this->assertCount(4, $this->mailService->getAttachments());
+    }
+
+    public function testAttachmentsAreAddedAsMimeParts()
+    {
+        $this->mailService->setAttachments(array(
+            'attachments/file1',
+            'attachments/file2',
+            'attachments/dir/file3',
+            'invalid/attachment'
+        ));
+        $this->mailService->setBody('Body as string');
+        $result = $this->mailService->send();
+        $this->assertTrue($result->isValid());
+
+        /* @var MimeMessage $body */
+        $body = $this->mailService->getMessage()->getBody();
+        $this->assertInstanceOf('Zend\Mime\Message', $body);
+        // The body and the three attached files make it a total of 4 parts
+        $this->assertCount(4, $body->getParts());
     }
 }

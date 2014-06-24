@@ -78,37 +78,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     public function send()
     {
         // Attach files before sending the email
-        if (count($this->attachments) > 0) {
-            $mimeMessage = $this->message->getBody();
-            if (!$mimeMessage instanceof MimeMessage) {
-                $this->setBody(new MimePart($mimeMessage));
-                $mimeMessage = $this->message->getBody();
-            }
-            $bodyContent        = $mimeMessage->generateMessage();
-            $bodyPart           = new MimePart($bodyContent);
-            $bodyPart->type     = Mime::TYPE_HTML; // TODO
-            $attachmentParts    = array();
-            $info               = new \finfo(FILEINFO_MIME_TYPE);
-            foreach ($this->attachments as $attachment) {
-                if (!is_file($attachment)) {
-                    continue; // If checked file is not valid, continue to the next
-                }
-                
-                $basename = basename($attachment);
-                
-                $part               = new MimePart(fopen($attachment, 'r'));
-                $part->id           = $basename;
-                $part->filename     = $basename;
-                $part->type         = $info->file($attachment);
-                $part->encoding     = Mime::ENCODING_BASE64;
-                $part->disposition  = Mime::DISPOSITION_ATTACHMENT;
-                $attachmentParts[]  = $part;
-            }
-            array_unshift($attachmentParts, $bodyPart);
-            $body = new MimeMessage();
-            $body->setParts($attachmentParts);
-            $this->message->setBody($body);
-        }
+        $this->attachFiles();
         
         // Send the email
         try {
@@ -212,13 +182,53 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
                 $result = $this->renderer->render($child);
 
                 if ($child->isAppend()) {
-                    $oldResult=$model->{$capture};
+                    $oldResult = $model->{$capture};
                     $model->setVariable($capture, $oldResult . $result);
                 } else {
                     $model->setVariable($capture, $result);
                 }
             }
         }
+    }
+
+    /**
+     * Attaches files to the message
+     */
+    protected function attachFiles()
+    {
+        if (count($this->attachments) == 0) {
+            return;
+        }
+
+        $mimeMessage = $this->message->getBody();
+        if (!$mimeMessage instanceof MimeMessage) {
+            $this->setBody(new MimePart($mimeMessage));
+            $mimeMessage = $this->message->getBody();
+        }
+        $bodyContent        = $mimeMessage->generateMessage();
+        $bodyPart           = new MimePart($bodyContent);
+        $bodyPart->type     = Mime::TYPE_HTML; // TODO
+        $attachmentParts    = array();
+        $info               = new \finfo(FILEINFO_MIME_TYPE);
+        foreach ($this->attachments as $attachment) {
+            if (!is_file($attachment)) {
+                continue; // If checked file is not valid, continue to the next
+            }
+
+            $basename = basename($attachment);
+
+            $part               = new MimePart(fopen($attachment, 'r'));
+            $part->id           = $basename;
+            $part->filename     = $basename;
+            $part->type         = $info->file($attachment);
+            $part->encoding     = Mime::ENCODING_BASE64;
+            $part->disposition  = Mime::DISPOSITION_ATTACHMENT;
+            $attachmentParts[]  = $part;
+        }
+        array_unshift($attachmentParts, $bodyPart);
+        $body = new MimeMessage();
+        $body->setParts($attachmentParts);
+        $this->message->setBody($body);
     }
     
     /**
@@ -320,5 +330,23 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     {
         $mailListener->detach($this->getEventManager());
         return $this;
+    }
+
+    /**
+     * Returns the transport object that will be used to send the wrapped message
+     * @return TransportInterface
+     */
+    public function getTransport()
+    {
+        return $this->transport;
+    }
+
+    /**
+     * Returns the renderer object that will be used to render templates
+     * @return RendererInterface
+     */
+    public function getRenderer()
+    {
+        return $this->renderer;
     }
 }
