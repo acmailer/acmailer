@@ -1,9 +1,12 @@
 <?php
 namespace AcMailer\Service;
 
-use AcMailer\Service\MailServiceInterface;
 use AcMailer\Result\MailResult;
 use Zend\Mail\Message;
+use Zend\Mail\Transport\TransportInterface;
+use Zend\View\Renderer\RendererInterface;
+use AcMailer\Result\ResultInterface;
+use AcMailer\Exception\InvalidArgumentException;
 
 /**
  * This class is meant to supplant MailService when unit testing elements that depend on a MailServiceInterface.
@@ -21,10 +24,10 @@ class MailServiceMock implements MailServiceInterface
      * @var bool
      */
     private $forceError = false;
-    
+
     /**
-     * (non-PHPdoc)
-     * @see \AcMailer\Service\MailServiceInterface::send()
+     * Tries to send the message, returning a MailResult object
+     * @return ResultInterface
      */
     public function send()
     {
@@ -35,30 +38,37 @@ class MailServiceMock implements MailServiceInterface
             return new MailResult();
         }
     }
-    
-    /* (non-PHPdoc)
-     * @see \AcMailer\Service\MailServiceInterface::setBody()
+
+    /**
+     * Sets the message body
+     * @param \Zend\Mime\Part|\Zend\Mime\Message|string $body
+     * @throws InvalidArgumentException
      */
     public function setBody($body)
     {
         // Do nothing
     }
-    /* (non-PHPdoc)
-     * @see \AcMailer\Service\MailServiceInterface::setTemplate()
+    /**
+     * Sets the template to be used to create the body of the email
+     * @param string|\Zend\View\Model\ViewModel $template
+     * @param array $params
      */
     public function setTemplate($template, array $params = array())
     {
         // Do nothing
     }
-    /* (non-PHPdoc)
-     * @see \AcMailer\Service\MailServiceInterface::setSubject()
+    /**
+     * Sets the message subject
+     * @param string $subject
      */
     public function setSubject($subject)
     {
         // Do nothing
     }
-    /* (non-PHPdoc)
-     * @see \AcMailer\Service\MailServiceInterface::getMessage()
+    /**
+     * Returns the message that is going to be sent when method send is called
+     * @see \AcMailer\Service\MailServiceInterface::send()
+     * @return \Zend\Mail\Message
      */
     public function getMessage()
     {
@@ -85,22 +95,28 @@ class MailServiceMock implements MailServiceInterface
         $this->forceError = (bool) $forceError;
     }
 
-    /* (non-PHPdoc)
-     * @see \AcMailer\Service\MailServiceInterface::addAttachment()
+    /**
+     * Provides the path of a file that will be attached to the message while sending it,
+     * as well as other previously defined attachments
+     * @param string $path
      */
     public function addAttachment($path)
     {
         // Do nothing
     }
-    /* (non-PHPdoc)
-     * @see \AcMailer\Service\MailServiceInterface::addAttachments()
+    /**
+     * Provides an array of paths of files that will be attached to the message while sending it,
+     * as well as other previously defined attachments
+     * @param array $paths
      */
     public function addAttachments(array $paths)
     {
         // Do nothing
     }
-    /* (non-PHPdoc)
-     * @see \AcMailer\Service\MailServiceInterface::setAttachments()
+    /**
+     * Sets the list of paths of files that will be attached to the message while sending it,
+     * discarding any previously defined attachment
+     * @param array $paths
      */
     public function setAttachments(array $paths)
     {
@@ -111,6 +127,24 @@ class MailServiceMock implements MailServiceInterface
      * @return array
      */
     public function getAttachments()
+    {
+        // Do nothing
+    }
+
+    /**
+     * Returns the transport object that will be used to send the wrapped message
+     * @return TransportInterface
+     */
+    public function getTransport()
+    {
+        // Do nothing
+    }
+
+    /**
+     * Returns the renderer object that will be used to render templates
+     * @return RendererInterface
+     */
+    public function getRenderer()
     {
         // Do nothing
     }

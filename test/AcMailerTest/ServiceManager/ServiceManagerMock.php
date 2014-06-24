@@ -50,4 +50,16 @@ class ServiceManagerMock implements ServiceLocatorInterface
     {
         return array_key_exists($name, $this->services);
     }
+
+    /**
+     * Sets the service with defined key
+     * @param $key
+     * @param $service
+     * @return $this
+     */
+    public function set($key, $service)
+    {
+        $this->services[$key] = $service;
+        return $this;
+    }
 }

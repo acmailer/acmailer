@@ -24,6 +24,7 @@
     <filter>
         <whitelist>
             <directory>../src</directory>
+            <file>../Module.php</file>
         </whitelist>
     </filter>
 </phpunit>
