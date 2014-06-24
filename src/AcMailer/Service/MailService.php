@@ -321,4 +321,22 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $mailListener->detach($this->getEventManager());
         return $this;
     }
+
+    /**
+     * Returns the transport object that will be used to send the wrapped message
+     * @return TransportInterface
+     */
+    public function getTransport()
+    {
+        return $this->transport;
+    }
+
+    /**
+     * Returns the renderer object that will be used to render templates
+     * @return RendererInterface
+     */
+    public function getRenderer()
+    {
+        return $this->renderer;
+    }
 }

@@ -3,6 +3,8 @@ namespace AcMailer\Service;
 
 use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Result\ResultInterface;
+use Zend\Mail\Transport\TransportInterface;
+use Zend\View\Renderer\RendererInterface;
 
 /**
  * Provides methods to be implemented by a valid MailService
@@ -70,4 +72,16 @@ interface MailServiceInterface
      * @param array $paths
      */
     public function setAttachments(array $paths);
+
+    /**
+     * Returns the transport object that will be used to send the wrapped message
+     * @return TransportInterface
+     */
+    public function getTransport();
+
+    /**
+     * Returns the renderer object that will be used to render templates
+     * @return RendererInterface
+     */
+    public function getRenderer();
 }
