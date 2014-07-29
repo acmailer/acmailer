@@ -19,7 +19,7 @@ Define dependencies in your composer.json file
 ```json
 {
     "require": {
-        "acelaya/zf2-acmailer": "2.*"
+        "acelaya/zf2-acmailer": "3.*"
     }
 }
 ```
