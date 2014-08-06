@@ -114,7 +114,8 @@ class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
     private function initServiceLocator(array $mailOptions = array())
     {
         $this->serviceLocator = new ServiceManagerMock(array(
-            'AcMailer\Options\MailOptions' => new MailOptions($mailOptions)
+            'AcMailer\Options\MailOptions' => new MailOptions($mailOptions),
+            'Config' => include __DIR__ . '/../../config/module.config.php'
         ));
     }
 
