@@ -12,6 +12,10 @@ use AcMailer\Options\MailOptions;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer;
+use Zend\View\Renderer\RendererInterface;
+use Zend\View\Resolver\AggregateResolver;
+use Zend\View\Resolver\TemplateMapResolver;
+use Zend\View\Resolver\TemplatePathStack;
 
 /**
  * Constructs a new MailService injecting on it a Message and Transport object constructed with mail options
@@ -55,7 +59,7 @@ class MailServiceFactory implements FactoryInterface
         }
 
         // Prepare MailService
-        $renderer       = $sm->has('viewrenderer') ? $sm->get('viewrenderer') : new PhpRenderer();
+        $renderer       = $this->createRenderer($sm);
         $mailService    = new MailService($message, $transport, $renderer);
         $mailService->setSubject($mailOptions->getSubject());
 
@@ -95,5 +99,41 @@ class MailServiceFactory implements FactoryInterface
         }
 
         return $mailService;
+    }
+
+    /**
+     * @param ServiceLocatorInterface $sm
+     * @return RendererInterface
+     */
+    protected function createRenderer(ServiceLocatorInterface $sm)
+    {
+        if ($sm->has('viewrenderer')) {
+            return $sm->get('viewrenderer');
+        };
+
+        // In case the renderer service is not defined, try to construct it
+        $config = $sm->get('Config');
+        $renderer = new PhpRenderer();
+        if (isset($config['view_manager'])) {
+            // Check what kind of view_manager configuration has been defined
+            if (
+                isset($config['view_manager']['template_map']) &&
+                isset($config['view_manager']['template_path_stack'])
+            ) {
+                // If both a template_map and a template_path_stack have been defined, create an AggregateResolver
+                $resolver = new AggregateResolver();
+                $resolver->attach(new TemplateMapResolver($config['view_manager']['template_map']))
+                         ->attach(new TemplatePathStack($config['view_manager']['template_path_stack']));
+                $renderer->setResolver($resolver);
+            } elseif (isset($config['view_manager']['template_map'])) {
+                // Create a TemplateMapResolver in case only the template_map has been defined
+                $renderer->setResolver(new TemplateMapResolver($config['view_manager']['template_map']));
+            } elseif (isset($config['view_manager']['template_path_stack'])) {
+                // Create a TemplatePathStack resolver in case only the template_path_stack has been defined
+                $renderer->setResolver(new TemplatePathStack($config['view_manager']['template_path_stack']));
+            }
+        }
+
+        return $renderer;
     }
 }
