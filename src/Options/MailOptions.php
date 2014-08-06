@@ -141,7 +141,7 @@ class MailOptions extends AbstractOptions
             $this->mailAdapter = $mailAdapter;
         } else {
             throw new InvalidArgumentException(sprintf(
-                "Defined adapter should be an instance of '' or '%s'",
+                "Defined adapter should be an instance of '%s' or '%s'",
                 "Zend\\Mail\\Transport\\Smtp",
                 "Zend\\Mail\\Transport\\Sendmail"
             ));
