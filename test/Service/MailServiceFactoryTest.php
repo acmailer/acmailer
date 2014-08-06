@@ -102,9 +102,30 @@ class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
     public function testViewRendererService()
     {
         $this->initServiceLocator();
+        // Create the service with default configuration
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
         $this->assertInstanceOf('Zend\View\Renderer\PhpRenderer', $mailService->getRenderer());
+        $this->assertInstanceOf('Zend\View\Resolver\TemplatePathStack', $mailService->getRenderer()->resolver());
 
+        // Set a template_map and unset the template_path_stack
+        $config = $this->serviceLocator->get('Config');
+        unset($config['view_manager']['template_path_stack']);
+        $config['view_manager']['template_map'] = array();
+        $this->serviceLocator->set('Config', $config);
+        $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
+        $this->assertInstanceOf('Zend\View\Renderer\PhpRenderer', $mailService->getRenderer());
+        $this->assertInstanceOf('Zend\View\Resolver\TemplateMapResolver', $mailService->getRenderer()->resolver());
+
+        // Set both a template_map and a template_path_stack
+        $this->initServiceLocator();
+        $config = $this->serviceLocator->get('Config');
+        $config['view_manager']['template_map'] = array();
+        $this->serviceLocator->set('Config', $config);
+        $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
+        $this->assertInstanceOf('Zend\View\Renderer\PhpRenderer', $mailService->getRenderer());
+        $this->assertInstanceOf('Zend\View\Resolver\AggregateResolver', $mailService->getRenderer()->resolver());
+
+        // Set a viewrenderer service and see if it is used
         $renderer = new PhpRenderer();
         $this->serviceLocator->set('viewrenderer', $renderer);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
