@@ -145,17 +145,4 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
     {
         $this->mailOptions->setConnectionClass("Foo");
     }
-
-    public function testDeprecatedAttachmentsDirIsMapped()
-    {
-        $expected = 'bar/foo';
-        $this->mailOptions = new MailOptions(array('attachments_dir' => $expected));
-        $dir = $this->mailOptions->getAttachments()->getDir();
-        $this->assertEquals($expected, $dir['path']);
-
-        $expected = 'foo/bar';
-        $this->mailOptions->setAttachmentsDir($expected);
-        $dir = $this->mailOptions->getAttachments()->getDir();
-        $this->assertEquals($expected, $dir['path']);
-    }
 }

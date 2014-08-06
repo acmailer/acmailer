@@ -373,29 +373,6 @@ class MailOptions extends AbstractOptions
     }
     
     /**
-     * @return string
-     * @deprecated
-     */
-    public function getAttachmentsDir()
-    {
-        $dir = $this->getAttachments()->getDir();
-        return isset($dir['path']) ? $dir['path'] : AttachmentsOptions::DEFAULT_PATH;
-    }
-    /**
-     * Sets attachments dir
-     * @param string $attachmentsDir
-     * @return \AcMailer\Options\MailOptions
-     * @deprecated
-     */
-    public function setAttachmentsDir($attachmentsDir)
-    {
-        $dir = $this->getAttachments()->getDir();
-        $dir['path'] = $attachmentsDir;
-        $this->getAttachments()->setDir($dir);
-        return $this;
-    }
-    
-    /**
      * @return TemplateOptions
      */
     public function getTemplate()

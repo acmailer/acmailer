@@ -115,11 +115,6 @@ return array(
         //        )
         //    )
         //),
-        
-        /*
-         * DEPRECATED. Use 'attachments' => 'dir' => 'path' instead
-         */
-        //'attachments_dir' => 'data/mail/attachments',
 
         /*
          * Attachments config.
