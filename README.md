@@ -173,7 +173,6 @@ The mail service can be automatically configured by using provided global config
         - *iterate*: If it is not true, the directory won't be iterated.
         - *path*: The path of the directory to iterate looking for files.
         - *recursive*: True or false. Tells if nested directories should be iterated too.
-- ~~attachments_dir~~: **DEPRECATED**. Use 'attachments' => 'dir' => 'path' instead.
 
 ### Event management
 
