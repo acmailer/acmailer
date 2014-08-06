@@ -30,8 +30,11 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
     
     public function setUp()
     {
-        $this->transport    = new MockTransport();
-        $this->mailService  = new MailService(new Message(), $this->transport, new PhpRenderer());
+        $this->transport = new MockTransport();
+        $config = include __DIR__ . '/../../config/module.config.php';
+        $renderer = new PhpRenderer();
+        $renderer->setResolver(new TemplatePathStack($config['view_manager']['template_path_stack']));
+        $this->mailService = new MailService(new Message(), $this->transport, $renderer);
     }
     
     public function testMimePartBodyCasting()
@@ -140,7 +143,7 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
     public function testValidTemplateMakesBodyToBeMimeMessage()
     {
         $resolver = new TemplatePathStack();
-        $resolver->addPath(__DIR__ . '/../../../view');
+        $resolver->addPath(__DIR__ . '/../../view');
         $this->mailService->getRenderer()->setResolver($resolver);
         $this->mailService->setTemplate('ac-mailer/mail-templates/mail.phtml');
 
@@ -174,6 +177,8 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testAttachmentsAreAddedAsMimeParts()
     {
+        $cwd = getcwd();
+        chdir(dirname(__DIR__));
         $this->mailService->setAttachments(array(
             'attachments/file1',
             'attachments/file2',
@@ -189,5 +194,6 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Zend\Mime\Message', $body);
         // The body and the three attached files make it a total of 4 parts
         $this->assertCount(4, $body->getParts());
+        chdir($cwd);
     }
 }

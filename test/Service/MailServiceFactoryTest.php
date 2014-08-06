@@ -135,7 +135,7 @@ class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
         $this->initServiceLocator($options);
 
         $resolver = new TemplatePathStack();
-        $resolver->addPath(__DIR__ . '/../../../view');
+        $resolver->addPath(__DIR__ . '/../../view');
         $renderer = new PhpRenderer();
         $renderer->setResolver($resolver);
         $this->serviceLocator->set('viewrenderer', $renderer);
@@ -147,6 +147,8 @@ class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testFileAttachments()
     {
+        $cwd = getcwd();
+        chdir(dirname(__DIR__));
         $options = array(
             'attachments' => array(
                 'files' => array(
@@ -166,5 +168,6 @@ class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
 
         $this->assertCount(4, $mailService->getAttachments());
+        chdir($cwd);
     }
 }
