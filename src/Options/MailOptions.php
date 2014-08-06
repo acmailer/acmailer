@@ -44,7 +44,7 @@ class MailOptions extends AbstractOptions
     );
     
     /**
-     * @var string
+     * @var string|TransportInterface
      */
     protected $mailAdapter = '\Zend\Mail\Transport\Sendmail';
     /**

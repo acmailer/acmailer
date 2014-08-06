@@ -35,7 +35,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      */
     private $transport;
     /**
-     * @var \Zend\View\Renderer\PhpRenderer
+     * @var RendererInterface
      */
     private $renderer;
     /**
