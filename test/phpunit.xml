@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="./Bootstrap.php">
+<phpunit bootstrap="./bootstrap.php" colors="true">
     <testsuites>
 
         <testsuite name="AcMailer Module">
-            <file>./AcMailerTest/ModuleTest.php</file>
+            <file>./ModuleTest.php</file>
         </testsuite>
         <testsuite name="AcMailer event test suite">
-            <directory>./AcMailerTest/Event</directory>
+            <directory>./Event</directory>
         </testsuite>
         <testsuite name="AcMailer options test suite">
-            <directory>./AcMailerTest/Options</directory>
+            <directory>./Options</directory>
         </testsuite>
         <testsuite name="AcMailer result test suite">
-            <directory>./AcMailerTest/Result</directory>
+            <directory>./Result</directory>
         </testsuite>
         <testsuite name="AcMailer service test suite">
-            <directory>./AcMailerTest/Service</directory>
+            <directory>./Service</directory>
         </testsuite>
         
     </testsuites>
@@ -24,7 +24,10 @@
     <filter>
         <whitelist>
             <directory>../src</directory>
-            <file>../Module.php</file>
+            <exclude>
+                <file>../src/Service/MailServiceAwareTrait.php</file>
+                <file>../src/Service/MailServiceMock.php</file>
+            </exclude>
         </whitelist>
     </filter>
 </phpunit>

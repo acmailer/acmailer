@@ -37,11 +37,13 @@
         "zendframework/zendframework": ">=2.2.2"
     },
     "autoload" : {
-        "psr-0" : {
-            "AcMailer" : "src/"
-        },
-        "classmap" : [
-            "./Module.php"
-        ]
+        "psr-4" : {
+            "AcMailer\\" : "src/"
+        }
+    },
+    "autoload-dev" : {
+        "psr-4" : {
+            "AcMailerTest\\" : "test/"
+        }
     }
 }
