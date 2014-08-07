@@ -5,6 +5,7 @@ use AcMailer\Options\MailOptions;
 use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Options\TemplateOptions;
 use MyProject\Proxies\__CG__\stdClass;
+use Zend\Mail\Transport\Null;
 use Zend\Mail\Transport\Sendmail;
 use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\File;
@@ -48,6 +49,8 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(25, $this->mailOptions->getPort());
         $this->assertInstanceOf('AcMailer\Options\AttachmentsOptions', $this->mailOptions->getAttachments());
         $this->assertInstanceOf('AcMailer\Options\TemplateOptions', $this->mailOptions->getTemplate());
+        $this->assertEquals('data/mail/output', $this->mailOptions->getFilePath());
+        $this->assertNull($this->mailOptions->getFileCallback());
     }
 
     public function testMailAdapterNameConversion()
@@ -57,6 +60,12 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
         
         $this->mailOptions->setMailAdapter("smtp");
         $this->assertTrue($this->mailOptions->getMailAdapter() instanceof Smtp);
+
+        $this->mailOptions->setMailAdapter("FILE");
+        $this->assertTrue($this->mailOptions->getMailAdapter() instanceof File);
+
+        $this->mailOptions->setMailAdapter("null");
+        $this->assertTrue($this->mailOptions->getMailAdapter() instanceof Null);
     }
     
     /**
@@ -154,5 +163,13 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
     public function testAdapterServiceInvalidValueThrowsAnException()
     {
         $this->mailOptions->setMailAdapterService(45);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testFilePathInvalidValueThrowsAnException()
+    {
+        $this->mailOptions->setFilePath(321);
     }
 }

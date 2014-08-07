@@ -111,6 +111,14 @@ class MailOptions extends AbstractOptions
      * @var AttachmentsOptions
      */
     protected $attachments;
+    /**
+     * @var string
+     */
+    protected $filePath = 'data/mail/output';
+    /**
+     * @var callable
+     */
+    protected $fileCallback = null;
     
     /**
      * @return TransportInterface the $mailAdapter
@@ -488,5 +496,49 @@ class MailOptions extends AbstractOptions
     public function getMailAdapterService()
     {
         return $this->mailAdapterService;
+    }
+
+    /**
+     * @param callable $fileCallback
+     * @return $this;
+     */
+    public function setFileCallback($fileCallback)
+    {
+        $this->fileCallback = $fileCallback;
+        return $this;
+    }
+
+    /**
+     * @return callable
+     */
+    public function getFileCallback()
+    {
+        return $this->fileCallback;
+    }
+
+    /**
+     * @param $filePath
+     * @return $this
+     * @throws \AcMailer\Exception\InvalidArgumentException
+     */
+    public function setFilePath($filePath)
+    {
+        if (!is_string($filePath)) {
+            throw new InvalidArgumentException(sprintf(
+                'Provided value of type "%s" is not valid. Expected "string"',
+                is_object($filePath) ? get_class($filePath): gettype($filePath)
+            ));
+        }
+
+        $this->filePath = $filePath;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilePath()
+    {
+        return $this->filePath;
     }
 }
