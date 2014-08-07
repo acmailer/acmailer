@@ -31,7 +31,7 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
 
     public function testGetConfig()
     {
-        $expectedConfig = include __DIR__ . '/../../config/module.config.php';
+        $expectedConfig = include __DIR__ . '/../config/module.config.php';
         $returnedConfig = $this->module->getConfig();
 
         $this->assertEquals($expectedConfig, $returnedConfig);

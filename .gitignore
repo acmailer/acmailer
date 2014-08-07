@@ -2,8 +2,6 @@
 config/mail.global.php
 
 # Build
-data
 build
 vendor
-phing*.phar
 composer.lock

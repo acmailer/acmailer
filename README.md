@@ -1,6 +1,8 @@
 ## AcMailer
 
 [![Build Status](https://travis-ci.org/acelaya/ZF2-AcMailer.svg?branch=master)](https://travis-ci.org/acelaya/ZF2-AcMailer)
+[![Code Coverage](https://scrutinizer-ci.com/g/acelaya/ZF2-AcMailer/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/acelaya/ZF2-AcMailer/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/acelaya/ZF2-AcMailer/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/acelaya/ZF2-AcMailer/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/acelaya/zf2-acmailer/v/stable.png)](https://packagist.org/packages/acelaya/zf2-acmailer)
 [![Total Downloads](https://poser.pugx.org/acelaya/zf2-acmailer/downloads.png)](https://packagist.org/packages/acelaya/zf2-acmailer)
 [![License](https://poser.pugx.org/acelaya/zf2-acmailer/license.png)](https://packagist.org/packages/acelaya/zf2-acmailer)
@@ -19,7 +21,7 @@ Define dependencies in your composer.json file
 ```json
 {
     "require": {
-        "acelaya/zf2-acmailer": "3.*"
+        "acelaya/zf2-acmailer": "4.*"
     }
 }
 ```
@@ -136,32 +138,33 @@ $message->addTo("foobar@example.com")
 $result = $mailService->send();
 ```
 
+If you are using a `Zend\Mail\Transport\File` as the transport object and need to change any option at runtime do this
+
+```php
+[...]
+
+$mailService = $serviceManager->get('AcMailer\Service\MailService');
+$mailService->getTransport()->getOptions()->setPath('dynamically/generated/folder');
+$result = $mailService->send();
+
+[...]
+```
+
 ### Configuration options
 
 The mail service can be automatically configured by using provided global configuration file. Supported options are fully explained at that file. This is what they are for.
 
-- **mail_adapter**: Tells mail service what type of transport adapter should be used. SMTP and Sendmail are supported and values for this option can be any of these:
-    - `Zend\Mail\Transport\Sendmail`
-    - `Sendmail`
-    - `sendmail`
-    - `Zend\Mail\Transport\Smtp`
-    - `Smtp`
-    - `smtp`
-- **server**: IP address or server name to be used while using a SMTP server. Will be ignored while using Sendmail.
-- **port**: SMTP server port while using SMTP server. Will be ignored while using Sendmail.
+- **mail_adapter**: Tells mail service what type of transport adapter should be used. Any object or classname implementing `Zend\Mail\Transport\TransportInterface` is valid.
+- **mail_adapter_service**: A service name to be used to get the transport object, in case standard transport configuration does not fit your needs. If defined, the **mail_adapter** option will be ignored.
 - **from**: From email address.
 - **from_name**: From name to be displayed.
 - **to**: It can be a string with one destination email address or an array of multiple addresses.
 - **cc**: It can be a string with one carbon copy email address or an array of multiple addresses.
 - **bcc**: It can be a string with one blind carbon copy email address or an array of multiple addresses.
-- **smtp_user**: Username to be used for authentication against SMTP server. If none is provided the `from` option will be used for this purpose.
-- **smtp_password**: Password to be used for authentication against SMTP server.
-- **ssl**: Defines type of connection encryption against SMTP server. Values are `false` to disable SSL, and 'ssl' or 'tls'.
-- **connection_class**: The connection class used for authentication while using a SMTP. Values are 'smtp', 'plain', 'login' or 'crammd5'
-- **body**: Default body to be used. Usually this will be generated at runtime, but can be set as a string at config file. It can contain HTML too.
 - **subject**: Default email subject.
+- **body**: Default body to be used. Usually this will be generated at runtime, but can be set as a string at config file. It can contain HTML too.
 - **template**: Array with template configuration. It has 3 child options.
-    - *use_template*: True or false. Tells if template should be used, making body option to be ignored.
+    - *use_template*: True or false. Tells if template should be used, making the **body** option to be ignored.
     - *path*: Path of the template. The same used while setting the template of a ViewModel ('application/index/list').
     - *params*: Array with key-value pairs with parameters to be sent to the template.
     - *children*: Array with child templates to be used within the main template (layout). Each one of them can have its own children. Look at `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` for details.
@@ -171,7 +174,16 @@ The mail service can be automatically configured by using provided global config
         - *iterate*: If it is not true, the directory won't be iterated.
         - *path*: The path of the directory to iterate looking for files.
         - *recursive*: True or false. Tells if nested directories should be iterated too.
-- ~~attachments_dir~~: **DEPRECATED**. Use 'attachments' => 'dir' => 'path' instead.
+- **server**: IP address or server name to be used while using a SMTP server. Only used for SMTP transport.
+- **port**: SMTP server port while using SMTP transport.
+- **smtp_user**: Username to be used for authentication against SMTP server. If none is provided the `from` option will be used for this purpose.
+- **smtp_password**: Password to be used for authentication against SMTP server.
+- **ssl**: Defines type of connection encryption against SMTP server. Values are `false` to disable SSL, and 'ssl' or 'tls'.
+- **connection_class**: The connection class used for authentication while using SMTP transport. Values are 'smtp', 'plain', 'login' or 'crammd5'
+- **file_path**: Directory where the email will be saved while using a File transport.
+- **file_callback**: Callback used to get the filename while using File transport.
+
+Many of the configuration options are specific for standard transport objects. If you are using a custom `Zend\Mail\Transport\TransportInterface` implementation, you can set the **mail_adapter_service** instead of the **mail_adapter** option, to define the service which returns the transport object.
 
 ### Event management
 
