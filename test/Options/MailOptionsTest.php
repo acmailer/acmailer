@@ -29,6 +29,7 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
     public function testDefaultMailOptionsValues()
     {
         $this->assertInstanceOf('\Zend\Mail\Transport\Sendmail', $this->mailOptions->getMailAdapter());
+        $this->assertNull($this->mailOptions->getMailAdapterService());
         $this->assertEquals('localhost', $this->mailOptions->getServer());
         $this->assertEquals('', $this->mailOptions->getFrom());
         $this->assertEquals('', $this->mailOptions->getFromName());

@@ -463,4 +463,22 @@ class MailOptions extends AbstractOptions
 
         return $this->attachments;
     }
+
+    /**
+     * @param null|string $mailAdapterService
+     * @return $this;
+     */
+    public function setMailAdapterService($mailAdapterService)
+    {
+        $this->mailAdapterService = $mailAdapterService;
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getMailAdapterService()
+    {
+        return $this->mailAdapterService;
+    }
 }
