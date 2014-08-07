@@ -4,6 +4,7 @@ namespace AcMailerTest\Service;
 use AcMailer\Options\MailOptions;
 use AcMailer\Service\Factory\MailServiceFactory;
 use AcMailerTest\ServiceManager\ServiceManagerMock;
+use Zend\Mail\Transport\Sendmail;
 use Zend\Mail\Transport\Smtp;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stdlib\ArrayUtils;
@@ -97,6 +98,41 @@ class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($options['ssl'], $connConfig['ssl']);
         $this->assertEquals($options['server'], $transport->getOptions()->getHost());
         $this->assertEquals($options['port'], $transport->getOptions()->getPort());
+    }
+
+    public function testAdapterAsService()
+    {
+        $this->initServiceLocator(array(
+            'mail_adapter_service' => 'Zend\Mail\Transport\TransportInterface'
+        ));
+        $transport = new Sendmail();
+        $this->serviceLocator->set('Zend\Mail\Transport\TransportInterface', $transport);
+        $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
+        $this->assertSame($transport, $mailService->getTransport());
+    }
+
+    /**
+     * @expectedException \Zend\ServiceManager\Exception\ServiceNotFoundException
+     */
+    public function testNonExistentAdapterAsService()
+    {
+        $this->initServiceLocator(array(
+            'mail_adapter_service' => 'Zend\Mail\Transport\TransportInterface'
+        ));
+        $this->mailServiceFactory->createService($this->serviceLocator);
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testInvalidAdapterAsService()
+    {
+        $this->initServiceLocator(array(
+            'mail_adapter_service' => 'Zend\Mail\Transport\TransportInterface'
+        ));
+        $transport = new \stdClass();
+        $this->serviceLocator->set('Zend\Mail\Transport\TransportInterface', $transport);
+        $this->mailServiceFactory->createService($this->serviceLocator);
     }
 
     public function testViewRendererService()

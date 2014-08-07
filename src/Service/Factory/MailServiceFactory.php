@@ -37,7 +37,8 @@ class MailServiceFactory implements FactoryInterface
                 ->setBcc($mailOptions->getBcc());
 
         // Prepare Mail Transport
-        $transport = $mailOptions->getMailAdapter();
+        $serviceName = $mailOptions->getMailAdapterService();
+        $transport = isset($serviceName) ? $sm->get($serviceName) : $mailOptions->getMailAdapter();
         if ($transport instanceof Smtp) {
             $connConfig = array(
                 'username' => $mailOptions->getSmtpUser(),
