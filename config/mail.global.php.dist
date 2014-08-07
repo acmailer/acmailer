@@ -4,10 +4,28 @@ return array(
     'mail_options' => array(
         
         /*
-         * The mail adapter to be used. Valid options are Zend\Mail\Transport\Smtp and Zend\Mail\Transport\Sendmail
+         * The mail adapter to be used.
+         * You can define any class implementing Zend\Mail\Transport\TransportInterface,
+         * either the class fully qualified name or the instance to be used.
+         * For standard mail transports, you can use aliases,
+         *      - sendmail  => Zend\Mail\Transport\Sendmail
+         *      - smtp      => Zend\Mail\Transport\Smtp
+         *      - file      => Zend\Mail\Transport\File
+         *      - null      => Zend\Mail\Transport\Null
          * Default value is Zend\Mail\Transport\Sendmail
          */
         //'mail_adapter' => 'Zend\Mail\Transport\Sendmail',
+
+        /*
+         * A service name which will return a Zend\Mail\Transport\TransportInterface instance to be used as the
+         * transport object.
+         * If this is set to something other than null, the 'mail_adapter' option will be ignored
+         * Default value is null
+         *
+         * Note: The next configuration options are useful for standard transport objects.
+         * The mail_dapater_service is usefull to configure your own transport object with custom options
+         */
+        //'mail_adapter_service' => null,
         
         /*
          * Hostname or IP address of mail server to be used.

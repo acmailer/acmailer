@@ -15,14 +15,14 @@ use AcMailer\Exception\InvalidArgumentException;
 class MailOptions extends AbstractOptions
 {
     /**
-     * Mail adapter should be one of this types
+     * Standard adapters aliasses
      * @var array
      */
-    private $validAdapters = array(
-        'Zend\Mail\Transport\Sendmail' => 'Zend\Mail\Transport\Sendmail',
-        'Sendmail'                     => 'Zend\Mail\Transport\Sendmail',
-        'Zend\Mail\Transport\Smtp'     => 'Zend\Mail\Transport\Smtp',
-        'Smtp'                         => 'Zend\Mail\Transport\Smtp',
+    private $adapterMap = array(
+        'sendmail'  => 'Zend\Mail\Transport\Sendmail',
+        'smtp'      => 'Zend\Mail\Transport\Smtp',
+        'null'      => 'Zend\Mail\Transport\Null',
+        'file'      => 'Zend\Mail\Transport\File',
     );
     /**
      * Valid SSL values
@@ -47,6 +47,10 @@ class MailOptions extends AbstractOptions
      * @var string|TransportInterface
      */
     protected $mailAdapter = '\Zend\Mail\Transport\Sendmail';
+    /**
+     * @var string|null
+     */
+    protected $mailAdapterService = null;
     /**
      * @var string
      */
@@ -113,40 +117,34 @@ class MailOptions extends AbstractOptions
      */
     public function getMailAdapter()
     {
-        if (!$this->mailAdapter instanceof TransportInterface) {
-            $this->mailAdapter = new $this->mailAdapter();
-        }
-
         return $this->mailAdapter;
     }
 
     /**
-     * @param string|\Zend\Mail\Transport\Smtp|\Zend\Mail\Transport\Sendmail $mailAdapter class name
+     * @param string|TransportInterface $mailAdapter
      * @return $this
      * @throws \AcMailer\Exception\InvalidArgumentException
      */
     public function setMailAdapter($mailAdapter)
     {
         if (is_string($mailAdapter)) {
-            $mailAdapter = ucfirst($mailAdapter);
-            if (array_key_exists($mailAdapter, $this->validAdapters)) {
-                $this->mailAdapter = $this->validAdapters[$mailAdapter];
-            } else {
-                throw new InvalidArgumentException(sprintf(
-                    "Defined adapter as string is not a valid adapter. Value should be one of '%s'",
-                    implode("', '", array_keys($this->validAdapters))
-                ));
+            if (array_key_exists(strtolower($mailAdapter), $this->adapterMap)) {
+                $mailAdapter = $this->adapterMap[$mailAdapter];
             }
-        } elseif ($mailAdapter instanceof Sendmail || $mailAdapter instanceof Smtp) {
-            $this->mailAdapter = $mailAdapter;
-        } else {
+            if (!class_exists($mailAdapter)) {
+                throw new InvalidArgumentException(sprintf('Provided adapter class "%s" does not exist', $mailAdapter));
+            }
+
+            $mailAdapter = new $mailAdapter();
+        }
+        if (!$mailAdapter instanceof TransportInterface) {
             throw new InvalidArgumentException(sprintf(
-                "Defined adapter should be an instance of '%s' or '%s'",
-                "Zend\\Mail\\Transport\\Smtp",
-                "Zend\\Mail\\Transport\\Sendmail"
+                'Provided adapter of type "%s" is not valid, expected a Zend\\Mail\\Transport\\TransportInterface',
+                is_object($mailAdapter) ? get_class($mailAdapter) : gettype($mailAdapter)
             ));
         }
 
+        $this->mailAdapter = $mailAdapter;
         return $this;
     }
 
