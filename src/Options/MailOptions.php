@@ -465,11 +465,19 @@ class MailOptions extends AbstractOptions
     }
 
     /**
-     * @param null|string $mailAdapterService
-     * @return $this;
+     * @param $mailAdapterService
+     * @return $this
+     * @throws \AcMailer\Exception\InvalidArgumentException
      */
     public function setMailAdapterService($mailAdapterService)
     {
+        if (!is_null($mailAdapterService) && !is_string($mailAdapterService)) {
+            throw new InvalidArgumentException(sprintf(
+                'Provided value of type "%s" is not valid. Expected "string" or "null"',
+                is_object($mailAdapterService) ? get_class($mailAdapterService): gettype($mailAdapterService)
+            ));
+        }
+
         $this->mailAdapterService = $mailAdapterService;
         return $this;
     }

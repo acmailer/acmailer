@@ -147,4 +147,12 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
     {
         $this->mailOptions->setConnectionClass("Foo");
     }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testAdapterServiceInvalidValueThrowsAnException()
+    {
+        $this->mailOptions->setMailAdapterService(45);
+    }
 }
