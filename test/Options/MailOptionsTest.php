@@ -4,6 +4,7 @@ namespace AcMailerTest\Options;
 use AcMailer\Options\MailOptions;
 use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Options\TemplateOptions;
+use MyProject\Proxies\__CG__\stdClass;
 use Zend\Mail\Transport\Sendmail;
 use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\File;
@@ -69,7 +70,7 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
      */
     public function testMailAdapterInvalidInstanceThrowAnException()
     {
-        $this->mailOptions->setMailAdapter(new File()); // File transport is not a valid mail adapter
+        $this->mailOptions->setMailAdapter(new \stdClass());
     }
     
     public function testOneDestinationAddressIsCastToArray()

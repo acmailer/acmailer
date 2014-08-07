@@ -117,6 +117,10 @@ class MailOptions extends AbstractOptions
      */
     public function getMailAdapter()
     {
+        if (is_string($this->mailAdapter)) {
+            $this->setMailAdapter($this->mailAdapter);
+        }
+
         return $this->mailAdapter;
     }
 
@@ -129,7 +133,7 @@ class MailOptions extends AbstractOptions
     {
         if (is_string($mailAdapter)) {
             if (array_key_exists(strtolower($mailAdapter), $this->adapterMap)) {
-                $mailAdapter = $this->adapterMap[$mailAdapter];
+                $mailAdapter = $this->adapterMap[strtolower($mailAdapter)];
             }
             if (!class_exists($mailAdapter)) {
                 throw new InvalidArgumentException(sprintf('Provided adapter class "%s" does not exist', $mailAdapter));
