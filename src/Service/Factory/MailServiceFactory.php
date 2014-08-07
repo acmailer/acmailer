@@ -3,6 +3,9 @@ namespace AcMailer\Service\Factory;
 
 use AcMailer\Options\TemplateOptions;
 use AcMailer\Util\Utils;
+use Zend\Mail\Transport\File;
+use Zend\Mail\Transport\FileOptions;
+use Zend\Mail\Transport\TransportInterface;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\Smtp;
@@ -37,26 +40,9 @@ class MailServiceFactory implements FactoryInterface
                 ->setBcc($mailOptions->getBcc());
 
         // Prepare Mail Transport
-        $transport = $mailOptions->getMailAdapter();
-        if ($transport instanceof Smtp) {
-            $connConfig = array(
-                'username' => $mailOptions->getSmtpUser(),
-                'password' => $mailOptions->getSmtpPassword(),
-            );
-
-            // Check if SSL should be used
-            if ($mailOptions->getSsl() !== false) {
-                $connConfig['ssl'] = $mailOptions->getSsl();
-            }
-
-            // Set SMTP transport options
-            $transport->setOptions(new SmtpOptions(array(
-                'host'              => $mailOptions->getServer(),
-                'port'              => $mailOptions->getPort(),
-                'connection_class'  => $mailOptions->getConnectionClass(),
-                'connection_config' => $connConfig,
-            )));
-        }
+        $serviceName = $mailOptions->getMailAdapterService();
+        $transport = isset($serviceName) ? $sm->get($serviceName) : $mailOptions->getMailAdapter();
+        $this->setupSpecificConfig($transport, $mailOptions);
 
         // Prepare MailService
         $renderer       = $this->createRenderer($sm);
@@ -99,6 +85,39 @@ class MailServiceFactory implements FactoryInterface
         }
 
         return $mailService;
+    }
+
+    /**
+     * Configures specific transport options
+     * @param TransportInterface $transport
+     * @param MailOptions $mailOptions
+     */
+    protected function setupSpecificConfig(TransportInterface $transport, MailOptions $mailOptions)
+    {
+        if ($transport instanceof Smtp) {
+            $connConfig = array(
+                'username' => $mailOptions->getSmtpUser(),
+                'password' => $mailOptions->getSmtpPassword(),
+            );
+
+            // Check if SSL should be used
+            if ($mailOptions->getSsl() !== false) {
+                $connConfig['ssl'] = $mailOptions->getSsl();
+            }
+
+            // Set SMTP transport options
+            $transport->setOptions(new SmtpOptions(array(
+                'host'              => $mailOptions->getServer(),
+                'port'              => $mailOptions->getPort(),
+                'connection_class'  => $mailOptions->getConnectionClass(),
+                'connection_config' => $connConfig,
+            )));
+        } elseif ($transport instanceof File) {
+            $transport->setOptions(new FileOptions(array(
+                'path'      => $mailOptions->getFilePath(),
+                'callback'  => $mailOptions->getFileCallback()
+            )));
+        }
     }
 
     /**
