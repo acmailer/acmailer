@@ -4,7 +4,6 @@ namespace AcMailerTest\Options;
 use AcMailer\Options\MailOptions;
 use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Options\TemplateOptions;
-use MyProject\Proxies\__CG__\stdClass;
 use Zend\Mail\Transport\Null;
 use Zend\Mail\Transport\Sendmail;
 use Zend\Mail\Transport\Smtp;
@@ -65,7 +64,7 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->mailOptions->getMailAdapter() instanceof File);
 
         $this->mailOptions->setMailAdapter("null");
-        $this->assertTrue($this->mailOptions->getMailAdapter() instanceof Null);
+        $this->assertTrue($this->mailOptions->getMailAdapter() instanceof \Zend\Mail\Transport\Null);
     }
     
     /**
