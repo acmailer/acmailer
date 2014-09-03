@@ -183,7 +183,7 @@ class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
 
         // Set a viewrenderer service and see if it is used
         $renderer = new PhpRenderer();
-        $this->serviceLocator->set('viewrenderer', $renderer);
+        $this->serviceLocator->set('mailviewrenderer', $renderer);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
         $this->assertSame($renderer, $mailService->getRenderer());
     }
@@ -216,7 +216,7 @@ class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
         $resolver->addPath(__DIR__ . '/../../view');
         $renderer = new PhpRenderer();
         $renderer->setResolver($resolver);
-        $this->serviceLocator->set('viewrenderer', $renderer);
+        $this->serviceLocator->set('mailviewrenderer', $renderer);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
 
         $this->assertNotEquals($options['body'], $mailService->getMessage()->getBody());
