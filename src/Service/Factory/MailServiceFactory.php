@@ -126,8 +126,8 @@ class MailServiceFactory implements FactoryInterface
      */
     protected function createRenderer(ServiceLocatorInterface $sm)
     {
-        if ($sm->has('viewrenderer')) {
-            return $sm->get('viewrenderer');
+        if ($sm->has('mailviewrenderer')) {
+            return $sm->get('mailviewrenderer');
         };
 
         // In case the renderer service is not defined, try to construct it
