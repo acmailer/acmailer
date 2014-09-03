@@ -59,7 +59,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $this->transport    = $transport;
         $this->renderer     = $renderer;
     }
-    
+
     /**
      * Returns this service's message
      * @return \Zend\Mail\Message
@@ -79,7 +79,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     {
         // Attach files before sending the email
         $this->attachFiles();
-        
+
         // Send the email
         try {
             // Trigger pre send event
@@ -104,7 +104,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
             throw $e;
         }
     }
-    
+
     /**
      * Sets the message body
      * @param \Zend\Mime\Part|\Zend\Mime\Message|string $body Email body
@@ -140,7 +140,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $this->message->setBody($body);
         return $this;
     }
-    
+
     /**
      * Sets the body of this message from a template
      * @param string|\Zend\View\Model\ViewModel $template
@@ -159,6 +159,18 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $view->setTemplate($template)
              ->setVariables($params);
         $this->setBody($this->renderer->render($view));
+    }
+
+    /**
+     * @param RendererInterface $renderer
+     *
+     * @return $this
+     */
+    public function setRenderer(RendererInterface $renderer)
+    {
+        $this->renderer = $renderer;
+
+        return $this;
     }
 
     /**
@@ -230,7 +242,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $body->setParts($attachmentParts);
         $this->message->setBody($body);
     }
-    
+
     /**
      * Sets the message subject
      * @param string $subject The subject of the message
@@ -242,7 +254,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $this->message->setSubject($subject);
         return $this;
     }
-    
+
     /**
      * @param string $path
      * @return $this
