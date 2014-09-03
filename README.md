@@ -29,6 +29,21 @@ Define dependencies in your composer.json file
 Finally install dependencies
 
     php composer.phar install
+    
+Add module `AcMailer` to your `config/application.config.php` file
+
+```php
+<?php
+
+return array(
+    // This should be an array of module namespaces used in the application.
+    'modules' => array(
+        'AcMailer',
+        'Application'
+    ),
+    
+[...]
+```
 
 ### Usage
 
@@ -90,6 +105,21 @@ $mailService->setSubject('This is the subject')
 
 [...]
 ```
+
+Renderer can be changed to another one (ie. Twig or Blade). It has to implement `Zend\View\Renderer\RendererInterface`. By default AcMailer uses `Zend\View\Renderer\PhpRenderer` (in fact uses `ViewRenderer` service). You can change it by changing service alias `mailviewrenderer` to something different in your `service_manager` configuration:
+
+```php
+
+return array(
+    'service_manager' => array(
+        'aliases' => array(
+            'mailviewrenderer' => 'ZfcTwigRenderer',
+        ),
+    ),
+);
+```
+
+Alternatively you can just set it via setter: `$mailService->setRenderer($renderer);`.
 
 Files can be attached to the email before sending it by providing their paths with `addAttachment`, `addAttachments` or `setAttachments` methods.
 At the moment we call `send`, all the files that already exist will be attached to the email.
@@ -163,7 +193,7 @@ The mail service can be automatically configured by using provided global config
 - **bcc**: It can be a string with one blind carbon copy email address or an array of multiple addresses.
 - **subject**: Default email subject.
 - **body**: Default body to be used. Usually this will be generated at runtime, but can be set as a string at config file. It can contain HTML too.
-- **template**: Array with template configuration. It has 3 child options.
+- **template**: Array with template configuration. It has 4 child options.
     - *use_template*: True or false. Tells if template should be used, making the **body** option to be ignored.
     - *path*: Path of the template. The same used while setting the template of a ViewModel ('application/index/list').
     - *params*: Array with key-value pairs with parameters to be sent to the template.
