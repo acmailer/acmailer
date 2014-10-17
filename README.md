@@ -16,21 +16,11 @@ Install composer in your project
 
     curl -s http://getcomposer.org/installer | php
 
-Define dependencies in your composer.json file
+Then run 
 
-```json
-{
-    "require": {
-        "acelaya/zf2-acmailer": "4.*"
-    }
-}
-```
-
-Finally install dependencies
-
-    php composer.phar install
+    php composer.phar require acelaya/zf2-acmailer:~4.0
     
-Add module `AcMailer` to your `config/application.config.php` file
+Add the module `AcMailer` to your `config/application.config.php` file
 
 ```php
 <?php
