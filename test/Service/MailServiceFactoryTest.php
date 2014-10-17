@@ -142,19 +142,6 @@ class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
         $this->mailServiceFactory->createService($this->serviceLocator);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testInvalidAdapterAsService()
-    {
-        $this->initServiceLocator(array(
-            'mail_adapter_service' => 'Zend\Mail\Transport\TransportInterface'
-        ));
-        $transport = new \stdClass();
-        $this->serviceLocator->set('Zend\Mail\Transport\TransportInterface', $transport);
-        $this->mailServiceFactory->createService($this->serviceLocator);
-    }
-
     public function testViewRendererService()
     {
         $this->initServiceLocator();
