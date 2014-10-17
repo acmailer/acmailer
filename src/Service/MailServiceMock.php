@@ -148,4 +148,22 @@ class MailServiceMock implements MailServiceInterface
     {
         // Do nothing
     }
+
+    /**
+     * @param RendererInterface $renderer
+     * @return mixed
+     */
+    public function setRenderer(RendererInterface $renderer)
+    {
+        // Do nothing
+    }
+
+    /**
+     * @param TransportInterface $transport
+     * @return mixed
+     */
+    public function setTransport(TransportInterface $transport)
+    {
+        // Do nothing
+    }
 }

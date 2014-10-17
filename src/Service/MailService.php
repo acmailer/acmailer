@@ -162,18 +162,6 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     }
 
     /**
-     * @param RendererInterface $renderer
-     *
-     * @return $this
-     */
-    public function setRenderer(RendererInterface $renderer)
-    {
-        $this->renderer = $renderer;
-
-        return $this;
-    }
-
-    /**
      * Renders template childrens.
      * Inspired on Zend\View\View implementation to recursively render child models
      * @param ViewModel $model
@@ -345,12 +333,33 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     }
 
     /**
+     * @param TransportInterface $transport
+     * @return $this
+     */
+    public function setTransport(TransportInterface $transport)
+    {
+        $this->transport = $transport;
+        return $this;
+    }
+
+    /**
      * Returns the transport object that will be used to send the wrapped message
      * @return TransportInterface
      */
     public function getTransport()
     {
         return $this->transport;
+    }
+
+    /**
+     * @param RendererInterface $renderer
+     *
+     * @return $this
+     */
+    public function setRenderer(RendererInterface $renderer)
+    {
+        $this->renderer = $renderer;
+        return $this;
     }
 
     /**

@@ -102,6 +102,31 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(MockTransport::ERROR_MESSAGE, $result->getMessage());
     }
 
+    /**
+     * @expectedException \Exception
+     */
+    public function testWithUncatchedException()
+    {
+        $this->transport->setForceError(true, new \Exception());
+        $this->mailService->send();
+    }
+
+    public function testSetTransport()
+    {
+        $this->assertSame($this->transport, $this->mailService->getTransport());
+        $anotherTransport = new MockTransport();
+        $this->assertSame($this->mailService, $this->mailService->setTransport($anotherTransport));
+        $this->assertSame($anotherTransport, $this->mailService->getTransport());
+    }
+
+    public function testSetRenderer()
+    {
+        $this->assertInstanceOf('Zend\View\Renderer\PhpRenderer', $this->mailService->getRenderer());
+        $anotherRenderer = new PhpRenderer();
+        $this->assertSame($this->mailService, $this->mailService->setRenderer($anotherRenderer));
+        $this->assertSame($anotherRenderer, $this->mailService->getRenderer());
+    }
+
     public function testSuccesfulMailEvent()
     {
         $mailListener = new MailListenerMock();
