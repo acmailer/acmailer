@@ -58,6 +58,8 @@ if ($result->isValid()) {
 }
 ```
 
+##### Rendering views
+
 Alternatively, the body of the message can be set from a view script by using `setTemplate` instead of `setBody`. It will use a renderer to render defined template and then set it as the email body internally.
 
 You can set the template as a string and pass the arguments for it.
@@ -96,7 +98,9 @@ $mailService->setSubject('This is the subject')
 [...]
 ```
 
-Renderer can be changed to another one (ie. Twig or Blade). It has to implement `Zend\View\Renderer\RendererInterface`. By default AcMailer uses `Zend\View\Renderer\PhpRenderer` (in fact uses `ViewRenderer` service). You can change it by changing service alias `mailviewrenderer` to something different in your `service_manager` configuration:
+The renderer can be changed to another one (ie. Twig or Blade). It just needs to implement `Zend\View\Renderer\RendererInterface`.
+
+By default AcMailer uses the default `ViewRenderer` service via an alias, `mailviewrenderer`. You can override that alias in your `service_manager` configuration in order to change the renderer service to be used:
 
 ```php
 
@@ -110,6 +114,8 @@ return array(
 ```
 
 Alternatively you can just set it via setter: `$mailService->setRenderer($renderer);`.
+
+##### Attachments
 
 Files can be attached to the email before sending it by providing their paths with `addAttachment`, `addAttachments` or `setAttachments` methods.
 At the moment we call `send`, all the files that already exist will be attached to the email.
@@ -147,7 +153,9 @@ Attached images can be displayed inmail by setting the `cid` to the image filena
 <img alt="This is an attached image" src="cid:image-filename.jpg">
 ```
 
-If mail options does not fit your needs or you need to update them at runtime, the message wrapped by MailService can be customized by getting it before calling send method.
+##### Customize the Message
+
+If mail options does not fit your needs or you need to update them at runtime, the message wrapped by the MailService can be customized by getting it before calling `send()`.
 
 ```php
 $message = $mailService->getMessage();
@@ -172,9 +180,9 @@ $result = $mailService->send();
 
 ### Configuration options
 
-The mail service can be automatically configured by using provided global configuration file. Supported options are fully explained at that file. This is what they are for.
+The mail service can be automatically configured by using the provided global configuration file. Supported options are fully explained at that file. This is what they are for.
 
-- **mail_adapter**: Tells mail service what type of transport adapter should be used. Any object or classname implementing `Zend\Mail\Transport\TransportInterface` is valid.
+- **mail_adapter**: Tells the mail service what type of transport adapter should be used. Any object or classname implementing `Zend\Mail\Transport\TransportInterface` is valid.
 - **mail_adapter_service**: A service name to be used to get the transport object, in case standard transport configuration does not fit your needs. If defined, the **mail_adapter** option will be ignored.
 - **from**: From email address.
 - **from_name**: From name to be displayed.
@@ -185,9 +193,9 @@ The mail service can be automatically configured by using provided global config
 - **body**: Default body to be used. Usually this will be generated at runtime, but can be set as a string at config file. It can contain HTML too.
 - **template**: Array with template configuration. It has 4 child options.
     - *use_template*: True or false. Tells if template should be used, making the **body** option to be ignored.
-    - *path*: Path of the template. The same used while setting the template of a ViewModel ('application/index/list').
+    - *path*: Path of the template. The same used while setting the template of a ViewModel (ie. 'application/index/list').
     - *params*: Array with key-value pairs with parameters to be sent to the template.
-    - *children*: Array with child templates to be used within the main template (layout). Each one of them can have its own children. Look at `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` for details.
+    - *children*: Array with children templates to be used within the main template (layout). Each one of them can have its own children. Look at `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` for details.
 - **attachments**: Allows to define an array of files that will be attached to the message, or even a directory that will be iterated to attach all found files.
     - *files*: Array of files to be attached
     - *dir*: Directory to iterate.
@@ -208,11 +216,13 @@ Many of the configuration options are specific for standard transport objects. I
 ### Event management
 
 This module comes with a built-in event system.
-An event is triggered before the mail is sent (`MailEvent::EVENT_MAIL_PRE_SEND`). If everything was OK another event is triggered (`MailEvent::EVENT_MAIL_POST_SEND`). If an error occured, an error event is triggered (`MailEvent::EVENT_MAIL_SEND_ERROR`).
+- An event is triggered before the mail is sent (`MailEvent::EVENT_MAIL_PRE_SEND`).
+- If everything was OK another event is triggered (`MailEvent::EVENT_MAIL_POST_SEND`) after the email has been sent.
+- If an error occured, an error event is triggered (`MailEvent::EVENT_MAIL_SEND_ERROR`).
 
-Managing mail events is as easy as extending `AcMailer\Event\AbstractMailListener`. It provides the `onPreSend`, `onPostSend` and `onSendError` methods, which get a `MailEvent` parameter that can be used to get the MailService who produced the event.
+Managing mail events is as easy as extending `AcMailer\Event\AbstractMailListener`. It provides the `onPreSend`, `onPostSend` and `onSendError` methods, which get a `MailEvent` parameter that can be used to get the MailService which triggered the event.
 
-Then attach the object to the `MailService` and the corresponding method will be automatically called when calling the `send` method.
+Then attach the listener object to the `MailService` and the corresponding method will be automatically called when calling the `send` method.
 
 ```php
 $mailListener = new \Application\Event\MyMailListener();
