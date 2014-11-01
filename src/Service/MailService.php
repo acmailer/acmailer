@@ -137,6 +137,10 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
             ));
         }
 
+        // The headers Content-type and Content-transfer-encoding are duplicated every time the body is set.
+        // Removing them before setting the body prevents this error
+        $this->message->getHeaders()->removeHeader('contenttype');
+        $this->message->getHeaders()->removeHeader('contenttransferencoding');
         $this->message->setBody($body);
         return $this;
     }
