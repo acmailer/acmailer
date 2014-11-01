@@ -135,16 +135,20 @@ class MailServiceFactory implements FactoryInterface
             // Check what kind of view_manager configuration has been defined
             if (isset($vmConfig['template_map']) && isset($vmConfig['template_path_stack'])) {
                 // If both a template_map and a template_path_stack have been defined, create an AggregateResolver
+                $pathStackResolver = new TemplatePathStack();
+                $pathStackResolver->setPaths($vmConfig['template_path_stack']);
                 $resolver = new AggregateResolver();
-                $resolver->attach(new TemplatePathStack($vmConfig['template_path_stack']))
-                         ->attach(new TemplateMapResolver($vmConfig['template_map']));
+                $resolver->attach($pathStackResolver)
+                    ->attach(new TemplateMapResolver($vmConfig['tap']));
                 $renderer->setResolver($resolver);
             } elseif (isset($vmConfig['template_map'])) {
                 // Create a TemplateMapResolver in case only the template_map has been defined
                 $renderer->setResolver(new TemplateMapResolver($vmConfig['template_map']));
             } elseif (isset($vmConfig['template_path_stack'])) {
                 // Create a TemplatePathStack resolver in case only the template_path_stack has been defined
-                $renderer->setResolver(new TemplatePathStack($vmConfig['template_path_stack']));
+                $pathStackResolver = new TemplatePathStack();
+                $pathStackResolver->setPaths($vmConfig['template_path_stack']);
+                $renderer->setResolver($pathStackResolver);
             }
 
             // TODO Compose a HelperPluginManager with default view helpers and user defined view helpers
