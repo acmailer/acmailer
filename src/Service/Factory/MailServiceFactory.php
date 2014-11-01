@@ -6,6 +6,7 @@ use Zend\Mail\Transport\File;
 use Zend\Mail\Transport\FileOptions;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mvc\Service\ViewHelperManagerFactory;
+use Zend\ServiceManager\Config;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\Mail\Message;
@@ -161,18 +162,6 @@ class MailServiceFactory implements FactoryInterface
     }
 
     /**
-     * Returns the view manager configuration
-     * @param ServiceLocatorInterface $sm
-     * @return array
-     */
-    protected function getViewManagerConfig(ServiceLocatorInterface $sm)
-    {
-        // In case the renderer service is not defined, try to construct it
-        $config = $sm->get('Config');
-        return !empty($config) && isset($config['view_manager']) ? $config['view_manager'] : array();
-    }
-
-    /**
      * Creates a view helper manager
      * @param ServiceLocatorInterface $sm
      * @return HelperPluginManager
@@ -180,6 +169,32 @@ class MailServiceFactory implements FactoryInterface
     protected function createHelperPluginManager(ServiceLocatorInterface $sm)
     {
         $factory = new ViewHelperManagerFactory();
-        return $factory->createService($sm);
+        /** @var HelperPluginManager $helperManager */
+        $helperManager = $factory->createService($sm);
+        $config = new Config($this->getViewHelpersConfig($sm));
+        $config->configureServiceManager($helperManager);
+        return $helperManager;
+    }
+
+    /**
+     * Returns the view manager configuration
+     * @param ServiceLocatorInterface $sm
+     * @return array
+     */
+    protected function getViewManagerConfig(ServiceLocatorInterface $sm)
+    {
+        $config = $sm->get('Config');
+        return !empty($config) && isset($config['view_manager']) ? $config['view_manager'] : array();
+    }
+
+    /**
+     * Returns the view helpers configuration
+     * @param ServiceLocatorInterface $sm
+     * @return array
+     */
+    protected function getViewHelpersConfig(ServiceLocatorInterface $sm)
+    {
+        $config = $sm->get('Config');
+        return !empty($config) && isset($config['view_helpers']) ? $config['view_helpers'] : array();
     }
 }
