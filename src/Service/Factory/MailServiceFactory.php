@@ -142,7 +142,7 @@ class MailServiceFactory implements FactoryInterface
                 $pathStackResolver->setPaths($vmConfig['template_path_stack']);
                 $resolver = new AggregateResolver();
                 $resolver->attach($pathStackResolver)
-                         ->attach(new TemplateMapResolver($vmConfig['tap']));
+                         ->attach(new TemplateMapResolver($vmConfig['template_map']));
                 $renderer->setResolver($resolver);
             } elseif (isset($vmConfig['template_map'])) {
                 // Create a TemplateMapResolver in case only the template_map has been defined
