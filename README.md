@@ -115,6 +115,16 @@ return array(
 
 Alternatively you can just set it via setter: `$mailService->setRenderer($renderer);`.
 
+##### Rendering in CLI executions
+
+When running a ZF2 application from the console, the default `ViewRenderer` service is not created. In that case a `Zend\View\Renderer\PhpRenderer` is created on the fly so that templates can be properly rendered.
+
+It has access to `view_manager` and `view_helpers` configuration, so template resolution will properly work and view helpers (both standard and custom) will be accessible from rendered templates.
+
+If you overriden the `mailviewrenderer` service alias with your own view renderer, then that will be used instead of creating one on the fly.
+
+It is safe to use this module to send emails from cron jobs and such.
+
 ##### Attachments
 
 Files can be attached to the email before sending it by providing their paths with `addAttachment`, `addAttachments` or `setAttachments` methods.

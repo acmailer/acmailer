@@ -1,9 +1,12 @@
 <?php
 namespace AcMailer\Service\Factory;
 
+use Zend\Debug\Debug;
 use Zend\Mail\Transport\File;
 use Zend\Mail\Transport\FileOptions;
 use Zend\Mail\Transport\TransportInterface;
+use Zend\Mvc\Service\ViewHelperManagerFactory;
+use Zend\ServiceManager\Config;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\Mail\Message;
@@ -12,6 +15,7 @@ use Zend\Mail\Transport\SmtpOptions;
 use AcMailer\Service\MailService;
 use AcMailer\Options\MailOptions;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\View\HelperPluginManager;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Renderer\RendererInterface;
 use Zend\View\Resolver\AggregateResolver;
@@ -129,29 +133,68 @@ class MailServiceFactory implements FactoryInterface
             return $sm->get('mailviewrenderer');
         } catch (ServiceNotFoundException $e) {
             // In case the renderer service is not defined, try to construct it
-            $config = $sm->get('Config');
+            $vmConfig = $this->getViewManagerConfig($sm);
             $renderer = new PhpRenderer();
-            if (isset($config['view_manager'])) {
-                // Check what kind of view_manager configuration has been defined
-                if (
-                    isset($config['view_manager']['template_map']) &&
-                    isset($config['view_manager']['template_path_stack'])
-                ) {
-                    // If both a template_map and a template_path_stack have been defined, create an AggregateResolver
-                    $resolver = new AggregateResolver();
-                    $resolver->attach(new TemplateMapResolver($config['view_manager']['template_map']))
-                        ->attach(new TemplatePathStack($config['view_manager']['template_path_stack']));
-                    $renderer->setResolver($resolver);
-                } elseif (isset($config['view_manager']['template_map'])) {
-                    // Create a TemplateMapResolver in case only the template_map has been defined
-                    $renderer->setResolver(new TemplateMapResolver($config['view_manager']['template_map']));
-                } elseif (isset($config['view_manager']['template_path_stack'])) {
-                    // Create a TemplatePathStack resolver in case only the template_path_stack has been defined
-                    $renderer->setResolver(new TemplatePathStack($config['view_manager']['template_path_stack']));
-                }
+
+            // Check what kind of view_manager configuration has been defined
+            if (isset($vmConfig['template_map']) && isset($vmConfig['template_path_stack'])) {
+                // If both a template_map and a template_path_stack have been defined, create an AggregateResolver
+                $pathStackResolver = new TemplatePathStack();
+                $pathStackResolver->setPaths($vmConfig['template_path_stack']);
+                $resolver = new AggregateResolver();
+                $resolver->attach($pathStackResolver)
+                         ->attach(new TemplateMapResolver($vmConfig['template_map']));
+                $renderer->setResolver($resolver);
+            } elseif (isset($vmConfig['template_map'])) {
+                // Create a TemplateMapResolver in case only the template_map has been defined
+                $renderer->setResolver(new TemplateMapResolver($vmConfig['template_map']));
+            } elseif (isset($vmConfig['template_path_stack'])) {
+                // Create a TemplatePathStack resolver in case only the template_path_stack has been defined
+                $pathStackResolver = new TemplatePathStack();
+                $pathStackResolver->setPaths($vmConfig['template_path_stack']);
+                $renderer->setResolver($pathStackResolver);
             }
 
+            // Create a HelperPluginManager with default view helpers and user defined view helpers
+            $renderer->setHelperPluginManager($this->createHelperPluginManager($sm));
             return $renderer;
         }
+    }
+
+    /**
+     * Creates a view helper manager
+     * @param ServiceLocatorInterface $sm
+     * @return HelperPluginManager
+     */
+    protected function createHelperPluginManager(ServiceLocatorInterface $sm)
+    {
+        $factory = new ViewHelperManagerFactory();
+        /** @var HelperPluginManager $helperManager */
+        $helperManager = $factory->createService($sm);
+        $config = new Config($this->getViewHelpersConfig($sm));
+        $config->configureServiceManager($helperManager);
+        return $helperManager;
+    }
+
+    /**
+     * Returns the view manager configuration
+     * @param ServiceLocatorInterface $sm
+     * @return array
+     */
+    protected function getViewManagerConfig(ServiceLocatorInterface $sm)
+    {
+        $config = $sm->get('Config');
+        return !empty($config) && isset($config['view_manager']) ? $config['view_manager'] : array();
+    }
+
+    /**
+     * Returns the view helpers configuration
+     * @param ServiceLocatorInterface $sm
+     * @return array
+     */
+    protected function getViewHelpersConfig(ServiceLocatorInterface $sm)
+    {
+        $config = $sm->get('Config');
+        return !empty($config) && isset($config['view_helpers']) ? $config['view_helpers'] : array();
     }
 }
