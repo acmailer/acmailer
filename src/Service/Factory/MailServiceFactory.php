@@ -1,9 +1,11 @@
 <?php
 namespace AcMailer\Service\Factory;
 
+use Zend\Debug\Debug;
 use Zend\Mail\Transport\File;
 use Zend\Mail\Transport\FileOptions;
 use Zend\Mail\Transport\TransportInterface;
+use Zend\Mvc\Service\ViewHelperManagerFactory;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\Mail\Message;
@@ -12,6 +14,7 @@ use Zend\Mail\Transport\SmtpOptions;
 use AcMailer\Service\MailService;
 use AcMailer\Options\MailOptions;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\View\HelperPluginManager;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Renderer\RendererInterface;
 use Zend\View\Resolver\AggregateResolver;
@@ -139,7 +142,7 @@ class MailServiceFactory implements FactoryInterface
                 $pathStackResolver->setPaths($vmConfig['template_path_stack']);
                 $resolver = new AggregateResolver();
                 $resolver->attach($pathStackResolver)
-                    ->attach(new TemplateMapResolver($vmConfig['tap']));
+                         ->attach(new TemplateMapResolver($vmConfig['tap']));
                 $renderer->setResolver($resolver);
             } elseif (isset($vmConfig['template_map'])) {
                 // Create a TemplateMapResolver in case only the template_map has been defined
@@ -151,8 +154,8 @@ class MailServiceFactory implements FactoryInterface
                 $renderer->setResolver($pathStackResolver);
             }
 
-            // TODO Compose a HelperPluginManager with default view helpers and user defined view helpers
-
+            // Create a HelperPluginManager with default view helpers and user defined view helpers
+            $renderer->setHelperPluginManager($this->createHelperPluginManager($sm));
             return $renderer;
         }
     }
@@ -167,5 +170,16 @@ class MailServiceFactory implements FactoryInterface
         // In case the renderer service is not defined, try to construct it
         $config = $sm->get('Config');
         return !empty($config) && isset($config['view_manager']) ? $config['view_manager'] : array();
+    }
+
+    /**
+     * Creates a view helper manager
+     * @param ServiceLocatorInterface $sm
+     * @return HelperPluginManager
+     */
+    protected function createHelperPluginManager(ServiceLocatorInterface $sm)
+    {
+        $factory = new ViewHelperManagerFactory();
+        return $factory->createService($sm);
     }
 }
