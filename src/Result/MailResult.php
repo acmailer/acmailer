@@ -11,12 +11,12 @@ use Exception;
  */
 class MailResult implements ResultInterface
 {
-    const DEFAULT_MESSAGE = "Success!!";
+    const DEFAULT_MESSAGE = 'Success!!';
     
     /**
      * @var boolean
      */
-    private $result;
+    private $valid;
     /**
      * @var string
      */
@@ -26,16 +26,11 @@ class MailResult implements ResultInterface
      */
     private $exception;
     
-    public function __construct($result = true, $message = self::DEFAULT_MESSAGE, $exception = null)
+    public function __construct($valid = true, $message = self::DEFAULT_MESSAGE, $exception = null)
     {
-        $this->result       = (bool) $result;
+        $this->valid        = (bool) $valid;
         $this->message      = $message;
         $this->exception    = $exception;
-    }
-    
-    public function getResult()
-    {
-        return $this->result;
     }
 
     /**
@@ -53,7 +48,7 @@ class MailResult implements ResultInterface
      */
     public function isValid()
     {
-        return $this->getResult();
+        return $this->valid;
     }
 
     /**
@@ -72,5 +67,14 @@ class MailResult implements ResultInterface
     public function getException()
     {
         return $this->exception;
+    }
+
+    /**
+     * @return bool
+     * @deprecated This method will be removed in the future. Use isValid() instead
+     */
+    public function getResult()
+    {
+        return $this->isValid();
     }
 }

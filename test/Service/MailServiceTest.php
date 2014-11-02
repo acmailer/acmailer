@@ -111,6 +111,21 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
         $this->mailService->send();
     }
 
+    public function testZendMailExceptionsAreNotRethrown()
+    {
+        $this->transport->setForceError(true, new \Zend\Mail\Exception\InvalidArgumentException());
+        $result = $this->mailService->send();
+        $this->assertFalse($result->isValid());
+
+        $this->transport->setForceError(true, new \Zend\Mail\Exception\BadMethodCallException());
+        $result = $this->mailService->send();
+        $this->assertFalse($result->isValid());
+
+        $this->transport->setForceError(true, new \Zend\Mail\Protocol\Exception\InvalidArgumentException());
+        $result = $this->mailService->send();
+        $this->assertFalse($result->isValid());
+    }
+
     public function testSetTransport()
     {
         $this->assertSame($this->transport, $this->mailService->getTransport());
