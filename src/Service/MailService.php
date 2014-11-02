@@ -4,6 +4,7 @@ namespace AcMailer\Service;
 use AcMailer\Event\MailEvent;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Event\MailListenerAwareInterface;
+use AcMailer\Exception\MailException;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -11,7 +12,7 @@ use Zend\Mail\Transport\TransportInterface;
 use Zend\Mail\Message;
 use Zend\Mime\Message as MimeMessage;
 use Zend\Mime\Part as MimePart;
-use Zend\Mail\Transport\Exception\RuntimeException;
+use Zend\Mail\Exception\ExceptionInterface as ZendMailException;
 use AcMailer\Result\ResultInterface;
 use AcMailer\Result\MailResult;
 use Zend\Mime\Mime;
@@ -73,7 +74,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     /**
      * Sends the mail
      * @return ResultInterface
-     * @throws \Exception
+     * @throws MailException
      */
     public function send()
     {
@@ -90,16 +91,15 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
 
             // Trigger post send event
             $this->getEventManager()->trigger($this->createMailEvent(MailEvent::EVENT_MAIL_POST_SEND, $result));
-        } catch (RuntimeException $e) {
-            $result = $this->createMailResultFromException($e);
-            // Trigger send error event
-            $this->getEventManager()->trigger($this->createMailEvent(MailEvent::EVENT_MAIL_SEND_ERROR, $result));
         } catch (\Exception $e) {
             $result = $this->createMailResultFromException($e);
             // Trigger send error event
             $this->getEventManager()->trigger($this->createMailEvent(MailEvent::EVENT_MAIL_SEND_ERROR, $result));
 
-            throw $e;
+            // If the exception produced is not a Zend\Mail exception, rethrow it as a MailException
+            if (! $e instanceof ZendMailException) {
+                throw new MailException('An non Zend\Mail exception occurred', $e->getCode(), $e);
+            }
         }
 
         return $result;
