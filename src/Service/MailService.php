@@ -114,7 +114,9 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     protected function createMailEvent($name = MailEvent::EVENT_MAIL_PRE_SEND, ResultInterface $result = null)
     {
         $event = new MailEvent($this, $name);
-        $event->setResult($result);
+        if (isset($result)) {
+            $event->setResult($result);
+        }
         return $event;
     }
 
