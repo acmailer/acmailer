@@ -80,29 +80,52 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         // Attach files before sending the email
         $this->attachFiles();
 
-        // Send the email
+        $result = new MailResult();
         try {
             // Trigger pre send event
-            $this->getEventManager()->trigger(new MailEvent($this));
+            $this->getEventManager()->trigger($this->createMailEvent());
 
             // Try to send the message
             $this->transport->send($this->message);
 
             // Trigger post send event
-            $this->getEventManager()->trigger(new MailEvent($this, MailEvent::EVENT_MAIL_POST_SEND));
-
-            return new MailResult();
+            $this->getEventManager()->trigger($this->createMailEvent(MailEvent::EVENT_MAIL_POST_SEND, $result));
         } catch (RuntimeException $e) {
+            $result = $this->createMailResultFromException($e);
             // Trigger send error event
-            $this->getEventManager()->trigger(new MailEvent($this, MailEvent::EVENT_MAIL_SEND_ERROR));
-
-            return new MailResult(false, $e->getMessage(), $e);
+            $this->getEventManager()->trigger($this->createMailEvent(MailEvent::EVENT_MAIL_SEND_ERROR, $result));
         } catch (\Exception $e) {
+            $result = $this->createMailResultFromException($e);
             // Trigger send error event
-            $this->getEventManager()->trigger(new MailEvent($this, MailEvent::EVENT_MAIL_SEND_ERROR));
+            $this->getEventManager()->trigger($this->createMailEvent(MailEvent::EVENT_MAIL_SEND_ERROR, $result));
 
             throw $e;
         }
+
+        return $result;
+    }
+
+    /**
+     * Creates a new MailEvent object
+     * @param ResultInterface $result
+     * @param string $name
+     * @return MailEvent
+     */
+    protected function createMailEvent($name = MailEvent::EVENT_MAIL_PRE_SEND, ResultInterface $result = null)
+    {
+        $event = new MailEvent($this, $name);
+        $event->setResult($result);
+        return $event;
+    }
+
+    /**
+     * Creates a error MailResult from an exception
+     * @param \Exception $e
+     * @return MailResult
+     */
+    protected function createMailResultFromException(\Exception $e)
+    {
+        return new MailResult(false, $e->getMessage(), $e);
     }
 
     /**
