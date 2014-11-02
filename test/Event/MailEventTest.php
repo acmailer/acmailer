@@ -2,6 +2,7 @@
 namespace AcMailerTest\Event;
 
 use AcMailer\Event\MailEvent;
+use AcMailer\Result\MailResult;
 use AcMailer\Service\MailServiceMock;
 
 /**
@@ -26,5 +27,13 @@ class MailEventTest extends \PHPUnit_Framework_TestCase
         $this->mailEvent->setMailService($mailService2);
         $this->assertNotSame($mailService, $this->mailEvent->getMailService());
         $this->assertSame($mailService2, $this->mailEvent->getMailService());
+    }
+
+    public function testMailResultInjection()
+    {
+        $this->mailEvent = new MailEvent(new MailServiceMock());
+        $result = new MailResult();
+        $this->assertSame($this->mailEvent, $this->mailEvent->setResult($result));
+        $this->assertSame($result, $this->mailEvent->getResult());
     }
 }
