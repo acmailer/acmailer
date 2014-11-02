@@ -230,7 +230,7 @@ This module comes with a built-in event system.
 - If everything was OK another event is triggered (`MailEvent::EVENT_MAIL_POST_SEND`) after the email has been sent.
 - If an error occured, an error event is triggered (`MailEvent::EVENT_MAIL_SEND_ERROR`).
 
-Managing mail events is as easy as extending `AcMailer\Event\AbstractMailListener`. It provides the `onPreSend`, `onPostSend` and `onSendError` methods, which get a `MailEvent` parameter that can be used to get the MailService which triggered the event.
+Managing mail events is as easy as extending `AcMailer\Event\AbstractMailListener`. It provides the `onPreSend`, `onPostSend` and `onSendError` methods, which get a `MailEvent` parameter that can be used to get the `MailService` which triggered the event or the `MailResult` produced.
 
 Then attach the listener object to the `MailService` and the corresponding method will be automatically called when calling the `send` method.
 
@@ -252,6 +252,10 @@ $mailService->detachMailListener($mailListener);
 
 $mailService->send(); // The events on the $mailListener won't be triggered.
 ```
+
+The `MailResult` will always be null when the event `EVENT_MAIL_PRE_SEND` is triggered, since the email hasn't been sent yet.
+
+Any `Zend\Mail` exception will be catched, producing a `EVENT_MAIL_SEND_ERROR` instead. If any other kind of exception occurs, the same event will be triggered, but the exception will be rethrown in the form of an `AcMailer\Exception\MailException`. The event's wrapped exception will be the original exception.
 
 ### Testing
 
