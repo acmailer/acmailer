@@ -1,6 +1,8 @@
 <?php
 namespace AcMailer\Event;
 
+use AcMailer\Result\ResultAwareInterface;
+use AcMailer\Result\ResultInterface;
 use AcMailer\Service\MailServiceInterface;
 use Zend\EventManager\Event;
 
@@ -9,7 +11,7 @@ use Zend\EventManager\Event;
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailEvent extends Event
+class MailEvent extends Event implements ResultAwareInterface
 {
     const EVENT_MAIL_PRE_SEND   = 'event.mail.pre.send';
     const EVENT_MAIL_POST_SEND 	= 'event.mail.post.send';
@@ -19,6 +21,10 @@ class MailEvent extends Event
      * @var MailServiceInterface
      */
     protected $mailService;
+    /**
+     * @var ResultInterface
+     */
+    protected $result;
 
     public function __construct(MailServiceInterface $mailService, $name = self::EVENT_MAIL_PRE_SEND)
     {
@@ -41,5 +47,23 @@ class MailEvent extends Event
     public function getMailService()
     {
         return $this->mailService;
+    }
+
+    /**
+     * @param ResultInterface $result
+     * @return $this
+     */
+    public function setResult(ResultInterface $result)
+    {
+        $this->result = $result;
+        return $this;
+    }
+
+    /**
+     * @return ResultInterface
+     */
+    public function getResult()
+    {
+        return $this->result;
     }
 }
