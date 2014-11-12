@@ -85,12 +85,12 @@ $layout = new \Zend\View\Model\ViewModel(array(
     'name' => 'John Doe',
     'date' => date('Y-m-d')
 ));
-$layout->setTemplate("application/emails/merry-christmas");
+$layout->setTemplate('application/emails/merry-christmas');
 
 $footer = new \Zend\View\Model\ViewModel();
-$footer->setTemplate("application/emails/footer");
+$footer->setTemplate('application/emails/footer');
 
-$layout->addChild($footer, "footer");
+$layout->addChild($footer, 'footer');
 
 $mailService->setSubject('This is the subject')
             ->setTemplate($layout);
@@ -100,7 +100,7 @@ $mailService->setSubject('This is the subject')
 
 The renderer can be changed to another one (ie. Twig or Blade). It just needs to implement `Zend\View\Renderer\RendererInterface`.
 
-By default AcMailer uses the default `ViewRenderer` service via an alias, `mailviewrenderer`. You can override that alias in your `service_manager` configuration in order to change the renderer service to be used:
+By default AcMailer uses the default `ViewRenderer` service via an alias, `mailviewrenderer`. You can override that alias in your `service_manager` configuration in order to change the renderer service to be used (thanks to [kusmierz](https://github.com/kusmierz)):
 
 ```php
 
@@ -169,9 +169,9 @@ If mail options does not fit your needs or you need to update them at runtime, t
 
 ```php
 $message = $mailService->getMessage();
-$message->addTo("foobar@example.com")
-        ->addTo("another@example.com")
-        ->addBcc("hidden@domain.com");
+$message->addTo('foobar@example.com')
+        ->addTo('another@example.com')
+        ->addBcc('hidden@domain.com');
 
 $result = $mailService->send();
 ```
