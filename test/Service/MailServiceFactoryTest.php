@@ -219,8 +219,6 @@ class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
                 'files' => array(
                     'attachments/file1',
                     'attachments/file2',
-                    'invalid_file_1',
-                    'invalid_file_2',
                 ),
                 'dir' => array(
                     'iterate'   => true,

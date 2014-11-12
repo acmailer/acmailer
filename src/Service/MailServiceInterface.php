@@ -52,8 +52,9 @@ interface MailServiceInterface extends TransportAwareInterface, RendererAwareInt
      * Provides the path of a file that will be attached to the message while sending it,
      * as well as other previously defined attachments
      * @param string $path
+     * @param string|null $filename
      */
-    public function addAttachment($path);
+    public function addAttachment($path, $filename = null);
 
     /**
      * Provides an array of paths of files that will be attached to the message while sending it,
