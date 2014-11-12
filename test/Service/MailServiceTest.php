@@ -205,7 +205,7 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
         $this->mailService->setAttachments(array('one', 'two', 'three'));
         $this->mailService->addAttachments(array('four', 'five', 'six'));
         $this->mailService->addAttachment('seven');
-        $this->mailService->addAttachment('eight');
+        $this->mailService->addAttachment('eight', 'with-alias');
         $this->assertCount(8, $this->mailService->getAttachments());
 
         $this->mailService->setAttachments(array('one', 'two'));

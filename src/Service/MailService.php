@@ -239,12 +239,13 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $bodyPart->type     = Mime::TYPE_HTML; // TODO
         $attachmentParts    = array();
         $info               = new \finfo(FILEINFO_MIME_TYPE);
-        foreach ($this->attachments as $attachment) {
+        foreach ($this->attachments as $key => $attachment) {
             if (!is_file($attachment)) {
                 continue; // If checked file is not valid, continue to the next
             }
 
-            $basename = basename($attachment);
+            // If the key is a string, use it as the attachment name
+            $basename = is_string($key) ? $key : basename($attachment);
 
             $part               = new MimePart(fopen($attachment, 'r'));
             $part->id           = $basename;
@@ -274,11 +275,16 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
 
     /**
      * @param string $path
+     * @param string|null $filename
      * @return $this
      */
-    public function addAttachment($path)
+    public function addAttachment($path, $filename = null)
     {
-        $this->attachments[] = $path;
+        if (isset($filename)) {
+            $this->attachments[$filename] = $path;
+        } else {
+            $this->attachments[] = $path;
+        }
         return $this;
     }
 
