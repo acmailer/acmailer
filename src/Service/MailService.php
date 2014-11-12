@@ -275,11 +275,16 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
 
     /**
      * @param string $path
+     * @param string|null $filename
      * @return $this
      */
-    public function addAttachment($path)
+    public function addAttachment($path, $filename = null)
     {
-        $this->attachments[] = $path;
+        if (isset($filename)) {
+            $this->attachments[$filename] = $path;
+        } else {
+            $this->attachments[] = $path;
+        }
         return $this;
     }
 
