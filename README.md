@@ -134,19 +134,19 @@ At the moment we call `send`, all the files that already exist will be attached 
 [...]
 
 $mailService->addAttachment('data/mail/attachments/file1.pdf');
-$mailService->addAttachment('data/mail/attachments/file2.pdf'); // This will add the second file to the attachments list
+$mailService->addAttachment('data/mail/attachments/file2.pdf', 'different-filename.pdf');
 
 // Add two more attachments to the list
 $mailService->addAttachments(array(
-    'data/mail/attachments/file3.pdf',
-    'data/mail/attachments/file4.pdf'
+    'another-name.pdf' => 'data/mail/attachments/file3.pdf',
+    'data/mail/attachments/file4.zip'
 ));
 // At this point there is 4 attachments ready to be sent with the email
 
 // If we call this, all previous attachments will be discarded
 $mailService->setAttachments(array(
     'data/mail/attachments/another-file1.pdf',
-    'data/mail/attachments/another-file2.pdf'
+    'name-to-be-displayed.png' => 'data/mail/attachments/another-file2.png'
 ));
 
 // A good way to remove all attachments is to call this
@@ -155,9 +155,11 @@ $mailService->setAttachments(array());
 [...]
 ```
 
+The files will be attached with their real name unless you provide an alternative name as the key of the array element in `addAttachments` and `setAttachments` or as the second argument in `addAttachment`.
+
 **Attention!!** Be careful when attaching files to your email programatically.
 
-Attached images can be displayed inmail by setting the `cid` to the image filename in the image tag like this (thanks to [omarev](https://github.com/acelaya/ZF2-AcMailer/pull/32)).
+Attached images can be displayed inmail by setting the `cid` to the image filename in the image tag like this (thanks to [omarev](https://github.com/acelaya/ZF2-AcMailer/pull/32)). The alternative name should be used if provided.
 
 ```html
 <img alt="This is an attached image" src="cid:image-filename.jpg">
@@ -207,10 +209,10 @@ The mail service can be automatically configured by using the provided global co
     - *params*: Array with key-value pairs with parameters to be sent to the template.
     - *children*: Array with children templates to be used within the main template (layout). Each one of them can have its own children. Look at `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` for details.
 - **attachments**: Allows to define an array of files that will be attached to the message, or even a directory that will be iterated to attach all found files.
-    - *files*: Array of files to be attached
+    - *files*: Array of files to be attached. Can be an associative array where keys are attachment names and values are file paths.
     - *dir*: Directory to iterate.
         - *iterate*: If it is not true, the directory won't be iterated.
-        - *path*: The path of the directory to iterate looking for files.
+        - *path*: The path of the directory to iterate looking for files. This files will be attached with their real names.
         - *recursive*: True or false. Tells if nested directories should be iterated too.
 - **server**: IP address or server name to be used while using a SMTP server. Only used for SMTP transport.
 - **port**: SMTP server port while using SMTP transport.
