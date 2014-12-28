@@ -24,12 +24,16 @@ class MailPlugin extends AbstractPlugin implements MailServiceAwareInterface
     }
 
     /**
-     * @param MailOptions $options
+     * @param MailOptions|array $options
      * @return MailServiceInterface
      */
-    public function __invoke(MailOptions $options = null)
+    public function __invoke($options = null)
     {
         if (isset($options)) {
+            if (is_array($options)) {
+                $options = new MailOptions($options);
+            }
+
             $this->configServiceFromOptions($options);
         }
 
