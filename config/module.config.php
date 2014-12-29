@@ -12,6 +12,12 @@ return array(
         )
     ),
 
+    'controller_plugins' => array(
+        'factories' => array(
+            'sendMail' => 'AcMailer\Controller\Plugin\Factory\SendMailPluginFactory'
+        )
+    ),
+
     'view_manager' => array(
         'template_path_stack' => array(
             __DIR__ . '/../view',
