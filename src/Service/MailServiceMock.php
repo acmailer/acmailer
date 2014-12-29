@@ -4,6 +4,7 @@ namespace AcMailer\Service;
 use AcMailer\Result\MailResult;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
+use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\RendererInterface;
 use AcMailer\Result\ResultInterface;
 use AcMailer\Exception\InvalidArgumentException;
@@ -66,19 +67,23 @@ class MailServiceMock implements MailServiceInterface
      * Sets the message body
      * @param \Zend\Mime\Part|\Zend\Mime\Message|string $body
      * @throws InvalidArgumentException
+     * @return $this
      */
     public function setBody($body)
     {
         $this->message->setBody($body);
+        return $this;
     }
     /**
      * Sets the template to be used to create the body of the email
      * @param string|\Zend\View\Model\ViewModel $template
      * @param array $params
+     * @return $this
      */
     public function setTemplate($template, array $params = array())
     {
-
+        $this->message->setBody($template instanceof ViewModel ? 'ViewModel body' : $template);
+        return $this;
     }
     /**
      * Sets the message subject

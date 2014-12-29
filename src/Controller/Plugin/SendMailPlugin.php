@@ -137,7 +137,7 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
         }
 
         if (isset($args['bcc'])) {
-            $this->mailService->getMessage()->setCc($args['bcc']);
+            $this->mailService->getMessage()->setBcc($args['bcc']);
         }
 
         if (isset($args['attachments'])) {
