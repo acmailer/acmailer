@@ -26,6 +26,29 @@ class MailServiceMock implements MailServiceInterface
     private $forceError = false;
 
     /**
+     * @var Message
+     */
+    private $message;
+    /**
+     * @var RendererInterface
+     */
+    private $renderer;
+    /**
+     * @var TransportInterface
+     */
+    private $transport;
+
+    /**
+     * @var array
+     */
+    private $attachments = array();
+
+    public function __construct()
+    {
+        $this->message = new Message();
+    }
+
+    /**
      * Tries to send the message, returning a MailResult object
      * @return ResultInterface
      */
@@ -46,7 +69,7 @@ class MailServiceMock implements MailServiceInterface
      */
     public function setBody($body)
     {
-        // Do nothing
+        $this->message->setBody($body);
     }
     /**
      * Sets the template to be used to create the body of the email
@@ -55,7 +78,7 @@ class MailServiceMock implements MailServiceInterface
      */
     public function setTemplate($template, array $params = array())
     {
-        // Do nothing
+
     }
     /**
      * Sets the message subject
@@ -63,7 +86,7 @@ class MailServiceMock implements MailServiceInterface
      */
     public function setSubject($subject)
     {
-        // Do nothing
+        $this->message->setSubject($subject);
     }
     /**
      * Returns the message that is going to be sent when method send is called
@@ -72,7 +95,7 @@ class MailServiceMock implements MailServiceInterface
      */
     public function getMessage()
     {
-        return new Message();
+        return $this->message;
     }
 
     /**
@@ -96,40 +119,46 @@ class MailServiceMock implements MailServiceInterface
     }
 
     /**
-     * Provides the path of a file that will be attached to the message while sending it,
-     * as well as other previously defined attachments
      * @param string $path
-     * @param string|null $filename
+     * @param null $filename
+     * @return $this
      */
     public function addAttachment($path, $filename = null)
     {
-        // Do nothing
+        if (isset($filename)) {
+            $this->attachments[$filename] = $path;
+        } else {
+            $this->attachments[] = $path;
+        }
+        return $this;
     }
+
     /**
-     * Provides an array of paths of files that will be attached to the message while sending it,
-     * as well as other previously defined attachments
      * @param array $paths
+     * @return $this
      */
     public function addAttachments(array $paths)
     {
-        // Do nothing
+        return $this->setAttachments(array_merge($this->attachments, $paths));
     }
+
     /**
-     * Sets the list of paths of files that will be attached to the message while sending it,
-     * discarding any previously defined attachment
      * @param array $paths
+     * @return $this
      */
     public function setAttachments(array $paths)
     {
-        // Do nothing
+        $this->attachments = $paths;
+        return $this;
     }
+
     /**
      * Returns the list of attachments
      * @return array
      */
     public function getAttachments()
     {
-        // Do nothing
+        return $this->attachments;
     }
 
     /**
@@ -138,7 +167,7 @@ class MailServiceMock implements MailServiceInterface
      */
     public function getTransport()
     {
-        // Do nothing
+        return $this->transport;
     }
 
     /**
@@ -147,7 +176,7 @@ class MailServiceMock implements MailServiceInterface
      */
     public function getRenderer()
     {
-        // Do nothing
+        return $this->renderer;
     }
 
     /**
@@ -156,7 +185,8 @@ class MailServiceMock implements MailServiceInterface
      */
     public function setRenderer(RendererInterface $renderer)
     {
-        // Do nothing
+        $this->renderer = $renderer;
+        return $this;
     }
 
     /**
@@ -165,6 +195,7 @@ class MailServiceMock implements MailServiceInterface
      */
     public function setTransport(TransportInterface $transport)
     {
-        // Do nothing
+        $this->transport = $transport;
+        return $this;
     }
 }
