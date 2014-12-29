@@ -124,9 +124,9 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
             $from = $args['from'];
 
             if (is_array($from)) {
-                $fromAddress = array_shift(array_keys($from));
-                $fromName = array_shift(array_values($from));
-                $this->mailService->getMessage()->setFrom($fromAddress, $fromName);
+                $fromAddress = array_keys($from);
+                $fromName = array_values($from);
+                $this->mailService->getMessage()->setFrom($fromAddress[0], $fromName[0]);
             } else {
                 $this->mailService->getMessage()->setFrom($from);
             }
