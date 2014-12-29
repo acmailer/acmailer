@@ -31,8 +31,7 @@ return array(
         'AcMailer',
         'Application'
     ),
-    
-[...]
+)
 ```
 
 ### Usage
@@ -58,27 +57,54 @@ if ($result->isValid()) {
 }
 ```
 
+##### Via controller plugin
+
+Inside controllers, you can access and use the MailService by using the `sendMail` controller plugin. It returns the MailService when no arguments are provided.
+ 
+```php
+// In a class extending Zend\Mvc\AbstractController...
+$mailService = $this->sendMail();
+$mailService->setSubject('This is the subject')
+            ->setBody('This is the body'); // This can be a string, HTML or even a zend\Mime\Message or a Zend\Mime\Part
+
+$result = $mailService->send();
+```
+
+But you can pass some basic information, making the email to be sent right away and the result to be returned.
+
+```php
+// In a class extending Zend\Mvc\AbstractController...
+$result = $this->sendMail(
+    'The body',
+    'The subject',
+    array('recipient_one@domain.com', 'recipient_two@domain.com')
+);
+// Send another one
+$result = $this->sendMail(array(
+    'subject' => 'Hello there!',
+    'from' => array('my_address@domain.com', 'John Doe')
+));
+```
+
+Adapters configuration can't be provided here, and sholuld be defined at configuration level. Any other information not provided here will be read from configuration.
+
+The plugin accepts a maximum of 7 arguments, which are the body, the subject, the 'to', the 'from', the 'cc', the 'bcc' and the attachments. They can be provided as an associative array too.
+
 ##### Rendering views
 
-Alternatively, the body of the message can be set from a view script by using `setTemplate` instead of `setBody`. It will use a renderer to render defined template and then set it as the email body internally.
+Instead of setting a plain string, the body of the message can be set from a view script by using `setTemplate` instead of `setBody`. It will use a renderer to render defined template and then set it as the email body internally.
 
 You can set the template as a string and pass the arguments for it.
 
 ```php
-[...]
-
 $mailService = $serviceManager->get('AcMailer\Service\MailService');
 $mailService->setSubject('This is the subject')
             ->setTemplate('application/emails/merry-christmas', array('name' => 'John Doe', 'date' => date('Y-m-d'));
-
-[...]
 ```
 
 You can also set the template as a `Zend\View\Model\ViewModel` object, which will render child templates too.
 
 ```php
-[...]
-
 $mailService = $serviceManager->get('AcMailer\Service\MailService');
 
 $layout = new \Zend\View\Model\ViewModel(array(
@@ -94,8 +120,6 @@ $layout->addChild($footer, 'footer');
 
 $mailService->setSubject('This is the subject')
             ->setTemplate($layout);
-
-[...]
 ```
 
 The renderer can be changed to another one (ie. Twig or Blade). It just needs to implement `Zend\View\Renderer\RendererInterface`.
@@ -131,8 +155,6 @@ Files can be attached to the email before sending it by providing their paths wi
 At the moment we call `send`, all the files that already exist will be attached to the email.
 
 ```php
-[...]
-
 $mailService->addAttachment('data/mail/attachments/file1.pdf');
 $mailService->addAttachment('data/mail/attachments/file2.pdf', 'different-filename.pdf');
 
@@ -151,8 +173,6 @@ $mailService->setAttachments(array(
 
 // A good way to remove all attachments is to call this
 $mailService->setAttachments(array());
-
-[...]
 ```
 
 The files will be attached with their real name unless you provide an alternative name as the key of the array element in `addAttachments` and `setAttachments` or as the second argument in `addAttachment`.
@@ -181,13 +201,9 @@ $result = $mailService->send();
 If you are using a `Zend\Mail\Transport\File` as the transport object and need to change any option at runtime do this
 
 ```php
-[...]
-
 $mailService = $serviceManager->get('AcMailer\Service\MailService');
 $mailService->getTransport()->getOptions()->setPath('dynamically/generated/folder');
 $result = $mailService->send();
-
-[...]
 ```
 
 ### Configuration options
@@ -266,8 +282,6 @@ It allows user to define if the message should or should not fail when `send` me
 You can even know if `send` method was called after any action by calling `isSendMethodCalled`.
 
 ```php
-[...]
-
 $mailServiceMock = new \AcMailer\Service\MailServiceMock();
 $mailServiceMock->isSendMethodCalled(); // This will return false at this point
 
@@ -282,6 +296,4 @@ $mailServiceMock->isSendMethodCalled(); // This will return true at this point
 $mailServiceMock->setForceError(false);
 $result = $mailServiceMock->send();
 $result->isValid(); // This will return true in this case
-
-[...]
 ```
