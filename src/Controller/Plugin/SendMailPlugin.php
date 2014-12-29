@@ -1,17 +1,17 @@
 <?php
 namespace AcMailer\Controller\Plugin;
 
-use AcMailer\Options\MailOptions;
 use AcMailer\Service\MailServiceAwareInterface;
 use AcMailer\Service\MailServiceInterface;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Zend\View\Model\ViewModel;
 
 /**
- * Class MailPlugin
+ * Class SendMailPlugin
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailPlugin extends AbstractPlugin implements MailServiceAwareInterface
+class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
 {
     /**
      * @var MailServiceInterface
@@ -24,20 +24,24 @@ class MailPlugin extends AbstractPlugin implements MailServiceAwareInterface
     }
 
     /**
-     * @param MailOptions|array $options
-     * @return MailServiceInterface
+     * @param null|string|ViewModel|array $body
+     * @param null|string $subject
+     * @param null|array $to
+     * @param null|array $from
+     * @param null|array $cc
+     * @param null|array $bcc
+     * @param null|array $attachments
      */
-    public function __invoke($options = null)
-    {
-        if (isset($options)) {
-            if (is_array($options)) {
-                $options = new MailOptions($options);
-            }
+    public function __invoke(
+        $body = null,
+        $subject = null,
+        $to = null,
+        $from = null,
+        $cc = null,
+        $bcc = null,
+        $attachments = null
+    ) {
 
-            $this->configServiceFromOptions($options);
-        }
-
-        return $this->getMailService();
     }
 
     /**
@@ -58,11 +62,7 @@ class MailPlugin extends AbstractPlugin implements MailServiceAwareInterface
         return $this->mailService;
     }
 
-    /**
-     * Configures wraped mail service based in provided config
-     * @param MailOptions $options
-     */
-    protected function configServiceFromOptions(MailOptions $options)
+    protected function normalizeMailArgs(array $args)
     {
 
     }
