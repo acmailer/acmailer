@@ -142,8 +142,8 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         // The body is HTML. Create a Mime\Part and wrap it into a Mime\Message
         if (is_string($body) && $body != strip_tags($body)) {
             $mimePart = new MimePart($body);
-            $mimePart->charset  = "utf-8"; // TODO Allow this to be configured by options
             $mimePart->type     = Mime::TYPE_HTML;
+            $mimePart->charset  = 'utf-8'; // TODO Allow this to be configured by options
             $body = new MimeMessage();
             $body->setParts(array($mimePart));
         // The body is a Mime\Part. Wrap it into a Mime\Message
@@ -231,12 +231,15 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
 
         $mimeMessage = $this->message->getBody();
         if (!$mimeMessage instanceof MimeMessage) {
+            // A MimePart body will be wraped into a MimeMessage, ensuring we handle a MimeMessage after this point
             $this->setBody(new MimePart($mimeMessage));
             $mimeMessage = $this->message->getBody();
         }
+
         $bodyContent        = $mimeMessage->generateMessage();
         $bodyPart           = new MimePart($bodyContent);
-        $bodyPart->type     = Mime::TYPE_HTML; // TODO
+        $bodyPart->type     = Mime::TYPE_HTML;
+        $bodyPart->charset  = 'utf-8';
         $attachmentParts    = array();
         $info               = new \finfo(FILEINFO_MIME_TYPE);
         foreach ($this->attachments as $key => $attachment) {
