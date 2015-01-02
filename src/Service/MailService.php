@@ -140,10 +140,10 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      */
     public function setBody($body, $charset = null)
     {
-        // The body is HTML. Create a Mime\Part and wrap it into a Mime\Message
-        if (is_string($body) && $body != strip_tags($body)) {
+        // The body is a string. Create a Mime\Part and wrap it into a Mime\Message
+        if (is_string($body)) {
             $mimePart = new MimePart($body);
-            $mimePart->type     = Mime::TYPE_HTML;
+            $mimePart->type     = $body != strip_tags($body) ? Mime::TYPE_HTML : Mime::TYPE_TEXT;
             $mimePart->charset  = $charset ?: self::DEFAULT_CHARSET;
             $body = new MimeMessage();
             $body->setParts(array($mimePart));

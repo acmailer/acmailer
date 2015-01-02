@@ -49,13 +49,11 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->mailService->getMessage()->getBody() instanceof MimeMessage);
     }
     
-    public function testStringBodyRemainsUnchanged()
+    public function testStringBodyCasting()
     {
         $expected = "String body";
         $this->mailService->setBody($expected);
-        
-        $this->assertTrue(is_string($this->mailService->getMessage()->getBody()));
-        $this->assertEquals($expected, $this->mailService->getMessage()->getBody());
+        $this->assertTrue($this->mailService->getMessage()->getBody() instanceof MimeMessage);
     }
     
     public function testMimeMessageBodyRemainsUnchanged()

@@ -74,7 +74,7 @@ class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($options['cc'], $ccArray);
         $this->assertEquals($options['bcc'], $bccArray);
         $this->assertEquals($options['subject'], $mailService->getMessage()->getSubject());
-        $this->assertEquals($options['body'], $mailService->getMessage()->getBody());
+        $this->assertInstanceof('Zend\Mime\Message', $mailService->getMessage()->getBody());
     }
 
     public function testSmtpAdapter()
