@@ -69,6 +69,20 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($message, $this->mailService->getMessage()->getBody());
     }
 
+    public function testCharsetIsRespectedWhenSettingHtmlStringBody()
+    {
+        $expected = 'foo';
+        $this->mailService->setBody('<h2>string</h2>', $expected);
+        /** @var MimeMessage $body */
+        $body = $this->mailService->getMessage()->getBody();
+        $part = $body->getParts();
+        $this->assertCount(1, $part);
+
+        /** @var MimePart $part */
+        $part = $part[0];
+        $this->assertEquals($expected, $part->charset);
+    }
+
     /**
      * @expectedException InvalidArgumentException
      */
