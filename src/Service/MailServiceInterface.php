@@ -15,6 +15,8 @@ use Zend\View\Renderer\RendererInterface;
  */
 interface MailServiceInterface extends TransportAwareInterface, RendererAwareInterface
 {
+    const DEFAULT_CHARSET = 'utf-8';
+
     /**
      * Tries to send the message, returning a MailResult object
      * @return ResultInterface
@@ -31,9 +33,10 @@ interface MailServiceInterface extends TransportAwareInterface, RendererAwareInt
     /**
      * Sets the message body
      * @param \Zend\Mime\Part|\Zend\Mime\Message|string $body
+     * @param string $charset Will be used only when setting an HTML string body
      * @throws InvalidArgumentException
      */
-    public function setBody($body);
+    public function setBody($body, $charset = null);
     
     /**
      * Sets the template to be used to create the body of the email

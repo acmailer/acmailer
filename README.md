@@ -219,6 +219,7 @@ The mail service can be automatically configured by using the provided global co
 - **bcc**: It can be a string with one blind carbon copy email address or an array of multiple addresses.
 - **subject**: Default email subject.
 - **body**: Default body to be used. Usually this will be generated at runtime, but can be set as a string at config file. It can contain HTML too.
+- **body_charset**: The charset to be set to default body if it is a string. Default value is 'utf-8'.
 - **template**: Array with template configuration. It has 4 child options.
     - *use_template*: True or false. Tells if template should be used, making the **body** option to be ignored.
     - *path*: Path of the template. The same used while setting the template of a ViewModel (ie. 'application/index/list').
