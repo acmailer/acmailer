@@ -1,6 +1,7 @@
 <?php
 namespace AcMailer\Options;
 
+use AcMailer\Service\MailServiceInterface;
 use Zend\Stdlib\AbstractOptions;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mail\Transport\Smtp;
@@ -99,6 +100,10 @@ class MailOptions extends AbstractOptions
      * @var string
      */
     protected $body = '';
+    /**
+     * @var string
+     */
+    protected $bodyCharset = MailServiceInterface::DEFAULT_CHARSET;
     /**
      * @var TemplateOptions
      */
@@ -345,6 +350,24 @@ class MailOptions extends AbstractOptions
     public function setBody($body)
     {
         $this->body = $body;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBodyCharset()
+    {
+        return $this->bodyCharset;
+    }
+
+    /**
+     * @param string $bodyCharset
+     * @return $this
+     */
+    public function setBodyCharset($bodyCharset)
+    {
+        $this->bodyCharset = $bodyCharset;
         return $this;
     }
 

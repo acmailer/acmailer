@@ -1,9 +1,11 @@
 <?php
 namespace AcMailerTest\Options;
 
+use AcMailer\Options\AttachmentsOptions;
 use AcMailer\Options\MailOptions;
 use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Options\TemplateOptions;
+use AcMailer\Service\MailServiceInterface;
 use Zend\Mail\Transport\Null;
 use Zend\Mail\Transport\Sendmail;
 use Zend\Mail\Transport\Smtp;
@@ -45,6 +47,7 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('login', $this->mailOptions->getConnectionClass());
         $this->assertEquals('', $this->mailOptions->getSubject());
         $this->assertEquals('', $this->mailOptions->getBody());
+        $this->assertEquals(MailServiceInterface::DEFAULT_CHARSET, $this->mailOptions->getBodyCharset());
         $this->assertEquals(25, $this->mailOptions->getPort());
         $this->assertInstanceOf('AcMailer\Options\AttachmentsOptions', $this->mailOptions->getAttachments());
         $this->assertInstanceOf('AcMailer\Options\TemplateOptions', $this->mailOptions->getTemplate());
@@ -135,17 +138,11 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
         $this->mailOptions->setSsl(true);
     }
 
-    public function testTemplateArrayIsCastToTemplateOptions()
+    public function testConnectionClass()
     {
-        $this->mailOptions->setTemplate(array());
-        $this->assertTrue($this->mailOptions->getTemplate() instanceof TemplateOptions);
-    }
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testTemplateInvalidValueThrowsException()
-    {
-        $this->mailOptions->setTemplate("foo");
+        $expected = 'smtp';
+        $this->assertSame($this->mailOptions, $this->mailOptions->setConnectionClass($expected));
+        $this->assertEquals($expected, $this->mailOptions->getConnectionClass());
     }
 
     /**
@@ -170,5 +167,48 @@ class MailOptionsTest extends \PHPUnit_Framework_TestCase
     public function testFilePathInvalidValueThrowsAnException()
     {
         $this->mailOptions->setFilePath(321);
+    }
+
+    public function testBodyCharset()
+    {
+        $expected = 'Windows-1252';
+        $this->assertSame($this->mailOptions, $this->mailOptions->setBodyCharset($expected));
+        $this->assertEquals($expected, $this->mailOptions->getBodyCharset());
+    }
+
+    public function testTemplate()
+    {
+        $this->assertSame($this->mailOptions, $this->mailOptions->setTemplate(array()));
+        $this->assertInstanceof('AcMailer\Options\TemplateOptions', $this->mailOptions->getTemplate());
+
+        $expected = new TemplateOptions();
+        $this->assertSame($this->mailOptions, $this->mailOptions->setTemplate($expected));
+        $this->assertSame($expected, $this->mailOptions->getTemplate());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testTemplateInvalidValueThrowsException()
+    {
+        $this->mailOptions->setTemplate("foo");
+    }
+
+    public function testAttachments()
+    {
+        $this->assertSame($this->mailOptions, $this->mailOptions->setAttachments(array()));
+        $this->assertInstanceof('AcMailer\Options\AttachmentsOptions', $this->mailOptions->getAttachments());
+
+        $expected = new AttachmentsOptions();
+        $this->assertSame($this->mailOptions, $this->mailOptions->setAttachments($expected));
+        $this->assertSame($expected, $this->mailOptions->getAttachments());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testInvalidAttachmentsThrowException()
+    {
+        $this->mailOptions->setAttachments(null);
     }
 }
