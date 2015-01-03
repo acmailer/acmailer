@@ -57,7 +57,7 @@ class MailServiceMock implements MailServiceInterface
     {
         $this->sendMethodCalled = true;
         if ($this->forceError) {
-            return new MailResult(false, "Error!!");
+            return new MailResult(false, 'Error!!');
         } else {
             return new MailResult();
         }

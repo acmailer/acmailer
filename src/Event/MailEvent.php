@@ -14,8 +14,8 @@ use Zend\EventManager\Event;
 class MailEvent extends Event implements ResultAwareInterface
 {
     const EVENT_MAIL_PRE_SEND   = 'event.mail.pre.send';
-    const EVENT_MAIL_POST_SEND 	= 'event.mail.post.send';
-    const EVENT_MAIL_SEND_ERROR	= 'event.mail.send.error';
+    const EVENT_MAIL_POST_SEND  = 'event.mail.post.send';
+    const EVENT_MAIL_SEND_ERROR = 'event.mail.send.error';
 
     /**
      * @var MailServiceInterface

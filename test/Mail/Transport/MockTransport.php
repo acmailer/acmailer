@@ -12,7 +12,7 @@ use Zend\Mail\Transport\Exception\RuntimeException;
  */
 class MockTransport implements TransportInterface
 {
-    const ERROR_MESSAGE = "This is a forced exception";
+    const ERROR_MESSAGE = 'This is a forced exception';
     
     /**
      * @var boolean

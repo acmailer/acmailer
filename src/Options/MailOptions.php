@@ -273,7 +273,7 @@ class MailOptions extends AbstractOptions
      */
     public function getSmtpUser()
     {
-        if (!isset($this->smtpUser) || $this->smtpUser == "") {
+        if (empty($this->smtpUser)) {
             return $this->from;
         }
 
@@ -446,8 +446,8 @@ class MailOptions extends AbstractOptions
     {
         if (!in_array($connectionClass, $this->validConnectionClasses)) {
             throw new InvalidArgumentException(sprintf(
-                "Connection class should be one of '%s'. %s provided",
-                implode("', '", $this->validConnectionClasses),
+                'Connection class should be one of "%s". %s provided',
+                implode('", "', $this->validConnectionClasses),
                 $connectionClass
             ));
         }
@@ -476,7 +476,7 @@ class MailOptions extends AbstractOptions
             $this->attachments = $attachments;
         } else {
             throw new InvalidArgumentException(sprintf(
-                "Attachments should be an array or an AcMailer\\Options\\AttachmentsOptions, %s provided",
+                'Attachments should be an array or an AcMailer\\Options\\AttachmentsOptions, %s provided',
                 is_object($attachments) ? get_class($attachments) : gettype($attachments)
             ));
         }

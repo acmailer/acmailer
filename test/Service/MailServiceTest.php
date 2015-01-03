@@ -38,26 +38,26 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
     
     public function testMimePartBodyCasting()
     {
-        $this->mailService->setBody(new Mime\Part("Foo"));
+        $this->mailService->setBody(new Mime\Part('Foo'));
         $this->assertTrue($this->mailService->getMessage()->getBody() instanceof Mime\Message);
     }
     
     public function testHtmlBodyCasting()
     {
-        $this->mailService->setBody("<div>Html body</div>");
+        $this->mailService->setBody('<div>Html body</div>');
         $this->assertTrue($this->mailService->getMessage()->getBody() instanceof Mime\Message);
     }
     
     public function testStringBodyCasting()
     {
-        $expected = "String body";
+        $expected = 'String body';
         $this->mailService->setBody($expected);
         $this->assertTrue($this->mailService->getMessage()->getBody() instanceof Mime\Message);
     }
     
     public function testMimeMessageBodyRemainsUnchanged()
     {
-        $part       = new Mime\Part("Foo");
+        $part       = new Mime\Part('Foo');
         $message    = new Mime\Message();
         $message->addPart($part);
         $this->mailService->setBody($message);
@@ -90,7 +90,7 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
     
     public function testSetSubject()
     {
-        $expected = "This is the subject";
+        $expected = 'This is the subject';
         
         $this->assertEquals($this->mailService, $this->mailService->setSubject($expected));
         $this->assertEquals($expected, $this->mailService->getMessage()->getSubject());

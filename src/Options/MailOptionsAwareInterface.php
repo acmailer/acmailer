@@ -2,7 +2,7 @@
 namespace AcMailer\Options;
 
 /**
- * 
+ * Interface MailOptionsAwareInterface
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */

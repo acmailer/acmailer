@@ -7,6 +7,11 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Mvc\Controller\PluginManager as ControllerPluginManager;
 
+/**
+ * Class SendMailPluginFactoryTest
+ * @author Alejandro Celaya Alastrué
+ * @link http://www.alejandrocelaya.com
+ */
 class SendMailPluginFactoryTest extends TestCase
 {
     /**

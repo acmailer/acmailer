@@ -155,8 +155,8 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         // If the body is not a string or a Mime\Message at this point, it is not a valid argument
         if (!is_string($body) && !($body instanceof Mime\Message)) {
             throw new InvalidArgumentException(sprintf(
-                "Provided body is not valid. It should be one of '%s'. %s provided",
-                implode("', '", array("string", "Zend\\Mime\\Part", "Zend\\Mime\\Message")),
+                'Provided body is not valid. It should be one of "%s". %s provided',
+                implode('", "', array('string', 'Zend\Mime\Part', 'Zend\Mime\Message')),
                 is_object($body) ? get_class($body) : gettype($body)
             ));
         }

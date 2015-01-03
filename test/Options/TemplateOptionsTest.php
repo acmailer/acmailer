@@ -3,6 +3,11 @@ namespace AcMailerTest\Options;
 
 use AcMailer\Options\TemplateOptions;
 
+/**
+ * Class TemplateOptionsTest
+ * @author
+ * @link
+ */
 class TemplateOptionsTest extends \PHPUnit_Framework_TestCase
 {
     /**

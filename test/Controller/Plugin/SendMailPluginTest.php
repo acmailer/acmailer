@@ -8,6 +8,11 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Stdlib\ArrayUtils;
 use Zend\View\Model\ViewModel;
 
+/**
+ * Class SendMailPluginTest
+ * @author Alejandro Celaya Alastrué
+ * @link http://www.alejandrocelaya.com
+ */
 class SendMailPluginTest extends TestCase
 {
     /**
