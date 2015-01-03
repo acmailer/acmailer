@@ -222,19 +222,22 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     }
 
     /**
-     * Attaches files to the message
+     * Attaches files to the message if any
      */
     protected function attachFiles()
     {
-        if (count($this->attachments) == 0) {
+        if (count($this->attachments) === 0) {
             return;
         }
 
         // Get old message parts
         $mimeMessage = $this->message->getBody();
-        if (! $mimeMessage instanceof MimeMessage) {
+        if (is_string($mimeMessage)) {
+            $originalBodyPart = new MimePart($mimeMessage);
+            $originalBodyPart->type = $mimeMessage != strip_tags($mimeMessage) ? Mime::TYPE_HTML : Mime::TYPE_TEXT;
+
             // A MimePart body will be wraped into a MimeMessage, ensuring we handle a MimeMessage after this point
-            $this->setBody(new MimePart($mimeMessage));
+            $this->setBody($originalBodyPart);
             $mimeMessage = $this->message->getBody();
         }
         $oldParts = $mimeMessage->getParts();
