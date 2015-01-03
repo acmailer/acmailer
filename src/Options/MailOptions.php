@@ -225,7 +225,7 @@ class MailOptions extends AbstractOptions
         return $this->to;
     }
     /**
-     * @param array $to
+     * @param string|array $to
      * @return MailOptions
      */
     public function setTo($to)
@@ -242,7 +242,7 @@ class MailOptions extends AbstractOptions
         return $this->cc;
     }
     /**
-     * @param array $cc
+     * @param string|array $cc
      * @return MailOptions
      */
     public function setCc($cc)
@@ -259,7 +259,7 @@ class MailOptions extends AbstractOptions
         return $this->bcc;
     }
     /**
-     * @param array $bcc
+     * @param string|array $bcc
      * @return MailOptions
      */
     public function setBcc($bcc)
