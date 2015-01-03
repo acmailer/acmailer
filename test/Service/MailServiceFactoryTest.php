@@ -11,13 +11,14 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stdlib\ArrayUtils;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver\TemplatePathStack;
+use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * Class MailServiceFactoryTest
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
+class MailServiceFactoryTest extends TestCase
 {
     /**
      * @var MailServiceFactory
@@ -74,7 +75,7 @@ class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($options['cc'], $ccArray);
         $this->assertEquals($options['bcc'], $bccArray);
         $this->assertEquals($options['subject'], $mailService->getMessage()->getSubject());
-        $this->assertEquals($options['body'], $mailService->getMessage()->getBody());
+        $this->assertInstanceof('Zend\Mime\Message', $mailService->getMessage()->getBody());
     }
 
     public function testSmtpAdapter()
@@ -107,7 +108,7 @@ class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
             'mail_adapter'  => 'file',
             'file_path'     => __DIR__,
             'file_callback' => function ($transport) {
-                return 'TheFilename.eml';
+                return get_class($transport);
             }
         );
         $this->initServiceLocator($options);
@@ -147,8 +148,10 @@ class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
         $this->initServiceLocator();
         // Create the service with default configuration
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
-        $this->assertInstanceOf('Zend\View\Renderer\PhpRenderer', $mailService->getRenderer());
-        $this->assertInstanceOf('Zend\View\Resolver\TemplatePathStack', $mailService->getRenderer()->resolver());
+        /** @var PhpRenderer $renderer */
+        $renderer = $mailService->getRenderer();
+        $this->assertInstanceOf('Zend\View\Renderer\PhpRenderer', $renderer);
+        $this->assertInstanceOf('Zend\View\Resolver\TemplatePathStack', $renderer->resolver());
 
         // Set a template_map and unset the template_path_stack
         $config = $this->serviceLocator->get('Config');
@@ -156,8 +159,10 @@ class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
         $config['view_manager']['template_map'] = array();
         $this->serviceLocator->set('Config', $config);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
-        $this->assertInstanceOf('Zend\View\Renderer\PhpRenderer', $mailService->getRenderer());
-        $this->assertInstanceOf('Zend\View\Resolver\TemplateMapResolver', $mailService->getRenderer()->resolver());
+        /** @var PhpRenderer $renderer */
+        $renderer = $mailService->getRenderer();
+        $this->assertInstanceOf('Zend\View\Renderer\PhpRenderer', $renderer);
+        $this->assertInstanceOf('Zend\View\Resolver\TemplateMapResolver', $renderer->resolver());
 
         // Set both a template_map and a template_path_stack
         $this->initServiceLocator();
@@ -165,8 +170,10 @@ class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
         $config['view_manager']['template_map'] = array();
         $this->serviceLocator->set('Config', $config);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
-        $this->assertInstanceOf('Zend\View\Renderer\PhpRenderer', $mailService->getRenderer());
-        $this->assertInstanceOf('Zend\View\Resolver\AggregateResolver', $mailService->getRenderer()->resolver());
+        /** @var PhpRenderer $renderer */
+        $renderer = $mailService->getRenderer();
+        $this->assertInstanceOf('Zend\View\Renderer\PhpRenderer', $renderer);
+        $this->assertInstanceOf('Zend\View\Resolver\AggregateResolver', $renderer->resolver());
 
         // Set a viewrenderer service and see if it is used
         $renderer = new PhpRenderer();

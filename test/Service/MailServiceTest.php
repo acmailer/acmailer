@@ -7,17 +7,17 @@ use Zend\Mail\Message;
 use AcMailerTest\Mail\Transport\MockTransport;
 use Zend\View\Renderer\PhpRenderer;
 use AcMailer\Service\MailService;
-use Zend\Mime\Part as MimePart;
-use Zend\Mime\Message as MimeMessage;
+use Zend\Mime;
 use AcMailer\Result\MailResult;
 use Zend\View\Resolver\TemplatePathStack;
+use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * Mail service test case
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailServiceTest extends \PHPUnit_Framework_TestCase
+class MailServiceTest extends TestCase
 {
     /**
      * @var \AcMailerTest\Mail\Transport\MockTransport
@@ -39,34 +39,46 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
     
     public function testMimePartBodyCasting()
     {
-        $this->mailService->setBody(new MimePart("Foo"));
-        $this->assertTrue($this->mailService->getMessage()->getBody() instanceof MimeMessage);
+        $this->mailService->setBody(new Mime\Part('Foo'));
+        $this->assertTrue($this->mailService->getMessage()->getBody() instanceof Mime\Message);
     }
     
     public function testHtmlBodyCasting()
     {
-        $this->mailService->setBody("<div>Html body</div>");
-        $this->assertTrue($this->mailService->getMessage()->getBody() instanceof MimeMessage);
+        $this->mailService->setBody('<div>Html body</div>');
+        $this->assertTrue($this->mailService->getMessage()->getBody() instanceof Mime\Message);
     }
     
-    public function testStringBodyRemainsUnchanged()
+    public function testStringBodyCasting()
     {
-        $expected = "String body";
+        $expected = 'String body';
         $this->mailService->setBody($expected);
-        
-        $this->assertTrue(is_string($this->mailService->getMessage()->getBody()));
-        $this->assertEquals($expected, $this->mailService->getMessage()->getBody());
+        $this->assertTrue($this->mailService->getMessage()->getBody() instanceof Mime\Message);
     }
     
     public function testMimeMessageBodyRemainsUnchanged()
     {
-        $part       = new MimePart("Foo");
-        $message    = new MimeMessage();
+        $part       = new Mime\Part('Foo');
+        $message    = new Mime\Message();
         $message->addPart($part);
         $this->mailService->setBody($message);
         
-        $this->assertTrue($this->mailService->getMessage()->getBody() instanceof MimeMessage);
+        $this->assertTrue($this->mailService->getMessage()->getBody() instanceof Mime\Message);
         $this->assertEquals($message, $this->mailService->getMessage()->getBody());
+    }
+
+    public function testCharsetIsRespectedWhenSettingHtmlStringBody()
+    {
+        $expected = 'foo';
+        $this->mailService->setBody('<h2>string</h2>', $expected);
+        /** @var Mime\Message $body */
+        $body = $this->mailService->getMessage()->getBody();
+        $part = $body->getParts();
+        $this->assertCount(1, $part);
+
+        /** @var Mime\Part $part */
+        $part = $part[0];
+        $this->assertEquals($expected, $part->charset);
     }
 
     /**
@@ -79,7 +91,7 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
     
     public function testSetSubject()
     {
-        $expected = "This is the subject";
+        $expected = 'This is the subject';
         
         $this->assertEquals($this->mailService, $this->mailService->setSubject($expected));
         $this->assertEquals($expected, $this->mailService->getMessage()->getSubject());
@@ -229,11 +241,29 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
         $result = $this->mailService->send();
         $this->assertTrue($result->isValid());
 
-        /* @var MimeMessage $body */
+        /* @var Mime\Message $body */
         $body = $this->mailService->getMessage()->getBody();
         $this->assertInstanceOf('Zend\Mime\Message', $body);
         // The body and the three attached files make it a total of 4 parts
         $this->assertCount(4, $body->getParts());
+        chdir($cwd);
+    }
+
+    public function testStringBypassedBodyIsWrappedIntoMimePartWithAttachments()
+    {
+        $cwd = getcwd();
+        chdir(dirname(__DIR__));
+        $this->mailService->setAttachments(array(
+            'attachments/file1',
+            'attachments/file2'
+        ));
+        $this->mailService->getMessage()->setBody('Btpassed body as string');
+        $result = $this->mailService->send();
+        $this->assertTrue($result->isValid());
+
+        /* @var Mime\Message $body */
+        $body = $this->mailService->getMessage()->getBody();
+        $this->assertInstanceOf('Zend\Mime\Message', $body);
         chdir($cwd);
     }
 }

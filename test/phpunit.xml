@@ -18,6 +18,9 @@
         <testsuite name="AcMailer service test suite">
             <directory>./Service</directory>
         </testsuite>
+        <testsuite name="AcMailer controller test suite">
+            <directory>./Controller</directory>
+        </testsuite>
         
     </testsuites>
     

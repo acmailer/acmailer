@@ -2,8 +2,14 @@
 namespace AcMailerTest\Options;
 
 use AcMailer\Options\TemplateOptions;
+use PHPUnit_Framework_TestCase as TestCase;
 
-class TemplateOptionsTest extends \PHPUnit_Framework_TestCase
+/**
+ * Class TemplateOptionsTest
+ * @author
+ * @link
+ */
+class TemplateOptionsTest extends TestCase
 {
     /**
      * @var TemplateOptions

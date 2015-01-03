@@ -4,13 +4,14 @@ namespace AcMailerTest\Event;
 use AcMailer\Event\MailEvent;
 use AcMailer\Result\MailResult;
 use AcMailer\Service\MailServiceMock;
+use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * Class MailEventTest
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailEventTest extends \PHPUnit_Framework_TestCase
+class MailEventTest extends TestCase
 {
     /**
      * @var MailEvent

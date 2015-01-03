@@ -4,6 +4,11 @@ namespace AcMailerTest\Event;
 use AcMailer\Event\AbstractMailListener;
 use AcMailer\Event\MailEvent;
 
+/**
+ * Class MailListenerMock
+ * @author Alejandro Celaya Alastrué
+ * @link http://www.alejandrocelaya.com
+ */
 class MailListenerMock extends AbstractMailListener
 {
     private $onPreSendCalled    = false;

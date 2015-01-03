@@ -2,13 +2,14 @@
 namespace AcMailerTest\Options;
 
 use AcMailer\Options\AttachmentsOptions;
+use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * Class AttachmentsOptionsTest
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class AttachmentsOptionsTest extends \PHPUnit_Framework_TestCase
+class AttachmentsOptionsTest extends TestCase
 {
     /**
      * @var AttachmentsOptions

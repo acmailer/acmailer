@@ -10,12 +10,10 @@ use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mail\Message;
-use Zend\Mime\Message as MimeMessage;
-use Zend\Mime\Part as MimePart;
+use Zend\Mime;
 use Zend\Mail\Exception\ExceptionInterface as ZendMailException;
 use AcMailer\Result\ResultInterface;
 use AcMailer\Result\MailResult;
-use Zend\Mime\Mime;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\RendererInterface;
 use AcMailer\Exception\InvalidArgumentException;
@@ -133,31 +131,32 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     /**
      * Sets the message body
      * @param \Zend\Mime\Part|\Zend\Mime\Message|string $body Email body
+     * @param string $charset Will be used only when setting an HTML string body
      * @return $this Returns this MailService for chaining purposes
      * @throws InvalidArgumentException
      * @see \AcMailer\Service\MailServiceInterface::setBody()
      */
-    public function setBody($body)
+    public function setBody($body, $charset = null)
     {
-        // The body is HTML. Create a Mime\Part and wrap it into a Mime\Message
-        if (is_string($body) && $body != strip_tags($body)) {
-            $mimePart = new MimePart($body);
-            $mimePart->charset  = "utf-8"; // TODO Allow this to be configured by options
-            $mimePart->type     = Mime::TYPE_HTML;
-            $body = new MimeMessage();
+        if (is_string($body)) {
+            // Create a Mime\Part and wrap it into a Mime\Message
+            $mimePart = new Mime\Part($body);
+            $mimePart->type     = $body != strip_tags($body) ? Mime\Mime::TYPE_HTML : Mime\Mime::TYPE_TEXT;
+            $mimePart->charset  = $charset ?: self::DEFAULT_CHARSET;
+            $body = new Mime\Message();
             $body->setParts(array($mimePart));
-        // The body is a Mime\Part. Wrap it into a Mime\Message
-        } elseif ($body instanceof MimePart) {
-            $mimeMessage = new MimeMessage();
+        } elseif ($body instanceof Mime\Part) {
+            // The body is a Mime\Part. Wrap it into a Mime\Message
+            $mimeMessage = new Mime\Message();
             $mimeMessage->setParts(array($body));
             $body = $mimeMessage;
         }
 
-        // If the body is not a string or a MimeMessage at this point, it is not a valid argument
-        if (!is_string($body) && !($body instanceof MimeMessage)) {
+        // If the body is not a string or a Mime\Message at this point, it is not a valid argument
+        if (! is_string($body) && ! $body instanceof Mime\Message) {
             throw new InvalidArgumentException(sprintf(
-                "Provided body is not valid. It should be one of '%s'. %s provided",
-                implode("', '", array("string", "Zend\\Mime\\Part", "Zend\\Mime\\Message")),
+                'Provided body is not valid. It should be one of "%s". %s provided',
+                implode('", "', array('string', 'Zend\Mime\Part', 'Zend\Mime\Message')),
                 is_object($body) ? get_class($body) : gettype($body)
             ));
         }
@@ -198,14 +197,14 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      */
     protected function renderChildren(ViewModel $model)
     {
-        if (!$model->hasChildren()) {
+        if (! $model->hasChildren()) {
             return;
         }
 
         /* @var ViewModel $child */
         foreach ($model as $child) {
             $capture = $child->captureTo();
-            if (!empty($capture)) {
+            if (! empty($capture)) {
                 // Recursively render children
                 $this->renderChildren($child);
                 $result = $this->renderer->render($child);
@@ -221,43 +220,50 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     }
 
     /**
-     * Attaches files to the message
+     * Attaches files to the message if any
      */
     protected function attachFiles()
     {
-        if (count($this->attachments) == 0) {
+        if (count($this->attachments) === 0) {
             return;
         }
 
+        // Get old message parts
         $mimeMessage = $this->message->getBody();
-        if (!$mimeMessage instanceof MimeMessage) {
-            $this->setBody(new MimePart($mimeMessage));
+        if (is_string($mimeMessage)) {
+            $originalBodyPart = new Mime\Part($mimeMessage);
+            $originalBodyPart->type = $mimeMessage != strip_tags($mimeMessage)
+                ? Mime\Mime::TYPE_HTML
+                : Mime\Mime::TYPE_TEXT;
+
+            // A Mime\Part body will be wraped into a Mime\Message, ensuring we handle a Mime\Message after this point
+            $this->setBody($originalBodyPart);
             $mimeMessage = $this->message->getBody();
         }
-        $bodyContent        = $mimeMessage->generateMessage();
-        $bodyPart           = new MimePart($bodyContent);
-        $bodyPart->type     = Mime::TYPE_HTML; // TODO
+        $oldParts = $mimeMessage->getParts();
+
+        // Generate a new Mime\Part for each attachment
         $attachmentParts    = array();
         $info               = new \finfo(FILEINFO_MIME_TYPE);
         foreach ($this->attachments as $key => $attachment) {
-            if (!is_file($attachment)) {
+            if (! is_file($attachment)) {
                 continue; // If checked file is not valid, continue to the next
             }
 
             // If the key is a string, use it as the attachment name
             $basename = is_string($key) ? $key : basename($attachment);
 
-            $part               = new MimePart(fopen($attachment, 'r'));
+            $part               = new Mime\Part(fopen($attachment, 'r'));
             $part->id           = $basename;
             $part->filename     = $basename;
             $part->type         = $info->file($attachment);
-            $part->encoding     = Mime::ENCODING_BASE64;
-            $part->disposition  = Mime::DISPOSITION_ATTACHMENT;
+            $part->encoding     = Mime\Mime::ENCODING_BASE64;
+            $part->disposition  = Mime\Mime::DISPOSITION_ATTACHMENT;
             $attachmentParts[]  = $part;
         }
-        array_unshift($attachmentParts, $bodyPart);
-        $body = new MimeMessage();
-        $body->setParts($attachmentParts);
+
+        $body = new Mime\Message();
+        $body->setParts(array_merge($oldParts, $attachmentParts));
         $this->message->setBody($body);
     }
 
@@ -337,7 +343,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      */
     public function getEventManager()
     {
-        if (!isset($this->events)) {
+        if (! isset($this->events)) {
             $this->setEventManager(new EventManager());
         }
 

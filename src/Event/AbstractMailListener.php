@@ -1,14 +1,15 @@
 <?php
 namespace AcMailer\Event;
 
+use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 
 /**
  * Class AbstractMailListener
- * @author
- * @link
+ * @author Alejandro Celaya Alastrué
+ * @link http://www.alejandrocelaya.com
  */
-abstract class AbstractMailListener implements MailListenerInterface
+abstract class AbstractMailListener extends AbstractListenerAggregate implements MailListenerInterface
 {
     /**
      * @var \Zend\Stdlib\CallbackHandler[]
@@ -24,17 +25,5 @@ abstract class AbstractMailListener implements MailListenerInterface
         $this->listeners[] = $events->attach(MailEvent::EVENT_MAIL_PRE_SEND, array($this, 'onPreSend'), $priority);
         $this->listeners[] = $events->attach(MailEvent::EVENT_MAIL_POST_SEND, array($this, 'onPostSend'), $priority);
         $this->listeners[] = $events->attach(MailEvent::EVENT_MAIL_SEND_ERROR, array($this, 'onSendError'), $priority);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function detach(EventManagerInterface $events)
-    {
-        foreach ($this->listeners as $index => $callback) {
-            if ($events->detach($callback)) {
-                unset($this->listeners[$index]);
-            }
-        }
     }
 }

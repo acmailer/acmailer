@@ -43,6 +43,7 @@ class MailServiceFactory implements FactoryInterface
 
         // Prepare Mail Transport
         $serviceName = $mailOptions->getMailAdapterService();
+        /** @var TransportInterface $transport */
         $transport = isset($serviceName) ? $sm->get($serviceName) : $mailOptions->getMailAdapter();
         $this->setupSpecificConfig($transport, $mailOptions);
 
@@ -125,10 +126,12 @@ class MailServiceFactory implements FactoryInterface
     {
         // Try to return the configured renderer. If it points to an undefined service, create a renderer on the fly
         try {
-            return $sm->get('mailviewrenderer');
+            /** @var RendererInterface $renderer */
+            $renderer = $sm->get('mailviewrenderer');
+            return $renderer;
         } catch (ServiceNotFoundException $e) {
             // In case the renderer service is not defined, try to construct it
-            $vmConfig = $this->getViewManagerConfig($sm);
+            $vmConfig = $this->getSpecificConfig($sm, 'view_manager');
             $renderer = new PhpRenderer();
 
             // Check what kind of view_manager configuration has been defined
@@ -166,30 +169,19 @@ class MailServiceFactory implements FactoryInterface
         $factory = new ViewHelperManagerFactory();
         /** @var HelperPluginManager $helperManager */
         $helperManager = $factory->createService($sm);
-        $config = new Config($this->getViewHelpersConfig($sm));
+        $config = new Config($this->getSpecificConfig($sm, 'view_helpers'));
         $config->configureServiceManager($helperManager);
         return $helperManager;
     }
 
     /**
-     * Returns the view manager configuration
+     * Returns a specific configuration defined by provided key
      * @param ServiceLocatorInterface $sm
      * @return array
      */
-    protected function getViewManagerConfig(ServiceLocatorInterface $sm)
+    protected function getSpecificConfig(ServiceLocatorInterface $sm, $configKey)
     {
         $config = $sm->get('Config');
-        return !empty($config) && isset($config['view_manager']) ? $config['view_manager'] : array();
-    }
-
-    /**
-     * Returns the view helpers configuration
-     * @param ServiceLocatorInterface $sm
-     * @return array
-     */
-    protected function getViewHelpersConfig(ServiceLocatorInterface $sm)
-    {
-        $config = $sm->get('Config');
-        return !empty($config) && isset($config['view_helpers']) ? $config['view_helpers'] : array();
+        return ! empty($config) && isset($config[$configKey]) ? $config[$configKey] : array();
     }
 }

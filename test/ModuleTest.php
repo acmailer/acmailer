@@ -2,13 +2,14 @@
 namespace AcMailerTest;
 
 use AcMailer\Module;
+use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * Class ModuleTest
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class ModuleTest extends \PHPUnit_Framework_TestCase
+class ModuleTest extends TestCase
 {
     /**
      * @var Module

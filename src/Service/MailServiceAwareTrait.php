@@ -32,11 +32,11 @@ trait MailServiceAwareTrait
     public function getMailService()
     {
         if (
-            ($this instanceof ServiceLocatorAwareInterface) &&
-            !isset($this->mailService) &&
-            $this->getServiceLocator()->has('AcMailer\Service\MailService')
+            $this instanceof ServiceLocatorAwareInterface
+            && ! isset($this->mailService)
+            && $this->getServiceLocator()->has('AcMailer\Service\MailService')
         ) {
-            $this->setMailService($this->getServiceLocator()->get('AcMailer\Service\MailService'));
+            $this->mailService = $this->getServiceLocator()->get('AcMailer\Service\MailService');
         }
 
         return $this->mailService;
