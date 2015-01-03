@@ -248,4 +248,22 @@ class MailServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(4, $body->getParts());
         chdir($cwd);
     }
+
+    public function testStringBypassedBodyIsWrappedIntoMimePartWithAttachments()
+    {
+        $cwd = getcwd();
+        chdir(dirname(__DIR__));
+        $this->mailService->setAttachments(array(
+            'attachments/file1',
+            'attachments/file2'
+        ));
+        $this->mailService->getMessage()->setBody('Btpassed body as string');
+        $result = $this->mailService->send();
+        $this->assertTrue($result->isValid());
+
+        /* @var MimeMessage $body */
+        $body = $this->mailService->getMessage()->getBody();
+        $this->assertInstanceOf('Zend\Mime\Message', $body);
+        chdir($cwd);
+    }
 }
