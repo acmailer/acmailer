@@ -29,7 +29,7 @@ class AttachmentsOptions extends AbstractOptions
 
     /**
      * @param array $dir
-     * @return $this;
+     * @return $this
      */
     public function setDir($dir)
     {
@@ -46,7 +46,7 @@ class AttachmentsOptions extends AbstractOptions
 
     /**
      * @param array $files
-     * @return $this;
+     * @return $this
      */
     public function setFiles(array $files)
     {

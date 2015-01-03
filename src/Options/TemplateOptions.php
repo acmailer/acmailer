@@ -81,7 +81,7 @@ class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInt
 
     /**
      * @param array $children
-     * @return $this;
+     * @return $this
      */
     public function setChildren($children)
     {
