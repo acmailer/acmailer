@@ -10,12 +10,10 @@ use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mail\Message;
-use Zend\Mime\Message as MimeMessage;
-use Zend\Mime\Part as MimePart;
+use Zend\Mime;
 use Zend\Mail\Exception\ExceptionInterface as ZendMailException;
 use AcMailer\Result\ResultInterface;
 use AcMailer\Result\MailResult;
-use Zend\Mime\Mime;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\RendererInterface;
 use AcMailer\Exception\InvalidArgumentException;
@@ -142,20 +140,20 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     {
         if (is_string($body)) {
             // Create a Mime\Part and wrap it into a Mime\Message
-            $mimePart = new MimePart($body);
-            $mimePart->type     = $body != strip_tags($body) ? Mime::TYPE_HTML : Mime::TYPE_TEXT;
+            $mimePart = new Mime\Part($body);
+            $mimePart->type     = $body != strip_tags($body) ? Mime\Mime::TYPE_HTML : Mime\Mime::TYPE_TEXT;
             $mimePart->charset  = $charset ?: self::DEFAULT_CHARSET;
-            $body = new MimeMessage();
+            $body = new Mime\Message();
             $body->setParts(array($mimePart));
-        } elseif ($body instanceof MimePart) {
+        } elseif ($body instanceof Mime\Part) {
             // The body is a Mime\Part. Wrap it into a Mime\Message
-            $mimeMessage = new MimeMessage();
+            $mimeMessage = new Mime\Message();
             $mimeMessage->setParts(array($body));
             $body = $mimeMessage;
         }
 
-        // If the body is not a string or a MimeMessage at this point, it is not a valid argument
-        if (!is_string($body) && !($body instanceof MimeMessage)) {
+        // If the body is not a string or a Mime\Message at this point, it is not a valid argument
+        if (!is_string($body) && !($body instanceof Mime\Message)) {
             throw new InvalidArgumentException(sprintf(
                 "Provided body is not valid. It should be one of '%s'. %s provided",
                 implode("', '", array("string", "Zend\\Mime\\Part", "Zend\\Mime\\Message")),
@@ -233,10 +231,12 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         // Get old message parts
         $mimeMessage = $this->message->getBody();
         if (is_string($mimeMessage)) {
-            $originalBodyPart = new MimePart($mimeMessage);
-            $originalBodyPart->type = $mimeMessage != strip_tags($mimeMessage) ? Mime::TYPE_HTML : Mime::TYPE_TEXT;
+            $originalBodyPart = new Mime\Part($mimeMessage);
+            $originalBodyPart->type = $mimeMessage != strip_tags($mimeMessage)
+                ? Mime\Mime::TYPE_HTML
+                : Mime\Mime::TYPE_TEXT;
 
-            // A MimePart body will be wraped into a MimeMessage, ensuring we handle a MimeMessage after this point
+            // A Mime\Part body will be wraped into a Mime\Message, ensuring we handle a Mime\Message after this point
             $this->setBody($originalBodyPart);
             $mimeMessage = $this->message->getBody();
         }
@@ -253,16 +253,16 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
             // If the key is a string, use it as the attachment name
             $basename = is_string($key) ? $key : basename($attachment);
 
-            $part               = new MimePart(fopen($attachment, 'r'));
+            $part               = new Mime\Part(fopen($attachment, 'r'));
             $part->id           = $basename;
             $part->filename     = $basename;
             $part->type         = $info->file($attachment);
-            $part->encoding     = Mime::ENCODING_BASE64;
-            $part->disposition  = Mime::DISPOSITION_ATTACHMENT;
+            $part->encoding     = Mime\Mime::ENCODING_BASE64;
+            $part->disposition  = Mime\Mime::DISPOSITION_ATTACHMENT;
             $attachmentParts[]  = $part;
         }
 
-        $body = new MimeMessage();
+        $body = new Mime\Message();
         $body->setParts(array_merge($oldParts, $attachmentParts));
         $this->message->setBody($body);
     }
