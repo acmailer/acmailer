@@ -20,7 +20,7 @@ before_script:
 script:
   - mkdir build
   - ./vendor/bin/phpunit -c test/phpunit.xml --coverage-clover build/clover.xml
-  - ./vendor/bin/phpcs --standard=PSR2 --ignore=./src/Service/MailServiceAwareTrait.php ./src/ ./test/
+  - ./vendor/bin/phpcs --standard=PSR2 --ignore=./src/Service/MailServiceAwareTrait.php ./src/ ./test/ ./config
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
