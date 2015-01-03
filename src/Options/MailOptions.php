@@ -45,7 +45,7 @@ class MailOptions extends AbstractOptions
     );
     
     /**
-     * @var string|TransportInterface
+     * @var TransportInterface
      */
     protected $mailAdapter = '\Zend\Mail\Transport\Sendmail';
     /**
@@ -523,7 +523,7 @@ class MailOptions extends AbstractOptions
 
     /**
      * @param callable $fileCallback
-     * @return $this;
+     * @return $this
      */
     public function setFileCallback($fileCallback)
     {
