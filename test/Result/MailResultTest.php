@@ -3,13 +3,14 @@ namespace AcMailerTest\Result;
 
 use AcMailer\Result\MailResult;
 use AcMailer\Result\ResultInterface;
+use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * Mail result test case
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailResultTest extends \PHPUnit_Framework_TestCase
+class MailResultTest extends TestCase
 {
     /**
      * @var ResultInterface

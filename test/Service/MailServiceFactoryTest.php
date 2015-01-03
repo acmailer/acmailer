@@ -11,13 +11,14 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stdlib\ArrayUtils;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver\TemplatePathStack;
+use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * Class MailServiceFactoryTest
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailServiceFactoryTest extends \PHPUnit_Framework_TestCase
+class MailServiceFactoryTest extends TestCase
 {
     /**
      * @var MailServiceFactory

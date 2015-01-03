@@ -10,13 +10,14 @@ use AcMailer\Service\MailService;
 use Zend\Mime;
 use AcMailer\Result\MailResult;
 use Zend\View\Resolver\TemplatePathStack;
+use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * Mail service test case
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailServiceTest extends \PHPUnit_Framework_TestCase
+class MailServiceTest extends TestCase
 {
     /**
      * @var \AcMailerTest\Mail\Transport\MockTransport

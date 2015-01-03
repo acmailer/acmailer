@@ -5,13 +5,14 @@ use AcMailer\Options\Factory\MailOptionsFactory;
 use AcMailerTest\ServiceManager\ServiceManagerMock;
 use AcMailer\Exception\InvalidArgumentException;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * Class MailOptionsFactoryTest
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailOptionsFactoryTest extends \PHPUnit_Framework_TestCase
+class MailOptionsFactoryTest extends TestCase
 {
     /**
      * @var MailOptionsFactory

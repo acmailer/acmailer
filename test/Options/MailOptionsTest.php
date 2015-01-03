@@ -10,13 +10,14 @@ use Zend\Mail\Transport\Null;
 use Zend\Mail\Transport\Sendmail;
 use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\File;
+use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * Mail options test case
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailOptionsTest extends \PHPUnit_Framework_TestCase
+class MailOptionsTest extends TestCase
 {
     /**
      * @var MailOptions
