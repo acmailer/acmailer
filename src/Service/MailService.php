@@ -47,10 +47,6 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      * @var array
      */
     private $attachments = array();
-    /**
-     * @var string
-     */
-    private $currentCharset = self::DEFAULT_CHARSET;
 
     /**
      * Creates a new MailService
@@ -151,9 +147,6 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
             $mimePart->charset  = $charset ?: self::DEFAULT_CHARSET;
             $body = new MimeMessage();
             $body->setParts(array($mimePart));
-
-            // Update current charset
-            $this->currentCharset = $mimePart->charset;
         } elseif ($body instanceof MimePart) {
             // The body is a Mime\Part. Wrap it into a Mime\Message
             $mimeMessage = new MimeMessage();
@@ -229,25 +222,27 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     }
 
     /**
-     * Attaches files to the message
+     * Attaches files to the message if any
      */
     protected function attachFiles()
     {
-        if (count($this->attachments) == 0) {
+        if (count($this->attachments) === 0) {
             return;
         }
 
+        // Get old message parts
         $mimeMessage = $this->message->getBody();
-        if (!$mimeMessage instanceof MimeMessage) {
+        if (is_string($mimeMessage)) {
+            $originalBodyPart = new MimePart($mimeMessage);
+            $originalBodyPart->type = $mimeMessage != strip_tags($mimeMessage) ? Mime::TYPE_HTML : Mime::TYPE_TEXT;
+
             // A MimePart body will be wraped into a MimeMessage, ensuring we handle a MimeMessage after this point
-            $this->setBody(new MimePart($mimeMessage));
+            $this->setBody($originalBodyPart);
             $mimeMessage = $this->message->getBody();
         }
+        $oldParts = $mimeMessage->getParts();
 
-        $bodyContent        = $mimeMessage->generateMessage();
-        $bodyPart           = new MimePart($bodyContent);
-        $bodyPart->type     = Mime::TYPE_HTML;
-        $bodyPart->charset  = $this->currentCharset;
+        // Generate a new Mime\Part for each attachment
         $attachmentParts    = array();
         $info               = new \finfo(FILEINFO_MIME_TYPE);
         foreach ($this->attachments as $key => $attachment) {
@@ -266,9 +261,9 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
             $part->disposition  = Mime::DISPOSITION_ATTACHMENT;
             $attachmentParts[]  = $part;
         }
-        array_unshift($attachmentParts, $bodyPart);
+
         $body = new MimeMessage();
-        $body->setParts($attachmentParts);
+        $body->setParts(array_merge($oldParts, $attachmentParts));
         $this->message->setBody($body);
     }
 
