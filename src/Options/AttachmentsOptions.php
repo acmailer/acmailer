@@ -84,13 +84,13 @@ class AttachmentsOptions extends AbstractOptions
      */
     protected function normalizeDirArray()
     {
-        if (!isset($this->dir['iterate'])) {
+        if (! isset($this->dir['iterate'])) {
             $this->dir['iterate'] = self::DEFAULT_ITERATE;
         }
-        if (!isset($this->dir['path'])) {
+        if (! isset($this->dir['path'])) {
             $this->dir['path'] = self::DEFAULT_PATH;
         }
-        if (!isset($this->dir['recursive'])) {
+        if (! isset($this->dir['recursive'])) {
             $this->dir['recursive'] = self::DEFAULT_RECURSIVE;
         }
 

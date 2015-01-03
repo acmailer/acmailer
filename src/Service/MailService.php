@@ -153,7 +153,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         }
 
         // If the body is not a string or a Mime\Message at this point, it is not a valid argument
-        if (!is_string($body) && !($body instanceof Mime\Message)) {
+        if (! is_string($body) && ! $body instanceof Mime\Message) {
             throw new InvalidArgumentException(sprintf(
                 'Provided body is not valid. It should be one of "%s". %s provided',
                 implode('", "', array('string', 'Zend\Mime\Part', 'Zend\Mime\Message')),
@@ -197,14 +197,14 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      */
     protected function renderChildren(ViewModel $model)
     {
-        if (!$model->hasChildren()) {
+        if (! $model->hasChildren()) {
             return;
         }
 
         /* @var ViewModel $child */
         foreach ($model as $child) {
             $capture = $child->captureTo();
-            if (!empty($capture)) {
+            if (! empty($capture)) {
                 // Recursively render children
                 $this->renderChildren($child);
                 $result = $this->renderer->render($child);
@@ -246,7 +246,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $attachmentParts    = array();
         $info               = new \finfo(FILEINFO_MIME_TYPE);
         foreach ($this->attachments as $key => $attachment) {
-            if (!is_file($attachment)) {
+            if (! is_file($attachment)) {
                 continue; // If checked file is not valid, continue to the next
             }
 
@@ -343,7 +343,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      */
     public function getEventManager()
     {
-        if (!isset($this->events)) {
+        if (! isset($this->events)) {
             $this->setEventManager(new EventManager());
         }
 

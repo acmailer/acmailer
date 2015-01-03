@@ -148,13 +148,13 @@ class MailOptions extends AbstractOptions
             if (array_key_exists(strtolower($mailAdapter), $this->adapterMap)) {
                 $mailAdapter = $this->adapterMap[strtolower($mailAdapter)];
             }
-            if (!class_exists($mailAdapter)) {
+            if (! class_exists($mailAdapter)) {
                 throw new InvalidArgumentException(sprintf('Provided adapter class "%s" does not exist', $mailAdapter));
             }
 
             $mailAdapter = new $mailAdapter();
         }
-        if (!$mailAdapter instanceof TransportInterface) {
+        if (! $mailAdapter instanceof TransportInterface) {
             throw new InvalidArgumentException(sprintf(
                 'Provided adapter of type "%s" is not valid, expected a Zend\\Mail\\Transport\\TransportInterface',
                 is_object($mailAdapter) ? get_class($mailAdapter) : gettype($mailAdapter)
@@ -304,14 +304,14 @@ class MailOptions extends AbstractOptions
      */
     public function setSsl($ssl)
     {
-        if (!is_bool($ssl) && !is_string($ssl)) {
+        if (! is_bool($ssl) && ! is_string($ssl)) {
             throw new InvalidArgumentException('SSL value should be false, "ssl" or "tls".');
         } elseif (is_bool($ssl) && $ssl !== false) {
             throw new InvalidArgumentException(sprintf(
                 'Supported values are boolean false, "ssl" or "tls", %s provided',
                 is_object(($ssl)) ? get_class($ssl) : gettype($ssl)
             ));
-        } elseif (is_string($ssl) && !in_array($ssl, $this->validSsl)) {
+        } elseif (is_string($ssl) && ! in_array($ssl, $this->validSsl)) {
             throw new InvalidArgumentException('SSL valid values are "ssl" or "tls".');
         }
 
@@ -410,7 +410,7 @@ class MailOptions extends AbstractOptions
      */
     public function getTemplate()
     {
-        if (!isset($this->template)) {
+        if (! isset($this->template)) {
             $this->setTemplate(array());
         }
 
@@ -444,7 +444,7 @@ class MailOptions extends AbstractOptions
      */
     public function setConnectionClass($connectionClass)
     {
-        if (!in_array($connectionClass, $this->validConnectionClasses)) {
+        if (! in_array($connectionClass, $this->validConnectionClasses)) {
             throw new InvalidArgumentException(sprintf(
                 'Connection class should be one of "%s". %s provided',
                 implode('", "', $this->validConnectionClasses),
@@ -488,7 +488,7 @@ class MailOptions extends AbstractOptions
      */
     public function getAttachments()
     {
-        if (!isset($this->attachments)) {
+        if (! isset($this->attachments)) {
             $this->setAttachments(array());
         }
 
@@ -502,7 +502,7 @@ class MailOptions extends AbstractOptions
      */
     public function setMailAdapterService($mailAdapterService)
     {
-        if (!is_null($mailAdapterService) && !is_string($mailAdapterService)) {
+        if (! is_null($mailAdapterService) && ! is_string($mailAdapterService)) {
             throw new InvalidArgumentException(sprintf(
                 'Provided value of type "%s" is not valid. Expected "string" or "null"',
                 is_object($mailAdapterService) ? get_class($mailAdapterService): gettype($mailAdapterService)
@@ -546,7 +546,7 @@ class MailOptions extends AbstractOptions
      */
     public function setFilePath($filePath)
     {
-        if (!is_string($filePath)) {
+        if (! is_string($filePath)) {
             throw new InvalidArgumentException(sprintf(
                 'Provided value of type "%s" is not valid. Expected "string"',
                 is_object($filePath) ? get_class($filePath): gettype($filePath)
