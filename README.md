@@ -25,13 +25,13 @@ Add the module `AcMailer` to your `config/application.config.php` file
 ```php
 <?php
 
-return array(
+return [
     // This should be an array of module namespaces used in the application.
-    'modules' => array(
+    'modules' => [
         'AcMailer',
         'Application'
-    ),
-)
+    ],
+]
 ```
 
 ### Usage
@@ -77,13 +77,13 @@ But you can pass some basic information, making the email to be sent right away 
 $result = $this->sendMail(
     'The body',
     'The subject',
-    array('recipient_one@domain.com', 'recipient_two@domain.com')
+    ['recipient_one@domain.com', 'recipient_two@domain.com']
 );
 // Send another one
-$result = $this->sendMail(array(
+$result = $this->sendMail([
     'subject' => 'Hello there!',
-    'from' => array('my_address@domain.com', 'John Doe')
-));
+    'from' => ['my_address@domain.com', 'John Doe']
+]);
 ```
 
 Adapters configuration can't be provided here, and sholuld be defined at configuration level. Any other information not provided here will be read from configuration.
@@ -99,7 +99,7 @@ You can set the template as a string and pass the arguments for it.
 ```php
 $mailService = $serviceManager->get('AcMailer\Service\MailService');
 $mailService->setSubject('This is the subject')
-            ->setTemplate('application/emails/merry-christmas', array('name' => 'John Doe', 'date' => date('Y-m-d'));
+            ->setTemplate('application/emails/merry-christmas', ['name' => 'John Doe', 'date' => date('Y-m-d')]);
 ```
 
 You can also set the template as a `Zend\View\Model\ViewModel` object, which will render child templates too.
@@ -107,10 +107,10 @@ You can also set the template as a `Zend\View\Model\ViewModel` object, which wil
 ```php
 $mailService = $serviceManager->get('AcMailer\Service\MailService');
 
-$layout = new \Zend\View\Model\ViewModel(array(
+$layout = new \Zend\View\Model\ViewModel([
     'name' => 'John Doe',
     'date' => date('Y-m-d')
-));
+]);
 $layout->setTemplate('application/emails/merry-christmas');
 
 $footer = new \Zend\View\Model\ViewModel();
@@ -128,13 +128,13 @@ By default AcMailer uses the default `ViewRenderer` service via an alias, `mailv
 
 ```php
 
-return array(
-    'service_manager' => array(
-        'aliases' => array(
+return [
+    'service_manager' => [
+        'aliases' => [
             'mailviewrenderer' => 'ZfcTwigRenderer',
-        ),
-    ),
-);
+        ],
+    ],
+];
 ```
 
 Alternatively you can just set it via setter: `$mailService->setRenderer($renderer);`.
@@ -159,20 +159,20 @@ $mailService->addAttachment('data/mail/attachments/file1.pdf');
 $mailService->addAttachment('data/mail/attachments/file2.pdf', 'different-filename.pdf');
 
 // Add two more attachments to the list
-$mailService->addAttachments(array(
+$mailService->addAttachments([
     'another-name.pdf' => 'data/mail/attachments/file3.pdf',
     'data/mail/attachments/file4.zip'
-));
+]);
 // At this point there is 4 attachments ready to be sent with the email
 
 // If we call this, all previous attachments will be discarded
-$mailService->setAttachments(array(
+$mailService->setAttachments([
     'data/mail/attachments/another-file1.pdf',
     'name-to-be-displayed.png' => 'data/mail/attachments/another-file2.png'
-));
+]);
 
 // A good way to remove all attachments is to call this
-$mailService->setAttachments(array());
+$mailService->setAttachments([]);
 ```
 
 The files will be attached with their real name unless you provide an alternative name as the key of the array element in `addAttachments` and `setAttachments` or as the second argument in `addAttachment`.
