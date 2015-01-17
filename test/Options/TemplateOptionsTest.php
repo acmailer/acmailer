@@ -25,34 +25,34 @@ class TemplateOptionsTest extends TestCase
     {
         $this->assertFalse($this->templateOptions->getUseTemplate());
         $this->assertEquals('ac-mailer/mail-templates/mail', $this->templateOptions->getPath());
-        $this->assertEquals(array(), $this->templateOptions->getParams());
+        $this->assertEquals([], $this->templateOptions->getParams());
         $this->assertCount(0, $this->templateOptions->getParams());
-        $this->assertEquals(array(), $this->templateOptions->getChildren());
+        $this->assertEquals([], $this->templateOptions->getChildren());
         $this->assertCount(0, $this->templateOptions->getChildren());
     }
 
     public function testChildrenCastToTemplateOptions()
     {
-        $children = array(
-            'content' => array(
+        $children = [
+            'content' => [
                 'path'   => 'ac-mailer/content',
-                'params' => array(),
-            ),
-            'foo' => array(
+                'params' => [],
+            ],
+            'foo' => [
                 'path'   => 'ac-mailer/foo',
-                'params' => array(),
-            ),
-            'bar' => array(
+                'params' => [],
+            ],
+            'bar' => [
                 'path'      => 'ac-mailer/bar',
-                'params'    => array(),
-                'children'  => array(
-                    'nested' => array(
+                'params'    => [],
+                'children'  => [
+                    'nested' => [
                         'path'      => 'ac-mailer/nested',
-                        'params'    => array(),
-                    )
-                )
-            )
-        );
+                        'params'    => [],
+                    ]
+                ]
+            ]
+        ];
 
         $this->templateOptions->setChildren($children);
         $this->recursiveChildAssert($this->templateOptions->getChildren());

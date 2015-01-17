@@ -1,7 +1,7 @@
 <?php
-return array(
+return [
 
-    'mail_options' => array(
+    'mail_options' => [
 
         /***********
          * ADAPTER *
@@ -53,21 +53,21 @@ return array(
          * Destination addresses of sent emails. It can be an email address as string or an array of email addresses.
          * Default value is an empty array.
          */
-        //'to' => array(),
+        //'to' => [],
 
         /*
          * Copy destination addresses of sent emails.
          * It can be an email address as string or an array of email addresses.
          * Default value is an empty array
          */
-        //'cc' => array(),
+        //'cc' => [],
 
         /*
          * Hidden copy destination addresses of sent emails.
          * It can be an email address as string or an array of email addresses.
          * Default value is an empty array
          */
-        //'bcc' => array(),
+        //'bcc' => [],
 
         /*
          * Email subject.
@@ -104,17 +104,17 @@ return array(
          * Any child can have its own children, so you can nest views into other views recursively.
          * By default no children are used
          */
-        //'template' => array(
+        //'template' => [
         //    'use_template'  => false,
         //    'path'          => 'ac-mailer/mail-templates/layout',
-        //    'params'        => array(),
-        //    'children'      => array(
-        //        'content'   => array(
+        //    'params'        => [],
+        //    'children'      => [
+        //        'content'   => [
         //            'path'   => 'ac-mailer/mail-templates/mail',
-        //            'params' => array(),
-        //        )
-        //    )
-        //),
+        //            'params' => [],
+        //        ]
+        //    ]
+        //],
 
         /*
          * Attachments config.
@@ -125,14 +125,14 @@ return array(
          * If both files and dir are set, all files will be merged without duplication
          * By default the files array is empty and the directory won't be iterated
          */
-        //'attachments' => array(
-        //    'files' => array(),
-        //    'dir' => array(
+        //'attachments' => [
+        //    'files' => [],
+        //    'dir' => [
         //        'iterate'   => false,
         //        'path'      => 'data/mail/attachments',
         //        'recursive' => false,
-        //    ),
-        //),
+        //    ],
+        //],
 
         /**********************
          * SMTP CONFIGURATION *
@@ -192,6 +192,6 @@ return array(
          */
         //'file_callback' => null,
 
-    )
+    ]
 
-);
+];

@@ -26,7 +26,7 @@ class MailOptionsTest extends TestCase
     
     public function setUp()
     {
-        $this->mailOptions = new MailOptions(array());
+        $this->mailOptions = new MailOptions([]);
     }
 
     public function testDefaultMailOptionsValues()
@@ -36,11 +36,11 @@ class MailOptionsTest extends TestCase
         $this->assertEquals('localhost', $this->mailOptions->getServer());
         $this->assertEquals('', $this->mailOptions->getFrom());
         $this->assertEquals('', $this->mailOptions->getFromName());
-        $this->assertEquals(array(), $this->mailOptions->getTo());
+        $this->assertEquals([], $this->mailOptions->getTo());
         $this->assertCount(0, $this->mailOptions->getTo());
-        $this->assertEquals(array(), $this->mailOptions->getCc());
+        $this->assertEquals([], $this->mailOptions->getCc());
         $this->assertCount(0, $this->mailOptions->getCc());
-        $this->assertEquals(array(), $this->mailOptions->getBcc());
+        $this->assertEquals([], $this->mailOptions->getBcc());
         $this->assertCount(0, $this->mailOptions->getBcc());
         $this->assertEquals('', $this->mailOptions->getSmtpUser());
         $this->assertEquals('', $this->mailOptions->getSmtpPassword());
@@ -179,7 +179,7 @@ class MailOptionsTest extends TestCase
 
     public function testTemplate()
     {
-        $this->assertSame($this->mailOptions, $this->mailOptions->setTemplate(array()));
+        $this->assertSame($this->mailOptions, $this->mailOptions->setTemplate([]));
         $this->assertInstanceof('AcMailer\Options\TemplateOptions', $this->mailOptions->getTemplate());
 
         $expected = new TemplateOptions();
@@ -197,7 +197,7 @@ class MailOptionsTest extends TestCase
 
     public function testAttachments()
     {
-        $this->assertSame($this->mailOptions, $this->mailOptions->setAttachments(array()));
+        $this->assertSame($this->mailOptions, $this->mailOptions->setAttachments([]));
         $this->assertInstanceof('AcMailer\Options\AttachmentsOptions', $this->mailOptions->getAttachments());
 
         $expected = new AttachmentsOptions();

@@ -93,10 +93,10 @@ class MailServiceFactory implements FactoryInterface
     protected function setupSpecificConfig(TransportInterface $transport, MailOptions $mailOptions)
     {
         if ($transport instanceof Smtp) {
-            $connConfig = array(
+            $connConfig = [
                 'username' => $mailOptions->getSmtpUser(),
                 'password' => $mailOptions->getSmtpPassword(),
-            );
+            ];
 
             // Check if SSL should be used
             if ($mailOptions->getSsl() !== false) {
@@ -104,17 +104,17 @@ class MailServiceFactory implements FactoryInterface
             }
 
             // Set SMTP transport options
-            $transport->setOptions(new SmtpOptions(array(
+            $transport->setOptions(new SmtpOptions([
                 'host'              => $mailOptions->getServer(),
                 'port'              => $mailOptions->getPort(),
                 'connection_class'  => $mailOptions->getConnectionClass(),
                 'connection_config' => $connConfig,
-            )));
+            ]));
         } elseif ($transport instanceof File) {
-            $transport->setOptions(new FileOptions(array(
+            $transport->setOptions(new FileOptions([
                 'path'      => $mailOptions->getFilePath(),
                 'callback'  => $mailOptions->getFileCallback()
-            )));
+            ]));
         }
     }
 
@@ -182,6 +182,6 @@ class MailServiceFactory implements FactoryInterface
     protected function getSpecificConfig(ServiceLocatorInterface $sm, $configKey)
     {
         $config = $sm->get('Config');
-        return ! empty($config) && isset($config[$configKey]) ? $config[$configKey] : array();
+        return ! empty($config) && isset($config[$configKey]) ? $config[$configKey] : [];
     }
 }

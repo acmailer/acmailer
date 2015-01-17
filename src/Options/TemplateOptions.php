@@ -22,11 +22,11 @@ class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInt
     /**
      * @var array
      */
-    protected $params = array();
+    protected $params = [];
     /**
      * @var array
      */
-    protected $children = array();
+    protected $children = [];
 
     /**
      * @param $params
@@ -86,7 +86,7 @@ class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInt
     public function setChildren($children)
     {
         $children         = (array) $children;
-        $this->children   = array();
+        $this->children   = [];
         // Cast each child to a TemplateOptions object
         foreach ($children as $captureTo => $child) {
             $this->children[$captureTo] = new TemplateOptions($child);

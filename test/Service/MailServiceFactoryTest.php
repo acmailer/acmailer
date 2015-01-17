@@ -51,15 +51,15 @@ class MailServiceFactoryTest extends TestCase
 
     public function testMessageData()
     {
-        $options = array(
+        $options = [
             'from'      => 'Alejandro Celaya',
             'from_name' => 'alejandro@alejandrocelaya.com',
-            'to'        => array('foo@bar.com', 'bar@foo.com'),
-            'cc'        => array('account@domain.com'),
-            'bcc'       => array(),
+            'to'        => ['foo@bar.com', 'bar@foo.com'],
+            'cc'        => ['account@domain.com'],
+            'bcc'       => [],
             'subject'   => 'The subject',
             'body'      => 'The body',
-        );
+        ];
         $this->initServiceLocator($options);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
 
@@ -80,14 +80,14 @@ class MailServiceFactoryTest extends TestCase
 
     public function testSmtpAdapter()
     {
-        $options = array(
+        $options = [
             'mail_adapter'  => 'Zend\Mail\Transport\Smtp',
             'server'        => 'the.host',
             'smtp_user'     => 'alejandro',
             'smtp_password' => '1234',
             'ssl'           => 'ssl',
             'port'          => 465
-        );
+        ];
         $this->initServiceLocator($options);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
 
@@ -104,13 +104,13 @@ class MailServiceFactoryTest extends TestCase
 
     public function testFileAdapter()
     {
-        $options = array(
+        $options = [
             'mail_adapter'  => 'file',
             'file_path'     => __DIR__,
             'file_callback' => function ($transport) {
                 return get_class($transport);
             }
-        );
+        ];
         $this->initServiceLocator($options);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
 
@@ -123,9 +123,9 @@ class MailServiceFactoryTest extends TestCase
 
     public function testAdapterAsService()
     {
-        $this->initServiceLocator(array(
+        $this->initServiceLocator([
             'mail_adapter_service' => 'Zend\Mail\Transport\TransportInterface'
-        ));
+        ]);
         $transport = new Sendmail();
         $this->serviceLocator->set('Zend\Mail\Transport\TransportInterface', $transport);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
@@ -137,9 +137,9 @@ class MailServiceFactoryTest extends TestCase
      */
     public function testNonExistentAdapterAsService()
     {
-        $this->initServiceLocator(array(
+        $this->initServiceLocator([
             'mail_adapter_service' => 'Zend\Mail\Transport\TransportInterface'
-        ));
+        ]);
         $this->mailServiceFactory->createService($this->serviceLocator);
     }
 
@@ -156,7 +156,7 @@ class MailServiceFactoryTest extends TestCase
         // Set a template_map and unset the template_path_stack
         $config = $this->serviceLocator->get('Config');
         unset($config['view_manager']['template_path_stack']);
-        $config['view_manager']['template_map'] = array();
+        $config['view_manager']['template_map'] = [];
         $this->serviceLocator->set('Config', $config);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
         /** @var PhpRenderer $renderer */
@@ -167,7 +167,7 @@ class MailServiceFactoryTest extends TestCase
         // Set both a template_map and a template_path_stack
         $this->initServiceLocator();
         $config = $this->serviceLocator->get('Config');
-        $config['view_manager']['template_map'] = array();
+        $config['view_manager']['template_map'] = [];
         $this->serviceLocator->set('Config', $config);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
         /** @var PhpRenderer $renderer */
@@ -182,28 +182,28 @@ class MailServiceFactoryTest extends TestCase
         $this->assertSame($renderer, $mailService->getRenderer());
     }
 
-    private function initServiceLocator(array $mailOptions = array())
+    private function initServiceLocator(array $mailOptions = [])
     {
-        $this->serviceLocator = new ServiceManagerMock(array(
+        $this->serviceLocator = new ServiceManagerMock([
             'AcMailer\Options\MailOptions' => new MailOptions($mailOptions),
             'Config' => include __DIR__ . '/../../config/module.config.php'
-        ));
+        ]);
     }
 
     public function testTemplateBody()
     {
-        $options = array(
-            'template' => array(
+        $options = [
+            'template' => [
                 'use_template'  => true,
                 'path'          => 'ac-mailer/mail-templates/layout',
-                'children'      => array(
-                    'content'   => array(
+                'children'      => [
+                    'content'   => [
                         'path'   => 'ac-mailer/mail-templates/mail',
-                    )
-                )
-            ),
+                    ]
+                ]
+            ],
             'body' => 'This body is not going to be used'
-        );
+        ];
         $this->initServiceLocator($options);
 
         $resolver = new TemplatePathStack();
@@ -221,19 +221,19 @@ class MailServiceFactoryTest extends TestCase
     {
         $cwd = getcwd();
         chdir(dirname(__DIR__));
-        $options = array(
-            'attachments' => array(
-                'files' => array(
+        $options = [
+            'attachments' => [
+                'files' => [
                     'attachments/file1',
                     'attachments/file2',
-                ),
-                'dir' => array(
+                ],
+                'dir' => [
                     'iterate'   => true,
                     'path'      => 'attachments/dir',
                     'recursive' => true,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
         $this->initServiceLocator($options);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
 

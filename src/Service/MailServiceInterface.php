@@ -43,7 +43,7 @@ interface MailServiceInterface extends TransportAwareInterface, RendererAwareInt
      * @param string|\Zend\View\Model\ViewModel $template
      * @param array $params
      */
-    public function setTemplate($template, array $params = array());
+    public function setTemplate($template, array $params = []);
     
     /**
      * Sets the message subject

@@ -42,7 +42,7 @@ class MailServiceMock implements MailServiceInterface
     /**
      * @var array
      */
-    private $attachments = array();
+    private $attachments = [];
 
     public function __construct()
     {
@@ -81,7 +81,7 @@ class MailServiceMock implements MailServiceInterface
      * @param array $params
      * @return $this
      */
-    public function setTemplate($template, array $params = array())
+    public function setTemplate($template, array $params = [])
     {
         $this->message->setBody($template instanceof ViewModel ? 'ViewModel body' : $template);
         return $this;
