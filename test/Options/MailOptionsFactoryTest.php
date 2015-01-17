@@ -30,9 +30,9 @@ class MailOptionsFactoryTest extends TestCase
 
     public function testEmptyConfigCreatesDefaultMailOptions()
     {
-        $services = array(
-            'Config' => array()
-        );
+        $services = [
+            'Config' => []
+        ];
         $this->serviceLocator = new ServiceManagerMock($services);
 
         $mailOptions = $this->mailOptionsFactory->createService($this->serviceLocator);
@@ -41,22 +41,22 @@ class MailOptionsFactoryTest extends TestCase
 
     public function testSomeCustomOptions()
     {
-        $services = array(
-            'Config' => array(
-                'mail_options' => array(
+        $services = [
+            'Config' => [
+                'mail_options' => [
                     'to'        => 'foo@bar.com',
                     'smtp_user' => 'myuser'
-                )
-            )
-        );
+                ]
+            ]
+        ];
         $this->serviceLocator = new ServiceManagerMock($services);
 
         $mailOptions = $this->mailOptionsFactory->createService($this->serviceLocator);
         $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
-        $this->assertEquals(array($services['Config']['mail_options']['to']), $mailOptions->getTo());
+        $this->assertEquals([$services['Config']['mail_options']['to']], $mailOptions->getTo());
         $this->assertEquals($services['Config']['mail_options']['smtp_user'], $mailOptions->getSmtpUser());
-        $this->assertEquals(array(), $mailOptions->getCc());
-        $this->assertEquals(array(), $mailOptions->getBcc());
+        $this->assertEquals([], $mailOptions->getCc());
+        $this->assertEquals([], $mailOptions->getBcc());
     }
 
     /**
@@ -64,13 +64,13 @@ class MailOptionsFactoryTest extends TestCase
      */
     public function testExceptionIsThrownOnInvalidAdapter()
     {
-        $services = array(
-            'Config' => array(
-                'mail_options' => array(
+        $services = [
+            'Config' => [
+                'mail_options' => [
                     'mail_adapter' => 'invalid',
-                )
-            )
-        );
+                ]
+            ]
+        ];
         $this->serviceLocator = new ServiceManagerMock($services);
         $this->mailOptionsFactory->createService($this->serviceLocator);
     }

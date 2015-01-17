@@ -1,27 +1,27 @@
 <?php
-return array(
+return [
 
-    'service_manager' => array(
-        'factories' => array(
+    'service_manager' => [
+        'factories' => [
             'AcMailer\Service\MailService'	=> 'AcMailer\Service\Factory\MailServiceFactory',
             'AcMailer\Options\MailOptions' 	=> 'AcMailer\Options\Factory\MailOptionsFactory'
-        ),
-        'aliases' => array(
+        ],
+        'aliases' => [
             'mailservice' => 'AcMailer\Service\MailService',
             'mailviewrenderer' => 'viewrenderer'
-        )
-    ),
+        ]
+    ],
 
-    'controller_plugins' => array(
-        'factories' => array(
+    'controller_plugins' => [
+        'factories' => [
             'sendMail' => 'AcMailer\Controller\Plugin\Factory\SendMailPluginFactory'
-        )
-    ),
+        ]
+    ],
 
-    'view_manager' => array(
-        'template_path_stack' => array(
+    'view_manager' => [
+        'template_path_stack' => [
             __DIR__ . '/../view',
-        ),
-    ),
+        ],
+    ],
 
-);
+];

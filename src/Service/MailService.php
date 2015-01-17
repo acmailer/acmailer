@@ -44,7 +44,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     /**
      * @var array
      */
-    private $attachments = array();
+    private $attachments = [];
 
     /**
      * Creates a new MailService
@@ -144,11 +144,11 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
             $mimePart->type     = $body != strip_tags($body) ? Mime\Mime::TYPE_HTML : Mime\Mime::TYPE_TEXT;
             $mimePart->charset  = $charset ?: self::DEFAULT_CHARSET;
             $body = new Mime\Message();
-            $body->setParts(array($mimePart));
+            $body->setParts([$mimePart]);
         } elseif ($body instanceof Mime\Part) {
             // The body is a Mime\Part. Wrap it into a Mime\Message
             $mimeMessage = new Mime\Message();
-            $mimeMessage->setParts(array($body));
+            $mimeMessage->setParts([$body]);
             $body = $mimeMessage;
         }
 
@@ -156,7 +156,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         if (! is_string($body) && ! $body instanceof Mime\Message) {
             throw new InvalidArgumentException(sprintf(
                 'Provided body is not valid. It should be one of "%s". %s provided',
-                implode('", "', array('string', 'Zend\Mime\Part', 'Zend\Mime\Message')),
+                implode('", "', ['string', 'Zend\Mime\Part', 'Zend\Mime\Message']),
                 is_object($body) ? get_class($body) : gettype($body)
             ));
         }
@@ -175,7 +175,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      * @param array $params
      * @see \AcMailer\Service\MailServiceInterface::setTemplate()
      */
-    public function setTemplate($template, array $params = array())
+    public function setTemplate($template, array $params = [])
     {
         if ($template instanceof ViewModel) {
             $this->renderChildren($template);
@@ -243,7 +243,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $oldParts = $mimeMessage->getParts();
 
         // Generate a new Mime\Part for each attachment
-        $attachmentParts    = array();
+        $attachmentParts    = [];
         $info               = new \finfo(FILEINFO_MIME_TYPE);
         foreach ($this->attachments as $key => $attachment) {
             if (! is_file($attachment)) {
@@ -329,10 +329,10 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      */
     public function setEventManager(EventManagerInterface $events)
     {
-        $events->setIdentifiers(array(
+        $events->setIdentifiers([
             __CLASS__,
             get_called_class(),
-        ));
+        ]);
         $this->events = $events;
         return $this;
     }

@@ -214,16 +214,16 @@ class MailServiceTest extends TestCase
     {
         $this->assertCount(0, $this->mailService->getAttachments());
 
-        $this->mailService->setAttachments(array('one', 'two', 'three'));
-        $this->mailService->addAttachments(array('four', 'five', 'six'));
+        $this->mailService->setAttachments(['one', 'two', 'three']);
+        $this->mailService->addAttachments(['four', 'five', 'six']);
         $this->mailService->addAttachment('seven');
         $this->mailService->addAttachment('eight', 'with-alias');
         $this->assertCount(8, $this->mailService->getAttachments());
 
-        $this->mailService->setAttachments(array('one', 'two'));
+        $this->mailService->setAttachments(['one', 'two']);
         $this->assertCount(2, $this->mailService->getAttachments());
 
-        $this->mailService->addAttachments(array('three', 'four'));
+        $this->mailService->addAttachments(['three', 'four']);
         $this->assertCount(4, $this->mailService->getAttachments());
     }
 
@@ -231,12 +231,12 @@ class MailServiceTest extends TestCase
     {
         $cwd = getcwd();
         chdir(dirname(__DIR__));
-        $this->mailService->setAttachments(array(
+        $this->mailService->setAttachments([
             'attachments/file1',
             'attachments/file2',
             'attachments/dir/file3',
             'invalid/attachment'
-        ));
+        ]);
         $this->mailService->setBody('Body as string');
         $result = $this->mailService->send();
         $this->assertTrue($result->isValid());
@@ -253,10 +253,10 @@ class MailServiceTest extends TestCase
     {
         $cwd = getcwd();
         chdir(dirname(__DIR__));
-        $this->mailService->setAttachments(array(
+        $this->mailService->setAttachments([
             'attachments/file1',
             'attachments/file2'
-        ));
+        ]);
         $this->mailService->getMessage()->setBody('Btpassed body as string');
         $result = $this->mailService->send();
         $this->assertTrue($result->isValid());

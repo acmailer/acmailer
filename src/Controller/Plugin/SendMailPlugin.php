@@ -23,7 +23,7 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
      * The list of possible arguments in the order they should be provided
      * @var array
      */
-    private $argumentsMapping = array(
+    private $argumentsMapping = [
         0 => 'body',
         1 => 'subject',
         2 => 'to',
@@ -31,7 +31,7 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
         4 => 'cc',
         5 => 'bcc',
         6 => 'attachments'
-    );
+    ];
 
     public function __construct(MailServiceInterface $mailService)
     {
@@ -84,7 +84,7 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
             return $args[0];
         }
 
-        $result = array();
+        $result = [];
         $length = count($args);
         // FIXME This is a weak way to handle the arguments, since a change in the order will break it
         for ($i = 0; $i < $length; $i++) {

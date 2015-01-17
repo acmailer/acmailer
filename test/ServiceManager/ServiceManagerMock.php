@@ -16,7 +16,7 @@ class ServiceManagerMock implements ServiceLocatorInterface
      */
     private $services;
 
-    public function __construct(array $services = array())
+    public function __construct(array $services = [])
     {
         $this->services = $services;
     }

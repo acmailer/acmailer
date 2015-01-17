@@ -19,30 +19,30 @@ class MailOptions extends AbstractOptions
      * Standard adapters aliasses
      * @var array
      */
-    private $adapterMap = array(
+    private $adapterMap = [
         'sendmail'  => 'Zend\Mail\Transport\Sendmail',
         'smtp'      => 'Zend\Mail\Transport\Smtp',
         'null'      => 'Zend\Mail\Transport\Null',
         'file'      => 'Zend\Mail\Transport\File',
-    );
+    ];
     /**
      * Valid SSL values
      * @var array
      */
-    private $validSsl = array(
+    private $validSsl = [
         'ssl',
         'tls',
-    );
+    ];
     /**
      * Valid connection class values
      * @var array
      */
-    private $validConnectionClasses = array(
+    private $validConnectionClasses = [
         'smtp',
         'plain',
         'login',
         'crammd5',
-    );
+    ];
     
     /**
      * @var TransportInterface
@@ -67,15 +67,15 @@ class MailOptions extends AbstractOptions
     /**
      * @var array
      */
-    protected $to = array();
+    protected $to = [];
     /**
      * @var array
      */
-    protected $cc = array();
+    protected $cc = [];
     /**
      * @var array
      */
-    protected $bcc = array();
+    protected $bcc = [];
     /**
      * @var string
      */
@@ -411,7 +411,7 @@ class MailOptions extends AbstractOptions
     public function getTemplate()
     {
         if (! isset($this->template)) {
-            $this->setTemplate(array());
+            $this->setTemplate([]);
         }
 
         return $this->template;
@@ -489,7 +489,7 @@ class MailOptions extends AbstractOptions
     public function getAttachments()
     {
         if (! isset($this->attachments)) {
-            $this->setAttachments(array());
+            $this->setAttachments([]);
         }
 
         return $this->attachments;

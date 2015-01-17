@@ -14,16 +14,16 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {
     public function getAutoloaderConfig()
     {
-        return array(
-            'Zend\Loader\ClassMapAutoloader' => array(
+        return [
+            'Zend\Loader\ClassMapAutoloader' => [
                 __DIR__ . '/../autoload_classmap.php',
-            ),
-            'Zend\Loader\StandardAutoloader' => array(
-                StandardAutoloader::LOAD_NS => array(
+            ],
+            'Zend\Loader\StandardAutoloader' => [
+                StandardAutoloader::LOAD_NS => [
                     __NAMESPACE__ => __DIR__,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     public function getConfig()

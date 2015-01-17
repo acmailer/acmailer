@@ -14,7 +14,7 @@ abstract class AbstractMailListener extends AbstractListenerAggregate implements
     /**
      * @var \Zend\Stdlib\CallbackHandler[]
      */
-    protected $listeners = array();
+    protected $listeners = [];
 
     /**
      * @param EventManagerInterface $events
@@ -22,8 +22,8 @@ abstract class AbstractMailListener extends AbstractListenerAggregate implements
      */
     public function attach(EventManagerInterface $events, $priority = 1)
     {
-        $this->listeners[] = $events->attach(MailEvent::EVENT_MAIL_PRE_SEND, array($this, 'onPreSend'), $priority);
-        $this->listeners[] = $events->attach(MailEvent::EVENT_MAIL_POST_SEND, array($this, 'onPostSend'), $priority);
-        $this->listeners[] = $events->attach(MailEvent::EVENT_MAIL_SEND_ERROR, array($this, 'onSendError'), $priority);
+        $this->listeners[] = $events->attach(MailEvent::EVENT_MAIL_PRE_SEND, [$this, 'onPreSend'], $priority);
+        $this->listeners[] = $events->attach(MailEvent::EVENT_MAIL_POST_SEND, [$this, 'onPostSend'], $priority);
+        $this->listeners[] = $events->attach(MailEvent::EVENT_MAIL_SEND_ERROR, [$this, 'onSendError'], $priority);
     }
 }
