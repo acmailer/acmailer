@@ -22,7 +22,7 @@
         "BSD"
     ],
     "require" : {
-        "php" : ">=5.3.23",
+        "php" : ">=5.4.0",
         "zendframework/zend-servicemanager": "~2.2",
         "zendframework/zend-mail": "~2.2",
         "zendframework/zend-view": "~2.2",
