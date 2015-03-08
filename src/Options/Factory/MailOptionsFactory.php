@@ -20,7 +20,23 @@ class MailOptionsFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
+        $config = $this->getConfig($serviceLocator);
+        return new MailOptions($config);
+    }
+
+    /**
+     * @param ServiceLocatorInterface $serviceLocator
+     * @return array
+     */
+    private function getConfig(ServiceLocatorInterface $serviceLocator)
+    {
         $config = $serviceLocator->get('Config');
-        return new MailOptions(isset($config['mail_options']) ? $config['mail_options'] : []);
+        if (isset($config['acmailer_options']) && is_array($config['acmailer_options'])) {
+            return $config['acmailer_options'];
+        } elseif (isset($config['mail_options']) && is_array($config['mail_options'])) {
+            return $config['mail_options'];
+        }
+
+        return [];
     }
 }
