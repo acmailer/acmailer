@@ -28,7 +28,6 @@
         "zendframework/zend-mime": "~2.2",
         "zendframework/zend-stdlib": "~2.2",
         "zendframework/zend-modulemanager": "~2.2",
-        "zendframework/zend-loader": "~2.2",
         "zendframework/zend-mvc": "~2.2"
     },
     "require-dev": {

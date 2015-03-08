@@ -4,7 +4,7 @@
 
 **Enhancements:**
 
-
+* [77: Remove autoloader files and support only composer installation method](https://github.com/acelaya/ZF2-AcMailer/issues/77)
 
 **Tasks**
 
