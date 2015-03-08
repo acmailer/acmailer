@@ -68,13 +68,4 @@ class MailResult implements ResultInterface
     {
         return $this->exception;
     }
-
-    /**
-     * @return bool
-     * @deprecated This method will be removed in the future. Use isValid() instead
-     */
-    public function getResult()
-    {
-        return $this->isValid();
-    }
 }
