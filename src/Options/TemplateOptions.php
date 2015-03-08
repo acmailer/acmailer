@@ -12,10 +12,6 @@ use Zend\View\Model\ViewModel;
 class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInterface
 {
     /**
-     * @var bool
-     */
-    protected $useTemplate = false;
-    /**
      * @var string
      */
     protected $path = 'ac-mailer/mail-templates/mail';
@@ -24,7 +20,7 @@ class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInt
      */
     protected $params = [];
     /**
-     * @var array
+     * @var TemplateOptions[]
      */
     protected $children = [];
 
@@ -63,23 +59,6 @@ class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInt
     }
 
     /**
-     * @param $useTemplate
-     * @return $this
-     */
-    public function setUseTemplate($useTemplate)
-    {
-        $this->useTemplate = $useTemplate;
-        return $this;
-    }
-    /**
-     * @return boolean
-     */
-    public function getUseTemplate()
-    {
-        return $this->useTemplate;
-    }
-
-    /**
      * @param array $children
      * @return $this
      */
@@ -99,7 +78,7 @@ class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInt
         return $this;
     }
     /**
-     * @return array
+     * @return TemplateOptions[]
      */
     public function getChildren()
     {
