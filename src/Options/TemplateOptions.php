@@ -3,6 +3,7 @@ namespace AcMailer\Options;
 
 use Zend\Stdlib\AbstractOptions;
 use Zend\View\Model\ViewModel;
+use AcMailer\View\ViewModelConvertibleInterface;
 
 /**
  * Template specific options

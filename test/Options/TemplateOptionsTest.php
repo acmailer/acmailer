@@ -23,7 +23,6 @@ class TemplateOptionsTest extends TestCase
 
     public function testDefaultTemplateOptionsValues()
     {
-        $this->assertFalse($this->templateOptions->getUseTemplate());
         $this->assertEquals('ac-mailer/mail-templates/mail', $this->templateOptions->getPath());
         $this->assertEquals([], $this->templateOptions->getParams());
         $this->assertCount(0, $this->templateOptions->getParams());

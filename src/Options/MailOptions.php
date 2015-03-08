@@ -1,11 +1,10 @@
 <?php
 namespace AcMailer\Options;
 
-use AcMailer\Service\MailServiceInterface;
+use Zend\Mail\Transport\FileOptions;
+use Zend\Mail\Transport\SmtpOptions;
 use Zend\Stdlib\AbstractOptions;
 use Zend\Mail\Transport\TransportInterface;
-use Zend\Mail\Transport\Smtp;
-use Zend\Mail\Transport\Sendmail;
 use AcMailer\Exception\InvalidArgumentException;
 
 /**
@@ -25,115 +24,29 @@ class MailOptions extends AbstractOptions
         'null'      => 'Zend\Mail\Transport\Null',
         'file'      => 'Zend\Mail\Transport\File',
     ];
-    /**
-     * Valid SSL values
-     * @var array
-     */
-    private $validSsl = [
-        'ssl',
-        'tls',
-    ];
-    /**
-     * Valid connection class values
-     * @var array
-     */
-    private $validConnectionClasses = [
-        'smtp',
-        'plain',
-        'login',
-        'crammd5',
-    ];
     
     /**
-     * @var TransportInterface
+     * @var TransportInterface|string
      */
     protected $mailAdapter = '\Zend\Mail\Transport\Sendmail';
     /**
-     * @var string|null
+     * @var MessageOptions;
      */
-    protected $mailAdapterService = null;
+    private $messageOptions;
     /**
-     * @var string
+     * @var SmtpOptions;
      */
-    protected $server = 'localhost';
+    private $smtpOptions;
     /**
-     * @var string
+     * @var FileOptions
      */
-    protected $from = '';
-    /**
-     * @var string
-     */
-    protected $fromName = '';
-    /**
-     * @var array
-     */
-    protected $to = [];
-    /**
-     * @var array
-     */
-    protected $cc = [];
-    /**
-     * @var array
-     */
-    protected $bcc = [];
-    /**
-     * @var string
-     */
-    protected $smtpUser = '';
-    /**
-     * @var string
-     */
-    protected $smtpPassword = '';
-    /**
-     * @var string|bool
-     */
-    protected $ssl = false;
-    /**
-     * @var string
-     */
-    protected $connectionClass = 'login';
-    /**
-     * @var string
-     */
-    protected $subject = '';
-    /**
-     * @var string
-     */
-    protected $body = '';
-    /**
-     * @var string
-     */
-    protected $bodyCharset = MailServiceInterface::DEFAULT_CHARSET;
-    /**
-     * @var TemplateOptions
-     */
-    protected $template;
-    /**
-     * @var int
-     */
-    protected $port = 25;
-    /**
-     * @var AttachmentsOptions
-     */
-    protected $attachments;
-    /**
-     * @var string
-     */
-    protected $filePath = 'data/mail/output';
-    /**
-     * @var callable
-     */
-    protected $fileCallback = null;
+    private $fileOptions;
     
     /**
-     * @return TransportInterface the $mailAdapter
+     * @return TransportInterface|string
      */
     public function getMailAdapter()
     {
-        if (is_string($this->mailAdapter)) {
-            $this->setMailAdapter($this->mailAdapter);
-        }
-
         return $this->mailAdapter;
     }
 
@@ -144,21 +57,9 @@ class MailOptions extends AbstractOptions
      */
     public function setMailAdapter($mailAdapter)
     {
-        if (is_string($mailAdapter)) {
-            if (array_key_exists(strtolower($mailAdapter), $this->adapterMap)) {
-                $mailAdapter = $this->adapterMap[strtolower($mailAdapter)];
-            }
-            if (! class_exists($mailAdapter)) {
-                throw new InvalidArgumentException(sprintf('Provided adapter class "%s" does not exist', $mailAdapter));
-            }
-
-            $mailAdapter = new $mailAdapter();
-        }
-        if (! $mailAdapter instanceof TransportInterface) {
-            throw new InvalidArgumentException(sprintf(
-                'Provided adapter of type "%s" is not valid, expected a Zend\\Mail\\Transport\\TransportInterface',
-                is_object($mailAdapter) ? get_class($mailAdapter) : gettype($mailAdapter)
-            ));
+        // Map adapter aliases to the real class name
+        if (is_string($mailAdapter) && array_key_exists(strtolower($mailAdapter), $this->adapterMap)) {
+            $mailAdapter = $this->adapterMap[strtolower($mailAdapter)];
         }
 
         $this->mailAdapter = $mailAdapter;
@@ -166,271 +67,31 @@ class MailOptions extends AbstractOptions
     }
 
     /**
-     * @return string $server
+     * @return MessageOptions
      */
-    public function getServer()
+    public function getMessageOptions()
     {
-        return $this->server;
-    }
-    /**
-     * @param string $server
-     * @return MailOptions
-     */
-    public function setServer($server)
-    {
-        $this->server = $server;
-        return $this;
-    }
-
-    /**
-     * @return string $from
-     */
-    public function getFrom()
-    {
-        return $this->from;
-    }
-    /**
-     * @param string $from
-     * @return MailOptions
-     */
-    public function setFrom($from)
-    {
-        $this->from = $from;
-        return $this;
-    }
-
-    /**
-     * @return string $fromName
-     */
-    public function getFromName()
-    {
-        return $this->fromName;
-    }
-
-    /**
-     * @param $fromName
-     * @return $this
-     */
-    public function setFromName($fromName)
-    {
-        $this->fromName = $fromName;
-        return $this;
-    }
-
-    /**
-     * @return array $to
-     */
-    public function getTo()
-    {
-        return $this->to;
-    }
-    /**
-     * @param string|array $to
-     * @return MailOptions
-     */
-    public function setTo($to)
-    {
-        $this->to = (array) $to;
-        return $this;
-    }
-
-    /**
-     * @return array $cc
-     */
-    public function getCc()
-    {
-        return $this->cc;
-    }
-    /**
-     * @param string|array $cc
-     * @return MailOptions
-     */
-    public function setCc($cc)
-    {
-        $this->cc = (array) $cc;
-        return $this;
-    }
-
-    /**
-     * @return array $bcc
-     */
-    public function getBcc()
-    {
-        return $this->bcc;
-    }
-    /**
-     * @param string|array $bcc
-     * @return MailOptions
-     */
-    public function setBcc($bcc)
-    {
-        $this->bcc = (array) $bcc;
-        return $this;
-    }
-
-    /**
-     * @return string $smtpUser
-     */
-    public function getSmtpUser()
-    {
-        if (empty($this->smtpUser)) {
-            return $this->from;
+        if (! isset($this->messageOptions)) {
+            $this->setMessageOptions([]);
         }
 
-        return $this->smtpUser;
-    }
-    /**
-     * @param string $smtpUser
-     * @return MailOptions
-     */
-    public function setSmtpUser($smtpUser)
-    {
-        $this->smtpUser = $smtpUser;
-        return $this;
-    }
-    
-    /**
-     * @return string|boolean
-     */
-    public function getSsl()
-    {
-        return $this->ssl;
+        return $this->messageOptions;
     }
 
     /**
-     * @param string|boolean $ssl
-     * @return $this
-     * @throws \AcMailer\Exception\InvalidArgumentException
-     */
-    public function setSsl($ssl)
-    {
-        if (! is_bool($ssl) && ! is_string($ssl)) {
-            throw new InvalidArgumentException('SSL value should be false, "ssl" or "tls".');
-        } elseif (is_bool($ssl) && $ssl !== false) {
-            throw new InvalidArgumentException(sprintf(
-                'Supported values are boolean false, "ssl" or "tls", %s provided',
-                is_object(($ssl)) ? get_class($ssl) : gettype($ssl)
-            ));
-        } elseif (is_string($ssl) && ! in_array($ssl, $this->validSsl)) {
-            throw new InvalidArgumentException('SSL valid values are "ssl" or "tls".');
-        }
-
-        $this->ssl = $ssl;
-        return $this;
-    }
-
-    /**
-     * @return string $smtpPassword
-     */
-    public function getSmtpPassword()
-    {
-        return $this->smtpPassword;
-    }
-    /**
-     * @param string $smtpPassword
-     * @return MailOptions
-     */
-    public function setSmtpPassword($smtpPassword)
-    {
-        $this->smtpPassword = $smtpPassword;
-        return $this;
-    }
-
-    /**
-     * @return string $body
-     */
-    public function getBody()
-    {
-        return $this->body;
-    }
-    /**
-     * @param string $body
-     * @return MailOptions
-     */
-    public function setBody($body)
-    {
-        $this->body = $body;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBodyCharset()
-    {
-        return $this->bodyCharset;
-    }
-
-    /**
-     * @param string $bodyCharset
+     * @param MessageOptions|array $messageOptions
      * @return $this
      */
-    public function setBodyCharset($bodyCharset)
+    public function setMessageOptions($messageOptions)
     {
-        $this->bodyCharset = $bodyCharset;
-        return $this;
-    }
-
-    /**
-     * @return string $subject
-     */
-    public function getSubject()
-    {
-        return $this->subject;
-    }
-    /**
-     * @param string $subject
-     * @return MailOptions
-     */
-    public function setSubject($subject)
-    {
-        $this->subject = $subject;
-        return $this;
-    }
-
-    /**
-     * @return int $port
-     */
-    public function getPort()
-    {
-        return (int) $this->port;
-    }
-    /**
-     * @param int $port
-     * @return MailOptions
-     */
-    public function setPort($port)
-    {
-        $this->port = (int) $port;
-        return $this;
-    }
-    
-    /**
-     * @return TemplateOptions
-     */
-    public function getTemplate()
-    {
-        if (! isset($this->template)) {
-            $this->setTemplate([]);
-        }
-
-        return $this->template;
-    }
-    /**
-     * @param array|TemplateOptions $template
-     * @return $this
-     * @throws \AcMailer\Exception\InvalidArgumentException
-     */
-    public function setTemplate($template)
-    {
-        if (is_array($template)) {
-            $this->template = new TemplateOptions($template);
-        } elseif ($template instanceof TemplateOptions) {
-            $this->template = $template;
+        if (is_array($messageOptions)) {
+            $this->messageOptions = new MessageOptions($messageOptions);
+        } elseif ($messageOptions instanceof MessageOptions) {
+            $this->messageOptions = $messageOptions;
         } else {
             throw new InvalidArgumentException(sprintf(
-                'Template should be an array or an AcMailer\Options\TemplateOptions object. %s provided.',
-                is_object($template) ? get_class($template) : gettype($template)
+                'MessageOptions should be an array or an AcMailer\Options\MessageOptions object. %s provided.',
+                is_object($messageOptions) ? get_class($messageOptions) : gettype($messageOptions)
             ));
         }
 
@@ -438,130 +99,66 @@ class MailOptions extends AbstractOptions
     }
 
     /**
-     * @param $connectionClass
-     * @return $this
-     * @throws \AcMailer\Exception\InvalidArgumentException
+     * @return SmtpOptions
      */
-    public function setConnectionClass($connectionClass)
+    public function getSmtpOptions()
     {
-        if (! in_array($connectionClass, $this->validConnectionClasses)) {
-            throw new InvalidArgumentException(sprintf(
-                'Connection class should be one of "%s". %s provided',
-                implode('", "', $this->validConnectionClasses),
-                $connectionClass
-            ));
+        if (! isset($this->smtpOptions)) {
+            $this->setSmtpOptions([]);
         }
 
-        $this->connectionClass = $connectionClass;
-        return $this;
-    }
-    /**
-     * @return string
-     */
-    public function getConnectionClass()
-    {
-        return $this->connectionClass;
+        return $this->smtpOptions;
     }
 
     /**
-     * @param array|AttachmentsOptions $attachments
+     * @param SmtpOptions|array $smtpOptions
      * @return $this
-     * @throws \AcMailer\Exception\InvalidArgumentException
      */
-    public function setAttachments($attachments)
+    public function setSmtpOptions($smtpOptions)
     {
-        if (is_array($attachments)) {
-            $this->attachments = new AttachmentsOptions($attachments);
-        } elseif ($attachments instanceof AttachmentsOptions) {
-            $this->attachments = $attachments;
+        if (is_array($smtpOptions)) {
+            $this->smtpOptions = new SmtpOptions($smtpOptions);
+        } elseif ($smtpOptions instanceof SmtpOptions) {
+            $this->smtpOptions = $smtpOptions;
         } else {
             throw new InvalidArgumentException(sprintf(
-                'Attachments should be an array or an AcMailer\\Options\\AttachmentsOptions, %s provided',
-                is_object($attachments) ? get_class($attachments) : gettype($attachments)
+                'SmtpOptions should be an array or an Zend\Mail\Transport\SmtpOptions object. %s provided.',
+                is_object($smtpOptions) ? get_class($smtpOptions) : gettype($smtpOptions)
             ));
         }
 
         return $this;
     }
+
     /**
-     * @return AttachmentsOptions
+     * @return FileOptions
      */
-    public function getAttachments()
+    public function getFileOptions()
     {
-        if (! isset($this->attachments)) {
-            $this->setAttachments([]);
+        if (! isset($this->fileOptions)) {
+            $this->setFileOptions([]);
         }
 
-        return $this->attachments;
+        return $this->fileOptions;
     }
 
     /**
-     * @param $mailAdapterService
+     * @param FileOptions|array $fileOptions
      * @return $this
-     * @throws \AcMailer\Exception\InvalidArgumentException
      */
-    public function setMailAdapterService($mailAdapterService)
+    public function setFileOptions($fileOptions)
     {
-        if (! is_null($mailAdapterService) && ! is_string($mailAdapterService)) {
+        if (is_array($fileOptions)) {
+            $this->fileOptions = new FileOptions($fileOptions);
+        } elseif ($fileOptions instanceof FileOptions) {
+            $this->fileOptions = $fileOptions;
+        } else {
             throw new InvalidArgumentException(sprintf(
-                'Provided value of type "%s" is not valid. Expected "string" or "null"',
-                is_object($mailAdapterService) ? get_class($mailAdapterService): gettype($mailAdapterService)
+                'FileOptions should be an array or an Zend\Mail\Transport\FileOptions object. %s provided.',
+                is_object($fileOptions) ? get_class($fileOptions) : gettype($fileOptions)
             ));
         }
 
-        $this->mailAdapterService = $mailAdapterService;
         return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getMailAdapterService()
-    {
-        return $this->mailAdapterService;
-    }
-
-    /**
-     * @param callable $fileCallback
-     * @return $this
-     */
-    public function setFileCallback($fileCallback)
-    {
-        $this->fileCallback = $fileCallback;
-        return $this;
-    }
-
-    /**
-     * @return callable
-     */
-    public function getFileCallback()
-    {
-        return $this->fileCallback;
-    }
-
-    /**
-     * @param $filePath
-     * @return $this
-     * @throws \AcMailer\Exception\InvalidArgumentException
-     */
-    public function setFilePath($filePath)
-    {
-        if (! is_string($filePath)) {
-            throw new InvalidArgumentException(sprintf(
-                'Provided value of type "%s" is not valid. Expected "string"',
-                is_object($filePath) ? get_class($filePath): gettype($filePath)
-            ));
-        }
-
-        $this->filePath = $filePath;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFilePath()
-    {
-        return $this->filePath;
     }
 }
