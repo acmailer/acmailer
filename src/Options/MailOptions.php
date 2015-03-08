@@ -28,7 +28,7 @@ class MailOptions extends AbstractOptions
     /**
      * @var TransportInterface|string
      */
-    protected $mailAdapter = '\Zend\Mail\Transport\Sendmail';
+    private $mailAdapter = '\Zend\Mail\Transport\Sendmail';
     /**
      * @var MessageOptions;
      */
@@ -64,6 +64,26 @@ class MailOptions extends AbstractOptions
 
         $this->mailAdapter = $mailAdapter;
         return $this;
+    }
+
+    /**
+     * Alias for method getMailAdapter
+     * @return string|TransportInterface
+     */
+    public function getTransport()
+    {
+        return $this->getMailAdapter();
+    }
+
+    /**
+     * Alias for method setMailAdapter
+     * @param string|TransportInterface $transport
+     * @return $this
+     * @throws \AcMailer\Exception\InvalidArgumentException
+     */
+    public function setTransport($transport)
+    {
+        return $this->setMailAdapter($transport);
     }
 
     /**
