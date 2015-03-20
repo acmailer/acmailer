@@ -1,9 +1,7 @@
 <?php
 namespace AcMailer\Service\Factory;
 
-use Zend\Debug\Debug;
 use Zend\Mail\Transport\File;
-use Zend\Mail\Transport\FileOptions;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mvc\Service\ViewHelperManagerFactory;
 use Zend\ServiceManager\Config;
@@ -11,9 +9,9 @@ use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\Smtp;
-use Zend\Mail\Transport\SmtpOptions;
 use AcMailer\Service\MailService;
 use AcMailer\Options\MailOptions;
+use AcMailer\Exception\InvalidArgumentException;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\HelperPluginManager;
 use Zend\View\Renderer\PhpRenderer;
@@ -23,48 +21,45 @@ use Zend\View\Resolver\TemplateMapResolver;
 use Zend\View\Resolver\TemplatePathStack;
 
 /**
- * Constructs a new MailService injecting on it a Message and Transport object constructed with mail options
+ * Creates a new MailService instance
+ *
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
 class MailServiceFactory implements FactoryInterface
 {
+    /**
+     * @var MailOptions
+     */
+    protected $mailOptions;
+
     public function createService(ServiceLocatorInterface $sm)
     {
-        /* @var MailOptions $mailOptions */
-        $mailOptions = $sm->get('AcMailer\Options\MailOptions');
+        $this->mailOptions = $sm->get('AcMailer\Options\MailOptions');
 
-        // Prepare Mail Message
-        $message = new Message();
-        $message->setFrom($mailOptions->getFrom(), $mailOptions->getFromName())
-                ->setTo($mailOptions->getTo())
-                ->setCc($mailOptions->getCc())
-                ->setBcc($mailOptions->getBcc());
-
-        // Prepare Mail Transport
-        $serviceName = $mailOptions->getMailAdapterService();
-        /** @var TransportInterface $transport */
-        $transport = isset($serviceName) ? $sm->get($serviceName) : $mailOptions->getMailAdapter();
-        $this->setupSpecificConfig($transport, $mailOptions);
-
-        // Prepare MailService
+        // Create the service
+        $message        = $this->createMessage();
+        $transport      = $this->createTransport($sm);
         $renderer       = $this->createRenderer($sm);
         $mailService    = new MailService($message, $transport, $renderer);
-        $mailService->setSubject($mailOptions->getSubject());
 
-        // Set body, either by using a template or the body option
-        $template = $mailOptions->getTemplate();
-        if ($template->getUseTemplate() === true) {
-            $mailService->setTemplate($template->toViewModel());
+        // Set subject
+        $mailService->setSubject($this->mailOptions->getMessageOptions()->getSubject());
+
+        // Set body, either by using a template or a raw body
+        $body = $this->mailOptions->getMessageOptions()->getBody();
+        if ($body->getUseTemplate()) {
+            $mailService->setTemplate($body->getTemplate()->toViewModel());
         } else {
-            $mailService->setBody($mailOptions->getBody());
+            $mailService->setBody($body->getContent(), $body->getCharset());
         }
 
         // Attach files
-        $files = $mailOptions->getAttachments()->getFiles();
+        $files = $this->mailOptions->getMessageOptions()->getAttachments()->getFiles();
         $mailService->addAttachments($files);
+
         // Attach files from dir
-        $dir = $mailOptions->getAttachments()->getDir();
+        $dir = $this->mailOptions->getMessageOptions()->getAttachments()->getDir();
         if ($dir['iterate'] === true && is_string($dir['path']) && is_dir($dir['path'])) {
             $files = $dir['recursive'] === true ?
                 new \RecursiveIteratorIterator(
@@ -86,36 +81,70 @@ class MailServiceFactory implements FactoryInterface
     }
 
     /**
-     * Configures specific transport options
-     * @param TransportInterface $transport
-     * @param MailOptions $mailOptions
+     * @return Message
      */
-    protected function setupSpecificConfig(TransportInterface $transport, MailOptions $mailOptions)
+    protected function createMessage()
+    {
+        $options = $this->mailOptions->getMessageOptions();
+        $message = new Message();
+        $message->setFrom($options->getFrom(), $options->getFromName())
+            ->setTo($options->getTo())
+            ->setCc($options->getCc())
+            ->setBcc($options->getBcc());
+
+        return $message;
+    }
+
+    /**
+     * @param ServiceLocatorInterface $sm
+     * @return TransportInterface
+     */
+    protected function createTransport(ServiceLocatorInterface $sm)
+    {
+        $adapter = $this->mailOptions->getMailAdapter();
+        // A transport instance can be returned as is
+        if ($adapter instanceof TransportInterface) {
+            return $this->setupTransportConfig($adapter);
+        }
+
+        // Check if the adapter is a service
+        if (is_string($adapter) && $sm->has($adapter)) {
+            /** @var TransportInterface $transport */
+            $transport = $sm->get($adapter);
+            if ($transport instanceof TransportInterface) {
+                return $this->setupTransportConfig($transport);
+            } else {
+                throw new InvalidArgumentException(
+                    'Provided mail_adapter service does not return a "Zend\Mail\Transport\TransportInterface" instance'
+                );
+            }
+        }
+
+        // Check if the adapter is one of Zend's default adapters
+        if (is_string($adapter) && is_subclass_of($adapter, 'Zend\Mail\Transport\TransportInterface')) {
+            return $this->setupTransportConfig(new $adapter());
+        }
+
+        // The adapter is not valid. Throw an exception
+        throw new InvalidArgumentException(sprintf(
+            'mail_adapter must be an instance of "Zend\Mail\Transport\TransportInterface" or string, "%s" provided',
+            is_object($adapter) ? get_class($adapter) : gettype($adapter)
+        ));
+    }
+
+    /**
+     * @param TransportInterface $transport
+     * @return TransportInterface
+     */
+    protected function setupTransportConfig(TransportInterface $transport)
     {
         if ($transport instanceof Smtp) {
-            $connConfig = [
-                'username' => $mailOptions->getSmtpUser(),
-                'password' => $mailOptions->getSmtpPassword(),
-            ];
-
-            // Check if SSL should be used
-            if ($mailOptions->getSsl() !== false) {
-                $connConfig['ssl'] = $mailOptions->getSsl();
-            }
-
-            // Set SMTP transport options
-            $transport->setOptions(new SmtpOptions([
-                'host'              => $mailOptions->getServer(),
-                'port'              => $mailOptions->getPort(),
-                'connection_class'  => $mailOptions->getConnectionClass(),
-                'connection_config' => $connConfig,
-            ]));
+            $transport->setOptions($this->mailOptions->getSmtpOptions());
         } elseif ($transport instanceof File) {
-            $transport->setOptions(new FileOptions([
-                'path'      => $mailOptions->getFilePath(),
-                'callback'  => $mailOptions->getFileCallback()
-            ]));
+            $transport->setOptions($this->mailOptions->getFileOptions());
         }
+
+        return $transport;
     }
 
     /**
@@ -126,7 +155,6 @@ class MailServiceFactory implements FactoryInterface
     {
         // Try to return the configured renderer. If it points to an undefined service, create a renderer on the fly
         try {
-            /** @var RendererInterface $renderer */
             $renderer = $sm->get('mailviewrenderer');
             return $renderer;
         } catch (ServiceNotFoundException $e) {
@@ -177,6 +205,7 @@ class MailServiceFactory implements FactoryInterface
     /**
      * Returns a specific configuration defined by provided key
      * @param ServiceLocatorInterface $sm
+     * @param $configKey
      * @return array
      */
     protected function getSpecificConfig(ServiceLocatorInterface $sm, $configKey)

@@ -1,5 +1,5 @@
 <?php
-namespace AcMailer\Options;
+namespace AcMailer\View;
 
 use Zend\View\Model\ViewModel;
 

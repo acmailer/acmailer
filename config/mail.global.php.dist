@@ -1,7 +1,6 @@
 <?php
 return [
-
-    'mail_options' => [
+    'acmailer_options' => [
 
         /***********
          * ADAPTER *
@@ -10,188 +9,223 @@ return [
         /*
          * The mail adapter to be used.
          * You can define any class implementing Zend\Mail\Transport\TransportInterface,
-         * either the class fully qualified name or the instance to be used.
-         * For standard mail transports, you can use aliases,
+         * either the fully qualified class name as string or the instance to be used.
+         *
+         * For standard mail transports, you can use these aliases:
          *      - sendmail  => Zend\Mail\Transport\Sendmail
          *      - smtp      => Zend\Mail\Transport\Smtp
          *      - file      => Zend\Mail\Transport\File
          *      - null      => Zend\Mail\Transport\Null
+         *
+         * If for some reason you need to use a custom adapter which is complex to be created, you can also define
+         * the name of a service that returns a Zend\Mail\Transport\TransportInterface instance. When the MailService
+         * is created, it will automatically check if this is an existing service.
+         *
          * Default value is Zend\Mail\Transport\Sendmail
          */
         //'mail_adapter' => 'Zend\Mail\Transport\Sendmail',
 
         /*
-         * A service name which will return a Zend\Mail\Transport\TransportInterface instance to be used as the
-         * transport object.
-         * If this is set to something other than null, the 'mail_adapter' option will be ignored
-         * Default value is null
-         *
-         * Note: Many configuration options are useful for standard transport objects only.
-         * The mail_dapater_service is usefull to configure your own transport object with custom options
+         * Just an alias for the 'mail_adapter' option. Use just one or the other.
          */
-        //'mail_adapter_service' => null,
+        //'transport' => 'Zend\Mail\Transport\Sendmail',
+
 
         /************************
-         * COMMON CONFIGURATION *
+         * MESSAGE CONFIGURATION *
          ************************/
 
-        /*
-         * From email address of the email.
-         * It would be used as SMTP username if mail_adapter is set to Zend\Mail\Transport\Smtp
-         * and no smtp_user is provided
-         * Default value is an empty string
-         */
-        //'from' => '',
+        'message' => [
+            /*
+             * From email address of the email.
+             *
+             * Default value is an empty string
+             */
+            //'from' => '',
 
-        /*
-         * From name to be displayed instead of from address.
-         * Default value is an empty string
-         */
-        //'from_name' => '',
+            /*
+             * From name to be displayed instead of from address.
+             *
+             * Default value is an empty string
+             */
+            //'from_name' => '',
 
-        /*
-         * Destination addresses of sent emails. It can be an email address as string or an array of email addresses.
-         * Default value is an empty array.
-         */
-        //'to' => [],
+            /*
+             * Destination addresses of sent emails.
+             * It can be an email address as string or an array of email addresses.
+             *
+             * Default value is an empty array.
+             */
+            //'to' => [],
 
-        /*
-         * Copy destination addresses of sent emails.
-         * It can be an email address as string or an array of email addresses.
-         * Default value is an empty array
-         */
-        //'cc' => [],
+            /*
+             * Copy destination addresses of sent emails.
+             * It can be an email address as string or an array of email addresses.
+             *
+             * Default value is an empty array
+             */
+            //'cc' => [],
 
-        /*
-         * Hidden copy destination addresses of sent emails.
-         * It can be an email address as string or an array of email addresses.
-         * Default value is an empty array
-         */
-        //'bcc' => [],
+            /*
+             * Hidden copy destination addresses of sent emails.
+             * It can be an email address as string or an array of email addresses.
+             *
+             * Default value is an empty array
+             */
+            //'bcc' => [],
 
-        /*
-         * Email subject.
-         * Default value is an empty string
-         */
-        //'subject' => '',
+            /*
+             * Email subject.
+             *
+             * Default value is an empty string
+             */
+            //'subject' => '',
 
-        /*
-         * Email body. Can be a string or hardcoded HTML.
-         * If a more complex value is nedded it will have to be done in the code.
-         * Default value is an empty string.
-         */
-        //'body' => '',
+            /*
+             * Email body.
+             * It can be a plain-text string, a HTML string or a template that will be computed at runtime.
+             * The 'content' property is used by default.
+             * To force a template configuration to be used, set 'use_template' to true.
+             *
+             * Default content is an empty string.
+             */
+            //'body' => [
+                //'content' => '',
+                //'charset' => 'utf-8',
+                //'use_template' => false,
 
-        /*
-         * The charset to be set to the body when setting an HTML string body.
-         * It will be ignored if the body is a plain text string.
-         * Default value is 'utf-8'.
-         */
-        //'body_charset' => 'utf-8',
+                /*
+                 * Defines information to create the email body from a view partial.
+                 * It defines template path and template params.
+                 * The path will be resolved by a view resolver, so you need to place mail templates inside a view
+                 * folder of one of your modules or customize your template map and template path stack.
+                 * Params will be a group of key-value pairs.
+                 *
+                 * The 'children' property allows to define children for the template, in case you want to use layouts.
+                 * You can define any number of children. The key in the array will be used as the 'capture_to'
+                 * property when rendering the template.
+                 * If you set the key 'content' to the child, you should have something like echo $this->content in
+                 * you layout.
+                 *
+                 * Any child can have its own children, so you can nest views into other views recursively.
+                 *
+                 * By default no children are used
+                 */
+                //'template' => [
+                //    'path'          => 'ac-mailer/mail-templates/layout',
+                //    'params'        => [],
+                //    'children'      => [
+                //        'content'   => [
+                //            'path'   => 'ac-mailer/mail-templates/mail',
+                //            'params' => [],
+                //        ]
+                //    ]
+                //],
+            //],
 
-        /*
-         * Defines information to create the email body from a view partial.
-         * It defines template path and template params.
-         * The path will be resolved by a view resolver, so you need to place mail templates inside a view
-         * folder of one of your modules or customize your template map and template path stack.
-         * Params will be a group of key-value pairs.
-         * It has a use_template property wich tells if template should be used automatically,
-         * ignoring anything defined at 'body' option. It is false by default.
-         *
-         * The 'children' property allows to define children for the template, in case you want to use layouts.
-         * You can define any number of children. The key is the 'capture_to' property.
-         * If you set the key 'content' to the child, you should have something like echo $this->content in you layout.
-         * Any child can have its own children, so you can nest views into other views recursively.
-         * By default no children are used
-         */
-        //'template' => [
-        //    'use_template'  => false,
-        //    'path'          => 'ac-mailer/mail-templates/layout',
-        //    'params'        => [],
-        //    'children'      => [
-        //        'content'   => [
-        //            'path'   => 'ac-mailer/mail-templates/mail',
-        //            'params' => [],
-        //        ]
-        //    ]
-        //],
+            /*
+             * Attachments config.
+             * Allows to define an array of files that will be attached to the message,
+             * or even a directory that will be iterated to attach all found files.
+             * Set directory will only be iterated if 'iterate' property is true and 'path' is a valid directory.
+             * If 'recursive' is true all nested directories will be iterated too.
+             * If both files and dir are set, all files will be merged without duplication.
+             *
+             * By default the files array is empty and the directory won't be iterated
+             */
+            //'attachments' => [
+            //    'files' => [],
+            //    'dir' => [
+            //        'iterate'   => false,
+            //        'path'      => 'data/mail/attachments',
+            //        'recursive' => false,
+            //    ],
+            //],
+        ],
 
-        /*
-         * Attachments config.
-         * Allows to define an array of files that will be attached to the message,
-         * or even a directory that will be iterated to attach all found files.
-         * Set directory will only be iterated if 'iterate' property is true and 'path' is a valid directory.
-         * If 'recursive' is true all nested directories will be iterated too.
-         * If both files and dir are set, all files will be merged without duplication
-         * By default the files array is empty and the directory won't be iterated
-         */
-        //'attachments' => [
-        //    'files' => [],
-        //    'dir' => [
-        //        'iterate'   => false,
-        //        'path'      => 'data/mail/attachments',
-        //        'recursive' => false,
-        //    ],
-        //],
 
         /**********************
          * SMTP CONFIGURATION *
          **********************/
 
         /*
-         * Hostname or IP address of mail server to be used.
-         * Default value is localhost
+         * SMTP concrete options that will be used only when the adapter is a Zend\Mail\Transport\Smtp.
+         * This will be ignored otherwise.
          */
-        //'server' => 'localhost',
+        'smtp' => [
+            /*
+             * Hostname or IP address of the mail server.
+             *
+             * Default value is localhost
+             */
+            //'host' => 'localhost',
 
-        /*
-         * If Zend\Mail\Transport\Smtp adapter is used, this is the SMTP authentication identity.
-         * If this is not set, from option is used.
-         * Default value is an empty string
-         */
-        //'smtp_user' => '',
+            /*
+             * Port of the mail server.
+             *
+             * Default value is 25
+             */
+            //'port' => 25,
 
-        /*
-         * If Zend\Mail\Transport\Smtp adapter is used, this is the SMTP authentication credential.
-         * Default value is an empty string
-         */
-        //'smtp_password' => '',
+            /*
+             * The connection class used for authentication.
+             * The value can be one of 'smtp', 'plain', 'login' or 'crammd5'.
+             *
+             * Default value is 'login'. ZF2 default is 'smtp'
+             */
+            //'connection_class' => 'login',
 
-        /*
-         * If Zend\Mail\Transport\Smtp adapter is used, this defines the SSL type to be used, 'ssl' or 'tls'.
-         * Boolean false should be used to disable SSL.
-         * Default value is false
-         */
-        //'ssl' => false,
+            //'connection_config' => [
+                /*
+                 * The SMTP authentication identity.
+                 * If this is not set, the 'from' option of the message will be used.
+                 *
+                 * Default value is an empty string
+                 */
+                //'username' => '',
 
-        /*
-         * If Zend\Mail\Transport\Smtp adapter is used, this is the connection class used for authentication.
-         * Value can be one of 'smtp', 'plain', 'login' or 'crammd5'.
-         * Default value is login. ZF2 default is smtp
-         */
-        //'connection_class' => 'login',
+                /*
+                 * The SMTP authentication credential.
+                 *
+                 * Default value is an empty string
+                 */
+                //'password' => '',
 
-        /*
-         * If Zend\Mail\Transport\Smtp adapter is used, this is the SMTP server port
-         */
-        //'port' => 25,
+                /*
+                 * This defines the encryption type to be used, 'ssl' or 'tls'.
+                 * Boolean false should be used to disable SSL.
+                 *
+                 * Default value is false
+                 */
+                //'ssl' => false,
+            //],
+        ],
+
 
         /**********************
          * FILE CONFIGURATION *
          **********************/
 
         /*
-         * If Zend\Mail\Transport\File adapter is used, thi sis the folder where the file is going to be saved
-         * Default value is 'data/mail/output'
+         * File concrete options that will be used only when the adapter is a Zend\Mail\Transport\File.
+         * This will be ignored otherwise.
          */
-        //'file_path' => 'data/mail/output',
+        'file' => [
+            /*
+             * This is the folder where the file is going to be saved
+             *
+             * Default value is 'data/mail/output'
+             */
+            //'path' => 'data/mail/output',
 
-        /**
-         * A callable that will get the Zend\Mail\Transport\File object as an argument and should return the filename
-         * Default value is null, in which case a default callable will be used
-         */
-        //'file_callback' => null,
+            /**
+             * A callable that will get the Zend\Mail\Transport\File object as an argument and should return the
+             * filename.
+             *
+             * Default value is null, in which case an empty callable will be used.
+             */
+            //'callback' => null,
+        ],
 
     ]
-
 ];
