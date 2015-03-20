@@ -52,41 +52,47 @@ class MailServiceFactoryTest extends TestCase
     public function testMessageData()
     {
         $options = [
-            'from'      => 'Alejandro Celaya',
-            'from_name' => 'alejandro@alejandrocelaya.com',
-            'to'        => ['foo@bar.com', 'bar@foo.com'],
-            'cc'        => ['account@domain.com'],
-            'bcc'       => [],
-            'subject'   => 'The subject',
-            'body'      => 'The body',
+            'message_options' => [
+                'from'      => 'Alejandro Celaya',
+                'from_name' => 'alejandro@alejandrocelaya.com',
+                'to'        => ['foo@bar.com', 'bar@foo.com'],
+                'cc'        => ['account@domain.com'],
+                'bcc'       => [],
+                'subject'   => 'The subject',
+                'body'      => ['content' => 'The body'],
+            ]
         ];
         $this->initServiceLocator($options);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
 
         $this->assertInstanceOf('AcMailer\Service\MailService', $mailService);
         $this->assertEquals(
-            $options['from_name'],
-            $mailService->getMessage()->getFrom()->get($options['from'])->getName()
+            $options['message_options']['from_name'],
+            $mailService->getMessage()->getFrom()->get($options['message_options']['from'])->getName()
         );
         $toArray = array_keys(ArrayUtils::iteratorToArray($mailService->getMessage()->getTo()));
         $ccArray = array_keys(ArrayUtils::iteratorToArray($mailService->getMessage()->getCc()));
         $bccArray = array_keys(ArrayUtils::iteratorToArray($mailService->getMessage()->getBcc()));
-        $this->assertEquals($options['to'], $toArray);
-        $this->assertEquals($options['cc'], $ccArray);
-        $this->assertEquals($options['bcc'], $bccArray);
-        $this->assertEquals($options['subject'], $mailService->getMessage()->getSubject());
+        $this->assertEquals($options['message_options']['to'], $toArray);
+        $this->assertEquals($options['message_options']['cc'], $ccArray);
+        $this->assertEquals($options['message_options']['bcc'], $bccArray);
+        $this->assertEquals($options['message_options']['subject'], $mailService->getMessage()->getSubject());
         $this->assertInstanceof('Zend\Mime\Message', $mailService->getMessage()->getBody());
     }
 
     public function testSmtpAdapter()
     {
         $options = [
-            'mail_adapter'  => 'Zend\Mail\Transport\Smtp',
-            'server'        => 'the.host',
-            'smtp_user'     => 'alejandro',
-            'smtp_password' => '1234',
-            'ssl'           => 'ssl',
-            'port'          => 465
+            'mail_adapter' => 'Zend\Mail\Transport\Smtp',
+            'smtp_options' => [
+                'host'  => 'the.host',
+                'port'  => 465,
+                'connection_config' => [
+                    'username'  => 'alejandro',
+                    'password'  => '1234',
+                    'ssl'       => 'ssl',
+                ]
+            ]
         ];
         $this->initServiceLocator($options);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
@@ -95,21 +101,23 @@ class MailServiceFactoryTest extends TestCase
         $transport = $mailService->getTransport();
         $this->assertInstanceOf($options['mail_adapter'], $transport);
         $connConfig = $transport->getOptions()->getConnectionConfig();
-        $this->assertEquals($options['smtp_user'], $connConfig['username']);
-        $this->assertEquals($options['smtp_password'], $connConfig['password']);
-        $this->assertEquals($options['ssl'], $connConfig['ssl']);
-        $this->assertEquals($options['server'], $transport->getOptions()->getHost());
-        $this->assertEquals($options['port'], $transport->getOptions()->getPort());
+        $this->assertEquals($options['smtp_options']['connection_config']['username'], $connConfig['username']);
+        $this->assertEquals($options['smtp_options']['connection_config']['password'], $connConfig['password']);
+        $this->assertEquals($options['smtp_options']['connection_config']['ssl'], $connConfig['ssl']);
+        $this->assertEquals($options['smtp_options']['host'], $transport->getOptions()->getHost());
+        $this->assertEquals($options['smtp_options']['port'], $transport->getOptions()->getPort());
     }
 
     public function testFileAdapter()
     {
         $options = [
             'mail_adapter'  => 'file',
-            'file_path'     => __DIR__,
-            'file_callback' => function ($transport) {
-                return get_class($transport);
-            }
+            'file_options' => [
+                'path'     => __DIR__,
+                'callback' => function ($transport) {
+                    return get_class($transport);
+                }
+            ]
         ];
         $this->initServiceLocator($options);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
@@ -117,30 +125,19 @@ class MailServiceFactoryTest extends TestCase
         /* @var File $transport */
         $transport = $mailService->getTransport();
         $this->assertInstanceOf('Zend\Mail\Transport\File', $transport);
-        $this->assertEquals($options['file_path'], $transport->getOptions()->getPath());
-        $this->assertEquals($options['file_callback'], $transport->getOptions()->getCallback());
+        $this->assertEquals($options['file_options']['path'], $transport->getOptions()->getPath());
+        $this->assertEquals($options['file_options']['callback'], $transport->getOptions()->getCallback());
     }
 
     public function testAdapterAsService()
     {
         $this->initServiceLocator([
-            'mail_adapter_service' => 'Zend\Mail\Transport\TransportInterface'
+            'mail_adapter' => 'my_transport_service'
         ]);
         $transport = new Sendmail();
-        $this->serviceLocator->set('Zend\Mail\Transport\TransportInterface', $transport);
+        $this->serviceLocator->set('my_transport_service', $transport);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
         $this->assertSame($transport, $mailService->getTransport());
-    }
-
-    /**
-     * @expectedException \Zend\ServiceManager\Exception\ServiceNotFoundException
-     */
-    public function testNonExistentAdapterAsService()
-    {
-        $this->initServiceLocator([
-            'mail_adapter_service' => 'Zend\Mail\Transport\TransportInterface'
-        ]);
-        $this->mailServiceFactory->createService($this->serviceLocator);
     }
 
     public function testViewRendererService()
@@ -193,16 +190,20 @@ class MailServiceFactoryTest extends TestCase
     public function testTemplateBody()
     {
         $options = [
-            'template' => [
-                'use_template'  => true,
-                'path'          => 'ac-mailer/mail-templates/layout',
-                'children'      => [
-                    'content'   => [
-                        'path'   => 'ac-mailer/mail-templates/mail',
-                    ]
+            'message_options' => [
+                'body' => [
+                    'content' => 'This body is not going to be used',
+                    'use_template'  => true,
+                    'template' => [
+                        'path'          => 'ac-mailer/mail-templates/layout',
+                        'children'      => [
+                            'content'   => [
+                                'path'   => 'ac-mailer/mail-templates/mail',
+                            ]
+                        ]
+                    ],
                 ]
-            ],
-            'body' => 'This body is not going to be used'
+            ]
         ];
         $this->initServiceLocator($options);
 
@@ -213,7 +214,7 @@ class MailServiceFactoryTest extends TestCase
         $this->serviceLocator->set('mailviewrenderer', $renderer);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
 
-        $this->assertNotEquals($options['body'], $mailService->getMessage()->getBody());
+        $this->assertNotEquals($options ['message_options']['body']['content'], $mailService->getMessage()->getBody());
         $this->assertInstanceOf('Zend\Mime\Message', $mailService->getMessage()->getBody());
     }
 
@@ -222,17 +223,19 @@ class MailServiceFactoryTest extends TestCase
         $cwd = getcwd();
         chdir(dirname(__DIR__));
         $options = [
-            'attachments' => [
-                'files' => [
-                    'attachments/file1',
-                    'attachments/file2',
+            'message_options' => [
+                'attachments' => [
+                    'files' => [
+                        'attachments/file1',
+                        'attachments/file2',
+                    ],
+                    'dir' => [
+                        'iterate'   => true,
+                        'path'      => 'attachments/dir',
+                        'recursive' => true,
+                    ],
                 ],
-                'dir' => [
-                    'iterate'   => true,
-                    'path'      => 'attachments/dir',
-                    'recursive' => true,
-                ],
-            ],
+            ]
         ];
         $this->initServiceLocator($options);
         $mailService = $this->mailServiceFactory->createService($this->serviceLocator);

@@ -43,9 +43,11 @@ class MailOptionsFactoryTest extends TestCase
     {
         $services = [
             'Config' => [
-                'mail_options' => [
-                    'to'        => 'foo@bar.com',
-                    'smtp_user' => 'myuser'
+                'acmailer_options' => [
+                    'message_options' => [
+                        'to'    => 'foo@bar.com',
+                        'from'  => 'Me',
+                    ]
                 ]
             ]
         ];
@@ -53,25 +55,15 @@ class MailOptionsFactoryTest extends TestCase
 
         $mailOptions = $this->mailOptionsFactory->createService($this->serviceLocator);
         $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
-        $this->assertEquals([$services['Config']['mail_options']['to']], $mailOptions->getTo());
-        $this->assertEquals($services['Config']['mail_options']['smtp_user'], $mailOptions->getSmtpUser());
-        $this->assertEquals([], $mailOptions->getCc());
-        $this->assertEquals([], $mailOptions->getBcc());
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testExceptionIsThrownOnInvalidAdapter()
-    {
-        $services = [
-            'Config' => [
-                'mail_options' => [
-                    'mail_adapter' => 'invalid',
-                ]
-            ]
-        ];
-        $this->serviceLocator = new ServiceManagerMock($services);
-        $this->mailOptionsFactory->createService($this->serviceLocator);
+        $this->assertEquals(
+            [$services['Config']['acmailer_options']['message_options']['to']],
+            $mailOptions->getMessageOptions()->getTo()
+        );
+        $this->assertEquals(
+            $services['Config']['acmailer_options']['message_options']['from'],
+            $mailOptions->getMessageOptions()->getFrom()
+        );
+        $this->assertEquals([], $mailOptions->getMessageOptions()->getCc());
+        $this->assertEquals([], $mailOptions->getMessageOptions()->getBcc());
     }
 }

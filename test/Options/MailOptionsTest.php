@@ -31,7 +31,7 @@ class MailOptionsTest extends TestCase
 
     public function testDefaultMailOptionsValues()
     {
-        $this->assertInstanceOf('Zend\Mail\Transport\Sendmail', $this->mailOptions->getMailAdapter());
+        $this->assertEquals('\Zend\Mail\Transport\Sendmail', $this->mailOptions->getMailAdapter());
         $this->assertInstanceOf('AcMailer\Options\MessageOptions', $this->mailOptions->getMessageOptions());
         $this->assertInstanceOf('Zend\Mail\Transport\SmtpOptions', $this->mailOptions->getSmtpOptions());
         $this->assertInstanceOf('Zend\Mail\Transport\FileOptions', $this->mailOptions->getFileOptions());
@@ -40,33 +40,18 @@ class MailOptionsTest extends TestCase
     public function testMailAdapterNameConversion()
     {
         $this->mailOptions->setMailAdapter('Sendmail');
-        $this->assertTrue($this->mailOptions->getMailAdapter() instanceof Sendmail);
+        $this->assertEquals('Zend\Mail\Transport\Sendmail', $this->mailOptions->getMailAdapter());
         
         $this->mailOptions->setMailAdapter('smtp');
-        $this->assertTrue($this->mailOptions->getMailAdapter() instanceof Smtp);
+        $this->assertEquals('Zend\Mail\Transport\Smtp', $this->mailOptions->getMailAdapter());
 
         $this->mailOptions->setMailAdapter('FILE');
-        $this->assertTrue($this->mailOptions->getMailAdapter() instanceof File);
+        $this->assertEquals('Zend\Mail\Transport\File', $this->mailOptions->getMailAdapter());
 
         $this->mailOptions->setMailAdapter('null');
-        $this->assertTrue($this->mailOptions->getMailAdapter() instanceof \Zend\Mail\Transport\Null);
+        $this->assertEquals('Zend\Mail\Transport\Null', $this->mailOptions->getMailAdapter());
     }
-    
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testMailAdapterInvalidNameThrowAnException()
-    {
-        $this->mailOptions->setMailAdapter('foo'); // Foo is not a valid adapter name
-    }
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testMailAdapterInvalidInstanceThrowAnException()
-    {
-        $this->mailOptions->setMailAdapter(new \stdClass());
-    }
-    
+
 //    public function testOneDestinationAddressIsCastToArray()
 //    {
 //        $this->mailOptions->setTo('one-address');
