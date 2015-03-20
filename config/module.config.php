@@ -3,8 +3,8 @@ return [
 
     'service_manager' => [
         'factories' => [
-            'AcMailer\Service\MailService'	=> 'AcMailer\Service\Factory\MailServiceFactory',
-            'AcMailer\Options\MailOptions' 	=> 'AcMailer\Options\Factory\MailOptionsFactory'
+            'AcMailer\Service\MailService'  => 'AcMailer\Service\Factory\MailServiceFactory',
+            'AcMailer\Options\MailOptions'  => 'AcMailer\Options\Factory\MailOptionsFactory'
         ],
         'aliases' => [
             'mailservice' => 'AcMailer\Service\MailService',

@@ -53,7 +53,6 @@ class MailOptions extends AbstractOptions
     /**
      * @param string|TransportInterface $mailAdapter
      * @return $this
-     * @throws \AcMailer\Exception\InvalidArgumentException
      */
     public function setMailAdapter($mailAdapter)
     {
@@ -79,7 +78,6 @@ class MailOptions extends AbstractOptions
      * Alias for method setMailAdapter
      * @param string|TransportInterface $transport
      * @return $this
-     * @throws \AcMailer\Exception\InvalidArgumentException
      */
     public function setTransport($transport)
     {
@@ -101,6 +99,7 @@ class MailOptions extends AbstractOptions
     /**
      * @param MessageOptions|array $messageOptions
      * @return $this
+     * @throws \AcMailer\Exception\InvalidArgumentException
      */
     public function setMessageOptions($messageOptions)
     {

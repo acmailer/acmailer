@@ -43,7 +43,7 @@ class BodyOptions extends AbstractOptions
      */
     public function setUseTemplate($useTemplate)
     {
-        $this->useTemplate = $useTemplate;
+        $this->useTemplate = (bool) $useTemplate;
         return $this;
     }
 
