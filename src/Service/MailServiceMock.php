@@ -66,7 +66,7 @@ class MailServiceMock implements MailServiceInterface
     /**
      * Sets the message body
      * @param \Zend\Mime\Part|\Zend\Mime\Message|string $body
-     * @param string $charset Will be used only when setting an HTML string body
+     * @param string $charset
      * @throws InvalidArgumentException
      * @return $this
      */

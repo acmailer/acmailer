@@ -151,6 +151,39 @@ If you overriden the `mailviewrenderer` service alias with your own view rendere
 
 It is safe to use this module to send emails from cron jobs and such.
 
+##### Email charset
+
+The email body charset can be set in diferent ways.
+
+**String body**: Use the second argument of the `setBody` method.
+
+```php
+$mailService->setBody('Hello!!', 'utf-8');
+$mailService->setBody('<h1>Hello!!</h1>', 'utf-8');
+```
+
+**Template body**: Set a 'charset' property in the second argument of the `setTemplate` method.
+
+```php
+$mailService->setTemplate(new Zend\View\Model\ViewModel(), ['charset' => 'utf-8']);
+$mailService->setTemplate('application/emails/my-template', [
+    'charset' => 'utf-8',
+    'date' => date('Y-m-d),
+    'foo' => 'bar',
+]);
+```
+
+**Mime\Part body**: Either set it in the object before calling `setBody` or pass it as the second argument.
+
+```php
+$part = new Zend\Mime\Part();
+$part->charset = 'utf-8';
+$mailService->setBody($part);
+
+// Providing a charset will overwrite the Mime\Part's charset
+$mailService->setBody($part, 'utf-8');
+```
+
 ##### Attachments
 
 Files can be attached to the email before sending it by providing their paths with `addAttachment`, `addAttachments` or `setAttachments` methods.

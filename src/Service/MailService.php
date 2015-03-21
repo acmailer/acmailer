@@ -131,7 +131,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     /**
      * Sets the message body
      * @param \Zend\Mime\Part|\Zend\Mime\Message|string $body Email body
-     * @param string $charset Will be used only when setting an HTML string body
+     * @param string $charset
      * @return $this Returns this MailService for chaining purposes
      * @throws InvalidArgumentException
      * @see \AcMailer\Service\MailServiceInterface::setBody()
@@ -149,6 +149,10 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
             // The body is a Mime\Part. Wrap it into a Mime\Message
             $mimeMessage = new Mime\Message();
             $mimeMessage->setParts([$body]);
+            // Overwrite the charset if the Part object if provided
+            if (isset($charset)) {
+                $body->charset = $charset;
+            }
             $body = $mimeMessage;
         }
 
