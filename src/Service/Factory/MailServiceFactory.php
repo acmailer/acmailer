@@ -1,6 +1,7 @@
 <?php
 namespace AcMailer\Service\Factory;
 
+use AcMailer\View\DefaultLayout;
 use Zend\Mail\Transport\File;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mvc\Service\ViewHelperManagerFactory;
@@ -49,6 +50,14 @@ class MailServiceFactory implements FactoryInterface
         // Set body, either by using a template or a raw body
         $body = $this->mailOptions->getMessageOptions()->getBody();
         if ($body->getUseTemplate()) {
+            $defaultLayoutConfig = $body->getTemplate()->getDefaultLayout();
+            if (isset($defaultLayoutConfig['path'])) {
+                $params = isset($defaultLayoutConfig['params']) ? $defaultLayoutConfig['params'] : [];
+                $captureTo = isset($defaultLayoutConfig['template_capture_to'])
+                    ? $defaultLayoutConfig['template_capture_to']
+                    : 'content';
+                $mailService->setDefaultLayout(new DefaultLayout($defaultLayoutConfig['path'], $params, $captureTo));
+            }
             $mailService->setTemplate($body->getTemplate()->toViewModel(), ['charset' => $body->getCharset()]);
         } else {
             $mailService->setBody($body->getContent(), $body->getCharset());

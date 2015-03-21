@@ -26,7 +26,7 @@ return [
         //'mail_adapter' => 'Zend\Mail\Transport\Sendmail',
 
         /*
-         * Just an alias for the 'mail_adapter' option. Use just one or the other.
+         * An alias for the 'mail_adapter' option. Use just one or another.
          */
         //'transport' => 'Zend\Mail\Transport\Sendmail',
 
@@ -35,7 +35,7 @@ return [
          * MESSAGE CONFIGURATION *
          ************************/
 
-        'message' => [
+        'message_options' => [
             /*
              * From email address of the email.
              *
@@ -119,6 +119,11 @@ return [
                 //            'path'   => 'ac-mailer/mail-templates/mail',
                 //            'params' => [],
                 //        ]
+                //    ],
+                //    'default_layout' => [
+                //        'path' => null,
+                //        'params' => [],
+                //        'template_capture_to' => 'content'
                 //    ]
                 //],
             //],
@@ -152,7 +157,7 @@ return [
          * SMTP concrete options that will be used only when the adapter is a Zend\Mail\Transport\Smtp.
          * This will be ignored otherwise.
          */
-        'smtp' => [
+        'smtp_options' => [
             /*
              * Hostname or IP address of the mail server.
              *
@@ -210,7 +215,7 @@ return [
          * File concrete options that will be used only when the adapter is a Zend\Mail\Transport\File.
          * This will be ignored otherwise.
          */
-        'file' => [
+        'file_options' => [
             /*
              * This is the folder where the file is going to be saved
              *

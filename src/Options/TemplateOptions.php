@@ -24,6 +24,10 @@ class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInt
      * @var TemplateOptions[]
      */
     protected $children = [];
+    /**
+     * @var array
+     */
+    protected $defaultLayout = [];
 
     /**
      * @param $params
@@ -102,5 +106,23 @@ class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInt
         }
 
         return $model;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDefaultLayout()
+    {
+        return $this->defaultLayout;
+    }
+
+    /**
+     * @param array $defaultLayout
+     * @return $this
+     */
+    public function setDefaultLayout(array $defaultLayout)
+    {
+        $this->defaultLayout = $defaultLayout;
+        return $this;
     }
 }

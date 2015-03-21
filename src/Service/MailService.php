@@ -5,6 +5,8 @@ use AcMailer\Event\MailEvent;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Event\MailListenerAwareInterface;
 use AcMailer\Exception\MailException;
+use AcMailer\View\DefaultLayout;
+use AcMailer\View\DefaultLayoutInterface;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -45,6 +47,10 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      * @var array
      */
     private $attachments = [];
+    /**
+     * @var DefaultLayoutInterface
+     */
+    private $defaultLayout;
 
     /**
      * Creates a new MailService
@@ -57,6 +63,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $this->message      = $message;
         $this->transport    = $transport;
         $this->renderer     = $renderer;
+        $this->setDefaultLayout();
     }
 
     /**
@@ -183,15 +190,34 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     {
         if ($template instanceof ViewModel) {
             $view = $template;
-            $this->renderChildren($view);
         } else {
             $view = new ViewModel();
             $view->setTemplate($template)
                  ->setVariables($params);
         }
 
+        // Check if a common layout has to be used
+        if ($this->defaultLayout->hasModel()) {
+            $layoutModel = $this->defaultLayout->getModel();
+            $layoutModel->addChild($view, $this->defaultLayout->getTemplateCaptureTo());
+            $view = $layoutModel;
+        }
+        // Render the template and all of its children
+        $this->renderChildren($view);
+
         $charset = isset($params['charset']) ? $params['charset'] : null;
         $this->setBody($this->renderer->render($view), $charset);
+    }
+
+    /**
+     * Sets the default layout to be used with all the templates set when calling setTemplate.
+     *
+     * @param DefaultLayoutInterface $layout
+     * @return mixed
+     */
+    public function setDefaultLayout(DefaultLayoutInterface $layout = null)
+    {
+        $this->defaultLayout = isset($layout) ? $layout : new DefaultLayout();
     }
 
     /**

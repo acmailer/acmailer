@@ -2,6 +2,7 @@
 namespace AcMailer\Service;
 
 use AcMailer\Result\MailResult;
+use AcMailer\View\DefaultLayoutInterface;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\View\Model\ViewModel;
@@ -203,5 +204,16 @@ class MailServiceMock implements MailServiceInterface
     {
         $this->transport = $transport;
         return $this;
+    }
+
+    /**
+     * Sets the default layout to be used with all the templates set when calling setTemplate.
+     *
+     * @param DefaultLayoutInterface $layout
+     * @return mixed
+     */
+    public function setDefaultLayout(DefaultLayoutInterface $layout = null)
+    {
+        // Do nothing
     }
 }

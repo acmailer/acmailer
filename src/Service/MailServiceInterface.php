@@ -4,8 +4,11 @@ namespace AcMailer\Service;
 use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Mail\Transport\TransportAwareInterface;
 use AcMailer\Result\ResultInterface;
+use AcMailer\View\DefaultLayout;
+use AcMailer\View\DefaultLayoutInterface;
 use AcMailer\View\RendererAwareInterface;
 use Zend\Mail\Transport\TransportInterface;
+use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\RendererInterface;
 
 /**
@@ -44,6 +47,14 @@ interface MailServiceInterface extends TransportAwareInterface, RendererAwareInt
      * @param array $params
      */
     public function setTemplate($template, array $params = []);
+
+    /**
+     * Sets the default layout to be used with all the templates set when calling setTemplate.
+     *
+     * @param DefaultLayoutInterface $layout
+     * @return mixed
+     */
+    public function setDefaultLayout(DefaultLayoutInterface $layout = null);
     
     /**
      * Sets the message subject
