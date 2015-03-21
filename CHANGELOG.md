@@ -6,6 +6,7 @@
 
 * [77: Remove autoloader files and support only composer installation method](https://github.com/acelaya/ZF2-AcMailer/issues/77)
 * [67: Group related config in common groups](https://github.com/acelaya/ZF2-AcMailer/issues/67)
+* [82: Merge mail_adapter and mail_adapter_service configuration options into a single one, and make the factory to check if it is a service or not](https://github.com/acelaya/ZF2-AcMailer/issues/82)
 
 **Tasks**
 

@@ -34,6 +34,8 @@ return [
 ]
 ```
 
+**IMPORTANT!** Version 5.0.0 has introduced some important BC breaks, so make sure not to update from earlier versions in production without reading this documentation first.
+
 ### Usage
 
 After installation, copy `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` to `config/autoload/mail.global.php` and customize any of the params. Configuration options are explained later.
