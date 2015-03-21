@@ -272,6 +272,10 @@ Related configuration options are grouped under common keys.
             - *path*: Path of the template. The same used while setting the template of a ViewModel (ie. 'application/index/list').
             - *params*: Array with key-value pairs with parameters to be sent to the template.
             - *children*: Array with children templates to be used within the main template (layout). Each one of them can have its own children that will be recursively rendered. Look at `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` for details.
+            - *default_layout*: Wraps the information to set a default layout for all the templates
+                - *path*: Path of the layout. The same used while setting the template of a ViewModel (ie. 'application/index/list'). Default value is null, so that a default layout is not used.
+                - *params*: Array with key-value pairs with parameters to be sent to the layout. By default is an empoty array.
+                - *template_capture_to*: Capture to value for each template inside this layout. Default value is 'content'.
     - **attachments**: Wraps the configuration of attachements.
         - *files*: Array of files to be attached. Can be an associative array where keys are attachment names and values are file paths.
         - *dir*: Directory to iterate.
@@ -283,9 +287,9 @@ Related configuration options are grouped under common keys.
     - **port**: SMTP server port. Default value is 25.
     - **connection_class**: The connection class used for authentication. Values are 'smtp', 'plain', 'login' or 'crammd5'
     - **connection_config**
-        - **username**: Username to be used for authentication against the SMTP server. If none is provided the `message_options/from` option will be used for this purpose.
-        - **smtp_password**: Password to be used for authentication against the SMTP server.
-        - **ssl**: Defines the type of connection encryption against the SMTP server. Values are 'ssl', 'tls' or `false` to disable encryption.
+        - *username*: Username to be used for authentication against the SMTP server. If none is provided the `message_options/from` option will be used for this purpose.
+        - *smtp_password*: Password to be used for authentication against the SMTP server.
+        - *ssl*: Defines the type of connection encryption against the SMTP server. Values are 'ssl', 'tls' or `false` to disable encryption.
 - **file_options**: Wraps the files configuration that will be used when the mail adapter is a `Zend\Mail\Transport\File` instance
     - **path**: Directory where the email will be saved.
     - **callback**: Callback used to get the filename of the email.
