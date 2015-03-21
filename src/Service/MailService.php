@@ -178,15 +178,16 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     public function setTemplate($template, array $params = [])
     {
         if ($template instanceof ViewModel) {
-            $this->renderChildren($template);
-            $this->setBody($this->renderer->render($template));
-            return;
+            $view = $template;
+            $this->renderChildren($view);
+        } else {
+            $view = new ViewModel();
+            $view->setTemplate($template)
+                 ->setVariables($params);
         }
 
-        $view = new ViewModel();
-        $view->setTemplate($template)
-             ->setVariables($params);
-        $this->setBody($this->renderer->render($view));
+        $charset = isset($params['charset']) ? $params['charset'] : null;
+        $this->setBody($this->renderer->render($view), $charset);
     }
 
     /**
