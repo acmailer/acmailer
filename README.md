@@ -18,7 +18,7 @@ Install composer in your project
 
 Then run 
 
-    php composer.phar require acelaya/zf2-acmailer:~4.0
+    php composer.phar require acelaya/zf2-acmailer:~5.0
     
 Add the module `AcMailer` to your `config/application.config.php` file
 
@@ -208,39 +208,46 @@ $result = $mailService->send();
 
 ### Configuration options
 
-The mail service can be automatically configured by using the provided global configuration file. Supported options are fully explained at that file. This is what they are for.
+**Important!** The configuration has completly changed from v5.0.0 and is not compatible with earlier versions. If you want to upgrade, please, read this section.
 
-- **mail_adapter**: Tells the mail service what type of transport adapter should be used. Any object or classname implementing `Zend\Mail\Transport\TransportInterface` is valid.
-- **mail_adapter_service**: A service name to be used to get the transport object, in case standard transport configuration does not fit your needs. If defined, the **mail_adapter** option will be ignored.
-- **from**: From email address.
-- **from_name**: From name to be displayed.
-- **to**: It can be a string with one destination email address or an array of multiple addresses.
-- **cc**: It can be a string with one carbon copy email address or an array of multiple addresses.
-- **bcc**: It can be a string with one blind carbon copy email address or an array of multiple addresses.
-- **subject**: Default email subject.
-- **body**: Default body to be used. Usually this will be generated at runtime, but can be set as a string at config file. It can contain HTML too.
-- **body_charset**: The charset to be set to default body if it is a string. Default value is 'utf-8'.
-- **template**: Array with template configuration. It has 4 child options.
-    - *use_template*: True or false. Tells if template should be used, making the **body** option to be ignored.
-    - *path*: Path of the template. The same used while setting the template of a ViewModel (ie. 'application/index/list').
-    - *params*: Array with key-value pairs with parameters to be sent to the template.
-    - *children*: Array with children templates to be used within the main template (layout). Each one of them can have its own children. Look at `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` for details.
-- **attachments**: Allows to define an array of files that will be attached to the message, or even a directory that will be iterated to attach all found files.
-    - *files*: Array of files to be attached. Can be an associative array where keys are attachment names and values are file paths.
-    - *dir*: Directory to iterate.
-        - *iterate*: If it is not true, the directory won't be iterated.
-        - *path*: The path of the directory to iterate looking for files. This files will be attached with their real names.
-        - *recursive*: True or false. Tells if nested directories should be iterated too.
-- **server**: IP address or server name to be used while using a SMTP server. Only used for SMTP transport.
-- **port**: SMTP server port while using SMTP transport.
-- **smtp_user**: Username to be used for authentication against SMTP server. If none is provided the `from` option will be used for this purpose.
-- **smtp_password**: Password to be used for authentication against SMTP server.
-- **ssl**: Defines type of connection encryption against SMTP server. Values are `false` to disable SSL, and 'ssl' or 'tls'.
-- **connection_class**: The connection class used for authentication while using SMTP transport. Values are 'smtp', 'plain', 'login' or 'crammd5'
-- **file_path**: Directory where the email will be saved while using a File transport.
-- **file_callback**: Callback used to get the filename while using File transport.
+When the mail service is created, it automatically tries to find the `acmailer_options` config key under the global configuration, and it is initialized with it. An example configuration file is provided in `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` that you can copy to `config/autoload/mail.global.php`.
 
-Many of the configuration options are specific for standard transport objects. If you are using a custom `Zend\Mail\Transport\TransportInterface` implementation, you can set the **mail_adapter_service** instead of the **mail_adapter** option, to define the service which returns the transport object.
+Related configuration options are grouped under common keys.
+
+- **mail_adapter**: Tells the mail service what type of transport adapter should be used. Any instance or classname implementing `Zend\Mail\Transport\TransportInterface` is valid. It is also possible to define a service and it will be automatically fetched.
+- **transport**: It is an alias for the **mail_adapter** option. Just use one or another.
+- **message_options**: Wraps message-related options
+    - **from**: From email address.
+    - **from_name**: From name to be displayed.
+    - **to**: It can be a string with one destination email address or an array of multiple addresses.
+    - **cc**: It can be a string with one carbon copy email address or an array of multiple addresses.
+    - **bcc**: It can be a string with one blind carbon copy email address or an array of multiple addresses.
+    - **subject**: Default email subject.
+    - **body**: Wraps body configuration, like template, content or charset
+        - **content**: A string with the default content body, either in plan text or HTML. Use it for simple emails.
+        - **charset**: Charset to be used in the email body. Default value is utf-8
+        - **use_template**: Tells if the body should be created from a template. If true, the **template** options will be used, ignoring the **content** option. Default value is `false`.
+        - **template**: Wraps the configuration to create emails from templates.
+            - *path*: Path of the template. The same used while setting the template of a ViewModel (ie. 'application/index/list').
+            - *params*: Array with key-value pairs with parameters to be sent to the template.
+            - *children*: Array with children templates to be used within the main template (layout). Each one of them can have its own children that will be recursively rendered. Look at `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` for details.
+    - **attachments**: Wraps the configuration of attachements.
+        - *files*: Array of files to be attached. Can be an associative array where keys are attachment names and values are file paths.
+        - *dir*: Directory to iterate.
+            - *iterate*: If it is not true, the directory won't be iterated. Default value is false.
+            - *path*: The path of the directory to iterate looking for files. This files will be attached with their real names.
+            - *recursive*: True or false. Tells if nested directories should be recursively iterated too.
+- **smtp_options**: Wraps the SMTP configuration that is used when the mail adapter is a `Zend\Mail\Transport\Smtp` instance.
+    - **host**: IP address or server name of the SMTP server. Default value is 'localhost'.
+    - **port**: SMTP server port. Default value is 25.
+    - **connection_class**: The connection class used for authentication. Values are 'smtp', 'plain', 'login' or 'crammd5'
+    - **connection_config**
+        - **username**: Username to be used for authentication against the SMTP server. If none is provided the `message_options/from` option will be used for this purpose.
+        - **smtp_password**: Password to be used for authentication against the SMTP server.
+        - **ssl**: Defines the type of connection encryption against the SMTP server. Values are 'ssl', 'tls' or `false` to disable encryption.
+- **file_options**: Wraps the files configuration that will be used when the mail adapter is a `Zend\Mail\Transport\File` instance
+    - **path**: Directory where the email will be saved.
+    - **callback**: Callback used to get the filename of the email.
 
 ### Event management
 
