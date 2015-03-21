@@ -1,4 +1,4 @@
-## AcMailer
+# AcMailer
 
 [![Build Status](https://travis-ci.org/acelaya/ZF2-AcMailer.svg?branch=master)](https://travis-ci.org/acelaya/ZF2-AcMailer)
 [![Code Coverage](https://scrutinizer-ci.com/g/acelaya/ZF2-AcMailer/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/acelaya/ZF2-AcMailer/?branch=master)
@@ -11,6 +11,8 @@ This module, once enabled, registers a service with the key `AcMailer\Service\Ma
 It supports file attachment and template email composition.
 
 ### Installation
+
+* * *
 
 Install composer in your project
 
@@ -38,6 +40,8 @@ return [
 
 ### Usage
 
+* * *
+
 After installation, copy `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` to `config/autoload/mail.global.php` and customize any of the params. Configuration options are explained later.
 
 Once you get the `AcMailer\Service\MailService` service, a new MailService instance will be returned and you will be allowed to set the body, set the subject and then send the message.
@@ -59,7 +63,7 @@ if ($result->isValid()) {
 }
 ```
 
-##### Via controller plugin
+#### Via controller plugin
 
 Inside controllers, you can access and use the MailService by using the `sendMail` controller plugin. It returns the MailService when no arguments are provided.
  
@@ -92,7 +96,7 @@ Adapters configuration can't be provided here, and sholuld be defined at configu
 
 The plugin accepts a maximum of 7 arguments, which are the body, the subject, the 'to', the 'from', the 'cc', the 'bcc' and the attachments. They can be provided as an associative array too.
 
-##### Rendering views
+#### Rendering views
 
 Instead of setting a plain string, the body of the message can be set from a view script by using `setTemplate` instead of `setBody`. It will use a renderer to render defined template and then set it as the email body internally.
 
@@ -141,7 +145,7 @@ return [
 
 Alternatively you can just set it via setter: `$mailService->setRenderer($renderer);`.
 
-##### Rendering in CLI executions
+#### Rendering in CLI executions
 
 When running a ZF2 application from the console, the default `ViewRenderer` service is not created. In that case a `Zend\View\Renderer\PhpRenderer` is created on the fly so that templates can be properly rendered.
 
@@ -151,7 +155,7 @@ If you overriden the `mailviewrenderer` service alias with your own view rendere
 
 It is safe to use this module to send emails from cron jobs and such.
 
-##### Email charset
+#### Email charset
 
 The email body charset can be set in diferent ways.
 
@@ -184,7 +188,7 @@ $mailService->setBody($part);
 $mailService->setBody($part, 'utf-8');
 ```
 
-##### Attachments
+#### Attachments
 
 Files can be attached to the email before sending it by providing their paths with `addAttachment`, `addAttachments` or `setAttachments` methods.
 At the moment we call `send`, all the files that already exist will be attached to the email.
@@ -220,7 +224,7 @@ Attached images can be displayed inmail by setting the `cid` to the image filena
 <img alt="This is an attached image" src="cid:image-filename.jpg">
 ```
 
-##### Customize the Message
+#### Customize the Message
 
 If mail options does not fit your needs or you need to update them at runtime, the message wrapped by the MailService can be customized by getting it before calling `send()`.
 
@@ -242,6 +246,8 @@ $result = $mailService->send();
 ```
 
 ### Configuration options
+
+* * *
 
 **Important!** The configuration has completly changed from v5.0.0 and is not compatible with earlier versions. If you want to upgrade, please, read this section.
 
@@ -286,6 +292,8 @@ Related configuration options are grouped under common keys.
 
 ### Event management
 
+* * *
+
 This module comes with a built-in event system.
 - An event is triggered before the mail is sent (`MailEvent::EVENT_MAIL_PRE_SEND`).
 - If everything was OK another event is triggered (`MailEvent::EVENT_MAIL_POST_SEND`) after the email has been sent.
@@ -319,6 +327,8 @@ The `MailResult` will always be null when the event `EVENT_MAIL_PRE_SEND` is tri
 Any `Zend\Mail` exception will be catched, producing a `EVENT_MAIL_SEND_ERROR` instead. If any other kind of exception occurs, the same event will be triggered, but the exception will be rethrown in the form of an `AcMailer\Exception\MailException`. The event's wrapped exception will be the original exception.
 
 ### Testing
+
+* * *
 
 `AcMailer\Service\MailService` should be injected into Controllers or other Services which you probably need to test. It implements `AcMailer\Service\MailServiceInterface` for this purpose, but even a `MailServiceMock` is included.
 It allows user to define if the message should or should not fail when `send` method is called, by calling `setForceError` method.
