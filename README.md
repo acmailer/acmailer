@@ -128,7 +128,33 @@ $mailService->setSubject('This is the subject')
             ->setTemplate($layout);
 ```
 
-The renderer can be changed to another one (ie. Twig or Blade). It just needs to implement `Zend\View\Renderer\RendererInterface`.
+If you are going to send more then one email with different templates but you want all of them to share a common layout, you can set a defaultLayout too.
+
+```php
+$mailService = $serviceManager->get('AcMailer\Service\MailService');
+$mailService->setDefaultLayout(new AcMailer\View\DefaultLayout(
+    'application/emails/layout',
+    [
+        'title' => 'Something',
+    ],
+    'captureToKey' // This is the capture to for the template inside the layout
+));
+
+// From this point, all the templates will be set as children of the previous layout
+$mailService->setTemplate(
+    'application/emails/merry-christmas',
+    ['name' => 'John Doe', 'date' => date('Y-m-d')]
+);
+$mailService->send();
+
+$mailService->setTemplate(
+    'application/emails/another',
+    ['doo' => 'bar']
+);
+$mailService->send();
+```
+
+The renderer that is internally used can be changed to another one (like Twig or Blade). It just needs to implement `Zend\View\Renderer\RendererInterface`.
 
 By default AcMailer uses the default `ViewRenderer` service via an alias, `mailviewrenderer`. You can override that alias in your `service_manager` configuration in order to change the renderer service to be used (thanks to [kusmierz](https://github.com/kusmierz)):
 
