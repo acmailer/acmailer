@@ -172,7 +172,7 @@ $mailService->setBody('<h1>Hello!!</h1>', 'utf-8');
 $mailService->setTemplate(new Zend\View\Model\ViewModel(), ['charset' => 'utf-8']);
 $mailService->setTemplate('application/emails/my-template', [
     'charset' => 'utf-8',
-    'date' => date('Y-m-d),
+    'date' => date('Y-m-d'),
     'foo' => 'bar',
 ]);
 ```
