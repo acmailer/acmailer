@@ -302,7 +302,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      * Sets the message subject
      * @param string $subject The subject of the message
      * @return $this Returns this MailService for chaining purposes
-     * @see \AcMailer\Service\MailServiceInterface::setSubject()
+     * @deprecated Use $mailService->getMessage()->setSubject() instead
      */
     public function setSubject($subject)
     {

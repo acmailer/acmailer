@@ -15,6 +15,7 @@
 * [74: Set minimum PHP version to 5.4](https://github.com/acelaya/ZF2-AcMailer/issues/74)
 * [79: Change license to MIT](https://github.com/acelaya/ZF2-AcMailer/issues/79)
 * [69: Remove deprecated methods](https://github.com/acelaya/ZF2-AcMailer/issues/69)
+* [87: Mark setSubject method in MailServiceInterface as deprecated](https://github.com/acelaya/ZF2-AcMailer/issues/87)
 
 ### 4.5.0
 

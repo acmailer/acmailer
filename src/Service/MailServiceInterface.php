@@ -59,6 +59,7 @@ interface MailServiceInterface extends TransportAwareInterface, RendererAwareInt
     /**
      * Sets the message subject
      * @param string $subject
+     * @deprecated Use $mailService->getMessage()->setSubject() instead
      */
     public function setSubject($subject);
     
