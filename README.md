@@ -44,12 +44,12 @@ return [
 
 After installation, copy `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` to `config/autoload/mail.global.php` and customize any of the params. Configuration options are explained later.
 
-Once you get the `AcMailer\Service\MailService` service, a new MailService instance will be returned and you will be allowed to set the body, set the subject and then send the message.
+Once you get the `AcMailer\Service\MailService` service, a new MailService instance will be returned and you will be allowed to set the body and send the message.
 
 ```php
 $mailService = $serviceManager->get('AcMailer\Service\MailService');
-$mailService->setSubject('This is the subject')
-            ->setBody('This is the body'); // This can be a string, HTML or even a zend\Mime\Message or a Zend\Mime\Part
+// The body can be a string, HTML or even a zend\Mime\Message or a Zend\Mime\Part
+$mailService->setBody('This is the body');
 
 $result = $mailService->send();
 if ($result->isValid()) {
@@ -70,8 +70,7 @@ Inside controllers, you can access and use the MailService by using the `sendMai
 ```php
 // In a class extending Zend\Mvc\AbstractController...
 $mailService = $this->sendMail();
-$mailService->setSubject('This is the subject')
-            ->setBody('This is the body'); // This can be a string, HTML or even a zend\Mime\Message or a Zend\Mime\Part
+$mailService->setBody('This is the body');
 
 $result = $mailService->send();
 ```
@@ -104,8 +103,7 @@ You can set the template as a string and pass the arguments for it.
 
 ```php
 $mailService = $serviceManager->get('AcMailer\Service\MailService');
-$mailService->setSubject('This is the subject')
-            ->setTemplate('application/emails/merry-christmas', ['name' => 'John Doe', 'date' => date('Y-m-d')]);
+$mailService->setTemplate('application/emails/merry-christmas', ['name' => 'John Doe', 'date' => date('Y-m-d')]);
 ```
 
 You can also set the template as a `Zend\View\Model\ViewModel` object, which will render child templates too.
@@ -124,8 +122,7 @@ $footer->setTemplate('application/emails/footer');
 
 $layout->addChild($footer, 'footer');
 
-$mailService->setSubject('This is the subject')
-            ->setTemplate($layout);
+$mailService->setTemplate($layout);
 ```
 
 If you are going to send more then one email with different templates but you want all of them to share a common layout, you can set a defaultLayout too.
@@ -256,7 +253,8 @@ If mail options does not fit your needs or you need to update them at runtime, t
 
 ```php
 $message = $mailService->getMessage();
-$message->addTo('foobar@example.com')
+$message->setSubject('This is the subject')
+        ->addTo('foobar@example.com')
         ->addTo('another@example.com')
         ->addBcc('hidden@domain.com');
 
