@@ -1,6 +1,9 @@
 <?php
 namespace AcMailer\Service\Factory;
 
+use AcMailer\Event\MailListenerAwareInterface;
+use AcMailer\Event\MailListenerInterface;
+use AcMailer\Service\MailServiceInterface;
 use AcMailer\View\DefaultLayout;
 use Zend\Mail\Transport\File;
 use Zend\Mail\Transport\TransportInterface;
@@ -86,6 +89,8 @@ class MailServiceFactory implements FactoryInterface
             }
         }
 
+        // Attach mail listeners
+        $this->attachMailListeners($mailService, $sm);
         return $mailService;
     }
 
@@ -221,5 +226,35 @@ class MailServiceFactory implements FactoryInterface
     {
         $config = $sm->get('Config');
         return ! empty($config) && isset($config[$configKey]) ? $config[$configKey] : [];
+    }
+
+    /**
+     * Attaches the preconfigured mail listeners to the mail service
+     *
+     * @param MailListenerAwareInterface $service
+     * @param ServiceLocatorInterface $sm
+     * @throws InvalidArgumentException
+     */
+    protected function attachMailListeners(MailListenerAwareInterface $service, ServiceLocatorInterface $sm)
+    {
+        $listeners = $this->mailOptions->getMailListeners();
+        foreach ($listeners as $listener) {
+            // Try to fetch the listener from the ServiceManager or lazily create an instance
+            if (is_string($listener) && $sm->has($listener)) {
+                $listener = $sm->get($listener);
+            } elseif (is_string($listener) && class_exists($listener)) {
+                $listener = new $listener();
+            }
+
+            // At this point, the listener should be an instance of MailListenerInterface, otherwise it is invalid
+            if (! $listener instanceof MailListenerInterface) {
+                throw new InvalidArgumentException(sprintf(
+                    'Provided listener of type "%s" is not valid. '
+                    . 'Expected "string" or "AcMailer\Listener\MailListenerInterface"',
+                    is_object($listener) ? get_class($listener) : gettype($listener)
+                ));
+            }
+            $service->attachMailListener($listener);
+        }
     }
 }

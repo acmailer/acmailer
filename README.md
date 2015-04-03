@@ -269,6 +269,42 @@ $mailService->getTransport()->getOptions()->setPath('dynamically/generated/folde
 $result = $mailService->send();
 ```
 
+### Event management
+
+* * *
+
+This module comes with a built-in event system.
+- An event is triggered before the mail is sent (`MailEvent::EVENT_MAIL_PRE_SEND`).
+- If everything was OK another event is triggered (`MailEvent::EVENT_MAIL_POST_SEND`) after the email has been sent.
+- If an error occured, an error event is triggered (`MailEvent::EVENT_MAIL_SEND_ERROR`).
+
+Managing mail events is as easy as extending `AcMailer\Event\AbstractMailListener`. It provides the `onPreSend`, `onPostSend` and `onSendError` methods, which get a `MailEvent` parameter that can be used to get the `MailService` which triggered the event or the `MailResult` produced.
+
+Then attach the listener object to the `MailService` and the corresponding method will be automatically called when calling the `send` method.
+
+```php
+$mailListener = new \Application\Event\MyMailListener();
+$mailService->attachMailListener($mailListener);
+
+$mailService->send(); // Mail events will be triggered at this moment
+```
+
+If you want to detach a previously attached event manager, just call detach MailListener like this.
+
+```php
+$mailListener = new \Application\Event\MyMailListener();
+$mailService->attachMailListener($mailListener);
+
+// Some conditions occurred which made us not to want the events to be triggered any more on this listener
+$mailService->detachMailListener($mailListener);
+
+$mailService->send(); // The events on the $mailListener won't be triggered.
+```
+
+The `MailResult` will always be null when the event `EVENT_MAIL_PRE_SEND` is triggered, since the email hasn't been sent yet.
+
+Any `Zend\Mail` exception will be catched, producing a `EVENT_MAIL_SEND_ERROR` instead. If any other kind of exception occurs, the same event will be triggered, but the exception will be rethrown in the form of an `AcMailer\Exception\MailException`. The event's wrapped exception will be the original exception.
+
 ### Configuration options
 
 * * *
@@ -317,42 +353,7 @@ Related configuration options are grouped under common keys.
 - **file_options**: Wraps the files configuration that will be used when the mail adapter is a `Zend\Mail\Transport\File` instance
     - **path**: Directory where the email will be saved.
     - **callback**: Callback used to get the filename of the email.
-
-### Event management
-
-* * *
-
-This module comes with a built-in event system.
-- An event is triggered before the mail is sent (`MailEvent::EVENT_MAIL_PRE_SEND`).
-- If everything was OK another event is triggered (`MailEvent::EVENT_MAIL_POST_SEND`) after the email has been sent.
-- If an error occured, an error event is triggered (`MailEvent::EVENT_MAIL_SEND_ERROR`).
-
-Managing mail events is as easy as extending `AcMailer\Event\AbstractMailListener`. It provides the `onPreSend`, `onPostSend` and `onSendError` methods, which get a `MailEvent` parameter that can be used to get the `MailService` which triggered the event or the `MailResult` produced.
-
-Then attach the listener object to the `MailService` and the corresponding method will be automatically called when calling the `send` method.
-
-```php
-$mailListener = new \Application\Event\MyMailListener();
-$mailService->attachMailListener($mailListener);
-
-$mailService->send(); // Mail events will be triggered at this moment
-```
-
-If you want to detach a previously attached event manager, just call detach MailListener like this.
-
-```php
-$mailListener = new \Application\Event\MyMailListener();
-$mailService->attachMailListener($mailListener);
-
-// Some conditions occurred which made us not to want the events to be triggered any more on this listener
-$mailService->detachMailListener($mailListener);
-
-$mailService->send(); // The events on the $mailListener won't be triggered.
-```
-
-The `MailResult` will always be null when the event `EVENT_MAIL_PRE_SEND` is triggered, since the email hasn't been sent yet.
-
-Any `Zend\Mail` exception will be catched, producing a `EVENT_MAIL_SEND_ERROR` instead. If any other kind of exception occurs, the same event will be triggered, but the exception will be rethrown in the form of an `AcMailer\Exception\MailException`. The event's wrapped exception will be the original exception.
+- **mail_listeners**: An array of mail listeners that will be automatically attached to the service once created. They can be either `ZcMailer\Event\MailListenerInterface` instances or strings that will be used to fetch a service if exists or lazily instantiate an object. This is an empty array by default.
 
 ### Testing
 

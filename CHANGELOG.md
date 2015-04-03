@@ -9,6 +9,7 @@
 * [82: Merge mail_adapter and mail_adapter_service configuration options into a single one, and make the factory to check if it is a service or not](https://github.com/acelaya/ZF2-AcMailer/issues/82)
 * [75: Allow to define charset to be used in email body when it is set via template](https://github.com/acelaya/ZF2-AcMailer/issues/75)
 * [78: Allow a base layout to be defined for all the emails](https://github.com/acelaya/ZF2-AcMailer/issues/78)
+* [84: Allow to define event managers at configuration level](https://github.com/acelaya/ZF2-AcMailer/issues/84)
 
 **Tasks**
 
