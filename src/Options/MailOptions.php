@@ -41,6 +41,10 @@ class MailOptions extends AbstractOptions
      * @var FileOptions
      */
     private $fileOptions;
+    /**
+     * @var array
+     */
+    private $mailListeners = [];
     
     /**
      * @return TransportInterface|string
@@ -178,6 +182,24 @@ class MailOptions extends AbstractOptions
             ));
         }
 
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMailListeners()
+    {
+        return $this->mailListeners;
+    }
+
+    /**
+     * @param array $mailListeners
+     * @return $this
+     */
+    public function setMailListeners($mailListeners)
+    {
+        $this->mailListeners = (array) $mailListeners;
         return $this;
     }
 }
