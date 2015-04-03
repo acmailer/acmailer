@@ -176,9 +176,9 @@ return [
              * The connection class used for authentication.
              * The value can be one of 'smtp', 'plain', 'login' or 'crammd5'.
              *
-             * Default value is 'login'. ZF2 default is 'smtp'
+             * Default value is 'smtp'.
              */
-            //'connection_class' => 'login',
+            //'connection_class' => 'smtp',
 
             //'connection_config' => [
                 /*
