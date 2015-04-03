@@ -232,5 +232,16 @@ return [
             //'callback' => null,
         ],
 
+        /*
+         * A list of mail listeners that will be attached to the mail service when created.
+         * Each element can be either a string or a AcMailer\Event\MailListenerInterface instance.
+         * Each string will be checked as a service first. If a service is not found, it will be checked as a fully
+         * qualified class name and lazily created in that case.
+         * Anything else will throw a AcMailer\Exception\InvalidArgumentException.
+         *
+         * By default, the list of listeners is empty
+         */
+        //'mail_listeners' => []
+
     ]
 ];
