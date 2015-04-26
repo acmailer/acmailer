@@ -10,6 +10,7 @@
 * [75: Allow to define charset to be used in email body when it is set via template](https://github.com/acelaya/ZF2-AcMailer/issues/75)
 * [78: Allow a base layout to be defined for all the emails](https://github.com/acelaya/ZF2-AcMailer/issues/78)
 * [84: Allow to define event managers at configuration level](https://github.com/acelaya/ZF2-AcMailer/issues/84)
+* [85: Improve code coverage after broken tests are fixed](https://github.com/acelaya/ZF2-AcMailer/issues/85)
 
 **Tasks**
 
