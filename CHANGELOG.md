@@ -11,6 +11,7 @@
 * [78: Allow a base layout to be defined for all the emails](https://github.com/acelaya/ZF2-AcMailer/issues/78)
 * [84: Allow to define event managers at configuration level](https://github.com/acelaya/ZF2-AcMailer/issues/84)
 * [85: Improve code coverage after broken tests are fixed](https://github.com/acelaya/ZF2-AcMailer/issues/85)
+* [86: Add new configuration structure to the documentation](https://github.com/acelaya/ZF2-AcMailer/issues/86)
 
 **Tasks**
 
@@ -19,6 +20,9 @@
 * [69: Remove deprecated methods](https://github.com/acelaya/ZF2-AcMailer/issues/69)
 * [87: Mark setSubject method in MailServiceInterface as deprecated](https://github.com/acelaya/ZF2-AcMailer/issues/87)
 * [73: Improve code quality](https://github.com/acelaya/ZF2-AcMailer/issues/73)
+* [89: Add PHP 7 to travis configuration](https://github.com/acelaya/ZF2-AcMailer/issues/89)
+* [80: Add BC break warning between 5.0 and previous versions in README](https://github.com/acelaya/ZF2-AcMailer/issues/80)
+* [68: Create a changelog file and list changes in github releases too](https://github.com/acelaya/ZF2-AcMailer/issues/68)
 
 ### 4.5.0
 
