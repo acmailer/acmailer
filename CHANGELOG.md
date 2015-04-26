@@ -18,6 +18,7 @@
 * [79: Change license to MIT](https://github.com/acelaya/ZF2-AcMailer/issues/79)
 * [69: Remove deprecated methods](https://github.com/acelaya/ZF2-AcMailer/issues/69)
 * [87: Mark setSubject method in MailServiceInterface as deprecated](https://github.com/acelaya/ZF2-AcMailer/issues/87)
+* [73: Improve code quality](https://github.com/acelaya/ZF2-AcMailer/issues/73)
 
 ### 4.5.0
 
