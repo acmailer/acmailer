@@ -19,10 +19,10 @@ class MailOptions extends AbstractOptions
      * @var array
      */
     private $adapterMap = [
-        'sendmail'  => 'Zend\Mail\Transport\Sendmail',
-        'smtp'      => 'Zend\Mail\Transport\Smtp',
-        'null'      => 'Zend\Mail\Transport\Null',
-        'file'      => 'Zend\Mail\Transport\File',
+        'sendmail'  => '\Zend\Mail\Transport\Sendmail',
+        'smtp'      => '\Zend\Mail\Transport\Smtp',
+        'null'      => '\Zend\Mail\Transport\Null',
+        'file'      => '\Zend\Mail\Transport\File',
     ];
     
     /**
