@@ -1,6 +1,7 @@
 <?php
 namespace AcMailer\View;
 
+use Zend\Stdlib\ArrayUtils;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -34,7 +35,12 @@ class DefaultLayout implements DefaultLayoutInterface
     {
         if ($layout instanceof ViewModel) {
             // Set the model as is when a ViewModel has been set
-            $layout->setVariables(array_merge($layout->getVariables(), $params));
+            $currentVariables = $layout->getVariables();
+            if ($currentVariables instanceof \Traversable) {
+                $currentVariables = ArrayUtils::iteratorToArray($currentVariables);
+            }
+
+            $layout->setVariables(array_merge($currentVariables, $params));
             $this->model = $layout;
         } elseif (is_string($layout)) {
             // Create a new ViewModel when a string is provided
