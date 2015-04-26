@@ -2,9 +2,12 @@
 namespace AcMailerTest\Service;
 
 use AcMailer\Exception\InvalidArgumentException;
+use AcMailer\Service\MailServiceInterface;
+use AcMailer\View\DefaultLayout;
 use AcMailerTest\Event\MailListenerMock;
 use Zend\Mail\Message;
 use AcMailerTest\Mail\Transport\MockTransport;
+use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer;
 use AcMailer\Service\MailService;
 use Zend\Mime;
@@ -41,6 +44,15 @@ class MailServiceTest extends TestCase
     {
         $this->mailService->setBody(new Mime\Part('Foo'));
         $this->assertTrue($this->mailService->getMessage()->getBody() instanceof Mime\Message);
+
+        /** @var Mime\Message $body */
+        $body = $this->mailService->getMessage()->getBody();
+        $this->assertNull($body->getParts()[0]->charset);
+
+        $this->mailService->setBody(new Mime\Part('Foo'), MailServiceInterface::DEFAULT_CHARSET);
+        /** @var Mime\Message $body */
+        $body = $this->mailService->getMessage()->getBody();
+        $this->assertEquals(MailServiceInterface::DEFAULT_CHARSET, $body->getParts()[0]->charset);
     }
     
     public function testHtmlBodyCasting()
@@ -265,5 +277,18 @@ class MailServiceTest extends TestCase
         $body = $this->mailService->getMessage()->getBody();
         $this->assertInstanceOf('Zend\Mime\Message', $body);
         chdir($cwd);
+    }
+
+    public function testWithDefaultLayout()
+    {
+        $resolver = new TemplatePathStack();
+        $resolver->addPath(__DIR__ . '/../../view');
+        $this->mailService->getRenderer()->setResolver($resolver);
+
+        $model = new ViewModel();
+        $model->setTemplate('ac-mailer/mail-templates/layout.phtml');
+        $this->mailService->setDefaultLayout(new DefaultLayout($model));
+        $this->mailService->setTemplate('ac-mailer/mail-templates/mail.phtml');
+        $this->assertInstanceOf('Zend\Mime\Message', $this->mailService->getMessage()->getBody());
     }
 }

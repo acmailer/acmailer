@@ -28,6 +28,7 @@ class TemplateOptionsTest extends TestCase
         $this->assertCount(0, $this->templateOptions->getParams());
         $this->assertEquals([], $this->templateOptions->getChildren());
         $this->assertCount(0, $this->templateOptions->getChildren());
+        $this->assertEquals([], $this->templateOptions->getDefaultLayout());
     }
 
     public function testChildrenCastToTemplateOptions()
@@ -64,5 +65,18 @@ class TemplateOptionsTest extends TestCase
             $this->assertInstanceOf('AcMailer\Options\TemplateOptions', $child);
             $this->recursiveChildAssert($child->getChildren());
         }
+    }
+
+    public function testDefaultLayout()
+    {
+        $layoutConfig = [
+            'path' => 'foo/bar/baz',
+            'params' => [
+                'foo' => 'bar'
+            ],
+            'template_capture_to' => 'content'
+        ];
+        $this->assertSame($this->templateOptions, $this->templateOptions->setDefaultLayout($layoutConfig));
+        $this->assertEquals($layoutConfig, $this->templateOptions->getDefaultLayout());
     }
 }

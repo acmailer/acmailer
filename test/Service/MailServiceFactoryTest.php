@@ -218,6 +218,32 @@ class MailServiceFactoryTest extends TestCase
         $this->assertInstanceOf('Zend\Mime\Message', $mailService->getMessage()->getBody());
     }
 
+    public function testWithDefaultLayout()
+    {
+        $options = [
+            'message_options' => [
+                'body' => [
+                    'use_template'  => true,
+                    'template' => [
+                        'path'          => 'ac-mailer/mail-templates/mail',
+                        'default_layout' => [
+                            'path' => 'ac-mailer/mail-templates/layout',
+                        ]
+                    ],
+                ]
+            ]
+        ];
+        $this->initServiceLocator($options);
+
+        $resolver = new TemplatePathStack();
+        $resolver->addPath(__DIR__ . '/../../view');
+        $renderer = new PhpRenderer();
+        $renderer->setResolver($resolver);
+        $this->serviceLocator->set('mailviewrenderer', $renderer);
+        $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
+        $this->assertInstanceOf('Zend\Mime\Message', $mailService->getMessage()->getBody());
+    }
+
     public function testFileAttachments()
     {
         $cwd = getcwd();

@@ -41,18 +41,7 @@ class MailOptionsFactoryTest extends TestCase
 
     public function testSomeCustomOptions()
     {
-        $services = [
-            'Config' => [
-                'acmailer_options' => [
-                    'message_options' => [
-                        'to'    => 'foo@bar.com',
-                        'from'  => 'Me',
-                    ]
-                ]
-            ]
-        ];
-        $this->serviceLocator = new ServiceManagerMock($services);
-
+        $services = $this->initServiceManager();
         $mailOptions = $this->mailOptionsFactory->createService($this->serviceLocator);
         $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
         $this->assertEquals(
@@ -65,5 +54,38 @@ class MailOptionsFactoryTest extends TestCase
         );
         $this->assertEquals([], $mailOptions->getMessageOptions()->getCc());
         $this->assertEquals([], $mailOptions->getMessageOptions()->getBcc());
+    }
+
+    public function testOldConfigKey()
+    {
+        $services = $this->initServiceManager('mail_options');
+        $mailOptions = $this->mailOptionsFactory->createService($this->serviceLocator);
+        $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
+        $this->assertEquals(
+            [$services['Config']['mail_options']['message_options']['to']],
+            $mailOptions->getMessageOptions()->getTo()
+        );
+        $this->assertEquals(
+            $services['Config']['mail_options']['message_options']['from'],
+            $mailOptions->getMessageOptions()->getFrom()
+        );
+        $this->assertEquals([], $mailOptions->getMessageOptions()->getCc());
+        $this->assertEquals([], $mailOptions->getMessageOptions()->getBcc());
+    }
+
+    protected function initServiceManager($mailConfigKey = 'acmailer_options')
+    {
+        $services = [
+            'Config' => [
+                $mailConfigKey => [
+                    'message_options' => [
+                        'to'    => 'foo@bar.com',
+                        'from'  => 'Me',
+                    ]
+                ]
+            ]
+        ];
+        $this->serviceLocator = new ServiceManagerMock($services);
+        return $services;
     }
 }

@@ -153,13 +153,13 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
             $body = new Mime\Message();
             $body->setParts([$mimePart]);
         } elseif ($body instanceof Mime\Part) {
-            // The body is a Mime\Part. Wrap it into a Mime\Message
-            $mimeMessage = new Mime\Message();
-            $mimeMessage->setParts([$body]);
             // Overwrite the charset if the Part object if provided
             if (isset($charset)) {
                 $body->charset = $charset;
             }
+            // The body is a Mime\Part. Wrap it into a Mime\Message
+            $mimeMessage = new Mime\Message();
+            $mimeMessage->setParts([$body]);
             $body = $mimeMessage;
         }
 

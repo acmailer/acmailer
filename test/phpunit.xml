@@ -21,6 +21,9 @@
         <testsuite name="AcMailer controller test suite">
             <directory>./Controller</directory>
         </testsuite>
+        <testsuite name="AcMailer view test suite">
+            <directory>./View</directory>
+        </testsuite>
         
     </testsuites>
     
