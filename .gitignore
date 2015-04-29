@@ -5,3 +5,4 @@ config/mail.global.php
 build
 vendor
 composer.lock
+#
