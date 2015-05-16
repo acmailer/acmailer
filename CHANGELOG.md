@@ -24,6 +24,12 @@
 * [80: Add BC break warning between 5.0 and previous versions in README](https://github.com/acelaya/ZF2-AcMailer/issues/80)
 * [68: Create a changelog file and list changes in github releases too](https://github.com/acelaya/ZF2-AcMailer/issues/68)
 
+### 4.5.1
+
+**Bugs**:
+
+* [96. Fix errors introduced with ZF 2.3.9 and 2.4.2](https://github.com/acelaya/ZF2-AcMailer/issues/97)
+
 ### 4.5.0
 
 **Enhancements:**
