@@ -36,10 +36,22 @@ class MailServiceFactory implements FactoryInterface
 
         // Prepare Mail Message
         $message = new Message();
-        $message->setFrom($mailOptions->getFrom(), $mailOptions->getFromName())
-                ->setTo($mailOptions->getTo())
-                ->setCc($mailOptions->getCc())
-                ->setBcc($mailOptions->getBcc());
+        $from = $mailOptions->getFrom();
+        if (! empty($from)) {
+            $message->setFrom($from, $mailOptions->getFromName());
+        }
+        $to = $mailOptions->getTo();
+        if (! empty($to)) {
+            $message->setTo($to);
+        }
+        $cc = $mailOptions->getCc();
+        if (! empty($cc)) {
+            $message->setCc($cc);
+        }
+        $bcc = $mailOptions->getBcc();
+        if (! empty($bcc)) {
+            $message->setBcc($bcc);
+        }
 
         // Prepare Mail Transport
         $serviceName = $mailOptions->getMailAdapterService();

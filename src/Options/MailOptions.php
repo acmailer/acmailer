@@ -20,10 +20,11 @@ class MailOptions extends AbstractOptions
      * @var array
      */
     private $adapterMap = array(
-        'sendmail'  => 'Zend\Mail\Transport\Sendmail',
-        'smtp'      => 'Zend\Mail\Transport\Smtp',
-        'null'      => 'Zend\Mail\Transport\Null',
-        'file'      => 'Zend\Mail\Transport\File',
+        'sendmail'  => array('Zend\Mail\Transport\Sendmail'),
+        'smtp'      => array('Zend\Mail\Transport\Smtp'),
+        'in_memory' => array('Zend\Mail\Transport\InMemory', 'Zend\Mail\Transport\Null'),
+        'file'      => array('Zend\Mail\Transport\File'),
+        'null'      => array('Zend\Mail\Transport\InMemory', 'Zend\Mail\Transport\Null'),
     );
     /**
      * Valid SSL values
@@ -147,6 +148,12 @@ class MailOptions extends AbstractOptions
         if (is_string($mailAdapter)) {
             if (array_key_exists(strtolower($mailAdapter), $this->adapterMap)) {
                 $mailAdapter = $this->adapterMap[strtolower($mailAdapter)];
+                foreach ($mailAdapter as $class) {
+                    if (class_exists($class)) {
+                        $mailAdapter = $class;
+                        break;
+                    }
+                }
             }
             if (! class_exists($mailAdapter)) {
                 throw new InvalidArgumentException(sprintf('Provided adapter class "%s" does not exist', $mailAdapter));

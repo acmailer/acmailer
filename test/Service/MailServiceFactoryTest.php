@@ -52,8 +52,8 @@ class MailServiceFactoryTest extends TestCase
     public function testMessageData()
     {
         $options = array(
-            'from'      => 'Alejandro Celaya',
-            'from_name' => 'alejandro@alejandrocelaya.com',
+            'from'      => 'alejandro@alejandrocelaya.com',
+            'from_name' => 'Alejandro Celaya',
             'to'        => array('foo@bar.com', 'bar@foo.com'),
             'cc'        => array('account@domain.com'),
             'bcc'       => array(),
