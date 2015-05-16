@@ -6,7 +6,6 @@ use AcMailer\Options\MailOptions;
 use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Options\TemplateOptions;
 use AcMailer\Service\MailServiceInterface;
-use Zend\Mail\Transport\Null;
 use Zend\Mail\Transport\Sendmail;
 use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\File;
@@ -67,8 +66,14 @@ class MailOptionsTest extends TestCase
         $this->mailOptions->setMailAdapter('FILE');
         $this->assertTrue($this->mailOptions->getMailAdapter() instanceof File);
 
+        $nullAdapter = class_exists('Zend\Mail\Transport\InMemory')
+            ? 'Zend\Mail\Transport\InMemory'
+            : 'Zend\Mail\Transport\Null';
         $this->mailOptions->setMailAdapter('null');
-        $this->assertTrue($this->mailOptions->getMailAdapter() instanceof \Zend\Mail\Transport\Null);
+        $this->assertInstanceOf($nullAdapter, $this->mailOptions->getMailAdapter());
+
+        $this->mailOptions->setMailAdapter('in_memory');
+        $this->assertInstanceOf($nullAdapter, $this->mailOptions->getMailAdapter());
     }
     
     /**
