@@ -53,8 +53,8 @@ class MailServiceFactoryTest extends TestCase
     {
         $options = [
             'message_options' => [
-                'from'      => 'Alejandro Celaya',
-                'from_name' => 'alejandro@alejandrocelaya.com',
+                'from'      => 'alejandro@alejandrocelaya.com',
+                'from_name' => 'Alejandro Celaya',
                 'to'        => ['foo@bar.com', 'bar@foo.com'],
                 'cc'        => ['account@domain.com'],
                 'bcc'       => [],

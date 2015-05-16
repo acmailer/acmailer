@@ -53,26 +53,26 @@ class SendMailPluginTest extends TestCase
         $result = $this->plugin->__invoke(
             'theBody',
             'theSubject',
-            ['foobar'],
+            ['foobar@me.com'],
             ['from@me.com' => 'From Me'],
-            ['cc'],
-            ['bcc'],
+            ['cc@me.com'],
+            ['bcc@me.com'],
             ['attachments/attachment1.zip', 'attachments/attachment2.zip']
         );
 
         $this->assertInstanceOf('AcMailer\Result\ResultInterface', $result);
         $this->assertEquals('theBody', $this->service->getMessage()->getBody());
         $this->assertEquals('theSubject', $this->service->getMessage()->getSubject());
-        $this->assertEquals('foobar', $this->service->getMessage()->getTo()->current()->getEmail());
+        $this->assertEquals('foobar@me.com', $this->service->getMessage()->getTo()->current()->getEmail());
         $this->assertEquals('from@me.com', $this->service->getMessage()->getFrom()->current()->getEmail());
         $this->assertEquals('From Me', $this->service->getMessage()->getFrom()->current()->getName());
-        $this->assertEquals('cc', $this->service->getMessage()->getCc()->current()->getEmail());
-        $this->assertEquals('bcc', $this->service->getMessage()->getBcc()->current()->getEmail());
+        $this->assertEquals('cc@me.com', $this->service->getMessage()->getCc()->current()->getEmail());
+        $this->assertEquals('bcc@me.com', $this->service->getMessage()->getBcc()->current()->getEmail());
     }
 
     public function testFromIsValidAsString()
     {
-        $result = $this->plugin->__invoke('theBody', 'theSubject', ['foobar'], 'from@me.com');
+        $result = $this->plugin->__invoke('theBody', 'theSubject', ['foobar@me.com'], 'from@me.com');
 
         $this->assertInstanceOf('AcMailer\Result\ResultInterface', $result);
         $this->assertEquals('from@me.com', $this->service->getMessage()->getFrom()->current()->getEmail());

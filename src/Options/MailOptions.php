@@ -19,10 +19,11 @@ class MailOptions extends AbstractOptions
      * @var array
      */
     private $adapterMap = [
-        'sendmail'  => '\Zend\Mail\Transport\Sendmail',
-        'smtp'      => '\Zend\Mail\Transport\Smtp',
-        'null'      => '\Zend\Mail\Transport\Null',
-        'file'      => '\Zend\Mail\Transport\File',
+        'sendmail'  => ['\Zend\Mail\Transport\Sendmail'],
+        'smtp'      => ['\Zend\Mail\Transport\Smtp'],
+        'in_memory' => ['\Zend\Mail\Transport\InMemory', '\Zend\Mail\Transport\Null'],
+        'file'      => ['\Zend\Mail\Transport\File'],
+        'null'      => ['\Zend\Mail\Transport\InMemory', '\Zend\Mail\Transport\Null'],
     ];
     
     /**
@@ -63,6 +64,12 @@ class MailOptions extends AbstractOptions
         // Map adapter aliases to the real class name
         if (is_string($mailAdapter) && array_key_exists(strtolower($mailAdapter), $this->adapterMap)) {
             $mailAdapter = $this->adapterMap[strtolower($mailAdapter)];
+            foreach ($mailAdapter as $class) {
+                if (class_exists($class)) {
+                    $mailAdapter = $class;
+                    break;
+                }
+            }
         }
 
         $this->mailAdapter = $mailAdapter;

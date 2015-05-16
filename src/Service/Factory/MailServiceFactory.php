@@ -100,11 +100,24 @@ class MailServiceFactory implements FactoryInterface
     protected function createMessage()
     {
         $options = $this->mailOptions->getMessageOptions();
+        // Prepare Mail Message
         $message = new Message();
-        $message->setFrom($options->getFrom(), $options->getFromName())
-            ->setTo($options->getTo())
-            ->setCc($options->getCc())
-            ->setBcc($options->getBcc());
+        $from = $options->getFrom();
+        if (! empty($from)) {
+            $message->setFrom($from, $options->getFromName());
+        }
+        $to = $options->getTo();
+        if (! empty($to)) {
+            $message->setTo($to);
+        }
+        $cc = $options->getCc();
+        if (! empty($cc)) {
+            $message->setCc($cc);
+        }
+        $bcc = $options->getBcc();
+        if (! empty($bcc)) {
+            $message->setBcc($bcc);
+        }
 
         return $message;
     }
