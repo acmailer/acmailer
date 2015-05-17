@@ -7,8 +7,8 @@ return [
             'AcMailer\Options\Factory\MailOptionsAbstractFactory'
         ],
         'aliases' => [
-            'mailservice' => 'AcMailer\Service\MailService',
-            'AcMailer\Service\MailService' => 'acmailer.mail_service.default',
+            'mailservice' => 'acmailer.mailservice.default',
+            'AcMailer\Service\MailService' => 'acmailer.mailservice.default',
             'AcMailer\Options\MailOptions' => 'acmailer.mailoptions.default',
             'mailviewrenderer' => 'viewrenderer'
         ]
