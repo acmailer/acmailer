@@ -4,6 +4,7 @@
 
 **Enhancements:**
 
+* [66: Allow to register multiple mail services, each one consuming its own configuration](https://github.com/acelaya/ZF2-AcMailer/issues/66)
 * [77: Remove autoloader files and support only composer installation method](https://github.com/acelaya/ZF2-AcMailer/issues/77)
 * [67: Group related config in common groups](https://github.com/acelaya/ZF2-AcMailer/issues/67)
 * [82: Merge mail_adapter and mail_adapter_service configuration options into a single one, and make the factory to check if it is a service or not](https://github.com/acelaya/ZF2-AcMailer/issues/82)
@@ -12,6 +13,7 @@
 * [84: Allow to define event managers at configuration level](https://github.com/acelaya/ZF2-AcMailer/issues/84)
 * [85: Improve code coverage after broken tests are fixed](https://github.com/acelaya/ZF2-AcMailer/issues/85)
 * [86: Add new configuration structure to the documentation](https://github.com/acelaya/ZF2-AcMailer/issues/86)
+* [91: Fix PHP 7 build](https://github.com/acelaya/ZF2-AcMailer/issues/91)
 
 **Tasks**
 
