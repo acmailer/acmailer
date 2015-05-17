@@ -69,7 +69,7 @@ if ($result->isValid()) {
 
 #### Via controller plugin
 
-Inside controllers, you can access and use the MailService by using the `sendMail` controller plugin. It returns the MailService when no arguments are provided.
+Inside controllers, you can access and use any MailService by using the `sendMail` controller plugin. It returns the MailService when no arguments are provided.
  
 ```php
 // In a class extending Zend\Mvc\AbstractController...
@@ -98,6 +98,15 @@ $result = $this->sendMail([
 Adapters configuration can't be provided here, and sholuld be defined at configuration level. Any other information not provided here will be read from configuration.
 
 The plugin accepts a maximum of 7 arguments, which are the body, the subject, the 'to', the 'from', the 'cc', the 'bcc' and the attachments. They can be provided as an associative array too.
+
+By default this plugin uses the `default` MailService, but it is possible to define which one to use, by attaching its name to the sendMail part. For example, if you call `sendMailEmployees`, the `employees` mail service will be used.
+
+```php
+$mailService = $this->sendMailEmployees();
+$mailService->setBody('This is the body');
+
+$result = $mailService->send();
+```
 
 #### Rendering views
 
