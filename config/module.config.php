@@ -2,12 +2,14 @@
 return [
 
     'service_manager' => [
-        'factories' => [
-            'AcMailer\Service\MailService'  => 'AcMailer\Service\Factory\MailServiceFactory',
-            'AcMailer\Options\MailOptions'  => 'AcMailer\Options\Factory\MailOptionsFactory'
+        'abstract_factories' => [
+            'AcMailer\Service\Factory\MailServiceAbstractFactory',
+            'AcMailer\Options\Factory\MailOptionsAbstractFactory'
         ],
         'aliases' => [
             'mailservice' => 'AcMailer\Service\MailService',
+            'AcMailer\Service\MailService' => 'acmailer.mail_service.default',
+            'AcMailer\Options\MailOptions' => 'acmailer.mailoptions.default',
             'mailviewrenderer' => 'viewrenderer'
         ]
     ],
