@@ -1,9 +1,11 @@
 <?php
 namespace AcMailer\Options\Factory;
 
+use AcMailer\Factory\AbstractAcMailerFactory;
 use AcMailer\Options\MailOptions;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Stdlib\ArrayUtils;
 use Zend\Stdlib\ErrorHandler;
 
 /**
@@ -11,35 +13,9 @@ use Zend\Stdlib\ErrorHandler;
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailOptionsAbstractFactory implements AbstractFactoryInterface
+class MailOptionsAbstractFactory extends AbstractAcMailerFactory
 {
-    const ACMAILER_PART = 'acmailer';
-    const MAIL_OPTIONS_PART = 'mailoptions';
-
-    /**
-     * Determine if we can create a service with name
-     * Services can be created if they have the structure acmailer.mailoptions.default
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @param $name
-     * @param $requestedName
-     * @return bool
-     */
-    public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
-    {
-        $parts = explode('.', $name);
-        if (count($parts) !== 3) {
-            return false;
-        }
-
-        if ($parts[0] !== self::ACMAILER_PART || $parts[1] !== self::MAIL_OPTIONS_PART) {
-            return false;
-        }
-
-        $specificServiceName = $parts[2];
-        $config = $this->getConfig($serviceLocator);
-        return array_key_exists($specificServiceName, $config);
-    }
+    const SPECIFIC_PART = 'mailoptions';
 
     /**
      * Create service with name
@@ -52,27 +28,23 @@ class MailOptionsAbstractFactory implements AbstractFactoryInterface
     public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
         $specificServiceName = explode('.', $name)[2];
-        $config = $this->getConfig($serviceLocator)[$specificServiceName];
-        if (! is_array($config)) {
-            $config = [];
+        $config = $this->getConfig($serviceLocator);
+        $specificConfig = $config[$specificServiceName];
+        if (! is_array($specificConfig)) {
+            $specificConfig = [];
         }
 
-        return new MailOptions($config);
-    }
+        // Try to extend from another configuration if defined and exists
+        if (isset($specificConfig['extends']) && is_string($specificConfig['extends'])) {
+            $extendsConfigKey = trim($specificConfig['extends']);
+            if (array_key_exists($extendsConfigKey, $config) && is_array($config[$extendsConfigKey])) {
+                $specificConfig = ArrayUtils::merge($config[$extendsConfigKey], $specificConfig);
+            }
 
-    /**
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return array
-     */
-    private function getConfig(ServiceLocatorInterface $serviceLocator)
-    {
-        $config = $serviceLocator->get('Config');
-        if (isset($config['acmailer_options']) && is_array($config['acmailer_options'])) {
-            return $config['acmailer_options'];
-        } elseif (isset($config['mail_options']) && is_array($config['mail_options'])) {
-            return $config['mail_options'];
+            unset($specificConfig['extends']);
         }
 
-        return [];
+
+        return new MailOptions($specificConfig);
     }
 }

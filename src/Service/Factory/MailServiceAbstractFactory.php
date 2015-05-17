@@ -3,13 +3,14 @@ namespace AcMailer\Service\Factory;
 
 use AcMailer\Event\MailListenerAwareInterface;
 use AcMailer\Event\MailListenerInterface;
+use AcMailer\Factory\AbstractAcMailerFactory;
+use AcMailer\Options\Factory\MailOptionsAbstractFactory;
 use AcMailer\View\DefaultLayout;
 use Zend\Mail\Transport\File;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mvc\Service\ViewHelperManagerFactory;
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
-use Zend\ServiceManager\FactoryInterface;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\Smtp;
 use AcMailer\Service\MailService;
@@ -23,22 +24,29 @@ use Zend\View\Resolver\AggregateResolver;
 use Zend\View\Resolver\TemplateMapResolver;
 use Zend\View\Resolver\TemplatePathStack;
 
-/**
- * Creates a new MailService instance
- *
- * @author Alejandro Celaya Alastrué
- * @link http://www.alejandrocelaya.com
- */
-class MailServiceFactory implements FactoryInterface
+class MailServiceAbstractFactory extends AbstractAcMailerFactory
 {
+    const SPECIFIC_PART = 'mailservice';
+
     /**
      * @var MailOptions
      */
     protected $mailOptions;
 
-    public function createService(ServiceLocatorInterface $sm)
+    /**
+     * Create service with name
+     *
+     * @param ServiceLocatorInterface $sm
+     * @param $name
+     * @param $requestedName
+     * @return mixed
+     */
+    public function createServiceWithName(ServiceLocatorInterface $sm, $name, $requestedName)
     {
-        $this->mailOptions = $sm->get('AcMailer\Options\MailOptions');
+        $specificServiceName = explode('.', $name)[2];
+        $this->mailOptions = $sm->get(
+            sprintf('%s.%s.%s', self::ACMAILER_PART, MailOptionsAbstractFactory::SPECIFIC_PART, $specificServiceName)
+        );
 
         // Create the service
         $message        = $this->createMessage();
@@ -195,7 +203,7 @@ class MailServiceFactory implements FactoryInterface
                 $pathStackResolver->setPaths($vmConfig['template_path_stack']);
                 $resolver = new AggregateResolver();
                 $resolver->attach($pathStackResolver)
-                         ->attach(new TemplateMapResolver($vmConfig['template_map']));
+                    ->attach(new TemplateMapResolver($vmConfig['template_map']));
                 $renderer->setResolver($resolver);
             } elseif (isset($vmConfig['template_map'])) {
                 // Create a TemplateMapResolver in case only the template_map has been defined
