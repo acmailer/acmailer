@@ -15,8 +15,8 @@ return [
     ],
 
     'controller_plugins' => [
-        'factories' => [
-            'sendMail' => 'AcMailer\Controller\Plugin\Factory\SendMailPluginFactory'
+        'abstract_factories' => [
+            'AcMailer\Controller\Plugin\Factory\SendMailPluginAbstractFactory'
         ]
     ],
 
