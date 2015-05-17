@@ -27,7 +27,7 @@ class SendMailPluginAbstractFactory extends AbstractAcMailerFactory
     public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
         /** @var ControllerPluginManager $serviceLocator */
-        if (! strpos($requestedName, 'sendMail') === 0) {
+        if (strpos($requestedName, 'sendMail') !== 0) {
             return false;
         }
 
