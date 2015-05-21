@@ -95,7 +95,7 @@ $result = $this->sendMail([
 ]);
 ```
 
-Adapters configuration can't be provided here, and sholuld be defined at configuration level. Any other information not provided here will be read from configuration.
+Adapters configuration can't be provided here, and should be defined at configuration level. Any other information not provided here will be read from configuration.
 
 The plugin accepts a maximum of 7 arguments, which are the body, the subject, the 'to', the 'from', the 'cc', the 'bcc' and the attachments. They can be provided as an associative array too.
 
