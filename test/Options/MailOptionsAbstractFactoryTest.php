@@ -27,6 +27,27 @@ class MailOptionsAbstractFactoryTest extends TestCase
         $this->mailOptionsFactory = new MailOptionsAbstractFactory();
     }
 
+    public function testCanCreateServiceWithName()
+    {
+        $this->initServiceManager();
+        $this->assertTrue($this->mailOptionsFactory->canCreateServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailoptions.default',
+            ''
+        ));
+        $this->assertFalse($this->mailOptionsFactory->canCreateServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailoptions.employees',
+            ''
+        ));
+        $this->assertFalse($this->mailOptionsFactory->canCreateServiceWithName($this->serviceLocator, 'foo', ''));
+        $this->assertFalse($this->mailOptionsFactory->canCreateServiceWithName(
+            $this->serviceLocator,
+            'invalid.mailoptions.foobar',
+            ''
+        ));
+    }
+
     public function testSomeCustomOptions()
     {
         $services = $this->initServiceManager();

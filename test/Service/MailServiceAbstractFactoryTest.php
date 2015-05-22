@@ -1,9 +1,15 @@
 <?php
 namespace AcMailerTest\Service;
 
+use AcMailer\Event\MailEvent;
+use AcMailer\Event\MailListenerAwareInterface;
 use AcMailer\Options\MailOptions;
+use AcMailer\Service\Factory\MailServiceAbstractFactory;
 use AcMailer\Service\Factory\MailServiceFactory;
+use AcMailer\Service\MailServiceInterface;
+use AcMailerTest\Event\MailListenerMock;
 use AcMailerTest\ServiceManager\ServiceManagerMock;
+use Zend\EventManager\EventManagerAwareInterface;
 use Zend\Mail\Transport\File;
 use Zend\Mail\Transport\Sendmail;
 use Zend\Mail\Transport\Smtp;
@@ -18,10 +24,10 @@ use PHPUnit_Framework_TestCase as TestCase;
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailServiceFactoryTest extends TestCase
+class MailServiceAbstractFactoryTest extends TestCase
 {
     /**
-     * @var MailServiceFactory
+     * @var MailServiceAbstractFactory
      */
     private $mailServiceFactory;
     /**
@@ -31,22 +37,7 @@ class MailServiceFactoryTest extends TestCase
 
     public function setUp()
     {
-        $this->mailServiceFactory = new MailServiceFactory();
-    }
-
-    public function testServiceIsCreated()
-    {
-        $this->initServiceLocator();
-        $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
-        $this->assertInstanceOf('AcMailer\Service\MailService', $mailService);
-    }
-
-    /**
-     * @expectedException \Zend\ServiceManager\Exception\ServiceNotFoundException
-     */
-    public function testExceptionisThrownIfOptionsServiceDoesNotExist()
-    {
-        $this->mailServiceFactory->createService(new ServiceManagerMock());
+        $this->mailServiceFactory = new MailServiceAbstractFactory();
     }
 
     public function testMessageData()
@@ -57,13 +48,17 @@ class MailServiceFactoryTest extends TestCase
                 'from_name' => 'Alejandro Celaya',
                 'to'        => ['foo@bar.com', 'bar@foo.com'],
                 'cc'        => ['account@domain.com'],
-                'bcc'       => [],
+                'bcc'       => ['hidden@domain.com'],
                 'subject'   => 'The subject',
                 'body'      => ['content' => 'The body'],
             ]
         ];
         $this->initServiceLocator($options);
-        $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
+        $mailService = $this->mailServiceFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailservice.default',
+            ''
+        );
 
         $this->assertInstanceOf('AcMailer\Service\MailService', $mailService);
         $this->assertEquals(
@@ -95,7 +90,11 @@ class MailServiceFactoryTest extends TestCase
             ]
         ];
         $this->initServiceLocator($options);
-        $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
+        $mailService = $this->mailServiceFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailservice.default',
+            ''
+        );
 
         /* @var Smtp $transport */
         $transport = $mailService->getTransport();
@@ -120,7 +119,11 @@ class MailServiceFactoryTest extends TestCase
             ]
         ];
         $this->initServiceLocator($options);
-        $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
+        $mailService = $this->mailServiceFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailservice.default',
+            ''
+        );
 
         /* @var File $transport */
         $transport = $mailService->getTransport();
@@ -136,15 +139,68 @@ class MailServiceFactoryTest extends TestCase
         ]);
         $transport = new Sendmail();
         $this->serviceLocator->set('my_transport_service', $transport);
-        $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
+        $mailService = $this->mailServiceFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailservice.default',
+            ''
+        );
         $this->assertSame($transport, $mailService->getTransport());
+    }
+
+    /**
+     * @expectedException \AcMailer\Exception\InvalidArgumentException
+     */
+    public function testAdapterAsInvalidService()
+    {
+        $this->initServiceLocator([
+            'mail_adapter' => 'my_transport_service'
+        ]);
+        $this->mailServiceFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailservice.default',
+            ''
+        );
+    }
+
+    /**
+     * @expectedException \AcMailer\Exception\InvalidArgumentException
+     */
+    public function testAdapterAsAserviceNotReturningTransport()
+    {
+        $this->initServiceLocator([
+            'mail_adapter' => 'my_transport_service'
+        ]);
+        $this->serviceLocator->set('my_transport_service', new \stdClass());
+        $this->mailServiceFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailservice.default',
+            ''
+        );
+    }
+
+    public function testAdapterAsInstance()
+    {
+        $expected = new Sendmail();
+        $this->initServiceLocator([
+            'mail_adapter' => $expected
+        ]);
+        $mailService = $this->mailServiceFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailservice.default',
+            ''
+        );
+        $this->assertSame($expected, $mailService->getTransport());
     }
 
     public function testViewRendererService()
     {
         $this->initServiceLocator();
         // Create the service with default configuration
-        $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
+        $mailService = $this->mailServiceFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailservice.default',
+            ''
+        );
         /** @var PhpRenderer $renderer */
         $renderer = $mailService->getRenderer();
         $this->assertInstanceOf('Zend\View\Renderer\PhpRenderer', $renderer);
@@ -155,7 +211,11 @@ class MailServiceFactoryTest extends TestCase
         unset($config['view_manager']['template_path_stack']);
         $config['view_manager']['template_map'] = [];
         $this->serviceLocator->set('Config', $config);
-        $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
+        $mailService = $this->mailServiceFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailservice.default',
+            ''
+        );
         /** @var PhpRenderer $renderer */
         $renderer = $mailService->getRenderer();
         $this->assertInstanceOf('Zend\View\Renderer\PhpRenderer', $renderer);
@@ -166,7 +226,11 @@ class MailServiceFactoryTest extends TestCase
         $config = $this->serviceLocator->get('Config');
         $config['view_manager']['template_map'] = [];
         $this->serviceLocator->set('Config', $config);
-        $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
+        $mailService = $this->mailServiceFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailservice.default',
+            ''
+        );
         /** @var PhpRenderer $renderer */
         $renderer = $mailService->getRenderer();
         $this->assertInstanceOf('Zend\View\Renderer\PhpRenderer', $renderer);
@@ -175,16 +239,12 @@ class MailServiceFactoryTest extends TestCase
         // Set a viewrenderer service and see if it is used
         $renderer = new PhpRenderer();
         $this->serviceLocator->set('mailviewrenderer', $renderer);
-        $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
+        $mailService = $this->mailServiceFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailservice.default',
+            ''
+        );
         $this->assertSame($renderer, $mailService->getRenderer());
-    }
-
-    private function initServiceLocator(array $mailOptions = [])
-    {
-        $this->serviceLocator = new ServiceManagerMock([
-            'AcMailer\Options\MailOptions' => new MailOptions($mailOptions),
-            'Config' => include __DIR__ . '/../../config/module.config.php'
-        ]);
     }
 
     public function testTemplateBody()
@@ -212,7 +272,11 @@ class MailServiceFactoryTest extends TestCase
         $renderer = new PhpRenderer();
         $renderer->setResolver($resolver);
         $this->serviceLocator->set('mailviewrenderer', $renderer);
-        $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
+        $mailService = $this->mailServiceFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailservice.default',
+            ''
+        );
 
         $this->assertNotEquals($options ['message_options']['body']['content'], $mailService->getMessage()->getBody());
         $this->assertInstanceOf('Zend\Mime\Message', $mailService->getMessage()->getBody());
@@ -240,7 +304,11 @@ class MailServiceFactoryTest extends TestCase
         $renderer = new PhpRenderer();
         $renderer->setResolver($resolver);
         $this->serviceLocator->set('mailviewrenderer', $renderer);
-        $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
+        $mailService = $this->mailServiceFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailservice.default',
+            ''
+        );
         $this->assertInstanceOf('Zend\Mime\Message', $mailService->getMessage()->getBody());
     }
 
@@ -264,9 +332,62 @@ class MailServiceFactoryTest extends TestCase
             ]
         ];
         $this->initServiceLocator($options);
-        $mailService = $this->mailServiceFactory->createService($this->serviceLocator);
+        $mailService = $this->mailServiceFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailservice.default',
+            ''
+        );
 
         $this->assertCount(4, $mailService->getAttachments());
         chdir($cwd);
+    }
+
+    public function testListeners()
+    {
+        $options = [
+            'mail_listeners' => [
+                new MailListenerMock(),
+                'mail_listener_service',
+                'AcMailerTest\Event\MailListenerMock'
+            ]
+        ];
+        $this->initServiceLocator($options);
+        $this->serviceLocator->set('mail_listener_service', new MailListenerMock());
+
+        /** @var EventManagerAwareInterface $mailService */
+        $mailService = $this->mailServiceFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailservice.default',
+            ''
+        );
+        $this->assertCount(3, $mailService->getEventManager()->getListeners(MailEvent::EVENT_MAIL_PRE_SEND));
+    }
+
+    /**
+     * @expectedException \AcMailer\Exception\InvalidArgumentException
+     */
+    public function testInvalidListenersThrowException()
+    {
+        $options = [
+            'mail_listeners' => [
+                new \stdClass(),
+                'invalid_service',
+                '\Nonsens\Foo'
+            ]
+        ];
+        $this->initServiceLocator($options);
+        $this->mailServiceFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailservice.default',
+            ''
+        );
+    }
+
+    private function initServiceLocator(array $mailOptions = [])
+    {
+        $this->serviceLocator = new ServiceManagerMock([
+            'acmailer.mailoptions.default' => new MailOptions($mailOptions),
+            'Config' => include __DIR__ . '/../../config/module.config.php'
+        ]);
     }
 }
