@@ -43,8 +43,7 @@ class MailOptionsAbstractFactory extends AbstractAcMailerFactory
 
             unset($specificConfig['extends']);
         }
-
-
+        
         return new MailOptions($specificConfig);
     }
 }

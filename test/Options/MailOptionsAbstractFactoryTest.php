@@ -2,6 +2,7 @@
 namespace AcMailerTest\Options;
 
 use AcMailer\Options\Factory\MailOptionsAbstractFactory;
+use AcMailer\Options\MailOptions;
 use AcMailerTest\ServiceManager\ServiceManagerMock;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -46,6 +47,11 @@ class MailOptionsAbstractFactoryTest extends TestCase
             'invalid.mailoptions.foobar',
             ''
         ));
+        $this->assertFalse($this->mailOptionsFactory->canCreateServiceWithName(
+            new ServiceManagerMock(['Config' => []]),
+            'acmailer.mailoptions.default',
+            ''
+        ));
     }
 
     public function testSomeCustomOptions()
@@ -88,6 +94,50 @@ class MailOptionsAbstractFactoryTest extends TestCase
         );
         $this->assertEquals([], $mailOptions->getMessageOptions()->getCc());
         $this->assertEquals([], $mailOptions->getMessageOptions()->getBcc());
+    }
+
+    public function testCreateServiceWithNonarrayOptions()
+    {
+        $mailOptions = $this->mailOptionsFactory->createServiceWithName(
+            new ServiceManagerMock([
+                'Config' => [
+                    'acmailer_options' => [
+                        'invalid' => ''
+                    ]
+                ]
+            ]),
+            'acmailer.mailoptions.invalid',
+            ''
+        );
+        $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
+    }
+
+    public function testExtendOptions()
+    {
+        $this->serviceLocator = new ServiceManagerMock([
+            'Config' => [
+                'acmailer_options' => [
+                    'default' => [
+                        'message_options' => [
+                            'to'    => 'foo@bar.com',
+                            'from'  => 'Me',
+                        ]
+                    ],
+                    'another' => [
+                        'extends' => 'default'
+                    ]
+                ]
+            ]
+        ]);
+
+        /** @var MailOptions $mailOptions */
+        $mailOptions = $this->mailOptionsFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailoptions.another',
+            ''
+        );
+        $this->assertEquals(['foo@bar.com'], $mailOptions->getMessageOptions()->getTo());
+        $this->assertEquals('Me', $mailOptions->getMessageOptions()->getFrom());
     }
 
     protected function initServiceManager($mailConfigKey = 'acmailer_options', $serviceName = 'default')
