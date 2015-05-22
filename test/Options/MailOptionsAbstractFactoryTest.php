@@ -1,9 +1,8 @@
 <?php
 namespace AcMailerTest\Options;
 
-use AcMailer\Options\Factory\MailOptionsFactory;
+use AcMailer\Options\Factory\MailOptionsAbstractFactory;
 use AcMailerTest\ServiceManager\ServiceManagerMock;
-use AcMailer\Exception\InvalidArgumentException;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -12,10 +11,10 @@ use PHPUnit_Framework_TestCase as TestCase;
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailOptionsFactoryTest extends TestCase
+class MailOptionsAbstractFactoryTest extends TestCase
 {
     /**
-     * @var MailOptionsFactory
+     * @var MailOptionsAbstractFactory
      */
     private $mailOptionsFactory;
     /**
@@ -25,31 +24,24 @@ class MailOptionsFactoryTest extends TestCase
 
     public function setUp()
     {
-        $this->mailOptionsFactory = new MailOptionsFactory();
-    }
-
-    public function testEmptyConfigCreatesDefaultMailOptions()
-    {
-        $services = [
-            'Config' => []
-        ];
-        $this->serviceLocator = new ServiceManagerMock($services);
-
-        $mailOptions = $this->mailOptionsFactory->createService($this->serviceLocator);
-        $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
+        $this->mailOptionsFactory = new MailOptionsAbstractFactory();
     }
 
     public function testSomeCustomOptions()
     {
         $services = $this->initServiceManager();
-        $mailOptions = $this->mailOptionsFactory->createService($this->serviceLocator);
+        $mailOptions = $this->mailOptionsFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailoptions.default',
+            ''
+        );
         $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
         $this->assertEquals(
-            [$services['Config']['acmailer_options']['message_options']['to']],
+            [$services['Config']['acmailer_options']['default']['message_options']['to']],
             $mailOptions->getMessageOptions()->getTo()
         );
         $this->assertEquals(
-            $services['Config']['acmailer_options']['message_options']['from'],
+            $services['Config']['acmailer_options']['default']['message_options']['from'],
             $mailOptions->getMessageOptions()->getFrom()
         );
         $this->assertEquals([], $mailOptions->getMessageOptions()->getCc());
@@ -59,28 +51,34 @@ class MailOptionsFactoryTest extends TestCase
     public function testOldConfigKey()
     {
         $services = $this->initServiceManager('mail_options');
-        $mailOptions = $this->mailOptionsFactory->createService($this->serviceLocator);
+        $mailOptions = $this->mailOptionsFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailoptions.default',
+            ''
+        );
         $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
         $this->assertEquals(
-            [$services['Config']['mail_options']['message_options']['to']],
+            [$services['Config']['mail_options']['default']['message_options']['to']],
             $mailOptions->getMessageOptions()->getTo()
         );
         $this->assertEquals(
-            $services['Config']['mail_options']['message_options']['from'],
+            $services['Config']['mail_options']['default']['message_options']['from'],
             $mailOptions->getMessageOptions()->getFrom()
         );
         $this->assertEquals([], $mailOptions->getMessageOptions()->getCc());
         $this->assertEquals([], $mailOptions->getMessageOptions()->getBcc());
     }
 
-    protected function initServiceManager($mailConfigKey = 'acmailer_options')
+    protected function initServiceManager($mailConfigKey = 'acmailer_options', $serviceName = 'default')
     {
         $services = [
             'Config' => [
                 $mailConfigKey => [
-                    'message_options' => [
-                        'to'    => 'foo@bar.com',
-                        'from'  => 'Me',
+                    $serviceName => [
+                        'message_options' => [
+                            'to'    => 'foo@bar.com',
+                            'from'  => 'Me',
+                        ]
                     ]
                 ]
             ]
