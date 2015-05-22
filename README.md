@@ -7,7 +7,7 @@
 [![Total Downloads](https://poser.pugx.org/acelaya/zf2-acmailer/downloads.png)](https://packagist.org/packages/acelaya/zf2-acmailer)
 [![License](https://poser.pugx.org/acelaya/zf2-acmailer/license.png)](https://packagist.org/packages/acelaya/zf2-acmailer)
 
-This module, once enabled, registers a service with the key `AcMailer\Service\MailService` that wraps ZF2 mailing functionality, allowing to configure mail information to be used to send emails.
+This module, once enabled, allows you to register services that wrap ZF2 mailing functionality, allowing to configure mail information to be used to send emails.
 It supports file attachment and template email composition.
 
 ### Installation
@@ -44,10 +44,14 @@ return [
 
 After installation, copy `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` to `config/autoload/mail.global.php` and customize any of the params. Configuration options are explained later.
 
-Once you get the `AcMailer\Service\MailService` service, a new MailService instance will be returned and you will be allowed to set the body and send the message.
+By default, this configuration will register an `acmailer.mailservice.default` service, which is also aliased by the service names `AcMailer\Service\MailService` and `mailservice`.
+
+All the services in the `acmailer.mailservice` namespace will return `AcMailer\Service\MailService` instances. The last part is the specific name, so that you can configure multiple mail services, even extending configurations between them.
+
+Once you get the `acmailer.mailservice.default` service, the default MailService instance will be returned and you will be allowed to set the body and send the message.
 
 ```php
-$mailService = $serviceManager->get('AcMailer\Service\MailService');
+$mailService = $serviceManager->get('acmailer.mailservice.default');
 // The body can be a string, HTML or even a zend\Mime\Message or a Zend\Mime\Part
 $mailService->setBody('This is the body');
 
@@ -65,7 +69,7 @@ if ($result->isValid()) {
 
 #### Via controller plugin
 
-Inside controllers, you can access and use the MailService by using the `sendMail` controller plugin. It returns the MailService when no arguments are provided.
+Inside controllers, you can access and use any MailService by using the `sendMail` controller plugin. It returns the MailService when no arguments are provided.
  
 ```php
 // In a class extending Zend\Mvc\AbstractController...
@@ -95,6 +99,15 @@ Adapters configuration can't be provided here, and sholuld be defined at configu
 
 The plugin accepts a maximum of 7 arguments, which are the body, the subject, the 'to', the 'from', the 'cc', the 'bcc' and the attachments. They can be provided as an associative array too.
 
+By default this plugin uses the `default` MailService, but it is possible to define which one to use, by attaching its name to the sendMail part. For example, if you call `sendMailEmployees`, the `employees` mail service will be used.
+
+```php
+$mailService = $this->sendMailEmployees();
+$mailService->setBody('This is the body');
+
+$result = $mailService->send();
+```
+
 #### Rendering views
 
 Instead of setting a plain string, the body of the message can be set from a view script by using `setTemplate` instead of `setBody`. It will use a renderer to render defined template and then set it as the email body internally.
@@ -102,14 +115,14 @@ Instead of setting a plain string, the body of the message can be set from a vie
 You can set the template as a string and pass the arguments for it.
 
 ```php
-$mailService = $serviceManager->get('AcMailer\Service\MailService');
+$mailService = $serviceManager->get('acmailer.mailservice.default');
 $mailService->setTemplate('application/emails/merry-christmas', ['name' => 'John Doe', 'date' => date('Y-m-d')]);
 ```
 
 You can also set the template as a `Zend\View\Model\ViewModel` object, which will render child templates too.
 
 ```php
-$mailService = $serviceManager->get('AcMailer\Service\MailService');
+$mailService = $serviceManager->get('acmailer.mailservice.default');
 
 $layout = new \Zend\View\Model\ViewModel([
     'name' => 'John Doe',
@@ -128,7 +141,7 @@ $mailService->setTemplate($layout);
 If you are going to send more then one email with different templates but you want all of them to share a common layout, you can set a defaultLayout too.
 
 ```php
-$mailService = $serviceManager->get('AcMailer\Service\MailService');
+$mailService = $serviceManager->get('acmailer.mailservice.default');
 $mailService->setDefaultLayout(new AcMailer\View\DefaultLayout(
     'application/emails/layout',
     [
@@ -264,7 +277,7 @@ $result = $mailService->send();
 If you are using a `Zend\Mail\Transport\File` as the transport object and need to change any option at runtime do this
 
 ```php
-$mailService = $serviceManager->get('AcMailer\Service\MailService');
+$mailService = $serviceManager->get('acmailer.mailservice.default');
 $mailService->getTransport()->getOptions()->setPath('dynamically/generated/folder');
 $result = $mailService->send();
 ```
@@ -311,10 +324,13 @@ Any `Zend\Mail` exception will be catched, producing a `EVENT_MAIL_SEND_ERROR` i
 
 **Important!** The configuration has completly changed from v5.0.0 and is not compatible with earlier versions. If you want to upgrade, please, read this section.
 
-When the mail service is created, it automatically tries to find the `acmailer_options` config key under the global configuration, and it is initialized with it. An example configuration file is provided in `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` that you can copy to `config/autoload/mail.global.php`.
+When the mail service is requested, it automatically tries to find the `acmailer_options` config key under the global configuration, and then the specific name inside it. For example, if you fetch the `acmailer.mailservice.employees` service, the abstract factory will try to find the `employees` key under the `acmailer_options` block. If it is found, a MailService instance will be returned preconfigured with that configuration block.
 
-Related configuration options are grouped under common keys.
+An example configuration file is provided in `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` that comes with the `default` service already defined.
 
+Each concrete service configuration can define these properties:
+
+- **extends**: Defines other configuration block from which this one extends, so that you only need to define the configuration that is different. By default this is null, which means that no configuration is extended.
 - **mail_adapter**: Tells the mail service what type of transport adapter should be used. Any instance or classname implementing `Zend\Mail\Transport\TransportInterface` is valid. It is also possible to define a service and it will be automatically fetched.
 - **transport**: It is an alias for the **mail_adapter** option. Just use one or another.
 - **message_options**: Wraps message-related options

@@ -2,19 +2,21 @@
 return [
 
     'service_manager' => [
-        'factories' => [
-            'AcMailer\Service\MailService'  => 'AcMailer\Service\Factory\MailServiceFactory',
-            'AcMailer\Options\MailOptions'  => 'AcMailer\Options\Factory\MailOptionsFactory'
+        'abstract_factories' => [
+            'AcMailer\Service\Factory\MailServiceAbstractFactory',
+            'AcMailer\Options\Factory\MailOptionsAbstractFactory'
         ],
         'aliases' => [
-            'mailservice' => 'AcMailer\Service\MailService',
+            'mailservice' => 'acmailer.mailservice.default',
+            'AcMailer\Service\MailService' => 'acmailer.mailservice.default',
+            'AcMailer\Options\MailOptions' => 'acmailer.mailoptions.default',
             'mailviewrenderer' => 'viewrenderer'
         ]
     ],
 
     'controller_plugins' => [
-        'factories' => [
-            'sendMail' => 'AcMailer\Controller\Plugin\Factory\SendMailPluginFactory'
+        'abstract_factories' => [
+            'AcMailer\Controller\Plugin\Factory\SendMailPluginAbstractFactory'
         ]
     ],
 
