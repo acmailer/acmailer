@@ -40,7 +40,7 @@ return [
             'routes' => [
                 'acmailer-parse-config' => [
                     'options' => [
-                        'route' => 'acmailer parse_config [--configKey=] [--format=(php|xml|ini|json)] [--outputFile=]',
+                        'route' => 'acmailer parse-config [--configKey=] [--format=(php|xml|ini|json)] [--outputFile=]',
                         'defaults' => [
                             'controller' => 'AcMailer\Controller\ConfigMigration',
                             'action'     => 'parse-config'

@@ -34,7 +34,7 @@ class ModuleTest extends TestCase
     {
         $this->assertEquals(
             [
-                'acmailer parse_config [--configKey=] [--format=(php|xml|ini|json)] [--outputFile=]'
+                'acmailer parse-config [--configKey=] [--format=(php|xml|ini|json)] [--outputFile=]'
                 => 'Parses the configuration of AcMailer module <=v4.5.1 to the structure used in v5.0.0'
             ],
             $this->module->getConsoleUsage(new AdapterMock())

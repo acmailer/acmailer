@@ -22,7 +22,7 @@ class Module implements ConfigProviderInterface, ConsoleUsageProviderInterface
     public function getConsoleUsage(AdapterInterface $console)
     {
         return [
-            'acmailer parse_config [--configKey=] [--format=(php|xml|ini|json)] [--outputFile=]'
+            'acmailer parse-config [--configKey=] [--format=(php|xml|ini|json)] [--outputFile=]'
                 => 'Parses the configuration of AcMailer module <=v4.5.1 to the structure used in v5.0.0'
         ];
     }
