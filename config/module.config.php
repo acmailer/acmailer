@@ -2,6 +2,9 @@
 return [
 
     'service_manager' => [
+        'invokables' => [
+            'AcMailer\Service\ConfigMigrationService' => 'AcMailer\Service\ConfigMigrationService'
+        ],
         'abstract_factories' => [
             'AcMailer\Service\Factory\MailServiceAbstractFactory',
             'AcMailer\Options\Factory\MailOptionsAbstractFactory'
@@ -24,6 +27,28 @@ return [
         'template_path_stack' => [
             __DIR__ . '/../view',
         ],
+    ],
+
+    'controllers' => [
+        'factories' => [
+            'AcMailer\Controller\ConfigMigration' => 'AcMailer\Controller\Factory\ConfigMigrationControllerFactory'
+        ]
+    ],
+
+    'console' => [
+        'router' => [
+            'routes' => [
+                'acmailer-parse-config' => [
+                    'options' => [
+                        'route' => 'acmailer parse_config [--configKey=] [--format=(php|xml|ini|json)] [--outputFile=]',
+                        'defaults' => [
+                            'controller' => 'AcMailer\Controller\ConfigMigration',
+                            'action'     => 'parse-config'
+                        ]
+                    ]
+                ]
+            ]
+        ]
     ],
 
 ];
