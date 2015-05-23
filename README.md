@@ -36,7 +36,8 @@ return [
 ]
 ```
 
-**IMPORTANT!** Version 5.0.0 has introduced some important BC breaks, so make sure not to update from earlier versions in production without reading this documentation first.
+> **IMPORTANT!** Version 5.0.0 has introduced some important BC breaks, so make sure not to update from earlier versions in production without reading this documentation first.
+> It is possible to autogenerate the new configuration structure from the command line. Read the configuration section at the end of this document for more information.
 
 ### Usage
 
@@ -370,6 +371,18 @@ Each concrete service configuration can define these properties:
     - **path**: Directory where the email will be saved.
     - **callback**: Callback used to get the filename of the email.
 - **mail_listeners**: An array of mail listeners that will be automatically attached to the service once created. They can be either `ZcMailer\Event\MailListenerInterface` instances or strings that will be used to fetch a service if exists or lazily instantiate an object. This is an empty array by default.
+
+#### Migrate config from AcMailer 4.5 and earlier to AcMailer 5.0
+
+The configuration structure has changed from version 4.5 to 5.0. If you have an old configuration file, you can automatically parse it to the new structure by using a command line entry point.
+
+Run `php public/index.php acmailer parse-config` and you will get the output of the new configuration file.
+
+By default it parses the config under the key mail_options, which was the one used in older versions, but you can change it with the value flag `configKey`, like `--configKey=my_custom_key`.
+
+Also, the configuration can be dumped in php, json, xml or ini format. Just define it with the value flag `format`. By default, php format is used.
+
+Finally, the output is displayed by default in the console, but you can dump it to an output file with the `outputFile` value flag. Use quotes if the path includes spaces, `--outputFile="my/pretty route/with spaces.ini"`.
 
 ### Testing
 

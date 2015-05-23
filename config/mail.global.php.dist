@@ -138,26 +138,26 @@ return [
                     //        'template_capture_to' => 'content'
                     //    ]
                     //],
+                //],
 
-                    /*
-                     * Attachments config.
-                     * Allows to define an array of files that will be attached to the message,
-                     * or even a directory that will be iterated to attach all found files.
-                     * Set directory will only be iterated if 'iterate' property is true and 'path' is a valid
-                     * directory.
-                     * If 'recursive' is true all nested directories will be iterated too.
-                     * If both files and dir are set, all files will be merged without duplication.
-                     *
-                     * By default the files array is empty and the directory won't be iterated
-                     */
-                    //'attachments' => [
-                    //    'files' => [],
-                    //    'dir' => [
-                    //        'iterate'   => false,
-                    //        'path'      => 'data/mail/attachments',
-                    //        'recursive' => false,
-                    //    ],
-                    //],
+                /*
+                 * Attachments config.
+                 * Allows to define an array of files that will be attached to the message,
+                 * or even a directory that will be iterated to attach all found files.
+                 * Set directory will only be iterated if 'iterate' property is true and 'path' is a valid
+                 * directory.
+                 * If 'recursive' is true all nested directories will be iterated too.
+                 * If both files and dir are set, all files will be merged without duplication.
+                 *
+                 * By default the files array is empty and the directory won't be iterated
+                 */
+                //'attachments' => [
+                //    'files' => [],
+                //    'dir' => [
+                //        'iterate'   => false,
+                //        'path'      => 'data/mail/attachments',
+                //        'recursive' => false,
+                //    ],
                 //],
             ],
 

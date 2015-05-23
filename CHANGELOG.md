@@ -25,6 +25,7 @@
 * [89: Add PHP 7 to travis configuration](https://github.com/acelaya/ZF2-AcMailer/issues/89)
 * [80: Add BC break warning between 5.0 and previous versions in README](https://github.com/acelaya/ZF2-AcMailer/issues/80)
 * [68: Create a changelog file and list changes in github releases too](https://github.com/acelaya/ZF2-AcMailer/issues/68)
+* [90: Create CLI entry point to migrate old config to new config](https://github.com/acelaya/ZF2-AcMailer/issues/90)
 
 ### 4.5.1
 
