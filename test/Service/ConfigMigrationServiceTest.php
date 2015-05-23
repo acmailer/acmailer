@@ -25,13 +25,17 @@ class ConfigMigrationServiceTest extends TestCase
     {
         $oldConfig = [];
         $expected = [
-            'message_options' => [
-                'body' => []
-            ],
-            'smtp_options' => [
-                'connection_config' => []
-            ],
-            'file_options' => []
+            'acmailer_options' => [
+                'default' => [
+                    'message_options' => [
+                        'body' => []
+                    ],
+                    'smtp_options' => [
+                        'connection_config' => []
+                    ],
+                    'file_options' => []
+                ]
+            ]
         ];
         $this->assertEquals($expected, $this->service->parseConfig($oldConfig));
     }
@@ -80,52 +84,56 @@ class ConfigMigrationServiceTest extends TestCase
             'file_callback' => [],
         ];
         $expected = [
-            'mail_adapter' => 'Zend\Mail\Transport\Smtp',
-            'message_options' => [
-                'from' => 'me@acelaya.com',
-                'from_name' => 'Alejandro',
-                'to' => [],
-                'cc' => [],
-                'bcc' => [],
-                'subject' => 'The subject',
-                'body' => [
-                    'content' => 'The body',
-                    'charset' => 'utf-8',
-                    'use_template'  => false,
-                    'template' => [
-                        'path'          => 'ac-mailer/mail-templates/layout',
-                        'params'        => [],
-                        'children'      => [
-                            'content'   => [
-                                'path'   => 'ac-mailer/mail-templates/mail',
-                                'params' => [],
-                            ]
+            'acmailer_options' => [
+                'default' => [
+                    'mail_adapter' => 'Zend\Mail\Transport\Smtp',
+                    'message_options' => [
+                        'from' => 'me@acelaya.com',
+                        'from_name' => 'Alejandro',
+                        'to' => [],
+                        'cc' => [],
+                        'bcc' => [],
+                        'subject' => 'The subject',
+                        'body' => [
+                            'content' => 'The body',
+                            'charset' => 'utf-8',
+                            'use_template'  => false,
+                            'template' => [
+                                'path'          => 'ac-mailer/mail-templates/layout',
+                                'params'        => [],
+                                'children'      => [
+                                    'content'   => [
+                                        'path'   => 'ac-mailer/mail-templates/mail',
+                                        'params' => [],
+                                    ]
+                                ],
+                                'default_layout' => []
+                            ],
                         ],
-                        'default_layout' => []
+                        'attachments' => [
+                            'files' => [],
+                            'dir' => [
+                                'iterate'   => false,
+                                'path'      => 'data/mail/attachments',
+                                'recursive' => false,
+                            ],
+                        ],
                     ],
-                ],
-                'attachments' => [
-                    'files' => [],
-                    'dir' => [
-                        'iterate'   => false,
-                        'path'      => 'data/mail/attachments',
-                        'recursive' => false,
+                    'smtp_options' => [
+                        'host' => 'localhost',
+                        'port' => 25,
+                        'connection_class' => 'login',
+                        'connection_config' => [
+                            'username' => 'me',
+                            'password' => 'foobar',
+                            'ssl' => false,
+                        ]
                     ],
-                ],
-            ],
-            'smtp_options' => [
-                'host' => 'localhost',
-                'port' => 25,
-                'connection_class' => 'login',
-                'connection_config' => [
-                    'username' => 'me',
-                    'password' => 'foobar',
-                    'ssl' => false,
+                    'file_options' => [
+                        'path' => 'data/mail/output',
+                        'callback' => [],
+                    ]
                 ]
-            ],
-            'file_options' => [
-                'path' => 'data/mail/output',
-                'callback' => [],
             ]
         ];
         $this->assertEquals($expected, $this->service->parseConfig($oldConfig));
@@ -138,14 +146,18 @@ class ConfigMigrationServiceTest extends TestCase
             'mail_adapter_service' => 'this_has_preference'
         ];
         $expected = [
-            'mail_adapter' => 'this_has_preference',
-            'message_options' => [
-                'body' => []
-            ],
-            'smtp_options' => [
-                'connection_config' => []
-            ],
-            'file_options' => []
+            'acmailer_options' => [
+                'default' => [
+                    'mail_adapter' => 'this_has_preference',
+                    'message_options' => [
+                        'body' => []
+                    ],
+                    'smtp_options' => [
+                        'connection_config' => []
+                    ],
+                    'file_options' => []
+                ]
+            ]
         ];
         $this->assertEquals($expected, $this->service->parseConfig($oldConfig));
     }

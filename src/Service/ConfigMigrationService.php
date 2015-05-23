@@ -104,6 +104,10 @@ class ConfigMigrationService implements ConfigMigrationServiceInterface
             $newConfig['file_options']['callback'] = $oldConfig['file_callback'];
         }
 
-        return $newConfig;
+        return [
+            'acmailer_options' => [
+                'default' => $newConfig
+            ]
+        ];
     }
 }

@@ -59,7 +59,8 @@ class ConfigMigrationControllerTest extends TestCase
         $this->controller->parseConfigAction();
         $this->assertEquals([
             0 => 'This is your new configuration for the AcMailer module:',
-            1 => '{"message_options":{"body":[]},"smtp_options":{"connection_config":[]},"file_options":[]}'
+            1 => '{"acmailer_options":{"default":{"message_options":{"body":[]},'
+                . '"smtp_options":{"connection_config":[]},"file_options":[]}}}'
         ], $this->console->getLines());
     }
 
@@ -73,7 +74,8 @@ class ConfigMigrationControllerTest extends TestCase
         $this->controller->parseConfigAction();
         $this->assertTrue(file_exists($expectedFile));
         $this->assertEquals(
-            '{"message_options":{"body":[]},"smtp_options":{"connection_config":[]},"file_options":[]}',
+            '{"acmailer_options":{"default":{"message_options":{"body":[]},'
+            . '"smtp_options":{"connection_config":[]},"file_options":[]}}}',
             file_get_contents($expectedFile)
         );
         unlink($expectedFile);
