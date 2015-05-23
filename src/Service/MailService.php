@@ -5,6 +5,8 @@ use AcMailer\Event\MailEvent;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Event\MailListenerAwareInterface;
 use AcMailer\Exception\MailException;
+use AcMailer\View\DefaultLayout;
+use AcMailer\View\DefaultLayoutInterface;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -44,7 +46,11 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     /**
      * @var array
      */
-    private $attachments = array();
+    private $attachments = [];
+    /**
+     * @var DefaultLayoutInterface
+     */
+    private $defaultLayout;
 
     /**
      * Creates a new MailService
@@ -57,6 +63,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $this->message      = $message;
         $this->transport    = $transport;
         $this->renderer     = $renderer;
+        $this->setDefaultLayout();
     }
 
     /**
@@ -131,7 +138,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     /**
      * Sets the message body
      * @param \Zend\Mime\Part|\Zend\Mime\Message|string $body Email body
-     * @param string $charset Will be used only when setting an HTML string body
+     * @param string $charset
      * @return $this Returns this MailService for chaining purposes
      * @throws InvalidArgumentException
      * @see \AcMailer\Service\MailServiceInterface::setBody()
@@ -144,11 +151,15 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
             $mimePart->type     = $body != strip_tags($body) ? Mime\Mime::TYPE_HTML : Mime\Mime::TYPE_TEXT;
             $mimePart->charset  = $charset ?: self::DEFAULT_CHARSET;
             $body = new Mime\Message();
-            $body->setParts(array($mimePart));
+            $body->setParts([$mimePart]);
         } elseif ($body instanceof Mime\Part) {
+            // Overwrite the charset if the Part object if provided
+            if (isset($charset)) {
+                $body->charset = $charset;
+            }
             // The body is a Mime\Part. Wrap it into a Mime\Message
             $mimeMessage = new Mime\Message();
-            $mimeMessage->setParts(array($body));
+            $mimeMessage->setParts([$body]);
             $body = $mimeMessage;
         }
 
@@ -156,7 +167,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         if (! is_string($body) && ! $body instanceof Mime\Message) {
             throw new InvalidArgumentException(sprintf(
                 'Provided body is not valid. It should be one of "%s". %s provided',
-                implode('", "', array('string', 'Zend\Mime\Part', 'Zend\Mime\Message')),
+                implode('", "', ['string', 'Zend\Mime\Part', 'Zend\Mime\Message']),
                 is_object($body) ? get_class($body) : gettype($body)
             ));
         }
@@ -175,18 +186,38 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      * @param array $params
      * @see \AcMailer\Service\MailServiceInterface::setTemplate()
      */
-    public function setTemplate($template, array $params = array())
+    public function setTemplate($template, array $params = [])
     {
         if ($template instanceof ViewModel) {
-            $this->renderChildren($template);
-            $this->setBody($this->renderer->render($template));
-            return;
+            $view = $template;
+        } else {
+            $view = new ViewModel();
+            $view->setTemplate($template)
+                 ->setVariables($params);
         }
 
-        $view = new ViewModel();
-        $view->setTemplate($template)
-             ->setVariables($params);
-        $this->setBody($this->renderer->render($view));
+        // Check if a common layout has to be used
+        if ($this->defaultLayout->hasModel()) {
+            $layoutModel = $this->defaultLayout->getModel();
+            $layoutModel->addChild($view, $this->defaultLayout->getTemplateCaptureTo());
+            $view = $layoutModel;
+        }
+        // Render the template and all of its children
+        $this->renderChildren($view);
+
+        $charset = isset($params['charset']) ? $params['charset'] : null;
+        $this->setBody($this->renderer->render($view), $charset);
+    }
+
+    /**
+     * Sets the default layout to be used with all the templates set when calling setTemplate.
+     *
+     * @param DefaultLayoutInterface $layout
+     * @return mixed
+     */
+    public function setDefaultLayout(DefaultLayoutInterface $layout = null)
+    {
+        $this->defaultLayout = isset($layout) ? $layout : new DefaultLayout();
     }
 
     /**
@@ -243,7 +274,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $oldParts = $mimeMessage->getParts();
 
         // Generate a new Mime\Part for each attachment
-        $attachmentParts    = array();
+        $attachmentParts    = [];
         $info               = new \finfo(FILEINFO_MIME_TYPE);
         foreach ($this->attachments as $key => $attachment) {
             if (! is_file($attachment)) {
@@ -271,7 +302,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      * Sets the message subject
      * @param string $subject The subject of the message
      * @return $this Returns this MailService for chaining purposes
-     * @see \AcMailer\Service\MailServiceInterface::setSubject()
+     * @deprecated Use $mailService->getMessage()->setSubject() instead
      */
     public function setSubject($subject)
     {
@@ -329,10 +360,10 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      */
     public function setEventManager(EventManagerInterface $events)
     {
-        $events->setIdentifiers(array(
+        $events->setIdentifiers([
             __CLASS__,
             get_called_class(),
-        ));
+        ]);
         $this->events = $events;
         return $this;
     }

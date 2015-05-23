@@ -2,6 +2,7 @@
 namespace AcMailer\Service;
 
 use AcMailer\Result\MailResult;
+use AcMailer\View\DefaultLayoutInterface;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\View\Model\ViewModel;
@@ -42,7 +43,7 @@ class MailServiceMock implements MailServiceInterface
     /**
      * @var array
      */
-    private $attachments = array();
+    private $attachments = [];
 
     public function __construct()
     {
@@ -66,7 +67,7 @@ class MailServiceMock implements MailServiceInterface
     /**
      * Sets the message body
      * @param \Zend\Mime\Part|\Zend\Mime\Message|string $body
-     * @param string $charset Will be used only when setting an HTML string body
+     * @param string $charset
      * @throws InvalidArgumentException
      * @return $this
      */
@@ -81,7 +82,7 @@ class MailServiceMock implements MailServiceInterface
      * @param array $params
      * @return $this
      */
-    public function setTemplate($template, array $params = array())
+    public function setTemplate($template, array $params = [])
     {
         $this->message->setBody($template instanceof ViewModel ? 'ViewModel body' : $template);
         return $this;
@@ -89,6 +90,7 @@ class MailServiceMock implements MailServiceInterface
     /**
      * Sets the message subject
      * @param string $subject
+     * @deprecated Use $mailService->getMessage()->setSubject() instead
      */
     public function setSubject($subject)
     {
@@ -203,5 +205,16 @@ class MailServiceMock implements MailServiceInterface
     {
         $this->transport = $transport;
         return $this;
+    }
+
+    /**
+     * Sets the default layout to be used with all the templates set when calling setTemplate.
+     *
+     * @param DefaultLayoutInterface $layout
+     * @return mixed
+     */
+    public function setDefaultLayout(DefaultLayoutInterface $layout = null)
+    {
+        // Do nothing
     }
 }

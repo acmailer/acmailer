@@ -4,8 +4,11 @@ namespace AcMailer\Service;
 use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Mail\Transport\TransportAwareInterface;
 use AcMailer\Result\ResultInterface;
+use AcMailer\View\DefaultLayout;
+use AcMailer\View\DefaultLayoutInterface;
 use AcMailer\View\RendererAwareInterface;
 use Zend\Mail\Transport\TransportInterface;
+use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\RendererInterface;
 
 /**
@@ -33,7 +36,7 @@ interface MailServiceInterface extends TransportAwareInterface, RendererAwareInt
     /**
      * Sets the message body
      * @param \Zend\Mime\Part|\Zend\Mime\Message|string $body
-     * @param string $charset Will be used only when setting an HTML string body
+     * @param string $charset
      * @throws InvalidArgumentException
      */
     public function setBody($body, $charset = null);
@@ -43,11 +46,20 @@ interface MailServiceInterface extends TransportAwareInterface, RendererAwareInt
      * @param string|\Zend\View\Model\ViewModel $template
      * @param array $params
      */
-    public function setTemplate($template, array $params = array());
+    public function setTemplate($template, array $params = []);
+
+    /**
+     * Sets the default layout to be used with all the templates set when calling setTemplate.
+     *
+     * @param DefaultLayoutInterface $layout
+     * @return mixed
+     */
+    public function setDefaultLayout(DefaultLayoutInterface $layout = null);
     
     /**
      * Sets the message subject
      * @param string $subject
+     * @deprecated Use $mailService->getMessage()->setSubject() instead
      */
     public function setSubject($subject);
     

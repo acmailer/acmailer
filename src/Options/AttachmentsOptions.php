@@ -17,15 +17,15 @@ class AttachmentsOptions extends AbstractOptions
     /**
      * @var array
      */
-    private $files = array();
+    private $files = [];
     /**
      * @var array
      */
-    private $dir = array(
+    private $dir = [
         'iterate'   => self::DEFAULT_ITERATE,
         'path'      => self::DEFAULT_PATH,
         'recursive' => self::DEFAULT_RECURSIVE,
-    );
+    ];
 
     /**
      * @param array $dir

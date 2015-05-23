@@ -3,6 +3,7 @@ namespace AcMailer\Options;
 
 use Zend\Stdlib\AbstractOptions;
 use Zend\View\Model\ViewModel;
+use AcMailer\View\ViewModelConvertibleInterface;
 
 /**
  * Template specific options
@@ -12,21 +13,21 @@ use Zend\View\Model\ViewModel;
 class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInterface
 {
     /**
-     * @var bool
-     */
-    protected $useTemplate = false;
-    /**
      * @var string
      */
     protected $path = 'ac-mailer/mail-templates/mail';
     /**
      * @var array
      */
-    protected $params = array();
+    protected $params = [];
+    /**
+     * @var TemplateOptions[]
+     */
+    protected $children = [];
     /**
      * @var array
      */
-    protected $children = array();
+    protected $defaultLayout = [];
 
     /**
      * @param $params
@@ -63,30 +64,13 @@ class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInt
     }
 
     /**
-     * @param $useTemplate
-     * @return $this
-     */
-    public function setUseTemplate($useTemplate)
-    {
-        $this->useTemplate = $useTemplate;
-        return $this;
-    }
-    /**
-     * @return boolean
-     */
-    public function getUseTemplate()
-    {
-        return $this->useTemplate;
-    }
-
-    /**
      * @param array $children
      * @return $this
      */
     public function setChildren($children)
     {
         $children         = (array) $children;
-        $this->children   = array();
+        $this->children   = [];
         // Cast each child to a TemplateOptions object
         foreach ($children as $captureTo => $child) {
             $this->children[$captureTo] = new TemplateOptions($child);
@@ -99,7 +83,7 @@ class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInt
         return $this;
     }
     /**
-     * @return array
+     * @return TemplateOptions[]
      */
     public function getChildren()
     {
@@ -122,5 +106,23 @@ class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInt
         }
 
         return $model;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDefaultLayout()
+    {
+        return $this->defaultLayout;
+    }
+
+    /**
+     * @param array $defaultLayout
+     * @return $this
+     */
+    public function setDefaultLayout(array $defaultLayout)
+    {
+        $this->defaultLayout = $defaultLayout;
+        return $this;
     }
 }

@@ -4,12 +4,15 @@ namespace AcMailerTest\Options;
 use AcMailer\Options\AttachmentsOptions;
 use AcMailer\Options\MailOptions;
 use AcMailer\Exception\InvalidArgumentException;
+use AcMailer\Options\MessageOptions;
 use AcMailer\Options\TemplateOptions;
 use AcMailer\Service\MailServiceInterface;
+use Zend\Mail\Transport\FileOptions;
 use Zend\Mail\Transport\Sendmail;
 use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\File;
 use PHPUnit_Framework_TestCase as TestCase;
+use Zend\Mail\Transport\SmtpOptions;
 
 /**
  * Mail options test case
@@ -25,196 +28,106 @@ class MailOptionsTest extends TestCase
     
     public function setUp()
     {
-        $this->mailOptions = new MailOptions(array());
+        $this->mailOptions = new MailOptions([]);
     }
 
     public function testDefaultMailOptionsValues()
     {
-        $this->assertInstanceOf('\Zend\Mail\Transport\Sendmail', $this->mailOptions->getMailAdapter());
-        $this->assertNull($this->mailOptions->getMailAdapterService());
-        $this->assertEquals('localhost', $this->mailOptions->getServer());
-        $this->assertEquals('', $this->mailOptions->getFrom());
-        $this->assertEquals('', $this->mailOptions->getFromName());
-        $this->assertEquals(array(), $this->mailOptions->getTo());
-        $this->assertCount(0, $this->mailOptions->getTo());
-        $this->assertEquals(array(), $this->mailOptions->getCc());
-        $this->assertCount(0, $this->mailOptions->getCc());
-        $this->assertEquals(array(), $this->mailOptions->getBcc());
-        $this->assertCount(0, $this->mailOptions->getBcc());
-        $this->assertEquals('', $this->mailOptions->getSmtpUser());
-        $this->assertEquals('', $this->mailOptions->getSmtpPassword());
-        $this->assertFalse($this->mailOptions->getSsl());
-        $this->assertEquals('login', $this->mailOptions->getConnectionClass());
-        $this->assertEquals('', $this->mailOptions->getSubject());
-        $this->assertEquals('', $this->mailOptions->getBody());
-        $this->assertEquals(MailServiceInterface::DEFAULT_CHARSET, $this->mailOptions->getBodyCharset());
-        $this->assertEquals(25, $this->mailOptions->getPort());
-        $this->assertInstanceOf('AcMailer\Options\AttachmentsOptions', $this->mailOptions->getAttachments());
-        $this->assertInstanceOf('AcMailer\Options\TemplateOptions', $this->mailOptions->getTemplate());
-        $this->assertEquals('data/mail/output', $this->mailOptions->getFilePath());
-        $this->assertNull($this->mailOptions->getFileCallback());
+        $this->assertEquals('\Zend\Mail\Transport\Sendmail', $this->mailOptions->getMailAdapter());
+        $this->assertEquals('\Zend\Mail\Transport\Sendmail', $this->mailOptions->getTransport());
+        $this->assertInstanceOf('AcMailer\Options\MessageOptions', $this->mailOptions->getMessageOptions());
+        $this->assertInstanceOf('Zend\Mail\Transport\SmtpOptions', $this->mailOptions->getSmtpOptions());
+        $this->assertInstanceOf('Zend\Mail\Transport\FileOptions', $this->mailOptions->getFileOptions());
+        $this->assertEquals([], $this->mailOptions->getMailListeners());
     }
 
     public function testMailAdapterNameConversion()
     {
         $this->mailOptions->setMailAdapter('Sendmail');
-        $this->assertTrue($this->mailOptions->getMailAdapter() instanceof Sendmail);
+        $this->assertEquals('\Zend\Mail\Transport\Sendmail', $this->mailOptions->getMailAdapter());
         
         $this->mailOptions->setMailAdapter('smtp');
-        $this->assertTrue($this->mailOptions->getMailAdapter() instanceof Smtp);
+        $this->assertEquals('\Zend\Mail\Transport\Smtp', $this->mailOptions->getMailAdapter());
 
         $this->mailOptions->setMailAdapter('FILE');
-        $this->assertTrue($this->mailOptions->getMailAdapter() instanceof File);
+        $this->assertEquals('\Zend\Mail\Transport\File', $this->mailOptions->getMailAdapter());
 
         $nullAdapter = class_exists('Zend\Mail\Transport\InMemory')
-            ? 'Zend\Mail\Transport\InMemory'
-            : 'Zend\Mail\Transport\Null';
+            ? '\Zend\Mail\Transport\InMemory'
+            : '\Zend\Mail\Transport\Null';
         $this->mailOptions->setMailAdapter('null');
-        $this->assertInstanceOf($nullAdapter, $this->mailOptions->getMailAdapter());
+        $this->assertEquals($nullAdapter, $this->mailOptions->getMailAdapter());
 
         $this->mailOptions->setMailAdapter('in_memory');
-        $this->assertInstanceOf($nullAdapter, $this->mailOptions->getMailAdapter());
-    }
-    
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testMailAdapterInvalidNameThrowAnException()
-    {
-        $this->mailOptions->setMailAdapter('foo'); // Foo is not a valid adapter name
-    }
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testMailAdapterInvalidInstanceThrowAnException()
-    {
-        $this->mailOptions->setMailAdapter(new \stdClass());
-    }
-    
-    public function testOneDestinationAddressIsCastToArray()
-    {
-        $this->mailOptions->setTo('one-address');
-        $this->assertTrue(is_array($this->mailOptions->getTo()));
-        
-        $this->mailOptions->setCc('one-address');
-        $this->assertTrue(is_array($this->mailOptions->getCc()));
-        
-        $this->mailOptions->setBcc('one-address');
-        $this->assertTrue(is_array($this->mailOptions->getBcc()));
-    }
-    
-    public function testSettersReturnItself()
-    {
-        $this->assertEquals($this->mailOptions, $this->mailOptions->setServer('foo-server'));
-        
-        $this->assertEquals($this->mailOptions, $this->mailOptions->setPort(25));
-        
-        $this->assertEquals($this->mailOptions, $this->mailOptions->setFromName('foo-name'));
-    }
-    
-    public function testGetSmtpServer()
-    {
-        $expected = 'foo@bar.com';
-        $this->mailOptions->setFrom($expected);
-        $this->assertEquals($expected, $this->mailOptions->getSmtpUser());
-        
-        $this->mailOptions->setSmtpUser('user');
-        $this->assertNotEquals($expected, $this->mailOptions->getSmtpUser());
-    }
-    
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testSslInvalidValuesThrowException()
-    {
-        $this->mailOptions->setSsl('foo');
-    }
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testSslIntValueThrowException()
-    {
-        $this->mailOptions->setSsl(25);
-    }
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testSslInvalidBooleanValueThrowException()
-    {
-        $this->mailOptions->setSsl(true);
+        $this->assertEquals($nullAdapter, $this->mailOptions->getMailAdapter());
     }
 
-    public function testConnectionClass()
+    public function testSetTransport()
     {
-        $expected = 'smtp';
-        $this->assertSame($this->mailOptions, $this->mailOptions->setConnectionClass($expected));
-        $this->assertEquals($expected, $this->mailOptions->getConnectionClass());
+        $transport = 'file';
+        $this->assertSame($this->mailOptions, $this->mailOptions->setTransport($transport));
+        $this->assertEquals('\Zend\Mail\Transport\File', $this->mailOptions->getTransport());
+        $this->assertEquals('\Zend\Mail\Transport\File', $this->mailOptions->getMailAdapter());
+    }
+
+    public function testSetMessageOptions()
+    {
+        $expected = new MessageOptions();
+        $this->assertSame($this->mailOptions, $this->mailOptions->setMessageOptions($expected));
+        $this->assertSame($expected, $this->mailOptions->getMessageOptions());
+
+        $this->mailOptions->setMessageOptions([]);
+        $this->assertInstanceOf('AcMailer\Options\MessageOptions', $this->mailOptions->getMessageOptions());
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \AcMailer\Exception\InvalidArgumentException
      */
-    public function testMailConnectionInvalidValueThrowsAnException()
+    public function testSetMessageOptionWithInvalidValueThrowsException()
     {
-        $this->mailOptions->setConnectionClass('Foo');
+        $this->mailOptions->setMessageOptions(new \stdClass());
+    }
+
+    public function testSetSmtpOptions()
+    {
+        $expected = new SmtpOptions();
+        $this->assertSame($this->mailOptions, $this->mailOptions->setSmtpOptions($expected));
+        $this->assertSame($expected, $this->mailOptions->getSmtpOptions());
+
+        $this->mailOptions->setSmtpOptions([]);
+        $this->assertInstanceOf('Zend\Mail\Transport\SmtpOptions', $this->mailOptions->getSmtpOptions());
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \AcMailer\Exception\InvalidArgumentException
      */
-    public function testAdapterServiceInvalidValueThrowsAnException()
+    public function testSetSmtpOptionWithInvalidValueThrowsException()
     {
-        $this->mailOptions->setMailAdapterService(45);
+        $this->mailOptions->setSmtpOptions(new \stdClass());
+    }
+
+    public function testSetFileOptions()
+    {
+        $expected = new FileOptions();
+        $this->assertSame($this->mailOptions, $this->mailOptions->setFileOptions($expected));
+        $this->assertSame($expected, $this->mailOptions->getFileOptions());
+
+        $this->mailOptions->setFileOptions([]);
+        $this->assertInstanceOf('Zend\Mail\Transport\FileOptions', $this->mailOptions->getFileOptions());
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \AcMailer\Exception\InvalidArgumentException
      */
-    public function testFilePathInvalidValueThrowsAnException()
+    public function testSetFileOptionWithInvalidValueThrowsException()
     {
-        $this->mailOptions->setFilePath(321);
+        $this->mailOptions->setFileOptions(new \stdClass());
     }
 
-    public function testBodyCharset()
+    public function testSetMailListeners()
     {
-        $expected = 'Windows-1252';
-        $this->assertSame($this->mailOptions, $this->mailOptions->setBodyCharset($expected));
-        $this->assertEquals($expected, $this->mailOptions->getBodyCharset());
-    }
-
-    public function testTemplate()
-    {
-        $this->assertSame($this->mailOptions, $this->mailOptions->setTemplate(array()));
-        $this->assertInstanceof('AcMailer\Options\TemplateOptions', $this->mailOptions->getTemplate());
-
-        $expected = new TemplateOptions();
-        $this->assertSame($this->mailOptions, $this->mailOptions->setTemplate($expected));
-        $this->assertSame($expected, $this->mailOptions->getTemplate());
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testTemplateInvalidValueThrowsException()
-    {
-        $this->mailOptions->setTemplate('foo');
-    }
-
-    public function testAttachments()
-    {
-        $this->assertSame($this->mailOptions, $this->mailOptions->setAttachments(array()));
-        $this->assertInstanceof('AcMailer\Options\AttachmentsOptions', $this->mailOptions->getAttachments());
-
-        $expected = new AttachmentsOptions();
-        $this->assertSame($this->mailOptions, $this->mailOptions->setAttachments($expected));
-        $this->assertSame($expected, $this->mailOptions->getAttachments());
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testInvalidAttachmentsThrowException()
-    {
-        $this->mailOptions->setAttachments(null);
+        $this->assertCount(0, $this->mailOptions->getMailListeners());
+        $this->assertSame($this->mailOptions, $this->mailOptions->setMailListeners([1, 2, 3]));
+        $this->assertCount(3, $this->mailOptions->getMailListeners());
     }
 }

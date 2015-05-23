@@ -37,10 +37,10 @@ class SendMailPluginTest extends TestCase
 
     public function testFirstArgumentArrayIsTreatedAsConfig()
     {
-        $config = array(
+        $config = [
             'body' => 'foobar',
             'subject' => 'barfoo'
-        );
+        ];
 
         $result = $this->plugin->__invoke($config);
         $this->assertInstanceOf('AcMailer\Result\ResultInterface', $result);
@@ -53,11 +53,11 @@ class SendMailPluginTest extends TestCase
         $result = $this->plugin->__invoke(
             'theBody',
             'theSubject',
-            array('foobar@me.com'),
-            array('from@me.com' => 'From Me'),
-            array('cc@me.com'),
-            array('bcc@me.com'),
-            array('attachments/attachment1.zip', 'attachments/attachment2.zip')
+            ['foobar@me.com'],
+            ['from@me.com' => 'From Me'],
+            ['cc@me.com'],
+            ['bcc@me.com'],
+            ['attachments/attachment1.zip', 'attachments/attachment2.zip']
         );
 
         $this->assertInstanceOf('AcMailer\Result\ResultInterface', $result);
@@ -72,7 +72,7 @@ class SendMailPluginTest extends TestCase
 
     public function testFromIsValidAsString()
     {
-        $result = $this->plugin->__invoke('theBody', 'theSubject', array('foobar@me.com'), 'from@me.com');
+        $result = $this->plugin->__invoke('theBody', 'theSubject', ['foobar@me.com'], 'from@me.com');
 
         $this->assertInstanceOf('AcMailer\Result\ResultInterface', $result);
         $this->assertEquals('from@me.com', $this->service->getMessage()->getFrom()->current()->getEmail());

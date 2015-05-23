@@ -2,9 +2,12 @@
 namespace AcMailerTest\Service;
 
 use AcMailer\Exception\InvalidArgumentException;
+use AcMailer\Service\MailServiceInterface;
+use AcMailer\View\DefaultLayout;
 use AcMailerTest\Event\MailListenerMock;
 use Zend\Mail\Message;
 use AcMailerTest\Mail\Transport\MockTransport;
+use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer;
 use AcMailer\Service\MailService;
 use Zend\Mime;
@@ -41,6 +44,15 @@ class MailServiceTest extends TestCase
     {
         $this->mailService->setBody(new Mime\Part('Foo'));
         $this->assertTrue($this->mailService->getMessage()->getBody() instanceof Mime\Message);
+
+        /** @var Mime\Message $body */
+        $body = $this->mailService->getMessage()->getBody();
+        $this->assertNull($body->getParts()[0]->charset);
+
+        $this->mailService->setBody(new Mime\Part('Foo'), MailServiceInterface::DEFAULT_CHARSET);
+        /** @var Mime\Message $body */
+        $body = $this->mailService->getMessage()->getBody();
+        $this->assertEquals(MailServiceInterface::DEFAULT_CHARSET, $body->getParts()[0]->charset);
     }
     
     public function testHtmlBodyCasting()
@@ -214,16 +226,16 @@ class MailServiceTest extends TestCase
     {
         $this->assertCount(0, $this->mailService->getAttachments());
 
-        $this->mailService->setAttachments(array('one', 'two', 'three'));
-        $this->mailService->addAttachments(array('four', 'five', 'six'));
+        $this->mailService->setAttachments(['one', 'two', 'three']);
+        $this->mailService->addAttachments(['four', 'five', 'six']);
         $this->mailService->addAttachment('seven');
         $this->mailService->addAttachment('eight', 'with-alias');
         $this->assertCount(8, $this->mailService->getAttachments());
 
-        $this->mailService->setAttachments(array('one', 'two'));
+        $this->mailService->setAttachments(['one', 'two']);
         $this->assertCount(2, $this->mailService->getAttachments());
 
-        $this->mailService->addAttachments(array('three', 'four'));
+        $this->mailService->addAttachments(['three', 'four']);
         $this->assertCount(4, $this->mailService->getAttachments());
     }
 
@@ -231,12 +243,12 @@ class MailServiceTest extends TestCase
     {
         $cwd = getcwd();
         chdir(dirname(__DIR__));
-        $this->mailService->setAttachments(array(
+        $this->mailService->setAttachments([
             'attachments/file1',
             'attachments/file2',
             'attachments/dir/file3',
             'invalid/attachment'
-        ));
+        ]);
         $this->mailService->setBody('Body as string');
         $result = $this->mailService->send();
         $this->assertTrue($result->isValid());
@@ -253,10 +265,10 @@ class MailServiceTest extends TestCase
     {
         $cwd = getcwd();
         chdir(dirname(__DIR__));
-        $this->mailService->setAttachments(array(
+        $this->mailService->setAttachments([
             'attachments/file1',
             'attachments/file2'
-        ));
+        ]);
         $this->mailService->getMessage()->setBody('Btpassed body as string');
         $result = $this->mailService->send();
         $this->assertTrue($result->isValid());
@@ -265,5 +277,18 @@ class MailServiceTest extends TestCase
         $body = $this->mailService->getMessage()->getBody();
         $this->assertInstanceOf('Zend\Mime\Message', $body);
         chdir($cwd);
+    }
+
+    public function testWithDefaultLayout()
+    {
+        $resolver = new TemplatePathStack();
+        $resolver->addPath(__DIR__ . '/../../view');
+        $this->mailService->getRenderer()->setResolver($resolver);
+
+        $model = new ViewModel();
+        $model->setTemplate('ac-mailer/mail-templates/layout.phtml');
+        $this->mailService->setDefaultLayout(new DefaultLayout($model));
+        $this->mailService->setTemplate('ac-mailer/mail-templates/mail.phtml');
+        $this->assertInstanceOf('Zend\Mime\Message', $this->mailService->getMessage()->getBody());
     }
 }
