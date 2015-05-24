@@ -19,6 +19,7 @@ before_script:
 
 script:
   - mkdir build
+  - mkdir test/attachments/dir/dirdept
   - ./vendor/bin/phpunit -c test/phpunit.xml --coverage-clover build/clover.xml
   - ./vendor/bin/phpcs --standard=PSR2 ./src/ ./test/ ./config
 
