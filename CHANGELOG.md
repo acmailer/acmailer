@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### 5.0.1
+
+**Bugs:**
+
+* [105: The EVENT_MAIL_PRE_SEND event should be triggered before the files are attached to the email](https://github.com/acelaya/ZF2-AcMailer/issues/105)
+
 ### 5.0.0
 
 **Enhancements:**
