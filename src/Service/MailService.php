@@ -83,13 +83,13 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      */
     public function send()
     {
-        // Attach files before sending the email
-        $this->attachFiles();
-
         $result = new MailResult();
         try {
             // Trigger pre send event
             $this->getEventManager()->trigger($this->createMailEvent());
+
+            // Attach files before sending the email
+            $this->attachFiles();
 
             // Try to send the message
             $this->transport->send($this->message);
