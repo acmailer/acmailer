@@ -43,7 +43,11 @@ return [
 
 * * *
 
-After installation, copy `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` to `config/autoload/mail.global.php` and customize any of the params. Configuration options are explained later.
+After installation, copy `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` to `config/autoload/mail.global.php` and customize any of the params.
+
+You can also copy `vendor/acelaya/zf2-acmailer/config/mail.local.php.dist` to `config/autoload/mail.local.php` or into your existing `config/autoload/local.php` so you can make environment-specific mail settings (for example, you may need different mail settings for develop, staging and production).
+
+Configuration options are explained later.
 
 By default, this configuration will register an `acmailer.mailservice.default` service, which is also aliased by the service names `AcMailer\Service\MailService` and `mailservice`.
 
