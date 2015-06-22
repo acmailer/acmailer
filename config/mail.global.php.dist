@@ -4,7 +4,7 @@ return [
 
         // Default mail service
         'default' => [
-            /*
+            /**
              * Tells which other mail service configuration to extend.
              * The default service is usually the one that doesn't extend any other configuration, but others extend
              * from it.
@@ -16,7 +16,7 @@ return [
              * ADAPTER *
              ***********/
 
-            /*
+            /**
              * The mail adapter to be used.
              * You can define any class implementing Zend\Mail\Transport\TransportInterface,
              * either the fully qualified class name as string or the instance to be used.
@@ -36,7 +36,7 @@ return [
              */
             //'mail_adapter' => '\Zend\Mail\Transport\Sendmail',
 
-            /*
+            /**
              * An alias for the 'mail_adapter' option. Use just one or another.
              */
             //'transport' => '\Zend\Mail\Transport\Sendmail',
@@ -47,21 +47,21 @@ return [
              ************************/
 
             'message_options' => [
-                /*
+                /**
                  * From email address of the email.
                  *
                  * Default value is an empty string
                  */
                 //'from' => '',
 
-                /*
+                /**
                  * From name to be displayed instead of from address.
                  *
                  * Default value is an empty string
                  */
                 //'from_name' => '',
 
-                /*
+                /**
                  * Destination addresses of sent emails.
                  * It can be an email address as string or an array of email addresses.
                  *
@@ -69,7 +69,7 @@ return [
                  */
                 //'to' => [],
 
-                /*
+                /**
                  * Copy destination addresses of sent emails.
                  * It can be an email address as string or an array of email addresses.
                  *
@@ -77,7 +77,7 @@ return [
                  */
                 //'cc' => [],
 
-                /*
+                /**
                  * Hidden copy destination addresses of sent emails.
                  * It can be an email address as string or an array of email addresses.
                  *
@@ -85,14 +85,14 @@ return [
                  */
                 //'bcc' => [],
 
-                /*
+                /**
                  * Email subject.
                  *
                  * Default value is an empty string
                  */
                 //'subject' => '',
 
-                /*
+                /**
                  * Email body.
                  * It can be a plain-text string, a HTML string or a template that will be computed at runtime.
                  * The 'content' property is used by default.
@@ -140,7 +140,7 @@ return [
                     //],
                 //],
 
-                /*
+                /**
                  * Attachments config.
                  * Allows to define an array of files that will be attached to the message,
                  * or even a directory that will be iterated to attach all found files.
@@ -166,26 +166,26 @@ return [
              * SMTP CONFIGURATION *
              **********************/
 
-            /*
+            /**
              * SMTP concrete options that will be used only when the adapter is a Zend\Mail\Transport\Smtp.
              * This will be ignored otherwise.
              */
             'smtp_options' => [
-                /*
+                /**
                  * Hostname or IP address of the mail server.
                  *
                  * Default value is localhost
                  */
                 //'host' => 'localhost',
 
-                /*
+                /**
                  * Port of the mail server.
                  *
                  * Default value is 25
                  */
                 //'port' => 25,
 
-                /*
+                /**
                  * The connection class used for authentication.
                  * The value can be one of 'smtp', 'plain', 'login' or 'crammd5'.
                  *
@@ -194,7 +194,7 @@ return [
                 //'connection_class' => 'smtp',
 
                 //'connection_config' => [
-                    /*
+                    /**
                      * The SMTP authentication identity.
                      * If this is not set, the 'from' option of the message will be used.
                      *
@@ -202,14 +202,14 @@ return [
                      */
                     //'username' => '',
 
-                    /*
+                    /**
                      * The SMTP authentication credential.
                      *
                      * Default value is an empty string
                      */
                     //'password' => '',
 
-                    /*
+                    /**
                      * This defines the encryption type to be used, 'ssl' or 'tls'.
                      * Boolean false should be used to disable SSL.
                      *
@@ -224,12 +224,12 @@ return [
              * FILE CONFIGURATION *
              **********************/
 
-            /*
+            /**
              * File concrete options that will be used only when the adapter is a Zend\Mail\Transport\File.
              * This will be ignored otherwise.
              */
             'file_options' => [
-                /*
+                /**
                  * This is the folder where the file is going to be saved
                  *
                  * Default value is 'data/mail/output'
@@ -245,7 +245,7 @@ return [
                 //'callback' => null,
             ],
 
-            /*
+            /**
              * A list of mail listeners that will be attached to the mail service when created.
              * Each element can be either a string or a AcMailer\Event\MailListenerInterface instance.
              * Each string will be checked as a service first. If a service is not found, it will be checked as a fully
@@ -254,12 +254,12 @@ return [
              *
              * By default, the list of listeners is empty
              */
-            //'mail_listeners' => []
-        ]
+            //'mail_listeners' => [],
+        ],
 
-        /*
+        /**
          * You can define other service configurations here, with the same structure as in the 'default' block
          */
 
-    ]
+    ],
 ];
