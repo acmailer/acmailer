@@ -169,6 +169,10 @@ return [
             /**
              * SMTP concrete options that will be used only when the adapter is a Zend\Mail\Transport\Smtp.
              * This will be ignored otherwise.
+             *
+             * NOTE: It is a best practice to avoid committing credentials in Git. You can override these settings in
+             * a local.php config (which are gitignored by default) to create environment-specific settings and/or to
+             * avoid committing credentials to Git.
              */
             'smtp_options' => [
                 /**

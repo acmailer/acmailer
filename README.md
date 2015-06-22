@@ -45,7 +45,7 @@ return [
 
 After installation, copy `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` to `config/autoload/mail.global.php` and customize any of the params.
 
-You can also copy `vendor/acelaya/zf2-acmailer/config/mail.local.php.dist` to `config/autoload/mail.local.php` or into your existing `config/autoload/local.php` so you can make environment-specific mail settings (for example, you may need different mail settings for develop, staging and production).
+As with any ZF2 configs, you can choose to put any of the settings into a `config/autoload/mail.local.php` or into your existing `config/autoload/local.php` so you can make environment-specific mail settings, and avoid committing credentials into Git.
 
 Configuration options are explained later.
 
