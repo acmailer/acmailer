@@ -30,3 +30,5 @@ after_script:
 matrix:
   allow_failures:
     - php: 7
+
+sudo: false
