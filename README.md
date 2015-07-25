@@ -374,7 +374,7 @@ Each concrete service configuration can define these properties:
 - **file_options**: Wraps the files configuration that will be used when the mail adapter is a `Zend\Mail\Transport\File` instance
     - **path**: Directory where the email will be saved.
     - **callback**: Callback used to get the filename of the email.
-- **mail_listeners**: An array of mail listeners that will be automatically attached to the service once created. They can be either `ZcMailer\Event\MailListenerInterface` instances or strings that will be used to fetch a service if exists or lazily instantiate an object. This is an empty array by default.
+- **mail_listeners**: An array of mail listeners that will be automatically attached to the service once created. They can be either `AcMailer\Event\MailListenerInterface` instances or strings that will be used to fetch a service if exists or lazily instantiate an object. This is an empty array by default.
 
 #### Migrate config from AcMailer 4.5 and earlier to AcMailer 5.0
 
