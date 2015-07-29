@@ -62,6 +62,20 @@ return [
                 //'from_name' => '',
 
                 /**
+                 * ReplyTo email address of the email.
+                 *
+                 * Default value is an empty string
+                 */
+                //'reply_to' => '',
+
+                /**
+                 * ReplyTo name to be displayed instead of from address.
+                 *
+                 * Default value is an empty string
+                 */
+                //'reply_to_name' => '',
+
+                /**
                  * Destination addresses of sent emails.
                  * It can be an email address as string or an array of email addresses.
                  *
