@@ -20,6 +20,14 @@ class MessageOptions extends AbstractOptions
      */
     protected $fromName = '';
     /**
+     * @var string
+     */
+    protected $replyTo = '';
+    /**
+     * @var string
+     */
+    protected $replyToName = '';
+    /**
      * @var array
      */
     protected $to = [];
@@ -77,6 +85,44 @@ class MessageOptions extends AbstractOptions
     public function setFromName($fromName)
     {
         $this->fromName = $fromName;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReplyTo()
+    {
+        return $this->replyTo;
+    }
+
+    /**
+     * @param string $replyTo
+     * @return $this
+     */
+    public function setReplyTo($replyTo)
+    {
+        $this->replyTo = $replyTo;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReplyToName()
+    {
+        return $this->replyToName;
+    }
+
+    /**
+     * @param string $replyToName
+     * @return $this
+     */
+    public function setReplyToName($replyToName)
+    {
+        $this->replyToName = $replyToName;
+
         return $this;
     }
 
