@@ -4,6 +4,7 @@
 
 **Enhancements:**
 
+* [110: ReplyTo message option is missing in configuration](https://github.com/acelaya/ZF2-AcMailer/issues/110)
 * [112: Document replyTo and replyToName config options](https://github.com/acelaya/ZF2-AcMailer/issues/112)
 
 **Tasks**
