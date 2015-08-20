@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### 5.1.0
+
+**Enhancements:**
+
+* [112: Document replyTo and replyToName config options](https://github.com/acelaya/ZF2-AcMailer/issues/112)
+
 ### 5.0.1
 
 **Bugs:**
