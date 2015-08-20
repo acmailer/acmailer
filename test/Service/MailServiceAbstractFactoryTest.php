@@ -44,13 +44,15 @@ class MailServiceAbstractFactoryTest extends TestCase
     {
         $options = [
             'message_options' => [
-                'from'      => 'alejandro@alejandrocelaya.com',
-                'from_name' => 'Alejandro Celaya',
-                'to'        => ['foo@bar.com', 'bar@foo.com'],
-                'cc'        => ['account@domain.com'],
-                'bcc'       => ['hidden@domain.com'],
-                'subject'   => 'The subject',
-                'body'      => ['content' => 'The body'],
+                'from'          => 'alejandro@alejandrocelaya.com',
+                'from_name'     => 'Alejandro Celaya',
+                'reply_to'      => 'alejandro@alejandrocelaya.com',
+                'reply_to_name' => 'Alejandro Celaya',
+                'to'            => ['foo@bar.com', 'bar@foo.com'],
+                'cc'            => ['account@domain.com'],
+                'bcc'           => ['hidden@domain.com'],
+                'subject'       => 'The subject',
+                'body'          => ['content' => 'The body'],
             ]
         ];
         $this->initServiceLocator($options);
@@ -64,6 +66,10 @@ class MailServiceAbstractFactoryTest extends TestCase
         $this->assertEquals(
             $options['message_options']['from_name'],
             $mailService->getMessage()->getFrom()->get($options['message_options']['from'])->getName()
+        );
+        $this->assertEquals(
+            $options['message_options']['reply_to_name'],
+            $mailService->getMessage()->getReplyTo()->get($options['message_options']['reply_to'])->getName()
         );
         $toArray = array_keys(ArrayUtils::iteratorToArray($mailService->getMessage()->getTo()));
         $ccArray = array_keys(ArrayUtils::iteratorToArray($mailService->getMessage()->getCc()));

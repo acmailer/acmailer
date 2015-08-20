@@ -27,6 +27,8 @@ class MessageOptionsTest extends TestCase
     {
         $this->assertEquals('', $this->messageOptions->getFrom());
         $this->assertEquals('', $this->messageOptions->getFromName());
+        $this->assertEquals('', $this->messageOptions->getReplyTo());
+        $this->assertEquals('', $this->messageOptions->getReplyToName());
         $this->assertEquals([], $this->messageOptions->getTo());
         $this->assertEquals([], $this->messageOptions->getCc());
         $this->assertEquals([], $this->messageOptions->getBcc());

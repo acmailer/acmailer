@@ -43,7 +43,11 @@ return [
 
 * * *
 
-After installation, copy `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` to `config/autoload/mail.global.php` and customize any of the params. Configuration options are explained later.
+After installation, copy `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` to `config/autoload/mail.global.php` and customize any of the params.
+
+As with any ZF2 configs, you can choose to put any of the settings into a `config/autoload/mail.local.php` or into your existing `config/autoload/local.php` so you can make environment-specific mail settings, and avoid committing credentials into Git.
+
+Configuration options are explained later.
 
 By default, this configuration will register an `acmailer.mailservice.default` service, which is also aliased by the service names `AcMailer\Service\MailService` and `mailservice`.
 
@@ -372,7 +376,7 @@ Each concrete service configuration can define these properties:
 - **file_options**: Wraps the files configuration that will be used when the mail adapter is a `Zend\Mail\Transport\File` instance
     - **path**: Directory where the email will be saved.
     - **callback**: Callback used to get the filename of the email.
-- **mail_listeners**: An array of mail listeners that will be automatically attached to the service once created. They can be either `ZcMailer\Event\MailListenerInterface` instances or strings that will be used to fetch a service if exists or lazily instantiate an object. This is an empty array by default.
+- **mail_listeners**: An array of mail listeners that will be automatically attached to the service once created. They can be either `AcMailer\Event\MailListenerInterface` instances or strings that will be used to fetch a service if exists or lazily instantiate an object. This is an empty array by default.
 
 #### Migrate config from AcMailer 4.5 and earlier to AcMailer 5.0
 

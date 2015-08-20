@@ -113,6 +113,10 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
         if (! empty($from)) {
             $message->setFrom($from, $options->getFromName());
         }
+        $replyTo = $options->getReplyTo();
+        if (! empty($replyTo)) {
+            $message->setReplyTo($replyTo, $options->getReplyToName());
+        }
         $to = $options->getTo();
         if (! empty($to)) {
             $message->setTo($to);
