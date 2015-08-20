@@ -28,12 +28,14 @@
         "zendframework/zend-mime": "~2.2",
         "zendframework/zend-stdlib": "~2.2",
         "zendframework/zend-modulemanager": "~2.2",
-        "zendframework/zend-mvc": "~2.2"
+        "zendframework/zend-mvc": "~2.2",
+        "zendframework/zend-console": "~2.2",
+        "zendframework/zend-config": "~2.2",
+        "zendframework/zend-json": "~2.2"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0",
-        "squizlabs/php_codesniffer": "~1.0",
-        "zendframework/zendframework": "~2.2"
+        "squizlabs/php_codesniffer": "~1.0"
     },
     "autoload" : {
         "psr-4" : {
