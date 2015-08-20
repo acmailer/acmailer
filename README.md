@@ -337,6 +337,8 @@ Each concrete service configuration can define these properties:
 - **message_options**: Wraps message-related options
     - **from**: From email address.
     - **from_name**: From name to be displayed.
+    - **reply_to**: The email address to reply to
+    - **reply_to_name**: The name to reply to
     - **to**: It can be a string with one destination email address or an array of multiple addresses.
     - **cc**: It can be a string with one carbon copy email address or an array of multiple addresses.
     - **bcc**: It can be a string with one blind carbon copy email address or an array of multiple addresses.
