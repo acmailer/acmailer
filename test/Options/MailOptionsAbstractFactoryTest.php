@@ -140,6 +140,31 @@ class MailOptionsAbstractFactoryTest extends TestCase
         $this->assertEquals('Me', $mailOptions->getMessageOptions()->getFrom());
     }
 
+    public function testExtendWithValueNullIsIgnored()
+    {
+        $this->serviceLocator = new ServiceManagerMock([
+            'Config' => [
+                'acmailer_options' => [
+                    'default' => [
+                        'extends' => null,
+                        'message_options' => [
+                            'to'    => 'foo@bar.com',
+                            'from'  => 'Me',
+                        ]
+                    ],
+                ]
+            ]
+        ]);
+
+        /** @var MailOptions $mailOptions */
+        $mailOptions = $this->mailOptionsFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailoptions.default',
+            ''
+        );
+        $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
+    }
+
     protected function initServiceManager($mailConfigKey = 'acmailer_options', $serviceName = 'default')
     {
         $services = [
