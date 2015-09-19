@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### 5.1.1
+
+**Bugs:**
+
+* [113: The extends property is mapped when its value is null, making the MailOptions to throw an exception](https://github.com/acelaya/ZF2-AcMailer/issues/113)
+
 ### 5.1.0
 
 **Enhancements:**

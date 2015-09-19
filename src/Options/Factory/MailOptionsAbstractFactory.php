@@ -34,16 +34,23 @@ class MailOptionsAbstractFactory extends AbstractAcMailerFactory
             $specificConfig = [];
         }
 
-        // Try to extend from another configuration if defined and exists
-        if (isset($specificConfig['extends']) && is_string($specificConfig['extends'])) {
-            $extendsConfigKey = trim($specificConfig['extends']);
-            if (array_key_exists($extendsConfigKey, $config) && is_array($config[$extendsConfigKey])) {
-                $specificConfig = ArrayUtils::merge($config[$extendsConfigKey], $specificConfig);
-            }
+        // Get extends
+        $extendsConfigKey = isset($specificConfig['extends']) && is_string($specificConfig['extends'])
+            ? trim($specificConfig['extends'])
+            : null;
+        // Always unset the extends, in case it had a value null, to prevent the MailOptions object to throw an
+        // exception
+        unset($specificConfig['extends']);
 
-            unset($specificConfig['extends']);
+        // Try to extend from another configuration if defined and exists
+        if (
+            ! is_null($extendsConfigKey)
+            && array_key_exists($extendsConfigKey, $config)
+            && is_array($config[$extendsConfigKey])
+        ) {
+            $specificConfig = ArrayUtils::merge($config[$extendsConfigKey], $specificConfig);
         }
-        
+
         return new MailOptions($specificConfig);
     }
 }
