@@ -41,8 +41,7 @@ class MailOptionsAbstractFactory extends AbstractAcMailerFactory
         unset($specificConfig['extends']);
 
         // Try to extend from another configuration if defined and exists
-        if (
-            ! is_null($extendsConfigKey)
+        if (! is_null($extendsConfigKey)
             && array_key_exists($extendsConfigKey, $config)
             && is_array($config[$extendsConfigKey])
         ) {

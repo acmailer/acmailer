@@ -13,7 +13,7 @@ use AcMailer\Exception\InvalidArgumentException;
 /**
  * This class is meant to supplant MailService when unit testing elements that depend on a MailServiceInterface.
  * Remember to always program to abstractions, never concretions.
- * @author Alejandro Celaya Alastrué 
+ * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
 class MailServiceMock implements MailServiceInterface
