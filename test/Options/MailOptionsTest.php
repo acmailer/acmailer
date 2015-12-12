@@ -1,12 +1,8 @@
 <?php
 namespace AcMailerTest\Options;
 
-use AcMailer\Options\AttachmentsOptions;
 use AcMailer\Options\MailOptions;
-use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Options\MessageOptions;
-use AcMailer\Options\TemplateOptions;
-use AcMailer\Service\MailServiceInterface;
 use Zend\Mail\Transport\FileOptions;
 use Zend\Mail\Transport\Sendmail;
 use Zend\Mail\Transport\Smtp;

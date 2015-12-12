@@ -4,12 +4,8 @@ namespace AcMailer\Service;
 use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Mail\Transport\TransportAwareInterface;
 use AcMailer\Result\ResultInterface;
-use AcMailer\View\DefaultLayout;
 use AcMailer\View\DefaultLayoutInterface;
 use AcMailer\View\RendererAwareInterface;
-use Zend\Mail\Transport\TransportInterface;
-use Zend\View\Model\ViewModel;
-use Zend\View\Renderer\RendererInterface;
 
 /**
  * Provides methods to be implemented by a valid MailService

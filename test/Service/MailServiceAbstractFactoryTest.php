@@ -2,11 +2,9 @@
 namespace AcMailerTest\Service;
 
 use AcMailer\Event\MailEvent;
-use AcMailer\Event\MailListenerAwareInterface;
 use AcMailer\Options\MailOptions;
 use AcMailer\Service\Factory\MailServiceAbstractFactory;
 use AcMailer\Service\Factory\MailServiceFactory;
-use AcMailer\Service\MailServiceInterface;
 use AcMailerTest\Event\MailListenerMock;
 use AcMailerTest\ServiceManager\ServiceManagerMock;
 use Zend\EventManager\EventManagerAwareInterface;
