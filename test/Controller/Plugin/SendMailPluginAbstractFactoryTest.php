@@ -2,7 +2,6 @@
 namespace AcMailerTest\Controller\Plugin;
 
 use AcMailer\Controller\Plugin\Factory\SendMailPluginAbstractFactory;
-use AcMailer\Factory\AbstractAcMailerFactory;
 use AcMailer\Service\Factory\MailServiceAbstractFactory;
 use AcMailer\Service\MailServiceMock;
 use PHPUnit_Framework_TestCase as TestCase;

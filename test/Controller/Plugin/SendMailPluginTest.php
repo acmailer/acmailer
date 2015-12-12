@@ -5,7 +5,6 @@ use AcMailer\Controller\Plugin\SendMailPlugin;
 use AcMailer\Service\MailServiceInterface;
 use AcMailer\Service\MailServiceMock;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Stdlib\ArrayUtils;
 use Zend\View\Model\ViewModel;
 
 /**

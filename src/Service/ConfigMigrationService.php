@@ -1,8 +1,6 @@
 <?php
 namespace AcMailer\Service;
 
-use AcMailer\Exception\InvalidArgumentException;
-use Zend\Config\Writer\WriterInterface;
 
 /**
  * Class ConfigMigrationService
