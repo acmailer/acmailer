@@ -192,8 +192,10 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
     protected function createRenderer(ServiceLocatorInterface $sm)
     {
         // Try to return the configured renderer. If it points to an undefined service, create a renderer on the fly
+        $serviceName = $this->mailOptions->getRenderer();
+
         try {
-            $renderer = $sm->get('mailviewrenderer');
+            $renderer = $sm->get($serviceName);
             return $renderer;
         } catch (ServiceNotFoundException $e) {
             // In case the renderer service is not defined, try to construct it
