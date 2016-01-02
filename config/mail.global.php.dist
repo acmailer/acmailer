@@ -42,6 +42,17 @@ return [
             //'transport' => '\Zend\Mail\Transport\Sendmail',
 
 
+            /************
+             * RENDERER *
+             ************/
+
+            /*
+             * The renderer service name to be used to render email templates.
+             * Default value is mailviewrenderer, which is an alias to the standard viewrenderer registered by Zend\Mvc
+             */
+            //'renderer' => 'mailviewrenderer',
+
+
             /************************
              * MESSAGE CONFIGURATION *
              ************************/
@@ -262,6 +273,11 @@ return [
                  */
                 //'callback' => null,
             ],
+
+
+            /*************
+             * LISTENERS *
+             *************/
 
             /**
              * A list of mail listeners that will be attached to the mail service when created.
