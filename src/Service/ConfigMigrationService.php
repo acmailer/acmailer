@@ -1,7 +1,6 @@
 <?php
 namespace AcMailer\Service;
 
-
 /**
  * Class ConfigMigrationService
  * @author Alejandro Celaya Alastrué
