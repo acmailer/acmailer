@@ -1,11 +1,12 @@
 <?php
 namespace AcMailer\Options;
 
+use AcMailer\Exception\InvalidArgumentException;
 use Zend\Mail\Transport\FileOptions;
 use Zend\Mail\Transport\SmtpOptions;
-use Zend\Stdlib\AbstractOptions;
 use Zend\Mail\Transport\TransportInterface;
-use AcMailer\Exception\InvalidArgumentException;
+use Zend\Stdlib\AbstractOptions;
+use Zend\View\Renderer\RendererInterface;
 
 /**
  * Module options
@@ -46,6 +47,10 @@ class MailOptions extends AbstractOptions
      * @var array
      */
     private $mailListeners = [];
+    /**
+     * @var string
+     */
+    private $renderer = 'mailviewrenderer';
     
     /**
      * @return TransportInterface|string
@@ -207,6 +212,24 @@ class MailOptions extends AbstractOptions
     public function setMailListeners($mailListeners)
     {
         $this->mailListeners = (array) $mailListeners;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRenderer()
+    {
+        return $this->renderer;
+    }
+
+    /**
+     * @param string $renderer
+     * @return $this
+     */
+    public function setRenderer($renderer)
+    {
+        $this->renderer = $renderer;
         return $this;
     }
 }

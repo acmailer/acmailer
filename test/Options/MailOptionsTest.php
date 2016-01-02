@@ -3,11 +3,11 @@ namespace AcMailerTest\Options;
 
 use AcMailer\Options\MailOptions;
 use AcMailer\Options\MessageOptions;
+use PHPUnit_Framework_TestCase as TestCase;
+use Zend\Mail\Transport\File;
 use Zend\Mail\Transport\FileOptions;
 use Zend\Mail\Transport\Sendmail;
 use Zend\Mail\Transport\Smtp;
-use Zend\Mail\Transport\File;
-use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Mail\Transport\SmtpOptions;
 
 /**
@@ -125,5 +125,12 @@ class MailOptionsTest extends TestCase
         $this->assertCount(0, $this->mailOptions->getMailListeners());
         $this->assertSame($this->mailOptions, $this->mailOptions->setMailListeners([1, 2, 3]));
         $this->assertCount(3, $this->mailOptions->getMailListeners());
+    }
+
+    public function testSetRenderer()
+    {
+        $this->assertEquals('mailviewrenderer', $this->mailOptions->getRenderer());
+        $this->assertSame($this->mailOptions, $this->mailOptions->setRenderer('foo'));
+        $this->assertEquals('foo', $this->mailOptions->getRenderer());
     }
 }
