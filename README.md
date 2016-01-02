@@ -186,6 +186,8 @@ return [
 
 Alternatively you can just set it via setter: `$mailService->setRenderer($renderer);`.
 
+If you need different view renderers to be used by each mail service, you can define the renderer service name in the **renderer** configuration property of that service.
+
 #### Rendering in CLI executions
 
 When running a ZF2 application from the console, the default `ViewRenderer` service is not created. In that case a `Zend\View\Renderer\PhpRenderer` is created on the fly so that templates can be properly rendered.
@@ -338,6 +340,7 @@ Each concrete service configuration can define these properties:
 - **extends**: Defines other configuration block from which this one extends, so that you only need to define the configuration that is different. By default this is null, which means that no configuration is extended.
 - **mail_adapter**: Tells the mail service what type of transport adapter should be used. Any instance or classname implementing `Zend\Mail\Transport\TransportInterface` is valid. It is also possible to define a service and it will be automatically fetched.
 - **transport**: It is an alias for the **mail_adapter** option. Just use one or another.
+- **renderer**: It is the service name of the renderer to be used. By default, *mailviewrenderer* is used, which is an alias to the default *viewrenderer* service.
 - **message_options**: Wraps message-related options
     - **from**: From email address.
     - **from_name**: From name to be displayed.
