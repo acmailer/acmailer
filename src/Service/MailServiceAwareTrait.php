@@ -31,8 +31,7 @@ trait MailServiceAwareTrait
      */
     public function getMailService()
     {
-        if (
-            $this instanceof ServiceLocatorAwareInterface
+        if ($this instanceof ServiceLocatorAwareInterface
             && ! isset($this->mailService)
             && $this->getServiceLocator()->has('AcMailer\Service\MailService')
         ) {

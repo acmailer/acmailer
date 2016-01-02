@@ -2,7 +2,7 @@
 namespace AcMailer\Result;
 
 /**
- * 
+ *
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */

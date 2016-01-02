@@ -1,5 +1,15 @@
 ## CHANGELOG
 
+### 5.2.0
+
+**Enhancements:**
+
+* [104: Allow to define the Renderer to be used for each service](https://github.com/acelaya/ZF2-AcMailer/issues/104)
+
+**Tasks**
+
+* [114: Drop Support for PHP 5.4](https://github.com/acelaya/ZF2-AcMailer/issues/114)
+
 ### 5.1.1
 
 **Bugs:**
