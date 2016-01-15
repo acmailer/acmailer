@@ -420,6 +420,7 @@ $result->isValid(); // This will return true in this case
 
 * * *
 
-Thanks to [PhpStorm](https://www.jetbrains.com/phpstorm/) for their support, since they have provided me an OSS license to work on this project.
+Thanks to [JetBrains](https://www.jetbrains.com/) for their support to open source projects.
 
-![PhpStorm](https://www.jetbrains.com/phpstorm/documentation/docs/logo_phpstorm.png)
+![PhpStorm](http://static.alejandrocelaya.com/img/logo_PhpStorm.png)
+
