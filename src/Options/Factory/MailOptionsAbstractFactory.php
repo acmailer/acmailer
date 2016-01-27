@@ -3,7 +3,6 @@ namespace AcMailer\Options\Factory;
 
 use AcMailer\Factory\AbstractAcMailerFactory;
 use AcMailer\Options\MailOptions;
-use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stdlib\ArrayUtils;
 
