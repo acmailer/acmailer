@@ -165,6 +165,95 @@ class MailOptionsAbstractFactoryTest extends TestCase
         $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
     }
 
+    public function testExtendsSingleChaining()
+    {
+        $this->serviceLocator = new ServiceManagerMock([
+            'Config' => [
+                'acmailer_options' => [
+                    'default' => [
+                        'extends' => null,
+                        'message_options' => [
+                            'to'    => 'foo@bar.com'
+                        ]
+                    ],
+                    'foo' => [
+                        'extends' => 'default',
+                        'message_options' => [
+                            'from' => 'foo@bar.com'
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        /** @var MailOptions $mailOptions */
+        $mailOptions = $this->mailOptionsFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailoptions.foo',
+            ''
+        );
+        $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
+        $this->assertEquals(
+            [
+                'to'   => [['foo@bar.com']],
+                'from' => 'foo@bar.com',
+            ],
+            [
+                'to' => [$mailOptions->getMessageOptions()->getTo()],
+                'from' => $mailOptions->getMessageOptions()->getFrom(),
+            ]
+        );
+    }
+
+    public function testExtendsDoubleChaining()
+    {
+        $this->serviceLocator = new ServiceManagerMock([
+            'Config' => [
+                'acmailer_options' => [
+                    'default' => [
+                        'extends' => null,
+                        'message_options' => [
+                            'to'    => 'foo@bar.com',
+                        ]
+                    ],
+                    'foo' => [
+                        'extends' => 'default',
+                        'message_options' => [
+                            'from' => 'foo@bar.com'
+                        ]
+                    ],
+                    'bar' => [
+                        'extends' => 'foo',
+                        'message_options' => [
+                            'to' => 'noone@here.com',
+                            'subject' => 'Foobar subject'
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        /** @var MailOptions $mailOptions */
+        $mailOptions = $this->mailOptionsFactory->createServiceWithName(
+            $this->serviceLocator,
+            'acmailer.mailoptions.bar',
+            ''
+        );
+        $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
+        $this->assertEquals(
+            [
+                'to' => [['noone@here.com']],
+                'from' => 'foo@bar.com',
+                'subject' => 'Foobar subject'
+            ],
+            [
+                'to' => [$mailOptions->getMessageOptions()->getTo()],
+                'from' => $mailOptions->getMessageOptions()->getFrom(),
+                'subject' => $mailOptions->getMessageOptions()->getSubject()
+            ]
+        );
+    }
+
     protected function initServiceManager($mailConfigKey = 'acmailer_options', $serviceName = 'default')
     {
         $services = [
