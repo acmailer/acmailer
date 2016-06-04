@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### 5.2.1
+
+**Bugs:**
+
+* [125: False is unsupported SSL type](https://github.com/acelaya/ZF2-AcMailer/issues/125)
+
 ### 5.2.0
 
 **Enhancements:**
