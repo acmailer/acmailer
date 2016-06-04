@@ -240,11 +240,11 @@ return [
 
                     /**
                      * This defines the encryption type to be used, 'ssl' or 'tls'.
-                     * Boolean false should be used to disable SSL.
+                     * Null should be used to disable SSL.
                      *
-                     * Default value is false
+                     * Default value is null
                      */
-                    //'ssl' => false,
+                    //'ssl' => null,
                 //],
             ],
 
