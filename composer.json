@@ -28,7 +28,9 @@
         "zendframework/zend-mime": "^2.6",
         "zendframework/zend-stdlib": "^3.0",
         "zendframework/zend-console": "^2.6",
-        "zendframework/zend-modulemanager": "^2.6"
+        "zendframework/zend-modulemanager": "^2.6",
+        "zendframework/zend-mvc": "^3.0",
+        "zendframework/zend-mvc-console": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0",

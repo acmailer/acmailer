@@ -3,7 +3,10 @@ namespace AcMailer\Options\Factory;
 
 use AcMailer\Factory\AbstractAcMailerFactory;
 use AcMailer\Options\MailOptions;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\Stdlib\ArrayUtils;
 
 /**
@@ -16,17 +19,21 @@ class MailOptionsAbstractFactory extends AbstractAcMailerFactory
     const SPECIFIC_PART = 'mailoptions';
 
     /**
-     * Create service with name
+     * Create an object
      *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @param $name
-     * @param $requestedName
-     * @return mixed
+     * @param  ContainerInterface $container
+     * @param  string $requestedName
+     * @param  null|array $options
+     * @return object
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     *     creating a service.
+     * @throws ContainerException if any other error occurs
      */
-    public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $specificServiceName = explode('.', $name)[2];
-        $config = $this->getConfig($serviceLocator);
+        $specificServiceName = explode('.', $requestedName)[2];
+        $config = $this->getConfig($container);
         $specificConfig = $config[$specificServiceName];
         if (! is_array($specificConfig)) {
             $specificConfig = [];
