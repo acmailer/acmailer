@@ -20,7 +20,7 @@
     "homepage" : "https://github.com/acelaya/ZF2-AcMailer",
     "license" : "MIT",
     "require" : {
-        "php" : "~5.5|~7.0",
+        "php" : "^5.6|^7.0",
         "zendframework/zend-servicemanager": "~2.2",
         "zendframework/zend-mail": "~2.2",
         "zendframework/zend-view": "~2.2",
