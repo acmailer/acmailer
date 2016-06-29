@@ -75,27 +75,6 @@ class MailOptionsAbstractFactoryTest extends TestCase
         $this->assertEquals([], $mailOptions->getMessageOptions()->getBcc());
     }
 
-    public function testOldConfigKey()
-    {
-        $services = $this->initServiceManager('mail_options');
-        $mailOptions = $this->mailOptionsFactory->createServiceWithName(
-            $this->serviceLocator,
-            'acmailer.mailoptions.default',
-            ''
-        );
-        $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
-        $this->assertEquals(
-            [$services['Config']['mail_options']['default']['message_options']['to']],
-            $mailOptions->getMessageOptions()->getTo()
-        );
-        $this->assertEquals(
-            $services['Config']['mail_options']['default']['message_options']['from'],
-            $mailOptions->getMessageOptions()->getFrom()
-        );
-        $this->assertEquals([], $mailOptions->getMessageOptions()->getCc());
-        $this->assertEquals([], $mailOptions->getMessageOptions()->getBcc());
-    }
-
     public function testCreateServiceWithNonarrayOptions()
     {
         $mailOptions = $this->mailOptionsFactory->createServiceWithName(

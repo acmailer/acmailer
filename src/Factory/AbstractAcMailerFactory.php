@@ -47,8 +47,6 @@ abstract class AbstractAcMailerFactory implements AbstractFactoryInterface
         $config = $serviceLocator->get('Config');
         if (isset($config['acmailer_options']) && is_array($config['acmailer_options'])) {
             return $config['acmailer_options'];
-        } elseif (isset($config['mail_options']) && is_array($config['mail_options'])) {
-            return $config['mail_options'];
         }
 
         return [];
