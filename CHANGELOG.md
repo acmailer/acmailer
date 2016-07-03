@@ -5,6 +5,7 @@
 **Enhancements:**
 
 * [103: Drop support for the mail_options top-level configuration key](https://github.com/acelaya/ZF2-AcMailer/issues/103)
+* [124: Update to ZF3 components](https://github.com/acelaya/ZF2-AcMailer/issues/124)
 
 **Tasks**
 
