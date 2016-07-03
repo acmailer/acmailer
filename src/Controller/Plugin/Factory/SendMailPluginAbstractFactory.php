@@ -12,6 +12,7 @@ use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Mvc\Controller\PluginManager as ControllerPluginManager;
+use Zend\Stdlib\StringUtils;
 
 /**
  * Class SendMailPluginAbstractFactory
@@ -39,7 +40,7 @@ class SendMailPluginAbstractFactory extends AbstractAcMailerFactory
         }
 
         $specificServiceName = $this->getSpecificServiceName($requestedName);
-        return array_key_exists($specificServiceName, $this->getConfig($serviceLocator->getServiceLocator()));
+        return array_key_exists($specificServiceName, $this->getConfig($container));
     }
 
     /**
@@ -74,8 +75,7 @@ class SendMailPluginAbstractFactory extends AbstractAcMailerFactory
      */
     protected function getSpecificServiceName($requestedName)
     {
-        $filter = new CamelCaseToUnderscore();
-        $parts = explode('_', $filter->filter($requestedName));
+        $parts = explode('_', $this->camelCaseToUnderscore($requestedName));
         if (count($parts) === 2) {
             return 'default';
         }
@@ -89,5 +89,22 @@ class SendMailPluginAbstractFactory extends AbstractAcMailerFactory
 
         // Convert from camelcase to underscores and set to lower
         return strtolower($specificServiceName);
+    }
+
+    protected function camelCaseToUnderscore($value)
+    {
+        if (!is_scalar($value) && !is_array($value)) {
+            return $value;
+        }
+
+        if (StringUtils::hasPcreUnicodeSupport()) {
+            $pattern     = ['#(?<=(?:\p{Lu}))(\p{Lu}\p{Ll})#', '#(?<=(?:\p{Ll}|\p{Nd}))(\p{Lu})#'];
+            $replacement = ['_\1', '_\1'];
+        } else {
+            $pattern     = ['#(?<=(?:[A-Z]))([A-Z]+)([A-Z][a-z])#', '#(?<=(?:[a-z0-9]))([A-Z])#'];
+            $replacement = ['\1_\2', '_\1'];
+        }
+
+        return preg_replace($pattern, $replacement, $value);
     }
 }
