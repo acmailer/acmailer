@@ -1,7 +1,10 @@
 <?php
 namespace AcMailer\Factory;
 
-use Zend\ServiceManager\AbstractFactoryInterface;
+use Interop\Container\ContainerInterface;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Zend\ServiceManager\Factory\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -15,16 +18,15 @@ abstract class AbstractAcMailerFactory implements AbstractFactoryInterface
     const SPECIFIC_PART = '';
 
     /**
-     * Determine if we can create a service with name
+     * Can the factory create an instance for the service?
      *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @param $name
-     * @param $requestedName
+     * @param  ContainerInterface $container
+     * @param  string $requestedName
      * @return bool
      */
-    public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
+    public function canCreate(ContainerInterface $container, $requestedName)
     {
-        $parts = explode('.', $name);
+        $parts = explode('.', $requestedName);
         if (count($parts) !== 3) {
             return false;
         }
@@ -34,21 +36,19 @@ abstract class AbstractAcMailerFactory implements AbstractFactoryInterface
         }
 
         $specificServiceName = $parts[2];
-        $config = $this->getConfig($serviceLocator);
+        $config = $this->getConfig($container);
         return array_key_exists($specificServiceName, $config);
     }
 
     /**
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param ContainerInterface $container
      * @return array
      */
-    protected function getConfig(ServiceLocatorInterface $serviceLocator)
+    protected function getConfig(ContainerInterface $container)
     {
-        $config = $serviceLocator->get('Config');
+        $config = $container->get('Config');
         if (isset($config['acmailer_options']) && is_array($config['acmailer_options'])) {
             return $config['acmailer_options'];
-        } elseif (isset($config['mail_options']) && is_array($config['mail_options'])) {
-            return $config['mail_options'];
         }
 
         return [];

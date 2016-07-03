@@ -1,5 +1,16 @@
 ## CHANGELOG
 
+### 6.0.0
+
+**Enhancements:**
+
+* [103: Drop support for the mail_options top-level configuration key](https://github.com/acelaya/ZF2-AcMailer/issues/103)
+* [124: Update to ZF3 components](https://github.com/acelaya/ZF2-AcMailer/issues/124)
+
+**Tasks**
+
+* [126: Drop Support for PHP 5.5](https://github.com/acelaya/ZF2-AcMailer/issues/126)
+
 ### 5.2.1
 
 **Bugs:**

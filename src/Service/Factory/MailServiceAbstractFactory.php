@@ -3,20 +3,22 @@ namespace AcMailer\Service\Factory;
 
 use AcMailer\Event\MailListenerAwareInterface;
 use AcMailer\Event\MailListenerInterface;
+use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Factory\AbstractAcMailerFactory;
 use AcMailer\Options\Factory\MailOptionsAbstractFactory;
+use AcMailer\Options\MailOptions;
+use AcMailer\Service\MailService;
 use AcMailer\View\DefaultLayout;
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
+use Zend\Mail\Message;
 use Zend\Mail\Transport\File;
+use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mvc\Service\ViewHelperManagerFactory;
 use Zend\ServiceManager\Config;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
-use Zend\Mail\Message;
-use Zend\Mail\Transport\Smtp;
-use AcMailer\Service\MailService;
-use AcMailer\Options\MailOptions;
-use AcMailer\Exception\InvalidArgumentException;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\HelperPluginManager;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Renderer\RendererInterface;
@@ -34,24 +36,28 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
     protected $mailOptions;
 
     /**
-     * Create service with name
+     * Create an object
      *
-     * @param ServiceLocatorInterface $sm
-     * @param $name
-     * @param $requestedName
-     * @return mixed
+     * @param  ContainerInterface $container
+     * @param  string $requestedName
+     * @param  null|array $options
+     * @return object
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     *     creating a service.
+     * @throws ContainerException if any other error occurs
      */
-    public function createServiceWithName(ServiceLocatorInterface $sm, $name, $requestedName)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $specificServiceName = explode('.', $name)[2];
-        $this->mailOptions = $sm->get(
+        $specificServiceName = explode('.', $requestedName)[2];
+        $this->mailOptions = $container->get(
             sprintf('%s.%s.%s', self::ACMAILER_PART, MailOptionsAbstractFactory::SPECIFIC_PART, $specificServiceName)
         );
 
         // Create the service
         $message        = $this->createMessage();
-        $transport      = $this->createTransport($sm);
-        $renderer       = $this->createRenderer($sm);
+        $transport      = $this->createTransport($container);
+        $renderer       = $this->createRenderer($container);
         $mailService    = new MailService($message, $transport, $renderer);
 
         // Set subject
@@ -97,7 +103,7 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
         }
 
         // Attach mail listeners
-        $this->attachMailListeners($mailService, $sm);
+        $this->attachMailListeners($mailService, $container);
         return $mailService;
     }
 
@@ -134,10 +140,10 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
     }
 
     /**
-     * @param ServiceLocatorInterface $sm
+     * @param ContainerInterface $container
      * @return TransportInterface
      */
-    protected function createTransport(ServiceLocatorInterface $sm)
+    protected function createTransport(ContainerInterface $container)
     {
         $adapter = $this->mailOptions->getMailAdapter();
         // A transport instance can be returned as is
@@ -146,9 +152,9 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
         }
 
         // Check if the adapter is a service
-        if (is_string($adapter) && $sm->has($adapter)) {
+        if (is_string($adapter) && $container->has($adapter)) {
             /** @var TransportInterface $transport */
-            $transport = $sm->get($adapter);
+            $transport = $container->get($adapter);
             if ($transport instanceof TransportInterface) {
                 return $this->setupTransportConfig($transport);
             } else {
@@ -186,20 +192,20 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
     }
 
     /**
-     * @param ServiceLocatorInterface $sm
+     * @param ContainerInterface $container
      * @return RendererInterface
      */
-    protected function createRenderer(ServiceLocatorInterface $sm)
+    protected function createRenderer(ContainerInterface $container)
     {
         // Try to return the configured renderer. If it points to an undefined service, create a renderer on the fly
         $serviceName = $this->mailOptions->getRenderer();
 
         try {
-            $renderer = $sm->get($serviceName);
+            $renderer = $container->get($serviceName);
             return $renderer;
         } catch (ServiceNotFoundException $e) {
             // In case the renderer service is not defined, try to construct it
-            $vmConfig = $this->getSpecificConfig($sm, 'view_manager');
+            $vmConfig = $this->getSpecificConfig($container, 'view_manager');
             $renderer = new PhpRenderer();
 
             // Check what kind of view_manager configuration has been defined
@@ -222,35 +228,35 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
             }
 
             // Create a HelperPluginManager with default view helpers and user defined view helpers
-            $renderer->setHelperPluginManager($this->createHelperPluginManager($sm));
+            $renderer->setHelperPluginManager($this->createHelperPluginManager($container));
             return $renderer;
         }
     }
 
     /**
      * Creates a view helper manager
-     * @param ServiceLocatorInterface $sm
+     * @param ContainerInterface $container
      * @return HelperPluginManager
      */
-    protected function createHelperPluginManager(ServiceLocatorInterface $sm)
+    protected function createHelperPluginManager(ContainerInterface $container)
     {
         $factory = new ViewHelperManagerFactory();
         /** @var HelperPluginManager $helperManager */
-        $helperManager = $factory->createService($sm);
-        $config = new Config($this->getSpecificConfig($sm, 'view_helpers'));
+        $helperManager = $factory->__invoke($container, ViewHelperManagerFactory::PLUGIN_MANAGER_CLASS);
+        $config = new Config($this->getSpecificConfig($container, 'view_helpers'));
         $config->configureServiceManager($helperManager);
         return $helperManager;
     }
 
     /**
      * Returns a specific configuration defined by provided key
-     * @param ServiceLocatorInterface $sm
+     * @param ContainerInterface $container
      * @param $configKey
      * @return array
      */
-    protected function getSpecificConfig(ServiceLocatorInterface $sm, $configKey)
+    protected function getSpecificConfig(ContainerInterface $container, $configKey)
     {
-        $config = $sm->get('Config');
+        $config = $container->get('Config');
         return ! empty($config) && isset($config[$configKey]) ? $config[$configKey] : [];
     }
 
@@ -258,16 +264,16 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
      * Attaches the preconfigured mail listeners to the mail service
      *
      * @param MailListenerAwareInterface $service
-     * @param ServiceLocatorInterface $sm
+     * @param ContainerInterface $container
      * @throws InvalidArgumentException
      */
-    protected function attachMailListeners(MailListenerAwareInterface $service, ServiceLocatorInterface $sm)
+    protected function attachMailListeners(MailListenerAwareInterface $service, ContainerInterface $container)
     {
         $listeners = $this->mailOptions->getMailListeners();
         foreach ($listeners as $listener) {
             // Try to fetch the listener from the ServiceManager or lazily create an instance
-            if (is_string($listener) && $sm->has($listener)) {
-                $listener = $sm->get($listener);
+            if (is_string($listener) && $container->has($listener)) {
+                $listener = $container->get($listener);
             } elseif (is_string($listener) && class_exists($listener)) {
                 $listener = new $listener();
             }

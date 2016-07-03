@@ -1,12 +1,12 @@
 <?php
 namespace AcMailer\Controller;
 
+use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Service\ConfigMigrationServiceInterface;
+use Zend\Config\Writer\WriterInterface;
 use Zend\Console\ColorInterface;
 use Zend\Console\Request;
-use Zend\Mvc\Controller\AbstractConsoleController;
-use Zend\Config\Writer\WriterInterface;
-use AcMailer\Exception\InvalidArgumentException;
+use Zend\Mvc\Console\Controller\AbstractConsoleController;
 
 /**
  * Class ConfigMigrationController
