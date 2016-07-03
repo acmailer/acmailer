@@ -1,15 +1,15 @@
 <?php
 namespace AcMailerTest\ServiceManager;
 
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Exception;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Class ServiceManagerMock
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class ServiceManagerMock implements ServiceLocatorInterface
+class ServiceManagerMock implements ContainerInterface
 {
     /**
      * @var array()

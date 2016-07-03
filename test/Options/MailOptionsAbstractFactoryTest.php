@@ -31,36 +31,31 @@ class MailOptionsAbstractFactoryTest extends TestCase
     public function testCanCreateServiceWithName()
     {
         $this->initServiceManager();
-        $this->assertTrue($this->mailOptionsFactory->canCreateServiceWithName(
+        $this->assertTrue($this->mailOptionsFactory->canCreate(
             $this->serviceLocator,
-            'acmailer.mailoptions.default',
-            ''
+            'acmailer.mailoptions.default'
         ));
-        $this->assertFalse($this->mailOptionsFactory->canCreateServiceWithName(
+        $this->assertFalse($this->mailOptionsFactory->canCreate(
             $this->serviceLocator,
-            'acmailer.mailoptions.employees',
-            ''
+            'acmailer.mailoptions.employees'
         ));
-        $this->assertFalse($this->mailOptionsFactory->canCreateServiceWithName($this->serviceLocator, 'foo', ''));
-        $this->assertFalse($this->mailOptionsFactory->canCreateServiceWithName(
+        $this->assertFalse($this->mailOptionsFactory->canCreate($this->serviceLocator, 'foo'));
+        $this->assertFalse($this->mailOptionsFactory->canCreate(
             $this->serviceLocator,
-            'invalid.mailoptions.foobar',
-            ''
+            'invalid.mailoptions.foobar'
         ));
-        $this->assertFalse($this->mailOptionsFactory->canCreateServiceWithName(
+        $this->assertFalse($this->mailOptionsFactory->canCreate(
             new ServiceManagerMock(['Config' => []]),
-            'acmailer.mailoptions.default',
-            ''
+            'acmailer.mailoptions.default'
         ));
     }
 
     public function testSomeCustomOptions()
     {
         $services = $this->initServiceManager();
-        $mailOptions = $this->mailOptionsFactory->createServiceWithName(
+        $mailOptions = $this->mailOptionsFactory->__invoke(
             $this->serviceLocator,
-            'acmailer.mailoptions.default',
-            ''
+            'acmailer.mailoptions.default'
         );
         $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
         $this->assertEquals(
@@ -77,7 +72,7 @@ class MailOptionsAbstractFactoryTest extends TestCase
 
     public function testCreateServiceWithNonarrayOptions()
     {
-        $mailOptions = $this->mailOptionsFactory->createServiceWithName(
+        $mailOptions = $this->mailOptionsFactory->__invoke(
             new ServiceManagerMock([
                 'Config' => [
                     'acmailer_options' => [
@@ -85,8 +80,7 @@ class MailOptionsAbstractFactoryTest extends TestCase
                     ]
                 ]
             ]),
-            'acmailer.mailoptions.invalid',
-            ''
+            'acmailer.mailoptions.invalid'
         );
         $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
     }
@@ -110,10 +104,9 @@ class MailOptionsAbstractFactoryTest extends TestCase
         ]);
 
         /** @var MailOptions $mailOptions */
-        $mailOptions = $this->mailOptionsFactory->createServiceWithName(
+        $mailOptions = $this->mailOptionsFactory->__invoke(
             $this->serviceLocator,
-            'acmailer.mailoptions.another',
-            ''
+            'acmailer.mailoptions.another'
         );
         $this->assertEquals(['foo@bar.com'], $mailOptions->getMessageOptions()->getTo());
         $this->assertEquals('Me', $mailOptions->getMessageOptions()->getFrom());
@@ -136,10 +129,9 @@ class MailOptionsAbstractFactoryTest extends TestCase
         ]);
 
         /** @var MailOptions $mailOptions */
-        $mailOptions = $this->mailOptionsFactory->createServiceWithName(
+        $mailOptions = $this->mailOptionsFactory->__invoke(
             $this->serviceLocator,
-            'acmailer.mailoptions.default',
-            ''
+            'acmailer.mailoptions.default'
         );
         $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
     }
@@ -166,10 +158,9 @@ class MailOptionsAbstractFactoryTest extends TestCase
         ]);
 
         /** @var MailOptions $mailOptions */
-        $mailOptions = $this->mailOptionsFactory->createServiceWithName(
+        $mailOptions = $this->mailOptionsFactory->__invoke(
             $this->serviceLocator,
-            'acmailer.mailoptions.foo',
-            ''
+            'acmailer.mailoptions.foo'
         );
         $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
         $this->assertEquals(
@@ -213,10 +204,9 @@ class MailOptionsAbstractFactoryTest extends TestCase
         ]);
 
         /** @var MailOptions $mailOptions */
-        $mailOptions = $this->mailOptionsFactory->createServiceWithName(
+        $mailOptions = $this->mailOptionsFactory->__invoke(
             $this->serviceLocator,
-            'acmailer.mailoptions.bar',
-            ''
+            'acmailer.mailoptions.bar'
         );
         $this->assertInstanceOf('AcMailer\Options\MailOptions', $mailOptions);
         $this->assertEquals(

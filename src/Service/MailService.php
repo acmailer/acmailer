@@ -86,7 +86,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $result = new MailResult();
         try {
             // Trigger pre send event
-            $this->getEventManager()->trigger($this->createMailEvent());
+            $this->getEventManager()->triggerEvent($this->createMailEvent());
 
             // Attach files before sending the email
             $this->attachFiles();
@@ -95,11 +95,11 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
             $this->transport->send($this->message);
 
             // Trigger post send event
-            $this->getEventManager()->trigger($this->createMailEvent(MailEvent::EVENT_MAIL_POST_SEND, $result));
+            $this->getEventManager()->triggerEvent($this->createMailEvent(MailEvent::EVENT_MAIL_POST_SEND, $result));
         } catch (\Exception $e) {
             $result = $this->createMailResultFromException($e);
             // Trigger send error event
-            $this->getEventManager()->trigger($this->createMailEvent(MailEvent::EVENT_MAIL_SEND_ERROR, $result));
+            $this->getEventManager()->triggerEvent($this->createMailEvent(MailEvent::EVENT_MAIL_SEND_ERROR, $result));
 
             // If the exception produced is not a Zend\Mail exception, rethrow it as a MailException
             if (! $e instanceof ZendMailException) {
@@ -389,7 +389,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      */
     public function attachMailListener(MailListenerInterface $mailListener, $priority = 1)
     {
-        $this->getEventManager()->attach($mailListener, $priority);
+        $mailListener->attach($this->getEventManager(), $priority);
         return $this;
     }
 

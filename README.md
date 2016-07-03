@@ -36,8 +36,9 @@ return [
 ]
 ```
 
-> **IMPORTANT!** Version 5.0.0 has introduced some important BC breaks, so make sure not to update from earlier versions in production without reading this documentation first.
-> It is possible to autogenerate the new configuration structure from the command line. Read the configuration section at the end of this document for more information.
+> **IMPORTANT! Version notes** 
+> * Version **6.0.0**: Support for ZF2 has been dropped and this module is now compatible with ZF3. If you need ZF2 support, stick with v5 of this module.
+> * Version **5.0.0**: Important BC breaks have been introduced, so make sure not to update from earlier versions in production without reading this documentation first. It is possible to autogenerate the new configuration structure from the command line. Read the configuration section at the end of this document for more information.
 
 ### Usage
 
