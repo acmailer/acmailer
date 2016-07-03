@@ -20,7 +20,7 @@ Install composer in your project
 
 Then run 
 
-    php composer.phar require acelaya/zf2-acmailer:~5.0
+    php composer.phar require acelaya/zf2-acmailer
     
 Add the module `AcMailer` to your `config/application.config.php` file
 
