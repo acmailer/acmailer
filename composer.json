@@ -46,5 +46,10 @@
         "psr-4" : {
             "AcMailerTest\\" : "test/"
         }
-    }
+    },
+    "extra": {
+        "zf": {
+            "module": "AcMailer"
+        }
+     }
 }
