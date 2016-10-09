@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### 6.1.0
+
+**Enhancements:**
+
+* [129: Make module installable via zend-component-installer](https://github.com/acelaya/ZF2-AcMailer/pull/129)
+
 ### 6.0.0
 
 **Enhancements:**
