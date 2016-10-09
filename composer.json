@@ -49,7 +49,8 @@
     },
     "extra": {
         "zf": {
-            "module": "AcMailer"
+            "module": "AcMailer",
+            "config-provider": "AcMailer\\ConfigProvider"
         }
      }
 }
