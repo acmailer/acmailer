@@ -49,7 +49,7 @@
     },
     "extra": {
         "zf": {
-            "module": "AcMailer",
+            "module": "AcMailer"
         }
      }
 }
