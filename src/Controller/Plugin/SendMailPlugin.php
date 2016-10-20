@@ -30,7 +30,8 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
         3 => 'from',
         4 => 'cc',
         5 => 'bcc',
-        6 => 'attachments'
+        6 => 'attachments',
+        7 => 'replyTo',
     ];
 
     public function __construct(MailServiceInterface $mailService)
@@ -50,6 +51,7 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
      * @param null|array $cc
      * @param null|array $bcc
      * @param null|array $attachments
+     * @param null|array $replyTo
      * @return MailServiceInterface|ResultInterface
      */
     public function __invoke(
@@ -59,7 +61,8 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
         $from = null,
         $cc = null,
         $bcc = null,
-        $attachments = null
+        $attachments = null,
+        $replyTo = null
     ) {
         $args = func_get_args();
         if (empty($args)) {
@@ -142,6 +145,18 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
 
         if (isset($args['attachments'])) {
             $this->mailService->setAttachments($args['attachments']);
+        }
+        
+        if (isset($args['replyTo'])) {
+            $replyTo = $args['replyTo'];
+
+            if (is_array($replyTo)) {
+                $replyToAddress = array_keys($replyTo);
+                $replyToName = array_values($replyTo);
+                $this->mailService->getMessage()->setReplyTo($replyToAddress[0], $replyToName[0]);
+            } else {
+                $this->mailService->getMessage()->setReplyTo($replyTo);
+            }
         }
     }
 
