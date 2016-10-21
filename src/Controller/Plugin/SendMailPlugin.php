@@ -143,7 +143,8 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
      * @param array $args
      * @param string $key
      */
-    protected function applyArrayArgs(array $args, $key) {
+    protected function applyArrayArgs(array $args, $key)
+    {
         if (isset($args[$key])) {
             $arg = $args[$key];
             if (is_array($arg)) {
