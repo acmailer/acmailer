@@ -123,18 +123,6 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
             $this->mailService->getMessage()->setTo($args['to']);
         }
 
-        if (isset($args['from'])) {
-            $from = $args['from'];
-
-            if (is_array($from)) {
-                $fromAddress = array_keys($from);
-                $fromName = array_values($from);
-                $this->mailService->getMessage()->setFrom($fromAddress[0], $fromName[0]);
-            } else {
-                $this->mailService->getMessage()->setFrom($from);
-            }
-        }
-
         if (isset($args['cc'])) {
             $this->mailService->getMessage()->setCc($args['cc']);
         }
@@ -147,15 +135,31 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
             $this->mailService->setAttachments($args['attachments']);
         }
         
-        if (isset($args['replyTo'])) {
-            $replyTo = $args['replyTo'];
-
-            if (is_array($replyTo)) {
-                $replyToAddress = array_keys($replyTo);
-                $replyToName = array_values($replyTo);
-                $this->mailService->getMessage()->setReplyTo($replyToAddress[0], $replyToName[0]);
+        $this->applyArrayArgs($args, 'from');
+        $this->applyArrayArgs($args, 'replyTo');
+    }
+    
+     /**
+     * @param array $args
+     * @param string $key
+     */
+    protected function applyArrayArgs(array $args, $key) {
+        if (isset($args[$key])) {
+            $arg = $args[$key];
+            if (is_array($arg)) {
+                $argKey = array_keys($arg);
+                $argValue = array_values($arg);
+                if ($key === 'from') {
+                    $this->mailService->getMessage()->setFrom($argKey[0], $argValue[0]);
+                } elseif ($key === 'replyTo') {
+                    $this->mailService->getMessage()->setReplyto($argKey[0], $argValue[0]);
+                }
             } else {
-                $this->mailService->getMessage()->setReplyTo($replyTo);
+                if ($key === 'from') {
+                    $this->mailService->getMessage()->setFrom($arg);
+                } elseif ($key === 'replyTo') {
+                    $this->mailService->getMessage()->setReplyTo($arg);
+                }
             }
         }
     }
