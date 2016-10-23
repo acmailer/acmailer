@@ -145,24 +145,20 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
      */
     protected function applyArrayArgs(array $args, $key)
     {
-        if (isset($args[$key])) {
-            $arg = $args[$key];
-            if (is_array($arg)) {
-                $argKey = array_keys($arg);
-                $argValue = array_values($arg);
-                if ($key === 'from') {
-                    $this->mailService->getMessage()->setFrom($argKey[0], $argValue[0]);
-                } elseif ($key === 'replyTo') {
-                    $this->mailService->getMessage()->setReplyto($argKey[0], $argValue[0]);
-                }
-            } else {
-                if ($key === 'from') {
-                    $this->mailService->getMessage()->setFrom($arg);
-                } elseif ($key === 'replyTo') {
-                    $this->mailService->getMessage()->setReplyTo($arg);
-                }
-            }
+        if (!isset($args[$key])) {
+            return;
         }
+
+        $arg    = $args[$key];
+        $setter = 'set'.ucfirst($key);
+
+        if (is_array($arg)) {
+            $this->mailService->getMessage()->{$setter}(array_keys($arg)[0],
+                array_values($arg)[0]);
+            return;
+        }
+
+        $this->mailService->getMessage()->{$setter}($arg);
     }
 
     /**
