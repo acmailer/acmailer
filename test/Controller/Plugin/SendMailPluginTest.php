@@ -56,7 +56,8 @@ class SendMailPluginTest extends TestCase
             ['from@me.com' => 'From Me'],
             ['cc@me.com'],
             ['bcc@me.com'],
-            ['attachments/attachment1.zip', 'attachments/attachment2.zip']
+            ['attachments/attachment1.zip', 'attachments/attachment2.zip'],
+            ['reply@me.com' => 'Reply To Me']
         );
 
         $this->assertInstanceOf('AcMailer\Result\ResultInterface', $result);
@@ -67,6 +68,8 @@ class SendMailPluginTest extends TestCase
         $this->assertEquals('From Me', $this->service->getMessage()->getFrom()->current()->getName());
         $this->assertEquals('cc@me.com', $this->service->getMessage()->getCc()->current()->getEmail());
         $this->assertEquals('bcc@me.com', $this->service->getMessage()->getBcc()->current()->getEmail());
+        $this->assertEquals('reply@me.com', $this->service->getMessage()->getReplyTo()->current()->getEmail());
+        $this->assertEquals('Reply To Me', $this->service->getMessage()->getReplyTo()->current()->getName());
     }
 
     public function testFromIsValidAsString()
@@ -75,6 +78,14 @@ class SendMailPluginTest extends TestCase
 
         $this->assertInstanceOf('AcMailer\Result\ResultInterface', $result);
         $this->assertEquals('from@me.com', $this->service->getMessage()->getFrom()->current()->getEmail());
+    }
+    
+    public function testReplyToIsValidAsString()
+    {
+        $result = $this->plugin->__invoke('theBody', 'theSubject', ['foobar@me.com'], null, null, null, null, 'replyTo@me.com');
+
+        $this->assertInstanceOf('AcMailer\Result\ResultInterface', $result);
+        $this->assertEquals('replyTo@me.com', $this->service->getMessage()->getReplyTo()->current()->getEmail());
     }
 
     public function testBodyIsValidAsViewModel()
