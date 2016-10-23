@@ -82,7 +82,16 @@ class SendMailPluginTest extends TestCase
     
     public function testReplyToIsValidAsString()
     {
-        $result = $this->plugin->__invoke('theBody', 'theSubject', ['foobar@me.com'], null, null, null, null, 'replyTo@me.com');
+        $result = $this->plugin->__invoke(
+            'theBody',
+            'theSubject',
+            ['foobar@me.com'],
+            null,
+            null,
+            null,
+            null,
+            'replyTo@me.com'
+        );
 
         $this->assertInstanceOf('AcMailer\Result\ResultInterface', $result);
         $this->assertEquals('replyTo@me.com', $this->service->getMessage()->getReplyTo()->current()->getEmail());
