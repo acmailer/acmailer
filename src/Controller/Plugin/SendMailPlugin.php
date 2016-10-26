@@ -30,7 +30,8 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
         3 => 'from',
         4 => 'cc',
         5 => 'bcc',
-        6 => 'attachments'
+        6 => 'attachments',
+        7 => 'replyTo',
     ];
 
     public function __construct(MailServiceInterface $mailService)
@@ -50,6 +51,7 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
      * @param null|array $cc
      * @param null|array $bcc
      * @param null|array $attachments
+     * @param null|array $replyTo
      * @return MailServiceInterface|ResultInterface
      */
     public function __invoke(
@@ -59,7 +61,8 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
         $from = null,
         $cc = null,
         $bcc = null,
-        $attachments = null
+        $attachments = null,
+        $replyTo = null
     ) {
         $args = func_get_args();
         if (empty($args)) {
@@ -120,18 +123,6 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
             $this->mailService->getMessage()->setTo($args['to']);
         }
 
-        if (isset($args['from'])) {
-            $from = $args['from'];
-
-            if (is_array($from)) {
-                $fromAddress = array_keys($from);
-                $fromName = array_values($from);
-                $this->mailService->getMessage()->setFrom($fromAddress[0], $fromName[0]);
-            } else {
-                $this->mailService->getMessage()->setFrom($from);
-            }
-        }
-
         if (isset($args['cc'])) {
             $this->mailService->getMessage()->setCc($args['cc']);
         }
@@ -143,6 +134,31 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
         if (isset($args['attachments'])) {
             $this->mailService->setAttachments($args['attachments']);
         }
+        
+        $this->applyArrayArgs($args, 'from');
+        $this->applyArrayArgs($args, 'replyTo');
+    }
+    
+     /**
+     * @param array $args
+     * @param string $key
+     */
+    protected function applyArrayArgs(array $args, $key)
+    {
+        if (!isset($args[$key])) {
+            return;
+        }
+
+        $arg    = $args[$key];
+        $setter = 'set'.ucfirst($key);
+
+        if (is_array($arg)) {
+            $this->mailService->getMessage()->{$setter}(array_keys($arg)[0],
+                array_values($arg)[0]);
+            return;
+        }
+
+        $this->mailService->getMessage()->{$setter}($arg);
     }
 
     /**
