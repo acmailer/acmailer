@@ -5,8 +5,9 @@ class ConfigProvider
 {
     public function __invoke()
     {
+        $moduleConfig = include __DIR__ . '/../config/module.config.php';
         return [
-            'dependencies' => (include __DIR__ . '/../config/module.config.php')['service_manager']
+            'dependencies' => $moduleConfig['service_manager']
         ];
     }
 }

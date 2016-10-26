@@ -1,5 +1,12 @@
 ## CHANGELOG
 
+### 6.2.0
+
+**Enhancements:**
+
+* [130: Added ConfigProvider support](https://github.com/acelaya/ZF2-AcMailer/pull/130)
+* [133: Added replyTo support in controller plugin](https://github.com/acelaya/ZF2-AcMailer/pull/133)
+
 ### 6.1.0
 
 **Enhancements:**

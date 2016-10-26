@@ -18,7 +18,8 @@ class ConfigProviderTest extends TestCase
 
     public function testInvoke()
     {
-        $expectedConfig = ['dependencies' => (include __DIR__ . '/../config/module.config.php')['service_manager']];
+        $moduleConfig = include __DIR__ . '/../config/module.config.php';
+        $expectedConfig = ['dependencies' => $moduleConfig['service_manager']];
         $returnedConfig = $this->configProvider->__invoke();
 
         $this->assertEquals($expectedConfig, $returnedConfig);
