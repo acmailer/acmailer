@@ -6,6 +6,9 @@
         <testsuite name="AcMailer Module">
             <file>./ModuleTest.php</file>
         </testsuite>
+        <testsuite name="AcMailer ConfigProvider">
+            <file>./ConfigProviderTest.php</file>
+        </testsuite>
         <testsuite name="AcMailer event test suite">
             <directory>./Event</directory>
         </testsuite>
