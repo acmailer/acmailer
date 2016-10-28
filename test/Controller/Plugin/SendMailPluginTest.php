@@ -57,7 +57,8 @@ class SendMailPluginTest extends TestCase
             ['cc@me.com'],
             ['bcc@me.com'],
             ['attachments/attachment1.zip', 'attachments/attachment2.zip'],
-            ['reply@me.com' => 'Reply To Me']
+            ['reply@me.com' => 'Reply To Me'],
+            'utf-8'
         );
 
         $this->assertInstanceOf('AcMailer\Result\ResultInterface', $result);
@@ -68,6 +69,7 @@ class SendMailPluginTest extends TestCase
         $this->assertEquals('From Me', $this->service->getMessage()->getFrom()->current()->getName());
         $this->assertEquals('cc@me.com', $this->service->getMessage()->getCc()->current()->getEmail());
         $this->assertEquals('bcc@me.com', $this->service->getMessage()->getBcc()->current()->getEmail());
+        $this->assertEquals('utf-8', $this->service->getMessage()->getEncoding());
         $this->assertEquals('reply@me.com', $this->service->getMessage()->getReplyTo()->current()->getEmail());
         $this->assertEquals('Reply To Me', $this->service->getMessage()->getReplyTo()->current()->getName());
     }
