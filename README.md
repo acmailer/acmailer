@@ -350,6 +350,7 @@ Each concrete service configuration can define these properties:
     - **to**: It can be a string with one destination email address or an array of multiple addresses.
     - **cc**: It can be a string with one carbon copy email address or an array of multiple addresses.
     - **bcc**: It can be a string with one blind carbon copy email address or an array of multiple addresses.
+    - **encoding**: Encoding of headers. It can be a string defining encoding ('utf-8', 'ascii', etc.).
     - **subject**: Default email subject.
     - **body**: Wraps body configuration, like template, content or charset
         - **content**: A string with the default content body, either in plan text or HTML. Use it for simple emails.
