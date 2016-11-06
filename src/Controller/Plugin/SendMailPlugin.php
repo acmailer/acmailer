@@ -32,6 +32,7 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
         5 => 'bcc',
         6 => 'attachments',
         7 => 'replyTo',
+        8 => 'encoding',
     ];
 
     public function __construct(MailServiceInterface $mailService)
@@ -62,7 +63,8 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
         $cc = null,
         $bcc = null,
         $attachments = null,
-        $replyTo = null
+        $replyTo = null,
+        $encoding = null
     ) {
         $args = func_get_args();
         if (empty($args)) {
@@ -129,6 +131,10 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
 
         if (isset($args['bcc'])) {
             $this->mailService->getMessage()->setBcc($args['bcc']);
+        }
+        
+        if (isset($args['encoding'])) {
+            $this->mailService->getMessage()->setEncoding($args['encoding']);
         }
 
         if (isset($args['attachments'])) {

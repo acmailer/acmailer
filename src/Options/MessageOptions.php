@@ -42,6 +42,10 @@ class MessageOptions extends AbstractOptions
     /**
      * @var string
      */
+    protected $encoding = '';
+    /**
+     * @var string
+     */
     protected $subject = '';
     /**
      * @var BodyOptions
@@ -177,6 +181,24 @@ class MessageOptions extends AbstractOptions
     public function setBcc($bcc)
     {
         $this->bcc = (array) $bcc;
+        return $this;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getEncoding()
+    {
+        return $this->encoding;
+    }
+
+    /**
+     * @param string $encoding
+     * @return $this
+     */
+    public function setEncoding($encoding)
+    {
+        $this->encoding = $encoding;
         return $this;
     }
 

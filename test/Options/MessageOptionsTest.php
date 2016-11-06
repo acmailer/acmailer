@@ -32,6 +32,7 @@ class MessageOptionsTest extends TestCase
         $this->assertEquals([], $this->messageOptions->getTo());
         $this->assertEquals([], $this->messageOptions->getCc());
         $this->assertEquals([], $this->messageOptions->getBcc());
+        $this->assertEquals('', $this->messageOptions->getEncoding());
         $this->assertEquals('', $this->messageOptions->getSubject());
         $this->assertInstanceOf('AcMailer\Options\BodyOptions', $this->messageOptions->getBody());
         $this->assertInstanceOf('AcMailer\Options\AttachmentsOptions', $this->messageOptions->getAttachments());

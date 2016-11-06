@@ -135,6 +135,10 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
         if (! empty($bcc)) {
             $message->setBcc($bcc);
         }
+        $encoding = $options->getEncoding();
+        if (! empty($encoding)) {
+            $message->setEncoding($encoding);
+        }
 
         return $message;
     }

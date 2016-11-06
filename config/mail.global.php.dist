@@ -111,6 +111,13 @@ return [
                 //'bcc' => [],
 
                 /**
+                 * Encoding of headers
+                 *
+                 * Default value is an empty array
+                 */
+                //'encoding' => '',
+                
+                /**
                  * Email subject.
                  *
                  * Default value is an empty string
