@@ -50,6 +50,7 @@ class MailServiceAbstractFactoryTest extends TestCase
                 'to'            => ['foo@bar.com', 'bar@foo.com'],
                 'cc'            => ['account@domain.com'],
                 'bcc'           => ['hidden@domain.com'],
+                'encoding'      => 'utf-8',
                 'subject'       => 'The subject',
                 'body'          => ['content' => 'The body'],
             ]
@@ -75,6 +76,7 @@ class MailServiceAbstractFactoryTest extends TestCase
         $this->assertEquals($options['message_options']['to'], $toArray);
         $this->assertEquals($options['message_options']['cc'], $ccArray);
         $this->assertEquals($options['message_options']['bcc'], $bccArray);
+        $this->assertEquals($options['message_options']['encoding'], $mailService->getMessage()->getEncoding());
         $this->assertEquals($options['message_options']['subject'], $mailService->getMessage()->getSubject());
         $this->assertInstanceOf(Message::class, $mailService->getMessage()->getBody());
     }
