@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### 6.3.0
+
+**Enhancements:**
+
+* [135: Added header encoding option](https://github.com/acelaya/ZF2-AcMailer/pull/135)
+
 ### 6.2.0
 
 **Enhancements:**
