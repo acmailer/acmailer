@@ -277,6 +277,9 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $attachmentParts    = [];
         $info               = new \finfo(FILEINFO_MIME_TYPE);
         foreach ($this->attachments as $key => $attachment) {
+            if (is_string($attachment) && class_exists($attachment)) {
+                $attachment = new $attachment();
+            }
             if (is_callable($attachment)) {
                 $attachment = $attachment();
             }
