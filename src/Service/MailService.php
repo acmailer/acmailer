@@ -277,6 +277,13 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $attachmentParts    = [];
         $info               = new \finfo(FILEINFO_MIME_TYPE);
         foreach ($this->attachments as $key => $attachment) {
+            if (is_callable($attachment)) {
+                $attachment = $attachment();
+            }
+            if ($attachment instanceof Mime\Part) {
+                $attachmentParts[] = $attachment;
+                continue;
+            }
             if (! is_file($attachment)) {
                 continue; // If checked file is not valid, continue to the next
             }
