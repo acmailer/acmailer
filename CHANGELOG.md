@@ -1,5 +1,51 @@
 ## CHANGELOG
 
+### 6.4.0
+
+**Enhancements:**
+
+* [144: Improve file attachment strategies](https://github.com/acelaya/ZF2-AcMailer/issues/144)
+
+### 6.3.1
+
+**Tasks**
+
+* [143: Add php 7.1 to build matrix and drop hhvm](https://github.com/acelaya/ZF2-AcMailer/issues/143)
+
+**Bugs:**
+
+* [142: Events with ZF3 doesn't work](https://github.com/acelaya/ZF2-AcMailer/issues/142)
+
+### 6.3.0
+
+**Enhancements:**
+
+* [135: Added header encoding option](https://github.com/acelaya/ZF2-AcMailer/pull/135)
+
+### 6.2.0
+
+**Enhancements:**
+
+* [130: Added ConfigProvider support](https://github.com/acelaya/ZF2-AcMailer/pull/130)
+* [133: Added replyTo support in controller plugin](https://github.com/acelaya/ZF2-AcMailer/pull/133)
+
+### 6.1.0
+
+**Enhancements:**
+
+* [129: Make module installable via zend-component-installer](https://github.com/acelaya/ZF2-AcMailer/pull/129)
+
+### 6.0.0
+
+**Enhancements:**
+
+* [103: Drop support for the mail_options top-level configuration key](https://github.com/acelaya/ZF2-AcMailer/issues/103)
+* [124: Update to ZF3 components](https://github.com/acelaya/ZF2-AcMailer/issues/124)
+
+**Tasks**
+
+* [126: Drop Support for PHP 5.5](https://github.com/acelaya/ZF2-AcMailer/issues/126)
+
 ### 5.2.1
 
 **Bugs:**
