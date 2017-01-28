@@ -18,6 +18,7 @@ use Zend\Mail\Exception\ExceptionInterface as ZendMailException;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mime;
+use Zend\Stdlib\ArrayUtils;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\RendererInterface;
 
@@ -222,10 +223,9 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     }
 
     /**
-     * Renders template childrens.
-     * Inspired on Zend\View\View implementation to recursively render child models
+     * Renders template children.
+     * Inspired on Zend\View\View::renderChildren, which recursively renders children models
      * @param ViewModel $model
-     * @see Zend\View\View::renderChildren
      */
     protected function renderChildren(ViewModel $model)
     {
@@ -236,23 +236,28 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         /* @var ViewModel $child */
         foreach ($model as $child) {
             $capture = $child->captureTo();
-            if (! empty($capture)) {
-                // Recursively render children
-                $this->renderChildren($child);
-                $result = $this->renderer->render($child);
+            if (empty($capture)) {
+                continue;
+            }
 
-                if ($child->isAppend()) {
-                    $oldResult = $model->{$capture};
-                    $model->setVariable($capture, $oldResult . $result);
-                } else {
-                    $model->setVariable($capture, $result);
-                }
+            // Recursively render children
+            $this->renderChildren($child);
+            $result = $this->renderer->render($child);
+
+            if ($child->isAppend()) {
+                $oldResult = $model->{$capture};
+                $model->setVariable($capture, $oldResult . $result);
+            } else {
+                $model->setVariable($capture, $result);
             }
         }
     }
 
     /**
      * Attaches files to the message if any
+     * @throws \Zend\Mime\Exception\InvalidArgumentException
+     * @throws \Zend\Mail\Exception\InvalidArgumentException
+     * @throws \AcMailer\Exception\InvalidArgumentException
      */
     protected function attachFiles()
     {
@@ -264,34 +269,65 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $mimeMessage = $this->message->getBody();
         if (is_string($mimeMessage)) {
             $originalBodyPart = new Mime\Part($mimeMessage);
-            $originalBodyPart->type = $mimeMessage != strip_tags($mimeMessage)
-                ? Mime\Mime::TYPE_HTML
-                : Mime\Mime::TYPE_TEXT;
+            $isHtml = $mimeMessage !== strip_tags($mimeMessage);
+            $originalBodyPart->type = $isHtml ? Mime\Mime::TYPE_HTML : Mime\Mime::TYPE_TEXT;
 
-            // A Mime\Part body will be wraped into a Mime\Message, ensuring we handle a Mime\Message after this point
+            // A Mime\Part body will be wrapped into a Mime\Message, ensuring we handle a Mime\Message after this point
             $this->setBody($originalBodyPart);
             $mimeMessage = $this->message->getBody();
         }
         $oldParts = $mimeMessage->getParts();
 
         // Generate a new Mime\Part for each attachment
-        $attachmentParts    = [];
-        $info               = new \finfo(FILEINFO_MIME_TYPE);
+        $attachmentParts = [];
+        $info = null;
         foreach ($this->attachments as $key => $attachment) {
-            if (! is_file($attachment)) {
-                continue; // If checked file is not valid, continue to the next
+            // If the attachment is already a Mime\Part object, just add it
+            if ($attachment instanceof Mime\Part) {
+                $part = $attachment;
+                if (is_string($key)) {
+                    $part->id = $key;
+                    $part->filename = $key;
+                }
+                $attachmentParts[] = $part;
+            } elseif (is_string($attachment) && is_file($attachment)) {
+                $info = $info !== null ? $info : new \finfo(FILEINFO_MIME_TYPE);
+                // If the key is a string, use it as the attachment name
+                $basename = is_string($key) ? $key : basename($attachment);
+
+                $part = new Mime\Part(fopen($attachment, 'r+b'));
+                $part->id = $basename;
+                $part->filename = $basename;
+                $part->type = $info->file($attachment);
+                $part->encoding = Mime\Mime::ENCODING_BASE64;
+                $part->disposition = Mime\Mime::DISPOSITION_ATTACHMENT;
+                $attachmentParts[] = $part;
+            } elseif (is_resource($attachment)) {
+                $part = new Mime\Part($attachment);
+                if (is_string($key)) {
+                    $part->id = $key;
+                    $part->filename = $key;
+                }
+                $attachmentParts[] = $part;
+            } elseif (is_array($attachment)) {
+                $part = new Mime\Part();
+                // Set default values for certain properties in the Mime\Part object
+                $attachment = ArrayUtils::merge([
+                    'encoding' => Mime\Mime::ENCODING_BASE64,
+                    'disposition' => Mime\Mime::DISPOSITION_ATTACHMENT,
+                ], $attachment);
+                foreach ($attachment as $property => $value) {
+                    $method = 'set' . $property;
+                    if (method_exists($part, $method)) {
+                        $part->{$method}($value);
+                    }
+                }
+                if (is_string($key)) {
+                    $part->id = $key;
+                    $part->filename = $key;
+                }
+                $attachmentParts[] = $part;
             }
-
-            // If the key is a string, use it as the attachment name
-            $basename = is_string($key) ? $key : basename($attachment);
-
-            $part               = new Mime\Part(fopen($attachment, 'r'));
-            $part->id           = $basename;
-            $part->filename     = $basename;
-            $part->type         = $info->file($attachment);
-            $part->encoding     = Mime\Mime::ENCODING_BASE64;
-            $part->disposition  = Mime\Mime::DISPOSITION_ATTACHMENT;
-            $attachmentParts[]  = $part;
         }
 
         $body = new Mime\Message();

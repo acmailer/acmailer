@@ -166,7 +166,7 @@ class MailServiceTest extends TestCase
         $this->assertSame($anotherRenderer, $this->mailService->getRenderer());
     }
 
-    public function testSuccesfulMailEvent()
+    public function testSuccessfulMailEvent()
     {
         $mailListener = new MailListenerMock();
         $this->mailService->attachMailListener($mailListener);
@@ -245,7 +245,7 @@ class MailServiceTest extends TestCase
         chdir(dirname(__DIR__));
         $this->mailService->setAttachments([
             'attachments/file1',
-            'attachments/file2',
+            'with_name' => new Mime\Part(fopen('attachments/file2', 'r+b')),
             'attachments/dir/file3',
             'invalid/attachment'
         ]);
@@ -257,7 +257,77 @@ class MailServiceTest extends TestCase
         $body = $this->mailService->getMessage()->getBody();
         $this->assertInstanceOf('Zend\Mime\Message', $body);
         // The body and the three attached files make it a total of 4 parts
-        $this->assertCount(4, $body->getParts());
+        $parts = $body->getParts();
+        $this->assertCount(4, $parts);
+        $this->assertEquals('file1', $parts[1]->filename);
+        $this->assertEquals('with_name', $parts[2]->filename);
+        $this->assertEquals('file3', $parts[3]->filename);
+        chdir($cwd);
+    }
+
+    public function testAttachmentsAsResource()
+    {
+        $cwd = getcwd();
+        chdir(dirname(__DIR__));
+        $this->mailService->setAttachments([
+            'first' => fopen('attachments/file1', 'r+b'),
+            'second' => fopen('attachments/file2', 'r+b'),
+            'third' => fopen('attachments/dir/file3', 'r+b'),
+        ]);
+        $this->mailService->setBody('Body as string');
+        $result = $this->mailService->send();
+        $this->assertTrue($result->isValid());
+
+        /* @var Mime\Message $body */
+        $body = $this->mailService->getMessage()->getBody();
+        $parts = $body->getParts();
+        $this->assertCount(4, $parts);
+        $this->assertEquals('first', $parts[1]->filename);
+        $this->assertEquals('second', $parts[2]->filename);
+        $this->assertEquals('third', $parts[3]->filename);
+        chdir($cwd);
+    }
+
+    public function testAttachmentsAsArray()
+    {
+        $cwd = getcwd();
+        chdir(dirname(__DIR__));
+        $this->mailService->setAttachments([
+            'this_will_overwrite' => [
+                'id' => 'foo',
+                'filename' => 'foo',
+                'type' => 'image/png',
+                'encoding' => Mime\Mime::ENCODING_8BIT,
+                'disposition' => Mime\Mime::DISPOSITION_INLINE,
+                'content' => fopen('attachments/file1', 'r+b'),
+            ],
+            [
+                'id' => 'bar',
+                'filename' => 'bar',
+                'type' => 'image/gif',
+            ]
+        ]);
+        $this->mailService->setBody('Body as string');
+        $result = $this->mailService->send();
+        $this->assertTrue($result->isValid());
+
+        /* @var Mime\Message $body */
+        $body = $this->mailService->getMessage()->getBody();
+        $parts = $body->getParts();
+        $this->assertCount(3, $parts);
+        $this->assertEquals('this_will_overwrite', $parts[1]->id);
+        $this->assertEquals('this_will_overwrite', $parts[1]->filename);
+        $this->assertEquals('image/png', $parts[1]->type);
+        $this->assertEquals(Mime\Mime::ENCODING_8BIT, $parts[1]->encoding);
+        $this->assertEquals(Mime\Mime::DISPOSITION_INLINE, $parts[1]->disposition);
+        $this->assertTrue($parts[1]->isStream());
+        $this->assertEquals('bar', $parts[2]->id);
+        $this->assertEquals('bar', $parts[2]->filename);
+        $this->assertEquals('image/gif', $parts[2]->type);
+        $this->assertEquals(Mime\Mime::ENCODING_BASE64, $parts[2]->encoding);
+        $this->assertEquals(Mime\Mime::DISPOSITION_ATTACHMENT, $parts[2]->disposition);
+        $this->assertEquals('', $parts[2]->getContent());
+        $this->assertFalse($parts[2]->isStream());
         chdir($cwd);
     }
 
