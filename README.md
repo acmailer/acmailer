@@ -1,6 +1,6 @@
 # AcMailer
 
-[![Build Status](https://travis-ci.org/acelaya/ZF2-AcMailer.svg?branch=master)](https://travis-ci.org/acelaya/ZF2-AcMailer)
+[![Build Status](https://travis-ci.org/acelaya/ZF-AcMailer.svg?branch=master)](https://travis-ci.org/acelaya/ZF-AcMailer)
 [![Code Coverage](https://scrutinizer-ci.com/g/acelaya/ZF2-AcMailer/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/acelaya/ZF2-AcMailer/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/acelaya/ZF2-AcMailer/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/acelaya/ZF2-AcMailer/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/acelaya/zf2-acmailer/v/stable.png)](https://packagist.org/packages/acelaya/zf2-acmailer)
@@ -37,7 +37,7 @@ return [
 ```
 
 > **IMPORTANT! Version notes** 
-> * Version **6.0.0**: Support for ZF2 has been dropped and this module is now compatible with ZF3. If you need ZF2 support, stick with v5 of this module.
+> * Version **6.0.0**: Support for ZF2 has been dropped and this module is now compatible with ZF3 only. If you need ZF2 support, stick with v5 of this module.
 > * Version **5.0.0**: Important BC breaks have been introduced, so make sure not to update from earlier versions in production without reading this documentation first. It is possible to autogenerate the new configuration structure from the command line. Read the configuration section at the end of this document for more information.
 
 ### Usage
@@ -268,6 +268,29 @@ Attached images can be displayed inmail by setting the `cid` to the image filena
 <img alt="This is an attached image" src="cid:image-filename.jpg">
 ```
 
+Files can be attached as strings, which will be parsed as file paths, but resources, arrays or `Zend\Mime\Part` objects can be provided too.
+
+```php
+// Attach file as resource
+$mailService->addAttachment(fopen('data/mail/attachments/file1.pdf', 'r+b'));
+
+// Attach multiple files
+$mailService->addAttachments([
+    'another-name.pdf' => fopen('data/mail/attachments/file3.pdf', 'r+b'),
+    new Zend\Mime\Part(fopen('data/mail/attachments/file4.zip', 'r+b')),
+]);
+
+// Attach a file as an array which properties will be mapped into a Zend\Mime\Part object
+$mailService->addAttachment([
+    'id' => 'something',
+    'filename' => 'something_else',
+    'content' => file_get_contents('data/mail/attachments/file2.pdf'), // A resource can be used here too
+    'encoding' => Zend\Mime\Mime::ENCODING_7BIT, // Defaults to Zend\Mime\Mime::ENCODING_BASE64
+]);
+```
+
+The array attachment approach is very useful when you want to preconfigure the files to be attached to an email.
+
 #### Customize the Message
 
 If mail options does not fit your needs or you need to update them at runtime, the message wrapped by the MailService can be customized by getting it before calling `send()`.
@@ -365,7 +388,7 @@ Each concrete service configuration can define these properties:
                 - *params*: Array with key-value pairs with parameters to be sent to the layout. By default is an empoty array.
                 - *template_capture_to*: Capture to value for each template inside this layout. Default value is 'content'.
     - **attachments**: Wraps the configuration of attachements.
-        - *files*: Array of files to be attached. Can be an associative array where keys are attachment names and values are file paths.
+        - *files*: Array of files to be attached. Can be an associative array where keys are attachment names and values are file paths or array representations of the Mime\Part.
         - *dir*: Directory to iterate.
             - *iterate*: If it is not true, the directory won't be iterated. Default value is false.
             - *path*: The path of the directory to iterate looking for files. This files will be attached with their real names.

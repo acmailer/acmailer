@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### 6.4.0
+
+**Enhancements:**
+
+* [144: Improve file attachment strategies](https://github.com/acelaya/ZF2-AcMailer/issues/144)
+
 ### 6.3.1
 
 **Tasks**

@@ -2,24 +2,25 @@
 namespace AcMailer\Service;
 
 use AcMailer\Event\MailEvent;
-use AcMailer\Event\MailListenerInterface;
 use AcMailer\Event\MailListenerAwareInterface;
+use AcMailer\Event\MailListenerInterface;
+use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Exception\MailException;
+use AcMailer\Result\MailResult;
+use AcMailer\Result\ResultInterface;
 use AcMailer\View\DefaultLayout;
 use AcMailer\View\DefaultLayoutInterface;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManager;
-use Zend\Mail\Transport\TransportInterface;
-use Zend\Mail\Message;
-use Zend\Mime;
 use Zend\Mail\Exception\ExceptionInterface as ZendMailException;
-use AcMailer\Result\ResultInterface;
-use AcMailer\Result\MailResult;
+use Zend\Mail\Message;
+use Zend\Mail\Transport\TransportInterface;
+use Zend\Mime;
+use Zend\Stdlib\ArrayUtils;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\RendererInterface;
-use AcMailer\Exception\InvalidArgumentException;
 
 /**
  * Wraps Zend\Mail functionality
@@ -222,10 +223,9 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     }
 
     /**
-     * Renders template childrens.
-     * Inspired on Zend\View\View implementation to recursively render child models
+     * Renders template children.
+     * Inspired on Zend\View\View::renderChildren, which recursively renders children models
      * @param ViewModel $model
-     * @see Zend\View\View::renderChildren
      */
     protected function renderChildren(ViewModel $model)
     {
@@ -236,23 +236,28 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         /* @var ViewModel $child */
         foreach ($model as $child) {
             $capture = $child->captureTo();
-            if (! empty($capture)) {
-                // Recursively render children
-                $this->renderChildren($child);
-                $result = $this->renderer->render($child);
+            if (empty($capture)) {
+                continue;
+            }
 
-                if ($child->isAppend()) {
-                    $oldResult = $model->{$capture};
-                    $model->setVariable($capture, $oldResult . $result);
-                } else {
-                    $model->setVariable($capture, $result);
-                }
+            // Recursively render children
+            $this->renderChildren($child);
+            $result = $this->renderer->render($child);
+
+            if ($child->isAppend()) {
+                $oldResult = $model->{$capture};
+                $model->setVariable($capture, $oldResult . $result);
+            } else {
+                $model->setVariable($capture, $result);
             }
         }
     }
 
     /**
      * Attaches files to the message if any
+     * @throws \Zend\Mime\Exception\InvalidArgumentException
+     * @throws \Zend\Mail\Exception\InvalidArgumentException
+     * @throws \AcMailer\Exception\InvalidArgumentException
      */
     protected function attachFiles()
     {
@@ -264,34 +269,67 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $mimeMessage = $this->message->getBody();
         if (is_string($mimeMessage)) {
             $originalBodyPart = new Mime\Part($mimeMessage);
-            $originalBodyPart->type = $mimeMessage != strip_tags($mimeMessage)
-                ? Mime\Mime::TYPE_HTML
-                : Mime\Mime::TYPE_TEXT;
+            $isHtml = $mimeMessage !== strip_tags($mimeMessage);
+            $originalBodyPart->type = $isHtml ? Mime\Mime::TYPE_HTML : Mime\Mime::TYPE_TEXT;
 
-            // A Mime\Part body will be wraped into a Mime\Message, ensuring we handle a Mime\Message after this point
+            // A Mime\Part body will be wrapped into a Mime\Message, ensuring we handle a Mime\Message after this point
             $this->setBody($originalBodyPart);
             $mimeMessage = $this->message->getBody();
         }
         $oldParts = $mimeMessage->getParts();
 
         // Generate a new Mime\Part for each attachment
-        $attachmentParts    = [];
-        $info               = new \finfo(FILEINFO_MIME_TYPE);
+        $attachmentParts = [];
+        $info = null;
         foreach ($this->attachments as $key => $attachment) {
-            if (! is_file($attachment)) {
-                continue; // If checked file is not valid, continue to the next
+            $encodingAndDispositionAreSet = false;
+
+            if ($attachment instanceof Mime\Part) {
+                // If the attachment is already a Mime\Part object, just add it
+                $part = $attachment;
+                $encodingAndDispositionAreSet = true;
+            } elseif (is_string($attachment) && is_file($attachment)) {
+                // If the attachment is a string that corresponds to a file, process it and create a Mime\Part
+                $info = $info !== null ? $info : new \finfo(FILEINFO_MIME_TYPE);
+                // If the key is not defined, use the attachment's basename
+                $key = is_string($key) ? $key : basename($attachment);
+
+                $part = new Mime\Part(fopen($attachment, 'r+b'));
+                $part->type = $info->file($attachment);
+            } elseif (is_resource($attachment)) {
+                // If the attachment is a resource, use it as the content for a new Mime\Part
+                $part = new Mime\Part($attachment);
+            } elseif (is_array($attachment)) {
+                // If the attachment is an array, map a Mime\Part object with the array properties
+                $part = new Mime\Part();
+                $encodingAndDispositionAreSet = true;
+                // Set default values for certain properties in the Mime\Part object
+                $attachment = ArrayUtils::merge([
+                    'encoding' => Mime\Mime::ENCODING_BASE64,
+                    'disposition' => Mime\Mime::DISPOSITION_ATTACHMENT,
+                ], $attachment);
+                foreach ($attachment as $property => $value) {
+                    $method = 'set' . $property;
+                    if (method_exists($part, $method)) {
+                        $part->{$method}($value);
+                    }
+                }
+            } else {
+                // Ignore any other kind of attachment
+                continue;
             }
 
-            // If the key is a string, use it as the attachment name
-            $basename = is_string($key) ? $key : basename($attachment);
-
-            $part               = new Mime\Part(fopen($attachment, 'r'));
-            $part->id           = $basename;
-            $part->filename     = $basename;
-            $part->type         = $info->file($attachment);
-            $part->encoding     = Mime\Mime::ENCODING_BASE64;
-            $part->disposition  = Mime\Mime::DISPOSITION_ATTACHMENT;
-            $attachmentParts[]  = $part;
+            // Overwrite the id and filename of the Mime\Part with provided key if any
+            if (is_string($key)) {
+                $part->id = $key;
+                $part->filename = $key;
+            }
+            // Make sure encoding and disposition have a default value
+            if (! $encodingAndDispositionAreSet) {
+                $part->encoding = Mime\Mime::ENCODING_BASE64;
+                $part->disposition = Mime\Mime::DISPOSITION_ATTACHMENT;
+            }
+            $attachmentParts[] = $part;
         }
 
         $body = new Mime\Message();
@@ -312,36 +350,36 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     }
 
     /**
-     * @param string $path
+     * @param string|resource|array|Mime\Part $file
      * @param string|null $filename
      * @return $this
      */
-    public function addAttachment($path, $filename = null)
+    public function addAttachment($file, $filename = null)
     {
-        if (isset($filename)) {
-            $this->attachments[$filename] = $path;
+        if ($filename !== null) {
+            $this->attachments[$filename] = $file;
         } else {
-            $this->attachments[] = $path;
+            $this->attachments[] = $file;
         }
         return $this;
     }
 
     /**
-     * @param array $paths
+     * @param array $files
      * @return $this
      */
-    public function addAttachments(array $paths)
+    public function addAttachments(array $files)
     {
-        return $this->setAttachments(array_merge($this->attachments, $paths));
+        return $this->setAttachments(array_merge($this->attachments, $files));
     }
 
     /**
-     * @param array $paths
+     * @param array $files
      * @return $this
      */
-    public function setAttachments(array $paths)
+    public function setAttachments(array $files)
     {
-        $this->attachments = $paths;
+        $this->attachments = $files;
         return $this;
     }
 

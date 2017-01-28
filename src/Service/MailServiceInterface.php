@@ -6,6 +6,7 @@ use AcMailer\Mail\Transport\TransportAwareInterface;
 use AcMailer\Result\ResultInterface;
 use AcMailer\View\DefaultLayoutInterface;
 use AcMailer\View\RendererAwareInterface;
+use Zend\Mime\Part;
 
 /**
  * Provides methods to be implemented by a valid MailService
@@ -62,17 +63,17 @@ interface MailServiceInterface extends TransportAwareInterface, RendererAwareInt
     /**
      * Provides the path of a file that will be attached to the message while sending it,
      * as well as other previously defined attachments
-     * @param string $path
+     * @param string|resource|array|Part $file
      * @param string|null $filename
      */
-    public function addAttachment($path, $filename = null);
+    public function addAttachment($file, $filename = null);
 
     /**
      * Provides an array of paths of files that will be attached to the message while sending it,
      * as well as other previously defined attachments
-     * @param array $paths
+     * @param array $files
      */
-    public function addAttachments(array $paths);
+    public function addAttachments(array $files);
 
     /**
      * Returns the list of attachments
@@ -83,7 +84,7 @@ interface MailServiceInterface extends TransportAwareInterface, RendererAwareInt
     /**
      * Sets the list of paths of files that will be attached to the message while sending it,
      * discarding any previously defined attachment
-     * @param array $paths
+     * @param array $files
      */
-    public function setAttachments(array $paths);
+    public function setAttachments(array $files);
 }
