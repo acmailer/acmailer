@@ -283,6 +283,8 @@ class MailServiceTest extends TestCase
         $parts = $body->getParts();
         $this->assertCount(4, $parts);
         $this->assertEquals('first', $parts[1]->filename);
+        $this->assertEquals(Mime\Mime::ENCODING_BASE64, $parts[1]->encoding);
+        $this->assertEquals(Mime\Mime::DISPOSITION_ATTACHMENT, $parts[1]->disposition);
         $this->assertEquals('second', $parts[2]->filename);
         $this->assertEquals('third', $parts[3]->filename);
         chdir($cwd);

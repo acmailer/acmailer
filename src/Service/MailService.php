@@ -282,35 +282,27 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
         $attachmentParts = [];
         $info = null;
         foreach ($this->attachments as $key => $attachment) {
-            // If the attachment is already a Mime\Part object, just add it
+            $encodingAndDispositionAreSet = false;
+
             if ($attachment instanceof Mime\Part) {
+                // If the attachment is already a Mime\Part object, just add it
                 $part = $attachment;
-                if (is_string($key)) {
-                    $part->id = $key;
-                    $part->filename = $key;
-                }
-                $attachmentParts[] = $part;
+                $encodingAndDispositionAreSet = true;
             } elseif (is_string($attachment) && is_file($attachment)) {
+                // If the attachment is a string that corresponds to a file, process it and create a Mime\Part
                 $info = $info !== null ? $info : new \finfo(FILEINFO_MIME_TYPE);
-                // If the key is a string, use it as the attachment name
-                $basename = is_string($key) ? $key : basename($attachment);
+                // If the key is not defined, use the attachment's basename
+                $key = is_string($key) ? $key : basename($attachment);
 
                 $part = new Mime\Part(fopen($attachment, 'r+b'));
-                $part->id = $basename;
-                $part->filename = $basename;
                 $part->type = $info->file($attachment);
-                $part->encoding = Mime\Mime::ENCODING_BASE64;
-                $part->disposition = Mime\Mime::DISPOSITION_ATTACHMENT;
-                $attachmentParts[] = $part;
             } elseif (is_resource($attachment)) {
+                // If the attachment is a resource, use it as the content for a new Mime\Part
                 $part = new Mime\Part($attachment);
-                if (is_string($key)) {
-                    $part->id = $key;
-                    $part->filename = $key;
-                }
-                $attachmentParts[] = $part;
             } elseif (is_array($attachment)) {
+                // If the attachment is an array, map a Mime\Part object with the array properties
                 $part = new Mime\Part();
+                $encodingAndDispositionAreSet = true;
                 // Set default values for certain properties in the Mime\Part object
                 $attachment = ArrayUtils::merge([
                     'encoding' => Mime\Mime::ENCODING_BASE64,
@@ -322,12 +314,22 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
                         $part->{$method}($value);
                     }
                 }
-                if (is_string($key)) {
-                    $part->id = $key;
-                    $part->filename = $key;
-                }
-                $attachmentParts[] = $part;
+            } else {
+                // Ignore any other kind of attachment
+                continue;
             }
+
+            // Overwrite the id and filename of the Mime\Part with provided key if any
+            if (is_string($key)) {
+                $part->id = $key;
+                $part->filename = $key;
+            }
+            // Make sure encoding and disposition have a default value
+            if (! $encodingAndDispositionAreSet) {
+                $part->encoding = Mime\Mime::ENCODING_BASE64;
+                $part->disposition = Mime\Mime::DISPOSITION_ATTACHMENT;
+            }
+            $attachmentParts[] = $part;
         }
 
         $body = new Mime\Message();
