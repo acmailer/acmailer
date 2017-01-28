@@ -1,5 +1,15 @@
 ## CHANGELOG
 
+### 6.3.1
+
+**Tasks**
+
+* [143: Add php 7.1 to build matrix and drop hhvm](https://github.com/acelaya/ZF2-AcMailer/issues/143)
+
+**Bugs:**
+
+* [142: Events with ZF3 doesn't work](https://github.com/acelaya/ZF2-AcMailer/issues/142)
+
 ### 6.3.0
 
 **Enhancements:**
