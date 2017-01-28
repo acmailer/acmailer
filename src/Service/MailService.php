@@ -2,24 +2,24 @@
 namespace AcMailer\Service;
 
 use AcMailer\Event\MailEvent;
-use AcMailer\Event\MailListenerInterface;
 use AcMailer\Event\MailListenerAwareInterface;
+use AcMailer\Event\MailListenerInterface;
+use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Exception\MailException;
+use AcMailer\Result\MailResult;
+use AcMailer\Result\ResultInterface;
 use AcMailer\View\DefaultLayout;
 use AcMailer\View\DefaultLayoutInterface;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManager;
-use Zend\Mail\Transport\TransportInterface;
-use Zend\Mail\Message;
-use Zend\Mime;
 use Zend\Mail\Exception\ExceptionInterface as ZendMailException;
-use AcMailer\Result\ResultInterface;
-use AcMailer\Result\MailResult;
+use Zend\Mail\Message;
+use Zend\Mail\Transport\TransportInterface;
+use Zend\Mime;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\RendererInterface;
-use AcMailer\Exception\InvalidArgumentException;
 
 /**
  * Wraps Zend\Mail functionality
@@ -312,36 +312,36 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     }
 
     /**
-     * @param string $path
+     * @param string|resource|array|Mime\Part $file
      * @param string|null $filename
      * @return $this
      */
-    public function addAttachment($path, $filename = null)
+    public function addAttachment($file, $filename = null)
     {
-        if (isset($filename)) {
-            $this->attachments[$filename] = $path;
+        if ($filename !== null) {
+            $this->attachments[$filename] = $file;
         } else {
-            $this->attachments[] = $path;
+            $this->attachments[] = $file;
         }
         return $this;
     }
 
     /**
-     * @param array $paths
+     * @param array $files
      * @return $this
      */
-    public function addAttachments(array $paths)
+    public function addAttachments(array $files)
     {
-        return $this->setAttachments(array_merge($this->attachments, $paths));
+        return $this->setAttachments(array_merge($this->attachments, $files));
     }
 
     /**
-     * @param array $paths
+     * @param array $files
      * @return $this
      */
-    public function setAttachments(array $paths)
+    public function setAttachments(array $files)
     {
-        $this->attachments = $paths;
+        $this->attachments = $files;
         return $this;
     }
 
