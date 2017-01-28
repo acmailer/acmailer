@@ -10,6 +10,7 @@ use AcMailer\View\DefaultLayoutInterface;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\SharedEventManager;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mail\Message;
 use Zend\Mime;
@@ -375,7 +376,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     public function getEventManager()
     {
         if (! isset($this->events)) {
-            $this->setEventManager(new EventManager());
+            $this->setEventManager(new EventManager(new SharedEventManager()));
         }
 
         return $this->events;
