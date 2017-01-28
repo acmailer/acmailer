@@ -356,10 +356,10 @@ class MailServiceAbstractFactoryTest extends TestCase
         // Make getListenersByEventName method public
         $em = $mailService->getEventManager();
         $refObject = new \ReflectionObject($em);
-        $method = $refObject->getMethod('getListenersByEventName');
-        $method->setAccessible(true);
+        $prop = $refObject->getProperty('events');
+        $prop->setAccessible(true);
 
-        $this->assertCount(3, $method->invoke($em, MailEvent::EVENT_MAIL_PRE_SEND));
+        $this->assertCount(3, $prop->getValue($em)[MailEvent::EVENT_MAIL_PRE_SEND][1][0]);
     }
 
     /**
