@@ -31,9 +31,9 @@ class MailOptionsTest extends TestCase
     {
         $this->assertEquals('\Zend\Mail\Transport\Sendmail', $this->mailOptions->getMailAdapter());
         $this->assertEquals('\Zend\Mail\Transport\Sendmail', $this->mailOptions->getTransport());
-        $this->assertInstanceOf('AcMailer\Options\MessageOptions', $this->mailOptions->getMessageOptions());
-        $this->assertInstanceOf('Zend\Mail\Transport\SmtpOptions', $this->mailOptions->getSmtpOptions());
-        $this->assertInstanceOf('Zend\Mail\Transport\FileOptions', $this->mailOptions->getFileOptions());
+        $this->assertInstanceOf(MessageOptions::class, $this->mailOptions->getMessageOptions());
+        $this->assertInstanceOf(SmtpOptions::class, $this->mailOptions->getSmtpOptions());
+        $this->assertInstanceOf(FileOptions::class, $this->mailOptions->getFileOptions());
         $this->assertEquals([], $this->mailOptions->getMailListeners());
     }
 
@@ -73,7 +73,7 @@ class MailOptionsTest extends TestCase
         $this->assertSame($expected, $this->mailOptions->getMessageOptions());
 
         $this->mailOptions->setMessageOptions([]);
-        $this->assertInstanceOf('AcMailer\Options\MessageOptions', $this->mailOptions->getMessageOptions());
+        $this->assertInstanceOf(MessageOptions::class, $this->mailOptions->getMessageOptions());
     }
 
     /**
@@ -91,7 +91,7 @@ class MailOptionsTest extends TestCase
         $this->assertSame($expected, $this->mailOptions->getSmtpOptions());
 
         $this->mailOptions->setSmtpOptions([]);
-        $this->assertInstanceOf('Zend\Mail\Transport\SmtpOptions', $this->mailOptions->getSmtpOptions());
+        $this->assertInstanceOf(SmtpOptions::class, $this->mailOptions->getSmtpOptions());
     }
 
     /**
@@ -109,7 +109,7 @@ class MailOptionsTest extends TestCase
         $this->assertSame($expected, $this->mailOptions->getFileOptions());
 
         $this->mailOptions->setFileOptions([]);
-        $this->assertInstanceOf('Zend\Mail\Transport\FileOptions', $this->mailOptions->getFileOptions());
+        $this->assertInstanceOf(FileOptions::class, $this->mailOptions->getFileOptions());
     }
 
     /**

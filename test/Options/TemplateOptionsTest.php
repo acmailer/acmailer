@@ -62,7 +62,7 @@ class TemplateOptionsTest extends TestCase
     {
         /* @var TemplateOptions $child */
         foreach ($children as $child) {
-            $this->assertInstanceOf('AcMailer\Options\TemplateOptions', $child);
+            $this->assertInstanceOf(TemplateOptions::class, $child);
             $this->recursiveChildAssert($child->getChildren());
         }
     }

@@ -5,6 +5,7 @@ use AcMailer\Event\MailEvent;
 use AcMailer\Options\MailOptions;
 use AcMailer\Service\Factory\MailServiceAbstractFactory;
 use AcMailer\Service\Factory\MailServiceFactory;
+use AcMailer\Service\MailService;
 use AcMailerTest\Event\MailListenerMock;
 use AcMailerTest\ServiceManager\ServiceManagerMock;
 use Zend\EventManager\EventManagerAwareInterface;
@@ -15,6 +16,7 @@ use Zend\Mime\Message;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stdlib\ArrayUtils;
 use Zend\View\Renderer\PhpRenderer;
+use Zend\View\Resolver\TemplateMapResolver;
 use Zend\View\Resolver\TemplatePathStack;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -61,7 +63,7 @@ class MailServiceAbstractFactoryTest extends TestCase
             'acmailer.mailservice.default'
         );
 
-        $this->assertInstanceOf('AcMailer\Service\MailService', $mailService);
+        $this->assertInstanceOf(MailService::class, $mailService);
         $this->assertEquals(
             $options['message_options']['from_name'],
             $mailService->getMessage()->getFrom()->get($options['message_options']['from'])->getName()
@@ -84,7 +86,7 @@ class MailServiceAbstractFactoryTest extends TestCase
     public function testSmtpAdapter()
     {
         $options = [
-            'mail_adapter' => 'Zend\Mail\Transport\Smtp',
+            'mail_adapter' => Smtp::class,
             'smtp_options' => [
                 'host'  => 'the.host',
                 'port'  => 465,
@@ -131,7 +133,7 @@ class MailServiceAbstractFactoryTest extends TestCase
 
         /* @var File $transport */
         $transport = $mailService->getTransport();
-        $this->assertInstanceOf('Zend\Mail\Transport\File', $transport);
+        $this->assertInstanceOf(File::class, $transport);
         $this->assertEquals($options['file_options']['path'], $transport->getOptions()->getPath());
         $this->assertEquals($options['file_options']['callback'], $transport->getOptions()->getCallback());
     }
@@ -202,8 +204,8 @@ class MailServiceAbstractFactoryTest extends TestCase
         );
         /** @var PhpRenderer $renderer */
         $renderer = $mailService->getRenderer();
-        $this->assertInstanceOf('Zend\View\Renderer\PhpRenderer', $renderer);
-        $this->assertInstanceOf('Zend\View\Resolver\TemplatePathStack', $renderer->resolver());
+        $this->assertInstanceOf(PhpRenderer::class, $renderer);
+        $this->assertInstanceOf(TemplatePathStack::class, $renderer->resolver());
 
         // Set a template_map and unset the template_path_stack
         $config = $this->serviceLocator->get('Config');
@@ -216,8 +218,8 @@ class MailServiceAbstractFactoryTest extends TestCase
         );
         /** @var PhpRenderer $renderer */
         $renderer = $mailService->getRenderer();
-        $this->assertInstanceOf('Zend\View\Renderer\PhpRenderer', $renderer);
-        $this->assertInstanceOf('Zend\View\Resolver\TemplateMapResolver', $renderer->resolver());
+        $this->assertInstanceOf(PhpRenderer::class, $renderer);
+        $this->assertInstanceOf(TemplateMapResolver::class, $renderer->resolver());
 
         // Set both a template_map and a template_path_stack
         $this->initServiceLocator();
@@ -274,7 +276,7 @@ class MailServiceAbstractFactoryTest extends TestCase
         );
 
         $this->assertNotEquals($options ['message_options']['body']['content'], $mailService->getMessage()->getBody());
-        $this->assertInstanceOf('Zend\Mime\Message', $mailService->getMessage()->getBody());
+        $this->assertInstanceOf(Message::class, $mailService->getMessage()->getBody());
     }
 
     public function testWithDefaultLayout()
@@ -303,7 +305,7 @@ class MailServiceAbstractFactoryTest extends TestCase
             $this->serviceLocator,
             'acmailer.mailservice.default'
         );
-        $this->assertInstanceOf('Zend\Mime\Message', $mailService->getMessage()->getBody());
+        $this->assertInstanceOf(Message::class, $mailService->getMessage()->getBody());
     }
 
     public function testFileAttachments()
@@ -341,7 +343,7 @@ class MailServiceAbstractFactoryTest extends TestCase
             'mail_listeners' => [
                 new MailListenerMock(),
                 'mail_listener_service',
-                'AcMailerTest\Event\MailListenerMock'
+                MailListenerMock::class,
             ]
         ];
         $this->initServiceLocator($options);

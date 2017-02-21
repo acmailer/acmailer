@@ -34,8 +34,8 @@ class MessageOptionsTest extends TestCase
         $this->assertEquals([], $this->messageOptions->getBcc());
         $this->assertEquals('', $this->messageOptions->getEncoding());
         $this->assertEquals('', $this->messageOptions->getSubject());
-        $this->assertInstanceOf('AcMailer\Options\BodyOptions', $this->messageOptions->getBody());
-        $this->assertInstanceOf('AcMailer\Options\AttachmentsOptions', $this->messageOptions->getAttachments());
+        $this->assertInstanceOf(BodyOptions::class, $this->messageOptions->getBody());
+        $this->assertInstanceOf(AttachmentsOptions::class, $this->messageOptions->getAttachments());
     }
 
     public function testSetBody()
@@ -45,7 +45,7 @@ class MessageOptionsTest extends TestCase
         $this->assertSame($expected, $this->messageOptions->getBody());
 
         $this->messageOptions->setBody([]);
-        $this->assertInstanceOf('AcMailer\Options\BodyOptions', $this->messageOptions->getBody());
+        $this->assertInstanceOf(BodyOptions::class, $this->messageOptions->getBody());
     }
 
     public function testSetAttachments()
@@ -55,7 +55,7 @@ class MessageOptionsTest extends TestCase
         $this->assertSame($expected, $this->messageOptions->getAttachments());
 
         $this->messageOptions->setAttachments([]);
-        $this->assertInstanceOf('AcMailer\Options\AttachmentsOptions', $this->messageOptions->getAttachments());
+        $this->assertInstanceOf(AttachmentsOptions::class, $this->messageOptions->getAttachments());
     }
 
     /**

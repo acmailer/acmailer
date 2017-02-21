@@ -2,6 +2,7 @@
 namespace AcMailerTest\Controller\Plugin;
 
 use AcMailer\Controller\Plugin\SendMailPlugin;
+use AcMailer\Result\ResultInterface;
 use AcMailer\Service\MailServiceInterface;
 use AcMailer\Service\MailServiceMock;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -31,7 +32,7 @@ class SendMailPluginTest extends TestCase
 
     public function testInvokeWithNoArgumentsReturnsTheService()
     {
-        $this->assertInstanceOf('AcMailer\Service\MailServiceInterface', $this->plugin->__invoke());
+        $this->assertInstanceOf(MailServiceInterface::class, $this->plugin->__invoke());
     }
 
     public function testFirstArgumentArrayIsTreatedAsConfig()
@@ -42,7 +43,7 @@ class SendMailPluginTest extends TestCase
         ];
 
         $result = $this->plugin->__invoke($config);
-        $this->assertInstanceOf('AcMailer\Result\ResultInterface', $result);
+        $this->assertInstanceOf(ResultInterface::class, $result);
         $this->assertEquals($config['body'], $this->service->getMessage()->getBody());
         $this->assertEquals($config['subject'], $this->service->getMessage()->getSubject());
     }
@@ -61,7 +62,7 @@ class SendMailPluginTest extends TestCase
             'utf-8'
         );
 
-        $this->assertInstanceOf('AcMailer\Result\ResultInterface', $result);
+        $this->assertInstanceOf(ResultInterface::class, $result);
         $this->assertEquals('theBody', $this->service->getMessage()->getBody());
         $this->assertEquals('theSubject', $this->service->getMessage()->getSubject());
         $this->assertEquals('foobar@me.com', $this->service->getMessage()->getTo()->current()->getEmail());
@@ -78,7 +79,7 @@ class SendMailPluginTest extends TestCase
     {
         $result = $this->plugin->__invoke('theBody', 'theSubject', ['foobar@me.com'], 'from@me.com');
 
-        $this->assertInstanceOf('AcMailer\Result\ResultInterface', $result);
+        $this->assertInstanceOf(ResultInterface::class, $result);
         $this->assertEquals('from@me.com', $this->service->getMessage()->getFrom()->current()->getEmail());
     }
     
@@ -95,7 +96,7 @@ class SendMailPluginTest extends TestCase
             'replyTo@me.com'
         );
 
-        $this->assertInstanceOf('AcMailer\Result\ResultInterface', $result);
+        $this->assertInstanceOf(ResultInterface::class, $result);
         $this->assertEquals('replyTo@me.com', $this->service->getMessage()->getReplyTo()->current()->getEmail());
     }
 
@@ -103,7 +104,7 @@ class SendMailPluginTest extends TestCase
     {
         $result = $this->plugin->__invoke(new ViewModel());
 
-        $this->assertInstanceOf('AcMailer\Result\ResultInterface', $result);
+        $this->assertInstanceOf(ResultInterface::class, $result);
         $this->assertEquals('ViewModel body', $this->service->getMessage()->getBody());
     }
 
