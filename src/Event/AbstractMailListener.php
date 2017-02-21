@@ -12,7 +12,7 @@ use Zend\EventManager\EventManagerInterface;
 abstract class AbstractMailListener extends AbstractListenerAggregate implements MailListenerInterface
 {
     /**
-     * @var \Zend\Stdlib\CallbackHandler[]
+     * @var callable[]
      */
     protected $listeners = [];
 

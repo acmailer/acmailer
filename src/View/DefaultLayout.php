@@ -12,7 +12,7 @@ use Zend\View\Model\ViewModel;
 class DefaultLayout implements DefaultLayoutInterface
 {
     /**
-     * @var ViewModel
+     * @var null|ViewModel
      */
     protected $model;
     /**

@@ -209,9 +209,9 @@ class MailOptions extends AbstractOptions
      * @param array $mailListeners
      * @return $this
      */
-    public function setMailListeners($mailListeners)
+    public function setMailListeners(array $mailListeners)
     {
-        $this->mailListeners = (array) $mailListeners;
+        $this->mailListeners = $mailListeners;
         return $this;
     }
 
