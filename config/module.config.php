@@ -1,25 +1,28 @@
 <?php
+
+namespace AcMailer;
+
 return [
 
     'service_manager' => [
         'invokables' => [
-            'AcMailer\Service\ConfigMigrationService' => 'AcMailer\Service\ConfigMigrationService'
+            Service\ConfigMigrationService::class => Service\ConfigMigrationService::class,
         ],
         'abstract_factories' => [
-            'AcMailer\Service\Factory\MailServiceAbstractFactory',
-            'AcMailer\Options\Factory\MailOptionsAbstractFactory'
+            Service\Factory\MailServiceAbstractFactory::class,
+            Options\Factory\MailOptionsAbstractFactory::class,
         ],
         'aliases' => [
             'mailservice' => 'acmailer.mailservice.default',
-            'AcMailer\Service\MailService' => 'acmailer.mailservice.default',
-            'AcMailer\Options\MailOptions' => 'acmailer.mailoptions.default',
-            'mailviewrenderer' => 'viewrenderer'
-        ]
+            MailService::class => 'acmailer.mailservice.default',
+            Options\MailOptions::class => 'acmailer.mailoptions.default',
+            'mailviewrenderer' => 'viewrenderer',
+        ],
     ],
 
     'controller_plugins' => [
         'abstract_factories' => [
-            'AcMailer\Controller\Plugin\Factory\SendMailPluginAbstractFactory'
+            Controller\Plugin\Factory\SendMailPluginAbstractFactory::class,
         ]
     ],
 
@@ -31,7 +34,7 @@ return [
 
     'controllers' => [
         'factories' => [
-            'AcMailer\Controller\ConfigMigration' => 'AcMailer\Controller\Factory\ConfigMigrationControllerFactory'
+            Controller\ConfigMigration::class => Controller\Factory\ConfigMigrationControllerFactory::class,
         ]
     ],
 
@@ -42,7 +45,7 @@ return [
                     'options' => [
                         'route' => 'acmailer parse-config [--configKey=] [--format=(php|xml|ini|json)] [--outputFile=]',
                         'defaults' => [
-                            'controller' => 'AcMailer\Controller\ConfigMigration',
+                            'controller' => Controller\ConfigMigration::class,
                             'action'     => 'parse-config'
                         ]
                     ]
