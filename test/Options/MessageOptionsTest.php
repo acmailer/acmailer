@@ -4,7 +4,7 @@ namespace AcMailerTest\Options;
 use AcMailer\Options\AttachmentsOptions;
 use AcMailer\Options\BodyOptions;
 use AcMailer\Options\MessageOptions;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class MessageOptionsTest

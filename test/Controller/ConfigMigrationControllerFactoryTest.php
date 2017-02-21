@@ -5,7 +5,7 @@ use AcMailer\Controller\ConfigMigrationController;
 use AcMailer\Controller\Factory\ConfigMigrationControllerFactory;
 use AcMailer\Service\ConfigMigrationService;
 use AcMailerTest\ServiceManager\ServiceManagerMock;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class ConfigMigrationControllerFactoryTest

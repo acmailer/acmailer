@@ -5,7 +5,7 @@ use AcMailer\Options\Factory\MailOptionsAbstractFactory;
 use AcMailer\Options\MailOptions;
 use AcMailerTest\ServiceManager\ServiceManagerMock;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class MailOptionsFactoryTest
