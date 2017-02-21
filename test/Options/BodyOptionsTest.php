@@ -4,7 +4,7 @@ namespace AcMailerTest\Options;
 use AcMailer\Options\BodyOptions;
 use AcMailer\Options\TemplateOptions;
 use AcMailer\Service\MailServiceInterface;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 class BodyOptionsTest extends TestCase
 {

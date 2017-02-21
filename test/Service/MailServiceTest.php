@@ -13,7 +13,7 @@ use AcMailer\Service\MailService;
 use Zend\Mime;
 use AcMailer\Result\MailResult;
 use Zend\View\Resolver\TemplatePathStack;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Mail service test case

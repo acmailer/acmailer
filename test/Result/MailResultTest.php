@@ -3,7 +3,7 @@ namespace AcMailerTest\Result;
 
 use AcMailer\Result\MailResult;
 use AcMailer\Result\ResultInterface;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Mail result test case

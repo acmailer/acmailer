@@ -5,7 +5,7 @@ use AcMailer\Controller\Plugin\Factory\SendMailPluginAbstractFactory;
 use AcMailer\Controller\Plugin\SendMailPlugin;
 use AcMailer\Service\Factory\MailServiceAbstractFactory;
 use AcMailer\Service\MailServiceMock;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\ServiceManager\ServiceManager;
 
 /**

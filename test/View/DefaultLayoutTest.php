@@ -2,7 +2,7 @@
 namespace AcMailerTest\View;
 
 use AcMailer\View\DefaultLayout;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\View\Model\ViewModel;
 
 class DefaultLayoutTest extends TestCase

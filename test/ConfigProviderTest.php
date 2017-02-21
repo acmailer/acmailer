@@ -2,7 +2,7 @@
 namespace AcMailerTest;
 
 use AcMailer\ConfigProvider;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 class ConfigProviderTest extends TestCase
 {

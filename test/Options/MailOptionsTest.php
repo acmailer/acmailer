@@ -3,7 +3,7 @@ namespace AcMailerTest\Options;
 
 use AcMailer\Options\MailOptions;
 use AcMailer\Options\MessageOptions;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Mail\Transport\File;
 use Zend\Mail\Transport\FileOptions;
 use Zend\Mail\Transport\Sendmail;

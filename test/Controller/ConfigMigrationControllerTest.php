@@ -5,7 +5,7 @@ use AcMailer\Controller\ConfigMigrationController;
 use AcMailer\Service\ConfigMigrationService;
 use AcMailerTest\Console\AdapterMock;
 use Zend\Console\Request;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Stdlib\Parameters;
 
 /**
