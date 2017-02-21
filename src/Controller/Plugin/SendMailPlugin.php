@@ -71,6 +71,7 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
             return $this->mailService;
         }
 
+        $this->mailService->getMessage()->setEncoding('UTF-8');
         $args = $this->normalizeMailArgs($args);
         $this->applyArgsToMailService($args);
         return $this->mailService->send();
