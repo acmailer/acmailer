@@ -26,8 +26,8 @@ abstract class AbstractAcMailerFactory implements AbstractFactoryInterface
      */
     public function canCreate(ContainerInterface $container, $requestedName)
     {
-        $parts = explode('.', $requestedName);
-        if (count($parts) !== 3) {
+        $parts = \explode('.', $requestedName);
+        if (\count($parts) !== 3) {
             return false;
         }
 
@@ -37,7 +37,7 @@ abstract class AbstractAcMailerFactory implements AbstractFactoryInterface
 
         $specificServiceName = $parts[2];
         $config = $this->getConfig($container);
-        return array_key_exists($specificServiceName, $config);
+        return \array_key_exists($specificServiceName, $config);
     }
 
     /**
@@ -47,7 +47,7 @@ abstract class AbstractAcMailerFactory implements AbstractFactoryInterface
     protected function getConfig(ContainerInterface $container)
     {
         $config = $container->get('Config');
-        if (isset($config['acmailer_options']) && is_array($config['acmailer_options'])) {
+        if (isset($config['acmailer_options']) && \is_array($config['acmailer_options'])) {
             return $config['acmailer_options'];
         }
 

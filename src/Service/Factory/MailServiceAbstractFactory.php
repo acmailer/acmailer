@@ -49,9 +49,9 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $specificServiceName = explode('.', $requestedName)[2];
+        $specificServiceName = \explode('.', $requestedName)[2];
         $this->mailOptions = $container->get(
-            sprintf('%s.%s.%s', self::ACMAILER_PART, MailOptionsAbstractFactory::SPECIFIC_PART, $specificServiceName)
+            \sprintf('%s.%s.%s', self::ACMAILER_PART, MailOptionsAbstractFactory::SPECIFIC_PART, $specificServiceName)
         );
 
         // Create the service
@@ -85,7 +85,7 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
 
         // Attach files from dir
         $dir = $this->mailOptions->getMessageOptions()->getAttachments()->getDir();
-        if ($dir['iterate'] === true && is_string($dir['path']) && is_dir($dir['path'])) {
+        if ($dir['iterate'] === true && \is_string($dir['path']) && \is_dir($dir['path'])) {
             $files = $dir['recursive'] === true ?
                 new \RecursiveIteratorIterator(
                     new \RecursiveDirectoryIterator($dir['path'], \RecursiveDirectoryIterator::SKIP_DOTS),
@@ -156,7 +156,7 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
         }
 
         // Check if the adapter is a service
-        if (is_string($adapter) && $container->has($adapter)) {
+        if (\is_string($adapter) && $container->has($adapter)) {
             /** @var TransportInterface $transport */
             $transport = $container->get($adapter);
             if ($transport instanceof TransportInterface) {
@@ -169,14 +169,14 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
         }
 
         // Check if the adapter is one of Zend's default adapters
-        if (is_string($adapter) && is_subclass_of($adapter, 'Zend\Mail\Transport\TransportInterface')) {
+        if (\is_string($adapter) && \is_subclass_of($adapter, 'Zend\Mail\Transport\TransportInterface')) {
             return $this->setupTransportConfig(new $adapter());
         }
 
         // The adapter is not valid. Throw an exception
-        throw new InvalidArgumentException(sprintf(
+        throw new InvalidArgumentException(\sprintf(
             'mail_adapter must be an instance of "Zend\Mail\Transport\TransportInterface" or string, "%s" provided',
-            is_object($adapter) ? get_class($adapter) : gettype($adapter)
+            \is_object($adapter) ? \get_class($adapter) : \gettype($adapter)
         ));
     }
 
@@ -276,18 +276,18 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
         $listeners = $this->mailOptions->getMailListeners();
         foreach ($listeners as $listener) {
             // Try to fetch the listener from the ServiceManager or lazily create an instance
-            if (is_string($listener) && $container->has($listener)) {
+            if (\is_string($listener) && $container->has($listener)) {
                 $listener = $container->get($listener);
-            } elseif (is_string($listener) && class_exists($listener)) {
+            } elseif (\is_string($listener) && \class_exists($listener)) {
                 $listener = new $listener();
             }
 
             // At this point, the listener should be an instance of MailListenerInterface, otherwise it is invalid
             if (! $listener instanceof MailListenerInterface) {
-                throw new InvalidArgumentException(sprintf(
+                throw new InvalidArgumentException(\sprintf(
                     'Provided listener of type "%s" is not valid. '
                     . 'Expected "string" or "AcMailer\Listener\MailListenerInterface"',
-                    is_object($listener) ? get_class($listener) : gettype($listener)
+                    \is_object($listener) ? \get_class($listener) : \gettype($listener)
                 ));
             }
             $service->attachMailListener($listener);

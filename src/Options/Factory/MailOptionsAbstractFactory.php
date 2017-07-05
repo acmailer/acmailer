@@ -32,17 +32,17 @@ class MailOptionsAbstractFactory extends AbstractAcMailerFactory
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $specificServiceName = explode('.', $requestedName)[2];
+        $specificServiceName = \explode('.', $requestedName)[2];
         $config = $this->getConfig($container);
         $specificConfig = $config[$specificServiceName];
-        if (! is_array($specificConfig)) {
+        if (! \is_array($specificConfig)) {
             $specificConfig = [];
         }
 
         do {
             // Get extends
-            $extendsConfigKey = isset($specificConfig['extends']) && is_string($specificConfig['extends'])
-                ? trim($specificConfig['extends'])
+            $extendsConfigKey = isset($specificConfig['extends']) && \is_string($specificConfig['extends'])
+                ? \trim($specificConfig['extends'])
                 : null;
 
             // Always unset the extends, in case it had a value null, to prevent the MailOptions object to throw an
@@ -50,9 +50,9 @@ class MailOptionsAbstractFactory extends AbstractAcMailerFactory
             unset($specificConfig['extends']);
 
             // Try to extend from another configuration if defined and exists
-            if (! is_null($extendsConfigKey)
-                && array_key_exists($extendsConfigKey, $config)
-                && is_array($config[$extendsConfigKey])
+            if (! \is_null($extendsConfigKey)
+                && \array_key_exists($extendsConfigKey, $config)
+                && \is_array($config[$extendsConfigKey])
             ) {
                 $specificConfig = ArrayUtils::merge($config[$extendsConfigKey], $specificConfig);
             }

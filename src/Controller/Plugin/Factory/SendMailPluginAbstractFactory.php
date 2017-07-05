@@ -31,7 +31,7 @@ class SendMailPluginAbstractFactory extends AbstractAcMailerFactory
     public function canCreate(ContainerInterface $container, $requestedName)
     {
         /** @var ControllerPluginManager $serviceLocator */
-        if (strpos($requestedName, 'sendMail') !== 0) {
+        if (\strpos($requestedName, 'sendMail') !== 0) {
             return false;
         }
 
@@ -40,7 +40,7 @@ class SendMailPluginAbstractFactory extends AbstractAcMailerFactory
         }
 
         $specificServiceName = $this->getSpecificServiceName($requestedName);
-        return array_key_exists($specificServiceName, $this->getConfig($container));
+        return \array_key_exists($specificServiceName, $this->getConfig($container));
     }
 
     /**
@@ -60,7 +60,7 @@ class SendMailPluginAbstractFactory extends AbstractAcMailerFactory
         $specificServiceName = $this->getSpecificServiceName($requestedName);
         /** @var MailServiceInterface $mailService */
         $mailService = $container->get(
-            sprintf('%s.%s.%s', self::ACMAILER_PART, MailServiceAbstractFactory::SPECIFIC_PART, $specificServiceName)
+            \sprintf('%s.%s.%s', self::ACMAILER_PART, MailServiceAbstractFactory::SPECIFIC_PART, $specificServiceName)
         );
         return new SendMailPlugin($mailService);
     }
@@ -75,25 +75,25 @@ class SendMailPluginAbstractFactory extends AbstractAcMailerFactory
      */
     protected function getSpecificServiceName($requestedName)
     {
-        $parts = explode('_', $this->camelCaseToUnderscore($requestedName));
-        if (count($parts) === 2) {
+        $parts = \explode('_', $this->camelCaseToUnderscore($requestedName));
+        if (\count($parts) === 2) {
             return 'default';
         }
 
         // Discard the sendMail part
-        $parts = array_slice($parts, 2);
+        $parts = \array_slice($parts, 2);
         $specificServiceName = '';
         foreach ($parts as $part) {
             $specificServiceName .= $part;
         }
 
         // Convert from camelcase to underscores and set to lower
-        return strtolower($specificServiceName);
+        return \strtolower($specificServiceName);
     }
 
     protected function camelCaseToUnderscore($value)
     {
-        if (!is_scalar($value) && !is_array($value)) {
+        if (!\is_scalar($value) && !\is_array($value)) {
             return $value;
         }
 
@@ -105,6 +105,6 @@ class SendMailPluginAbstractFactory extends AbstractAcMailerFactory
             $replacement = ['\1_\2', '_\1'];
         }
 
-        return preg_replace($pattern, $replacement, $value);
+        return \preg_replace($pattern, $replacement, $value);
     }
 }

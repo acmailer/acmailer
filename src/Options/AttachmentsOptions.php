@@ -75,7 +75,7 @@ class AttachmentsOptions extends AbstractOptions
      */
     public function addFiles(array $files)
     {
-        return $this->setFiles(array_merge($this->files, $files));
+        return $this->setFiles(\array_merge($this->files, $files));
     }
 
     /**

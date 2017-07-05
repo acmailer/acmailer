@@ -52,7 +52,7 @@ class ConfigMigrationController extends AbstractConsoleController
         // Global configuration not found
         if (! isset($this->globalConfig[$configKey])) {
             $this->getConsole()->writeLine(
-                sprintf('It wasn\'t possible to find the configuration key "%s"', $configKey),
+                \sprintf('It wasn\'t possible to find the configuration key "%s"', $configKey),
                 ColorInterface::RED
             );
             return PHP_EOL;
@@ -72,7 +72,7 @@ class ConfigMigrationController extends AbstractConsoleController
         // Write new configuration to file
         $writer->toFile($outputFile, $newConfig);
         $this->getConsole()->writeLine(
-            sprintf('The new configuration for the AcMailer module has been written to "%s":', $outputFile),
+            \sprintf('The new configuration for the AcMailer module has been written to "%s":', $outputFile),
             ColorInterface::GREEN
         );
         return PHP_EOL;
@@ -84,16 +84,16 @@ class ConfigMigrationController extends AbstractConsoleController
      */
     protected function createWriter($format)
     {
-        if (! array_key_exists($format, $this->formats) && ! in_array($format, $this->formats)) {
-            throw new InvalidArgumentException(sprintf(
+        if (! \array_key_exists($format, $this->formats) && ! \in_array($format, $this->formats)) {
+            throw new InvalidArgumentException(\sprintf(
                 'Provided format "%s" is not valid. Expected one of ["%s"]',
                 $format,
-                implode('", "', array_keys($this->formats))
+                \implode('", "', \array_keys($this->formats))
             ));
         }
 
-        $writerClass = array_key_exists($format, $this->formats) ? $this->formats[$format] : $format;
-        $writerClass = sprintf('%s\%s', self::WRITER_NAMESPACE, $writerClass);
+        $writerClass = \array_key_exists($format, $this->formats) ? $this->formats[$format] : $format;
+        $writerClass = \sprintf('%s\%s', self::WRITER_NAMESPACE, $writerClass);
         return new $writerClass;
     }
 }

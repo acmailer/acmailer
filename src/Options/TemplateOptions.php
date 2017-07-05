@@ -75,7 +75,7 @@ class TemplateOptions extends AbstractOptions implements ViewModelConvertibleInt
         foreach ($children as $captureTo => $child) {
             $this->children[$captureTo] = new TemplateOptions($child);
             // Recursively add childs
-            if (array_key_exists('children', $child)) {
+            if (\array_key_exists('children', $child)) {
                 $this->children[$captureTo]->setChildren($child['children']);
             }
         }

@@ -147,7 +147,7 @@ class MailServiceMock implements MailServiceInterface
      */
     public function addAttachments(array $paths)
     {
-        return $this->setAttachments(array_merge($this->attachments, $paths));
+        return $this->setAttachments(\array_merge($this->attachments, $paths));
     }
 
     /**

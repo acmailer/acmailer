@@ -66,7 +66,7 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
         $replyTo = null,
         $encoding = null
     ) {
-        $args = func_get_args();
+        $args = \func_get_args();
         if (empty($args)) {
             return $this->mailService;
         }
@@ -85,12 +85,12 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
     protected function normalizeMailArgs(array $args)
     {
         // If the first argument is an array, use it as the mail configuration
-        if (is_array($args[0])) {
+        if (\is_array($args[0])) {
             return $args[0];
         }
 
         $result = [];
-        $length = count($args);
+        $length = \count($args);
         // FIXME This is a weak way to handle the arguments, since a change in the order will break it
         for ($i = 0; $i < $length; $i++) {
             $result[$this->argumentsMapping[$i]] = $args[$i];
@@ -110,7 +110,7 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
         if (isset($args['body'])) {
             $body = $args['body'];
 
-            if (is_string($body)) {
+            if (\is_string($body)) {
                 $this->mailService->setBody($body);
             } else {
                 $this->mailService->setTemplate($body);
@@ -156,11 +156,11 @@ class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
         }
 
         $arg    = $args[$key];
-        $setter = 'set'.ucfirst($key);
+        $setter = 'set'.\ucfirst($key);
 
-        if (is_array($arg)) {
-            $this->mailService->getMessage()->{$setter}(array_keys($arg)[0],
-                array_values($arg)[0]);
+        if (\is_array($arg)) {
+            $this->mailService->getMessage()->{$setter}(\array_keys($arg)[0],
+                \array_values($arg)[0]);
             return;
         }
 
