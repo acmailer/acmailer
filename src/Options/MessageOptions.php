@@ -238,14 +238,14 @@ class MessageOptions extends AbstractOptions
      */
     public function setBody($body)
     {
-        if (is_array($body)) {
+        if (\is_array($body)) {
             $this->body = new BodyOptions($body);
         } elseif ($body instanceof BodyOptions) {
             $this->body = $body;
         } else {
-            throw new InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(\sprintf(
                 'Body should be an array or an AcMailer\\Options\\BodyOptions, %s provided',
-                is_object($body) ? get_class($body) : gettype($body)
+                \is_object($body) ? \get_class($body) : \gettype($body)
             ));
         }
 
@@ -270,14 +270,14 @@ class MessageOptions extends AbstractOptions
      */
     public function setAttachments($attachments)
     {
-        if (is_array($attachments)) {
+        if (\is_array($attachments)) {
             $this->attachments = new AttachmentsOptions($attachments);
         } elseif ($attachments instanceof AttachmentsOptions) {
             $this->attachments = $attachments;
         } else {
-            throw new InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(\sprintf(
                 'Attachments should be an array or an AcMailer\\Options\\AttachmentsOptions, %s provided',
-                is_object($attachments) ? get_class($attachments) : gettype($attachments)
+                \is_object($attachments) ? \get_class($attachments) : \gettype($attachments)
             ));
         }
 

@@ -40,9 +40,9 @@ class DefaultLayout implements DefaultLayoutInterface
                 $currentVariables = ArrayUtils::iteratorToArray($currentVariables);
             }
 
-            $layout->setVariables(array_merge($currentVariables, $params));
+            $layout->setVariables(\array_merge($currentVariables, $params));
             $this->model = $layout;
-        } elseif (is_string($layout)) {
+        } elseif (\is_string($layout)) {
             // Create a new ViewModel when a string is provided
             $this->model = new ViewModel($params);
             $this->model->setTemplate($layout);

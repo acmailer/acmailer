@@ -102,14 +102,14 @@ class BodyOptions extends AbstractOptions
      */
     public function setTemplate($template)
     {
-        if (is_array($template)) {
+        if (\is_array($template)) {
             $this->template = new TemplateOptions($template);
         } elseif ($template instanceof TemplateOptions) {
             $this->template = $template;
         } else {
-            throw new InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(\sprintf(
                 'Template should be an array or an AcMailer\Options\TemplateOptions object. %s provided.',
-                is_object($template) ? get_class($template) : gettype($template)
+                \is_object($template) ? \get_class($template) : \gettype($template)
             ));
         }
 

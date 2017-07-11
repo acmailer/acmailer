@@ -67,10 +67,10 @@ class MailOptions extends AbstractOptions
     public function setMailAdapter($mailAdapter)
     {
         // Map adapter aliases to the real class name
-        if (is_string($mailAdapter) && array_key_exists(strtolower($mailAdapter), $this->adapterMap)) {
-            $mailAdapter = $this->adapterMap[strtolower($mailAdapter)];
+        if (\is_string($mailAdapter) && \array_key_exists(\strtolower($mailAdapter), $this->adapterMap)) {
+            $mailAdapter = $this->adapterMap[\strtolower($mailAdapter)];
             foreach ($mailAdapter as $class) {
-                if (class_exists($class)) {
+                if (\class_exists($class)) {
                     $mailAdapter = $class;
                     break;
                 }
@@ -119,14 +119,14 @@ class MailOptions extends AbstractOptions
      */
     public function setMessageOptions($messageOptions)
     {
-        if (is_array($messageOptions)) {
+        if (\is_array($messageOptions)) {
             $this->messageOptions = new MessageOptions($messageOptions);
         } elseif ($messageOptions instanceof MessageOptions) {
             $this->messageOptions = $messageOptions;
         } else {
-            throw new InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(\sprintf(
                 'MessageOptions should be an array or an AcMailer\Options\MessageOptions object. %s provided.',
-                is_object($messageOptions) ? get_class($messageOptions) : gettype($messageOptions)
+                \is_object($messageOptions) ? \get_class($messageOptions) : \gettype($messageOptions)
             ));
         }
 
@@ -151,14 +151,14 @@ class MailOptions extends AbstractOptions
      */
     public function setSmtpOptions($smtpOptions)
     {
-        if (is_array($smtpOptions)) {
+        if (\is_array($smtpOptions)) {
             $this->smtpOptions = new SmtpOptions($smtpOptions);
         } elseif ($smtpOptions instanceof SmtpOptions) {
             $this->smtpOptions = $smtpOptions;
         } else {
-            throw new InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(\sprintf(
                 'SmtpOptions should be an array or an Zend\Mail\Transport\SmtpOptions object. %s provided.',
-                is_object($smtpOptions) ? get_class($smtpOptions) : gettype($smtpOptions)
+                \is_object($smtpOptions) ? \get_class($smtpOptions) : \gettype($smtpOptions)
             ));
         }
 
@@ -183,14 +183,14 @@ class MailOptions extends AbstractOptions
      */
     public function setFileOptions($fileOptions)
     {
-        if (is_array($fileOptions)) {
+        if (\is_array($fileOptions)) {
             $this->fileOptions = new FileOptions($fileOptions);
         } elseif ($fileOptions instanceof FileOptions) {
             $this->fileOptions = $fileOptions;
         } else {
-            throw new InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(\sprintf(
                 'FileOptions should be an array or an Zend\Mail\Transport\FileOptions object. %s provided.',
-                is_object($fileOptions) ? get_class($fileOptions) : gettype($fileOptions)
+                \is_object($fileOptions) ? \get_class($fileOptions) : \gettype($fileOptions)
             ));
         }
 
