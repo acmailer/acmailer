@@ -7,6 +7,7 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
  * Class MailServiceAwareTrait
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
+ * @deprecated Don't use setter injection
  */
 trait MailServiceAwareTrait
 {

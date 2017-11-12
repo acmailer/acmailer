@@ -15,6 +15,7 @@ use AcMailer\Exception\InvalidArgumentException;
  * Remember to always program to abstractions, never concretions.
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
+ * @deprecated You should probably better use your own mocking strategy
  */
 class MailServiceMock implements MailServiceInterface
 {

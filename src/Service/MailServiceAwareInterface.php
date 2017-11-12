@@ -5,6 +5,7 @@ namespace AcMailer\Service;
  * Interface MailServiceAwareInterface
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
+ * @deprecated Don't use setter injection
  */
 interface MailServiceAwareInterface
 {
