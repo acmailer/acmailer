@@ -2,8 +2,6 @@
 
 namespace AcMailer;
 
-use AcMailer\Service\MailService;
-
 return [
 
     'service_manager' => [
