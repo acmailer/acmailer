@@ -5,9 +5,6 @@ namespace AcMailer;
 return [
 
     'service_manager' => [
-        'invokables' => [
-            Service\ConfigMigrationService::class => Service\ConfigMigrationService::class,
-        ],
         'abstract_factories' => [
             Service\Factory\MailServiceAbstractFactory::class,
             Options\Factory\MailOptionsAbstractFactory::class,
@@ -30,28 +27,6 @@ return [
         'template_path_stack' => [
             __DIR__ . '/../view',
         ],
-    ],
-
-    'controllers' => [
-        'factories' => [
-            Controller\ConfigMigration::class => Controller\Factory\ConfigMigrationControllerFactory::class,
-        ]
-    ],
-
-    'console' => [
-        'router' => [
-            'routes' => [
-                'acmailer-parse-config' => [
-                    'options' => [
-                        'route' => 'acmailer parse-config [--configKey=] [--format=(php|xml|ini|json)] [--outputFile=]',
-                        'defaults' => [
-                            'controller' => Controller\ConfigMigration::class,
-                            'action'     => 'parse-config'
-                        ]
-                    ]
-                ]
-            ]
-        ]
     ],
 
 ];
