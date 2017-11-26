@@ -2,10 +2,8 @@
 namespace AcMailer\Service;
 
 use AcMailer\Exception\InvalidArgumentException;
-use AcMailer\Mail\Transport\TransportAwareInterface;
 use AcMailer\Result\ResultInterface;
 use AcMailer\View\DefaultLayoutInterface;
-use AcMailer\View\RendererAwareInterface;
 use Zend\Mime\Part;
 
 /**
@@ -13,7 +11,7 @@ use Zend\Mime\Part;
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-interface MailServiceInterface extends TransportAwareInterface, RendererAwareInterface
+interface MailServiceInterface
 {
     const DEFAULT_CHARSET = 'utf-8';
 
