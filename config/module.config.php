@@ -11,7 +11,7 @@ return [
         ],
         'aliases' => [
             'mailservice' => 'acmailer.mailservice.default',
-            MailService::class => 'acmailer.mailservice.default',
+            Service\MailService::class => 'acmailer.mailservice.default',
             Options\MailOptions::class => 'acmailer.mailoptions.default',
             'mailviewrenderer' => 'viewrenderer',
         ],

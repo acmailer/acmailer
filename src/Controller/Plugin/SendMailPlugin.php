@@ -2,7 +2,6 @@
 namespace AcMailer\Controller\Plugin;
 
 use AcMailer\Result\ResultInterface;
-use AcMailer\Service\MailServiceAwareInterface;
 use AcMailer\Service\MailServiceInterface;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Zend\View\Model\ViewModel;
@@ -12,7 +11,7 @@ use Zend\View\Model\ViewModel;
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class SendMailPlugin extends AbstractPlugin implements MailServiceAwareInterface
+class SendMailPlugin extends AbstractPlugin
 {
     /**
      * @var MailServiceInterface
