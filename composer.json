@@ -1,23 +1,25 @@
 {
     "name" : "acelaya/zf2-acmailer",
-    "description" : "Mail sending module for Zend Framework 2",
+    "description" : "Mail sending module for Zend Framework and Zend Expressive",
     "type" : "library",
     "authors" : [
         {
             "name" : "Alejandro Celaya Alastrué",
             "email" : "alejandro@alejandrocelaya.com",
-            "homepage" : "http://www.alejandrocelaya.com",
+            "homepage" : "https://www.alejandrocelaya.com",
             "role" : "Developer"
         }
     ],
     "keywords" : [
         "zf2",
+        "zf3",
+        "expressive",
         "module",
         "mail",
         "php",
         "zend"
     ],
-    "homepage" : "https://github.com/acelaya/ZF2-AcMailer",
+    "homepage" : "https://github.com/acelaya/ZF-AcMailer",
     "license" : "MIT",
     "require" : {
         "php" : "^5.6|^7.0",

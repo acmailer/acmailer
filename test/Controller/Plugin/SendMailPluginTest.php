@@ -4,7 +4,7 @@ namespace AcMailerTest\Controller\Plugin;
 use AcMailer\Controller\Plugin\SendMailPlugin;
 use AcMailer\Result\ResultInterface;
 use AcMailer\Service\MailServiceInterface;
-use AcMailer\Service\MailServiceMock;
+use AcMailerTest\Service\MailServiceMock;
 use PHPUnit\Framework\TestCase;
 use Zend\View\Model\ViewModel;
 

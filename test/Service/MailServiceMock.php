@@ -1,7 +1,8 @@
 <?php
-namespace AcMailer\Service;
+namespace AcMailerTest\Service;
 
 use AcMailer\Result\MailResult;
+use AcMailer\Service\MailServiceInterface;
 use AcMailer\View\DefaultLayoutInterface;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
@@ -15,7 +16,6 @@ use AcMailer\Exception\InvalidArgumentException;
  * Remember to always program to abstractions, never concretions.
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
- * @deprecated You should probably better use your own mocking strategy
  */
 class MailServiceMock implements MailServiceInterface
 {

@@ -3,7 +3,7 @@ namespace AcMailerTest\Event;
 
 use AcMailer\Event\MailEvent;
 use AcMailer\Result\MailResult;
-use AcMailer\Service\MailServiceMock;
+use AcMailerTest\Service\MailServiceMock;
 use PHPUnit\Framework\TestCase;
 
 /**
