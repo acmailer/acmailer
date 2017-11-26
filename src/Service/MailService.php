@@ -338,18 +338,6 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
     }
 
     /**
-     * Sets the message subject
-     * @param string $subject The subject of the message
-     * @return $this Returns this MailService for chaining purposes
-     * @deprecated Use $mailService->getMessage()->setSubject() instead
-     */
-    public function setSubject($subject)
-    {
-        $this->message->setSubject($subject);
-        return $this;
-    }
-
-    /**
      * @param string|resource|array|Mime\Part $file
      * @param string|null $filename
      * @return $this

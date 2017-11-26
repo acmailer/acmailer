@@ -89,15 +89,6 @@ class MailServiceMock implements MailServiceInterface
         return $this;
     }
     /**
-     * Sets the message subject
-     * @param string $subject
-     * @deprecated Use $mailService->getMessage()->setSubject() instead
-     */
-    public function setSubject($subject)
-    {
-        $this->message->setSubject($subject);
-    }
-    /**
      * Returns the message that is going to be sent when method send is called
      * @see \AcMailer\Service\MailServiceInterface::send()
      * @return \Zend\Mail\Message

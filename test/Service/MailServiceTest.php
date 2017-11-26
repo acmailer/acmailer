@@ -30,7 +30,7 @@ class MailServiceTest extends TestCase
      * @var \AcMailer\Service\MailService
      */
     private $mailService;
-    
+
     public function setUp()
     {
         $this->transport = new MockTransport();
@@ -39,7 +39,7 @@ class MailServiceTest extends TestCase
         $renderer->setResolver(new TemplatePathStack($config['view_manager']['template_path_stack']));
         $this->mailService = new MailService(new Message(), $this->transport, $renderer);
     }
-    
+
     public function testMimePartBodyCasting()
     {
         $this->mailService->setBody(new Mime\Part('Foo'));
@@ -54,27 +54,27 @@ class MailServiceTest extends TestCase
         $body = $this->mailService->getMessage()->getBody();
         $this->assertEquals(MailServiceInterface::DEFAULT_CHARSET, $body->getParts()[0]->charset);
     }
-    
+
     public function testHtmlBodyCasting()
     {
         $this->mailService->setBody('<div>Html body</div>');
         $this->assertTrue($this->mailService->getMessage()->getBody() instanceof Mime\Message);
     }
-    
+
     public function testStringBodyCasting()
     {
         $expected = 'String body';
         $this->mailService->setBody($expected);
         $this->assertTrue($this->mailService->getMessage()->getBody() instanceof Mime\Message);
     }
-    
+
     public function testMimeMessageBodyRemainsUnchanged()
     {
-        $part       = new Mime\Part('Foo');
-        $message    = new Mime\Message();
+        $part = new Mime\Part('Foo');
+        $message = new Mime\Message();
         $message->addPart($part);
         $this->mailService->setBody($message);
-        
+
         $this->assertTrue($this->mailService->getMessage()->getBody() instanceof Mime\Message);
         $this->assertEquals($message, $this->mailService->getMessage()->getBody());
     }
@@ -100,28 +100,28 @@ class MailServiceTest extends TestCase
     {
         $this->mailService->setBody(new \stdClass());
     }
-    
+
     public function testSetSubject()
     {
         $expected = 'This is the subject';
-        
-        $this->assertEquals($this->mailService, $this->mailService->setSubject($expected));
+
+        $this->mailService->getMessage()->setSubject($expected);
         $this->assertEquals($expected, $this->mailService->getMessage()->getSubject());
     }
-    
+
     public function testSuccessfulSending()
     {
         $result = $this->mailService->send();
-        
+
         $this->assertTrue($result->isValid());
         $this->assertEquals(MailResult::DEFAULT_MESSAGE, $result->getMessage());
     }
-    
+
     public function testSendingWithError()
     {
         $this->transport->setForceError(true);
         $result = $this->mailService->send();
-        
+
         $this->assertFalse($result->isValid());
         $this->assertEquals(MockTransport::ERROR_MESSAGE, $result->getMessage());
     }

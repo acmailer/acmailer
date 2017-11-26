@@ -61,7 +61,7 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
         $mailService    = new MailService($message, $transport, $renderer);
 
         // Set subject
-        $mailService->setSubject($this->mailOptions->getMessageOptions()->getSubject());
+        $mailService->getMessage()->setSubject($this->mailOptions->getMessageOptions()->getSubject());
 
         // Set body, either by using a template or a raw body
         $body = $this->mailOptions->getMessageOptions()->getBody();

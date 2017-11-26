@@ -52,14 +52,7 @@ interface MailServiceInterface extends TransportAwareInterface, RendererAwareInt
      * @return mixed
      */
     public function setDefaultLayout(DefaultLayoutInterface $layout = null);
-    
-    /**
-     * Sets the message subject
-     * @param string $subject
-     * @deprecated Use $mailService->getMessage()->setSubject() instead
-     */
-    public function setSubject($subject);
-    
+
     /**
      * Provides the path of a file that will be attached to the message while sending it,
      * as well as other previously defined attachments

@@ -117,7 +117,7 @@ class SendMailPlugin extends AbstractPlugin
         }
 
         if (isset($args['subject'])) {
-            $this->mailService->setSubject($args['subject']);
+            $this->mailService->getMessage()->setSubject($args['subject']);
         }
 
         if (isset($args['to'])) {
