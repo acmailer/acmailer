@@ -49,9 +49,13 @@ final class Email extends AbstractOptions
      */
     private $body;
     /**
-     * @var array|null
+     * @var string|null
      */
     private $template;
+    /**
+     * @var array
+     */
+    private $templateParams = [];
     /**
      * @var array
      */
@@ -281,17 +285,20 @@ final class Email extends AbstractOptions
     }
 
     /**
-     * Sets the template to be used to create the body of the email
-     * @param string $template
-     * @param array $params
-     * @return $this
+     * @return string|null
      */
-    public function setTemplate(string $template, array $params = []): self
+    public function getTemplate()
     {
-        $this->template = [
-            'templateName' => $template,
-            'params' => $params,
-        ];
+        return $this->template;
+    }
+
+    /**
+     * @param string|null $template
+     * @return $this|self
+     */
+    public function setTemplate(string $template = null): self
+    {
+        $this->template = $template;
         return $this;
     }
 
@@ -301,5 +308,23 @@ final class Email extends AbstractOptions
     public function hasTemplate(): bool
     {
         return $this->template !== null;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTemplateParams(): array
+    {
+        return $this->templateParams;
+    }
+
+    /**
+     * @param array $templateParams
+     * @return $this|self
+     */
+    public function setTemplateParams(array $templateParams): self
+    {
+        $this->templateParams = $templateParams;
+        return $this;
     }
 }
