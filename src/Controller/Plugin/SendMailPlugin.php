@@ -158,8 +158,10 @@ class SendMailPlugin extends AbstractPlugin
         $setter = 'set'.\ucfirst($key);
 
         if (\is_array($arg)) {
-            $this->mailService->getMessage()->{$setter}(\array_keys($arg)[0],
-                \array_values($arg)[0]);
+            $this->mailService->getMessage()->{$setter}(
+                \array_keys($arg)[0],
+                \array_values($arg)[0]
+            );
             return;
         }
 
