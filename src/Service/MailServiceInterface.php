@@ -19,7 +19,7 @@ interface MailServiceInterface
      * Tries to send the message, returning a MailResult object
      * @return ResultInterface
      */
-    public function send();
+    public function send(/* array, Email instance or name as string */);
     
     /**
      * Returns the message that is going to be sent when method send is called
