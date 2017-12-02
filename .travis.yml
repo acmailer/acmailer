@@ -19,7 +19,7 @@ script:
   - mkdir test/attachments/dir/dirdept
   - ./vendor/bin/phpcs --standard=PSR2 ./src/ ./test/ ./config
 #  - if [[ $TRAVIS_PHP_VERSION = 7.1 ]] || [[ $TRAVIS_PHP_VERSION = 7.2 ]]; then ~/.composer/vendor/bin/phpstan analyse src/ --level=5; fi
-  - ./vendor/bin/phpunit -c test/phpunit.xml --coverage-clover build/clover.xml
+  - ./vendor/bin/phpunit --coverage-clover build/clover.xml
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
