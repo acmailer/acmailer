@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace AcMailer\Model;
 
 use AcMailer\Exception\EmailNotFoundException;
+use Zend\Stdlib\ArrayUtils;
 
 class EmailBuilder implements EmailBuilderInterface
 {
@@ -31,6 +32,6 @@ class EmailBuilder implements EmailBuilderInterface
             throw EmailNotFoundException::fromName($name);
         }
 
-        return new Email(\array_merge($this->emailsConfig[$name], $options));
+        return new Email(ArrayUtils::merge($this->emailsConfig[$name], $options));
     }
 }
