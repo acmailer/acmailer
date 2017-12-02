@@ -77,16 +77,17 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
     /**
      * Tries to send the message, returning a MailResult object
      * @param string|array|Email $email
+     * @param array $options
      * @return ResultInterface
      * @throws Exception\InvalidArgumentException
      * @throws Exception\EmailNotFoundException
      * @throws Exception\MailException
      */
-    public function send($email): ResultInterface
+    public function send($email, array $options = []): ResultInterface
     {
         // Try to resolve the email to be sent
         if (\is_string($email)) {
-            $email = $this->emailBuilder->build($email);
+            $email = $this->emailBuilder->build($email, $options);
         } elseif (\is_array($email)) {
             $email = $this->emailBuilder->build(Email::class, $email);
         } elseif (! $email instanceof Email) {

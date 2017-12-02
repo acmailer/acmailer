@@ -18,10 +18,11 @@ interface MailServiceInterface
     /**
      * Tries to send the message, returning a MailResult object
      * @param string|array|Email $email
+     * @param array $options
      * @return ResultInterface
      * @throws Exception\InvalidArgumentException
      * @throws Exception\EmailNotFoundException
      * @throws Exception\MailException
      */
-    public function send($email): ResultInterface;
+    public function send($email, array $options = []): ResultInterface;
 }
