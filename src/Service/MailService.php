@@ -4,22 +4,21 @@ namespace AcMailer\Service;
 use AcMailer\Event\MailEvent;
 use AcMailer\Event\MailListenerAwareInterface;
 use AcMailer\Event\MailListenerInterface;
-use AcMailer\Exception\InvalidArgumentException;
-use AcMailer\Exception\MailException;
+use AcMailer\Exception;
+use AcMailer\Mail\MessageFactory;
+use AcMailer\Model\Email;
+use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Result\MailResult;
 use AcMailer\Result\ResultInterface;
-use AcMailer\View\DefaultLayout;
-use AcMailer\View\DefaultLayoutInterface;
 use Zend\EventManager\EventManager;
-use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\EventsCapableInterface;
 use Zend\EventManager\SharedEventManager;
 use Zend\Mail\Exception\ExceptionInterface as ZendMailException;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mime;
 use Zend\Stdlib\ArrayUtils;
-use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\RendererInterface;
 
 /**
@@ -27,14 +26,10 @@ use Zend\View\Renderer\RendererInterface;
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailService implements MailServiceInterface, EventManagerAwareInterface, MailListenerAwareInterface
+class MailService implements MailServiceInterface, EventsCapableInterface, MailListenerAwareInterface
 {
     /**
-     * @var \Zend\Mail\Message
-     */
-    private $message;
-    /**
-     * @var \Zend\Mail\Transport\TransportInterface
+     * @var TransportInterface
      */
     private $transport;
     /**
@@ -46,242 +41,209 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      */
     private $events;
     /**
-     * @var array
+     * @var EmailBuilderInterface
      */
-    private $attachments = [];
-    /**
-     * @var DefaultLayoutInterface
-     */
-    private $defaultLayout;
+    private $emailBuilder;
 
     /**
      * Creates a new MailService
-     * @param Message $message
      * @param TransportInterface $transport
-     * @param RendererInterface $renderer Renderer used to render templates, typically a PhpRenderer
+     * @param RendererInterface $renderer
+     * @param EmailBuilderInterface $emailBuilder
+     * @param EventManagerInterface|null $events
      */
-    public function __construct(Message $message, TransportInterface $transport, RendererInterface $renderer)
+    public function __construct(
+        TransportInterface $transport,
+        RendererInterface $renderer,
+        EmailBuilderInterface $emailBuilder,
+        EventManagerInterface $events = null
+    ) {
+        $this->transport = $transport;
+        $this->renderer = $renderer;
+        $this->emailBuilder = $emailBuilder;
+        $this->events = $events ?: $this->createEventManager();
+    }
+
+    private function createEventManager(): EventManagerInterface
     {
-        $this->message      = $message;
-        $this->transport    = $transport;
-        $this->renderer     = $renderer;
-        $this->setDefaultLayout();
+        $events = new EventManager(new SharedEventManager());
+        $events->setIdentifiers([
+            __CLASS__,
+            static::class,
+        ]);
+        return $events;
     }
 
     /**
-     * Returns this service's message
-     * @return \Zend\Mail\Message
-     * @see \AcMailer\Service\MailServiceInterface::getMessage()
-     */
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    /**
-     * Sends the mail
+     * Tries to send the message, returning a MailResult object
+     * @param string|array|Email $email
      * @return ResultInterface
-     * @throws MailException
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\EmailNotFoundException
+     * @throws Exception\MailException
      */
-    public function send()
+    public function send($email): ResultInterface
     {
-        $result = new MailResult();
-        try {
-            // Trigger pre send event
-            $this->getEventManager()->triggerEvent($this->createMailEvent());
+        // Try to resolve the email to be sent
+        if (\is_string($email)) {
+            $email = $this->emailBuilder->build($email);
+        } elseif (\is_array($email)) {
+            $email = $this->emailBuilder->build(Email::class, $email);
+        } elseif (! $email instanceof Email) {
+            throw Exception\InvalidArgumentException::fromValidTypes(['string', 'array', Email::class], $email);
+        }
 
-            // Attach files before sending the email
-            $this->attachFiles();
+        // Trigger pre send event
+        $this->events->triggerEvent($this->createMailEvent($email));
+
+        try {
+            // Build the message object to send
+            $message = $this->createMessageFromEmail($email);
+            $this->attachFiles($message, $email);
 
             // Try to send the message
-            $this->transport->send($this->message);
+            $this->transport->send($message);
 
             // Trigger post send event
-            $this->getEventManager()->triggerEvent($this->createMailEvent(MailEvent::EVENT_MAIL_POST_SEND, $result));
-        } catch (\Exception $e) {
-            $result = $this->createMailResultFromException($e);
+            $result = new MailResult($email);
+            $this->events->triggerEvent($this->createMailEvent($email, MailEvent::EVENT_MAIL_POST_SEND, $result));
+            return $result;
+        } catch (\Throwable $e) {
             // Trigger send error event
-            $this->getEventManager()->triggerEvent($this->createMailEvent(MailEvent::EVENT_MAIL_SEND_ERROR, $result));
+            $errorResult = new MailResult(
+                $email,
+                false,
+                $e
+            );
+            $this->events->triggerEvent($this->createMailEvent($email, MailEvent::EVENT_MAIL_SEND_ERROR, $errorResult));
 
             // If the exception produced is not a Zend\Mail exception, rethrow it as a MailException
             if (! $e instanceof ZendMailException) {
-                throw new MailException('An non Zend\Mail exception occurred', $e->getCode(), $e);
+                throw new Exception\MailException('An error occurred while trying to send the email', -1, $e);
             }
-        }
 
-        return $result;
+            return $errorResult;
+        }
     }
 
     /**
      * Creates a new MailEvent object
-     * @param ResultInterface $result
+     * @param Email $email
      * @param string $name
+     * @param ResultInterface $result
      * @return MailEvent
      */
-    protected function createMailEvent($name = MailEvent::EVENT_MAIL_PRE_SEND, ResultInterface $result = null)
-    {
-        $event = new MailEvent($this, $name);
-        if (isset($result)) {
+    private function createMailEvent(
+        Email $email,
+        $name = MailEvent::EVENT_MAIL_PRE_SEND,
+        ResultInterface $result = null
+    ): MailEvent {
+        $event = new MailEvent($email, $name);
+        if ($result !== null) {
             $event->setResult($result);
         }
+
         return $event;
     }
 
-    /**
-     * Creates a error MailResult from an exception
-     * @param \Exception $e
-     * @return MailResult
-     */
-    protected function createMailResultFromException(\Exception $e)
+    private function createMessageFromEmail(Email $email): Message
     {
-        return new MailResult(false, $e->getMessage(), $e);
+        $message = MessageFactory::createMessageFromEmail($email);
+
+        if (! $email->hasTemplate()) {
+            $body = $this->buildBody($email);
+
+            // The headers Content-type and Content-transfer-encoding are duplicated every time the body is set.
+            // Removing them before setting the body prevents this error
+            $message->getHeaders()->removeHeader('contenttype');
+            $message->getHeaders()->removeHeader('contenttransferencoding');
+            $message->setBody($body);
+        } else {
+            $message->setBody($this->renderer->render($email->getTemplate(), $email->getTemplateParams()));
+        }
+
+        return $message;
     }
 
     /**
      * Sets the message body
-     * @param \Zend\Mime\Part|\Zend\Mime\Message|string $body Email body
-     * @param string $charset
-     * @return $this Returns this MailService for chaining purposes
-     * @throws InvalidArgumentException
-     * @see \AcMailer\Service\MailServiceInterface::setBody()
+     * @param Email $email
+     * @return Mime\Message
+     * @throws Mime\Exception\InvalidArgumentException
      */
-    public function setBody($body, $charset = null)
+    private function buildBody(Email $email): Mime\Message
     {
+        $body = $email->getBody();
+
         if (\is_string($body)) {
             // Create a Mime\Part and wrap it into a Mime\Message
             $mimePart = new Mime\Part($body);
-            $mimePart->type     = $body != \strip_tags($body) ? Mime\Mime::TYPE_HTML : Mime\Mime::TYPE_TEXT;
-            $mimePart->charset  = $charset ?: self::DEFAULT_CHARSET;
+            $mimePart->type = $body !== \strip_tags($body) ? Mime\Mime::TYPE_HTML : Mime\Mime::TYPE_TEXT;
+            $mimePart->charset = $email->getCharset();
             $body = new Mime\Message();
             $body->setParts([$mimePart]);
         } elseif ($body instanceof Mime\Part) {
-            // Overwrite the charset if the Part object if provided
-            if (isset($charset)) {
-                $body->charset = $charset;
-            }
+            $body->charset = $email->getCharset();
+
             // The body is a Mime\Part. Wrap it into a Mime\Message
             $mimeMessage = new Mime\Message();
             $mimeMessage->setParts([$body]);
             $body = $mimeMessage;
         }
 
-        // If the body is not a string or a Mime\Message at this point, it is not a valid argument
-        if (! \is_string($body) && ! $body instanceof Mime\Message) {
-            throw new InvalidArgumentException(\sprintf(
-                'Provided body is not valid. It should be one of "%s". %s provided',
-                \implode('", "', ['string', 'Zend\Mime\Part', 'Zend\Mime\Message']),
-                \is_object($body) ? \get_class($body) : \gettype($body)
-            ));
-        }
-
-        // The headers Content-type and Content-transfer-encoding are duplicated every time the body is set.
-        // Removing them before setting the body prevents this error
-        $this->message->getHeaders()->removeHeader('contenttype');
-        $this->message->getHeaders()->removeHeader('contenttransferencoding');
-        $this->message->setBody($body);
-        return $this;
-    }
-
-    /**
-     * Sets the body of this message from a template
-     * @param string|\Zend\View\Model\ViewModel $template
-     * @param array $params
-     * @see \AcMailer\Service\MailServiceInterface::setTemplate()
-     */
-    public function setTemplate($template, array $params = [])
-    {
-        if ($template instanceof ViewModel) {
-            $view = $template;
-        } else {
-            $view = new ViewModel();
-            $view->setTemplate($template)
-                 ->setVariables($params);
-        }
-
-        // Check if a common layout has to be used
-        if ($this->defaultLayout->hasModel()) {
-            $layoutModel = $this->defaultLayout->getModel();
-            $layoutModel->addChild($view, $this->defaultLayout->getTemplateCaptureTo());
-            $view = $layoutModel;
-        }
-        // Render the template and all of its children
-        $this->renderChildren($view);
-
-        $charset = isset($params['charset']) ? $params['charset'] : null;
-        $this->setBody($this->renderer->render($view), $charset);
-    }
-
-    /**
-     * Sets the default layout to be used with all the templates set when calling setTemplate.
-     *
-     * @param DefaultLayoutInterface $layout
-     * @return mixed
-     */
-    public function setDefaultLayout(DefaultLayoutInterface $layout = null)
-    {
-        $this->defaultLayout = isset($layout) ? $layout : new DefaultLayout();
-    }
-
-    /**
-     * Renders template children.
-     * Inspired on Zend\View\View::renderChildren, which recursively renders children models
-     * @param ViewModel $model
-     */
-    protected function renderChildren(ViewModel $model)
-    {
-        if (! $model->hasChildren()) {
-            return;
-        }
-
-        /* @var ViewModel $child */
-        foreach ($model as $child) {
-            $capture = $child->captureTo();
-            if (empty($capture)) {
-                continue;
-            }
-
-            // Recursively render children
-            $this->renderChildren($child);
-            $result = $this->renderer->render($child);
-
-            if ($child->isAppend()) {
-                $oldResult = $model->{$capture};
-                $model->setVariable($capture, $oldResult . $result);
-            } else {
-                $model->setVariable($capture, $result);
-            }
-        }
+        return $body;
     }
 
     /**
      * Attaches files to the message if any
-     * @throws \Zend\Mime\Exception\InvalidArgumentException
+     * @param Message $message
+     * @param Email $email
+     * @throws Exception\InvalidArgumentException
      * @throws \Zend\Mail\Exception\InvalidArgumentException
-     * @throws \AcMailer\Exception\InvalidArgumentException
+     * @throws Mime\Exception\InvalidArgumentException
      */
-    protected function attachFiles()
+    private function attachFiles(Message $message, Email $email)
     {
-        if (\count($this->attachments) === 0) {
+        if (! $email->hasAttachments()) {
             return;
+        }
+        $attachments = $email->getAttachments();
+
+        // Process the attachments dir if any, and include the files in that folder
+        $dir = $email->getAttachmentsDir();
+        $path = $dir['path'] ?? null;
+        $recursive = (bool) ($dir['recursive'] ?? false);
+        if ($path !== null && \is_string($path) && \is_dir($path)) {
+            $files = $recursive ? new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS),
+                \RecursiveIteratorIterator::CHILD_FIRST
+            ) : new \DirectoryIterator($path);
+
+            /* @var \SplFileInfo $fileInfo */
+            foreach ($files as $fileInfo) {
+                if ($fileInfo->isDir()) {
+                    continue;
+                }
+                $attachments[] = $fileInfo->getPathname();
+            }
         }
 
         // Get old message parts
-        $mimeMessage = $this->message->getBody();
+        $mimeMessage = $message->getBody();
         if (\is_string($mimeMessage)) {
-            $originalBodyPart = new Mime\Part($mimeMessage);
             $isHtml = $mimeMessage !== \strip_tags($mimeMessage);
+            $originalBodyPart = new Mime\Part($mimeMessage);
             $originalBodyPart->type = $isHtml ? Mime\Mime::TYPE_HTML : Mime\Mime::TYPE_TEXT;
 
-            // A Mime\Part body will be wrapped into a Mime\Message, ensuring we handle a Mime\Message after this point
-            $this->setBody($originalBodyPart);
-            $mimeMessage = $this->message->getBody();
+            $email->setBody($originalBodyPart);
+            $mimeMessage = $this->buildBody($email);
         }
         $oldParts = $mimeMessage->getParts();
 
         // Generate a new Mime\Part for each attachment
         $attachmentParts = [];
         $info = null;
-        foreach ($this->attachments as $key => $attachment) {
+        foreach ($attachments as $key => $attachment) {
             $encodingAndDispositionAreSet = false;
 
             if ($attachment instanceof Mime\Part) {
@@ -290,7 +252,7 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
                 $encodingAndDispositionAreSet = true;
             } elseif (\is_string($attachment) && \is_file($attachment)) {
                 // If the attachment is a string that corresponds to a file, process it and create a Mime\Part
-                $info = $info !== null ? $info : new \finfo(FILEINFO_MIME_TYPE);
+                $info = $info ?? new \finfo(FILEINFO_MIME_TYPE);
                 // If the key is not defined, use the attachment's \basename
                 $key = \is_string($key) ? $key : \basename($attachment);
 
@@ -334,77 +296,16 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
 
         $body = new Mime\Message();
         $body->setParts(\array_merge($oldParts, $attachmentParts));
-        $this->message->setBody($body);
+        $message->setBody($body);
     }
 
-    /**
-     * @param string|resource|array|Mime\Part $file
-     * @param string|null $filename
-     * @return $this
-     */
-    public function addAttachment($file, $filename = null)
-    {
-        if ($filename !== null) {
-            $this->attachments[$filename] = $file;
-        } else {
-            $this->attachments[] = $file;
-        }
-        return $this;
-    }
-
-    /**
-     * @param array $files
-     * @return $this
-     */
-    public function addAttachments(array $files)
-    {
-        return $this->setAttachments(\array_merge($this->attachments, $files));
-    }
-
-    /**
-     * @param array $files
-     * @return $this
-     */
-    public function setAttachments(array $files)
-    {
-        $this->attachments = $files;
-        return $this;
-    }
-
-    /**
-     * Returns the list of attachments
-     * @return array
-     */
-    public function getAttachments()
-    {
-        return $this->attachments;
-    }
-
-    /**
-     * Inject an EventManager instance
-     * @param EventManagerInterface $events
-     * @return $this|void
-     */
-    public function setEventManager(EventManagerInterface $events)
-    {
-        $events->setIdentifiers([
-            __CLASS__,
-            \get_called_class(),
-        ]);
-        $this->events = $events;
-        return $this;
-    }
     /**
      * Retrieve the event manager
      * Lazy-loads an EventManager instance if none registered.
      * @return EventManagerInterface
      */
-    public function getEventManager()
+    public function getEventManager(): EventManagerInterface
     {
-        if (! isset($this->events)) {
-            $this->setEventManager(new EventManager(new SharedEventManager()));
-        }
-
         return $this->events;
     }
 
@@ -412,61 +313,20 @@ class MailService implements MailServiceInterface, EventManagerAwareInterface, M
      * Attaches a new MailListenerInterface
      * @param MailListenerInterface $mailListener
      * @param int $priority
-     * @return mixed|void
+     * @return void
      */
     public function attachMailListener(MailListenerInterface $mailListener, $priority = 1)
     {
-        $mailListener->attach($this->getEventManager(), $priority);
-        return $this;
+        $mailListener->attach($this->events, $priority);
     }
 
     /**
      * Detaches provided MailListener
      * @param MailListenerInterface $mailListener
-     * @return $this
+     * @return void
      */
     public function detachMailListener(MailListenerInterface $mailListener)
     {
-        $mailListener->detach($this->getEventManager());
-        return $this;
-    }
-
-    /**
-     * @param TransportInterface $transport
-     * @return $this
-     */
-    public function setTransport(TransportInterface $transport)
-    {
-        $this->transport = $transport;
-        return $this;
-    }
-
-    /**
-     * Returns the transport object that will be used to send the wrapped message
-     * @return TransportInterface
-     */
-    public function getTransport()
-    {
-        return $this->transport;
-    }
-
-    /**
-     * @param RendererInterface $renderer
-     *
-     * @return $this
-     */
-    public function setRenderer(RendererInterface $renderer)
-    {
-        $this->renderer = $renderer;
-        return $this;
-    }
-
-    /**
-     * Returns the renderer object that will be used to render templates
-     * @return RendererInterface
-     */
-    public function getRenderer()
-    {
-        return $this->renderer;
+        $mailListener->detach($this->events);
     }
 }

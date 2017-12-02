@@ -23,10 +23,10 @@
     "license" : "MIT",
     "require" : {
         "php" : "^7.0",
-        "zendframework/zend-servicemanager": "^3.0",
         "zendframework/zend-mail": "^2.6",
         "zendframework/zend-view": "^2.6",
         "zendframework/zend-eventmanager": "^3.0",
+        "zendframework/zend-servicemanager": "^3.0",
         "zendframework/zend-stdlib": "^3.0",
         "zendframework/zend-mvc": "^3.0"
     },

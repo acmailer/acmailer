@@ -3,11 +3,15 @@ declare(strict_types=1);
 
 namespace AcMailer\Model;
 
+use AcMailer\Exception\InvalidArgumentException;
+use Zend\Mime\Message;
 use Zend\Mime\Part;
 use Zend\Stdlib\AbstractOptions;
 
 final class Email extends AbstractOptions
 {
+    const DEFAULT_CHARSET = 'utf-8';
+
     /**
      * @var string
      */
@@ -53,13 +57,21 @@ final class Email extends AbstractOptions
      */
     private $template;
     /**
+     * @var string
+     */
+    private $charset = self::DEFAULT_CHARSET;
+    /**
      * @var array
      */
     private $templateParams = [];
     /**
      * @var array
      */
-    private $attachments;
+    private $attachments = [];
+    /**
+     * @var array
+     */
+    private $attachmentsDir = [];
 
     /**
      * @return string
@@ -232,11 +244,16 @@ final class Email extends AbstractOptions
     }
 
     /**
-     * @param string $body
+     * @param string|Part|Message $body
      * @return $this|self
+     * @throws InvalidArgumentException
      */
-    public function setBody(string $body): self
+    public function setBody($body): self
     {
+        if (! \is_string($body) && ! $body instanceof Part && ! $body instanceof Message) {
+            throw InvalidArgumentException::fromValidTypes(['string', Part::class, Message::class], $body);
+        }
+
         $this->body = $body;
         return $this;
     }
@@ -245,9 +262,14 @@ final class Email extends AbstractOptions
      * @param string|resource|array|Part $file
      * @param string|null $filename
      * @return $this
+     * @throws InvalidArgumentException
      */
-    public function addAttachment($file, $filename = null): self
+    public function addAttachment($file, string $filename = null): self
     {
+        if (! \is_string($file) && ! \is_array($file) && ! \is_resource($file) && ! $file instanceof Part) {
+            throw InvalidArgumentException::fromValidTypes(['string', 'array', 'resource', Part::class], $file);
+        }
+
         if ($filename !== null) {
             $this->attachments[$filename] = $file;
         } else {
@@ -259,19 +281,27 @@ final class Email extends AbstractOptions
     /**
      * @param array $files
      * @return $this
+     * @throws InvalidArgumentException
      */
     public function addAttachments(array $files): self
     {
-        return $this->setAttachments(\array_merge($this->attachments, $files));
+        foreach ($files as $key => $file) {
+            $this->addAttachment($file, $key);
+        }
+
+        return $this;
     }
 
     /**
      * @param array $files
      * @return $this
+     * @throws InvalidArgumentException
      */
     public function setAttachments(array $files): self
     {
-        $this->attachments = $files;
+        $this->attachments = [];
+        $this->addAttachments($files);
+
         return $this;
     }
 
@@ -282,6 +312,32 @@ final class Email extends AbstractOptions
     public function getAttachments(): array
     {
         return $this->attachments;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttachmentsDir(): array
+    {
+        return $this->attachmentsDir;
+    }
+
+    /**
+     * @param array $attachmentsDir
+     * @return $this|self
+     */
+    public function setAttachmentsDir(array $attachmentsDir): self
+    {
+        $this->attachmentsDir = $attachmentsDir;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAttachments(): bool
+    {
+        return ! empty($this->attachments) && ! empty($this->attachmentsDir);
     }
 
     /**
@@ -325,6 +381,24 @@ final class Email extends AbstractOptions
     public function setTemplateParams(array $templateParams): self
     {
         $this->templateParams = $templateParams;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCharset(): string
+    {
+        return $this->charset;
+    }
+
+    /**
+     * @param string $charset
+     * @return $this|self
+     */
+    public function setCharset(string $charset): self
+    {
+        $this->charset = $charset;
         return $this;
     }
 }

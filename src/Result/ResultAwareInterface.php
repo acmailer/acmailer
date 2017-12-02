@@ -15,7 +15,7 @@ interface ResultAwareInterface
     public function setResult(ResultInterface $result);
 
     /**
-     * @return ResultInterface
+     * @return ResultInterface|null
      */
     public function getResult();
 }

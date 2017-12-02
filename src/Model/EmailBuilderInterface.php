@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace AcMailer\Model;
 
-use AcMailer\Exception\EmailNotFoundException;
+use AcMailer\Exception;
 
 interface EmailBuilderInterface
 {
@@ -11,7 +11,8 @@ interface EmailBuilderInterface
      * @param string $name
      * @param array $options
      * @return Email
-     * @throws EmailNotFoundException
+     * @throws Exception\EmailNotFoundException
+     * @throws Exception\InvalidArgumentException
      */
     public function build(string $name, array $options = []): Email;
 }

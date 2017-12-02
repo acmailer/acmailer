@@ -5,13 +5,12 @@ use AcMailer\Event\MailListenerAwareInterface;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Factory\AbstractAcMailerFactory;
+use AcMailer\Model\EmailBuilder;
 use AcMailer\Options\Factory\MailOptionsAbstractFactory;
 use AcMailer\Options\MailOptions;
 use AcMailer\Service\MailService;
-use AcMailer\View\DefaultLayout;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
-use Zend\Mail\Message;
 use Zend\Mail\Transport\File;
 use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\TransportInterface;
@@ -55,92 +54,13 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
         );
 
         // Create the service
-        $message        = $this->createMessage();
-        $transport      = $this->createTransport($container);
-        $renderer       = $this->createRenderer($container);
-        $mailService    = new MailService($message, $transport, $renderer);
-
-        // Set subject
-        $mailService->getMessage()->setSubject($this->mailOptions->getMessageOptions()->getSubject());
-
-        // Set body, either by using a template or a raw body
-        $body = $this->mailOptions->getMessageOptions()->getBody();
-        if ($body->getUseTemplate()) {
-            $defaultLayoutConfig = $body->getTemplate()->getDefaultLayout();
-            if (isset($defaultLayoutConfig['path'])) {
-                $params = isset($defaultLayoutConfig['params']) ? $defaultLayoutConfig['params'] : [];
-                $captureTo = isset($defaultLayoutConfig['template_capture_to'])
-                    ? $defaultLayoutConfig['template_capture_to']
-                    : 'content';
-                $mailService->setDefaultLayout(new DefaultLayout($defaultLayoutConfig['path'], $params, $captureTo));
-            }
-            $mailService->setTemplate($body->getTemplate()->toViewModel(), ['charset' => $body->getCharset()]);
-        } else {
-            $mailService->setBody($body->getContent(), $body->getCharset());
-        }
-
-        // Attach files
-        $files = $this->mailOptions->getMessageOptions()->getAttachments()->getFiles();
-        $mailService->addAttachments($files);
-
-        // Attach files from dir
-        $dir = $this->mailOptions->getMessageOptions()->getAttachments()->getDir();
-        if ($dir['iterate'] === true && \is_string($dir['path']) && \is_dir($dir['path'])) {
-            $files = $dir['recursive'] === true ?
-                new \RecursiveIteratorIterator(
-                    new \RecursiveDirectoryIterator($dir['path'], \RecursiveDirectoryIterator::SKIP_DOTS),
-                    \RecursiveIteratorIterator::CHILD_FIRST
-                ):
-                new \DirectoryIterator($dir['path']);
-
-            /* @var \SplFileInfo $fileInfo */
-            foreach ($files as $fileInfo) {
-                if ($fileInfo->isDir()) {
-                    continue;
-                }
-                $mailService->addAttachment($fileInfo->getPathname());
-            }
-        }
+        $transport = $this->createTransport($container);
+        $renderer = $this->createRenderer($container);
+        $mailService = new MailService($transport, $renderer, $container->get(EmailBuilder::class));
 
         // Attach mail listeners
         $this->attachMailListeners($mailService, $container);
         return $mailService;
-    }
-
-    /**
-     * @return Message
-     */
-    protected function createMessage()
-    {
-        $options = $this->mailOptions->getMessageOptions();
-        // Prepare Mail Message
-        $message = new Message();
-        $from = $options->getFrom();
-        if (! empty($from)) {
-            $message->setFrom($from, $options->getFromName());
-        }
-        $replyTo = $options->getReplyTo();
-        if (! empty($replyTo)) {
-            $message->setReplyTo($replyTo, $options->getReplyToName());
-        }
-        $to = $options->getTo();
-        if (! empty($to)) {
-            $message->setTo($to);
-        }
-        $cc = $options->getCc();
-        if (! empty($cc)) {
-            $message->setCc($cc);
-        }
-        $bcc = $options->getBcc();
-        if (! empty($bcc)) {
-            $message->setBcc($bcc);
-        }
-        $encoding = $options->getEncoding();
-        if (! empty($encoding)) {
-            $message->setEncoding($encoding);
-        }
-
-        return $message;
     }
 
     /**
