@@ -2,8 +2,8 @@
 namespace AcMailerTest\Event;
 
 use AcMailer\Event\MailEvent;
+use AcMailer\Model\Email;
 use AcMailer\Result\MailResult;
-use AcMailerTest\Service\MailServiceMock;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -18,22 +18,24 @@ class MailEventTest extends TestCase
      */
     private $mailEvent;
 
-    public function testMailServiceInjection()
+    /**
+     * @test
+     */
+    public function emailIsProperlyInjected()
     {
-        $mailService = new MailServiceMock();
-        $this->mailEvent = new MailEvent($mailService);
-        $this->assertSame($mailService, $this->mailEvent->getMailService());
-
-        $mailService2 = new MailServiceMock();
-        $this->mailEvent->setMailService($mailService2);
-        $this->assertNotSame($mailService, $this->mailEvent->getMailService());
-        $this->assertSame($mailService2, $this->mailEvent->getMailService());
+        $email = new Email();
+        $this->mailEvent = new MailEvent($email);
+        $this->assertSame($email, $this->mailEvent->getEmail());
     }
 
-    public function testMailResultInjection()
+    /**
+     * @test
+     */
+    public function resultIsProperlyInjection()
     {
-        $this->mailEvent = new MailEvent(new MailServiceMock());
-        $result = new MailResult();
+        $email = new Email();
+        $this->mailEvent = new MailEvent($email);
+        $result = new MailResult($email);
         $this->assertSame($this->mailEvent, $this->mailEvent->setResult($result));
         $this->assertSame($result, $this->mailEvent->getResult());
     }

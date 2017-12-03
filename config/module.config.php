@@ -5,6 +5,14 @@ namespace AcMailer;
 
 return [
 
+    'acmailer_options' => [
+        'emails' => [],
+
+        'mail_services' => [
+            'default' => [],
+        ],
+    ],
+
     'service_manager' => [
         'factories' => [
             Model\EmailBuilder::class => Model\EmailBuilderFactory::class,
