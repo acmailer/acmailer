@@ -1,7 +1,7 @@
 <?php
 namespace AcMailer\Service\Factory;
 
-use AcMailer\Event\MailListenerAwareInterface;
+use AcMailer\Event\MailEvent;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception;
 use AcMailer\Factory\AbstractAcMailerFactory;
@@ -10,6 +10,9 @@ use AcMailer\Service\MailService;
 use Interop\Container\ContainerInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Zend\EventManager\EventsCapableInterface;
+use Zend\EventManager\Exception\InvalidArgumentException;
+use Zend\EventManager\LazyListenerAggregate;
 use Zend\Mail\Transport;
 use Zend\Mvc\Service\ViewHelperManagerFactory;
 use Zend\ServiceManager\Config;
@@ -217,30 +220,68 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
     /**
      * Attaches the preconfigured mail listeners to the mail service
      *
-     * @param MailListenerAwareInterface $service
+     * @param EventsCapableInterface $service
      * @param ContainerInterface $container
      * @param array $mailOptions
+     * @throws InvalidArgumentException
      * @throws Exception\InvalidArgumentException
-     * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
     protected function attachMailListeners(
-        MailListenerAwareInterface $service,
+        EventsCapableInterface $service,
         ContainerInterface $container,
         array $mailOptions
     ) {
-        // TODO Attach listeners lazily
-        $listeners = $mailOptions['mail_listeners'] ?? [];
+        $listeners = (array) ($mailOptions['mail_listeners'] ?? []);
+        if (empty($listeners)) {
+            return;
+        }
+
+        $definitions = [];
         foreach ($listeners as $listener) {
-            // Try to fetch the listener from the ServiceManager or lazily create an instance
-            if (! \is_string($listener) && ! $container->has($listener)) {
+            $priority = 1;
+            if (\is_array($listener) && array_key_exists('listener', $listener)) {
+                $listener = $listener['listener'];
+                $priority = $listener['priority'] ?? 1;
+            }
+
+            // If the listener is already an instance, just register it
+            if ($listener instanceof MailListenerInterface) {
+                $listener->attach($service->getEventManager(), $priority);
+                continue;
+            }
+
+            // Ensure the listener is a string
+            if (! \is_string($listener)) {
                 throw Exception\InvalidArgumentException::fromValidTypes(
                     ['string', MailListenerInterface::class],
                     $listener
                 );
             }
 
-            $service->attachMailListener($container->get($listener));
+            $definitions[] = [
+                'listener' => $listener,
+                'method' => 'onPreSend',
+                'event' => MailEvent::EVENT_MAIL_PRE_SEND,
+                'priority' => $priority,
+            ];
+            $definitions[] = [
+                'listener' => $listener,
+                'method' => 'onPostSend',
+                'event' => MailEvent::EVENT_MAIL_POST_SEND,
+                'priority' => $priority,
+            ];
+            $definitions[] = [
+                'listener' => $listener,
+                'method' => 'onSendError',
+                'event' => MailEvent::EVENT_MAIL_SEND_ERROR,
+                'priority' => $priority,
+            ];
+        }
+
+        // Attach lazy event listeners if any
+        if (! empty($definitions)) {
+            (new LazyListenerAggregate($definitions, $container))->attach($service->getEventManager());
         }
     }
 }
