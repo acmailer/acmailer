@@ -2,6 +2,8 @@
 namespace AcMailer\Factory;
 
 use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\Factory\AbstractFactoryInterface;
@@ -23,8 +25,9 @@ abstract class AbstractAcMailerFactory implements AbstractFactoryInterface
      * @param  ContainerInterface $container
      * @param  string $requestedName
      * @return bool
+     * @throws ContainerExceptionInterface
      */
-    public function canCreate(ContainerInterface $container, $requestedName)
+    public function canCreate(ContainerInterface $container, $requestedName): bool
     {
         $parts = \explode('.', $requestedName);
         if (\count($parts) !== 3) {
@@ -43,14 +46,12 @@ abstract class AbstractAcMailerFactory implements AbstractFactoryInterface
     /**
      * @param ContainerInterface $container
      * @return array
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    protected function getConfig(ContainerInterface $container)
+    protected function getConfig(ContainerInterface $container): array
     {
         $config = $container->get('Config');
-        if (isset($config['acmailer_options']) && \is_array($config['acmailer_options'])) {
-            return $config['acmailer_options'];
-        }
-
-        return [];
+        return (array) ($config['acmailer_options']['mail_services'] ?? []);
     }
 }
