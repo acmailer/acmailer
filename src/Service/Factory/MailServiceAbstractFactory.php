@@ -17,6 +17,7 @@ use Zend\Mail\Transport;
 use Zend\Mvc\Service\ViewHelperManagerFactory;
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Zend\Stdlib\ArrayUtils;
 use Zend\View\HelperPluginManager;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Renderer\RendererInterface;
@@ -42,6 +43,7 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
      * @param  string $requestedName
      * @param  null|array $options
      * @return MailService
+     * @throws InvalidArgumentException
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ServiceNotCreatedException
      * @throws ContainerExceptionInterface
@@ -62,6 +64,9 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
             ));
         }
 
+        // Recursively extend configuration
+        $specificMailServiceOptions = $this->buildConfig($mailOptions, $specificMailServiceOptions);
+        
         // Create the service
         $transport = $this->createTransport($container, $specificMailServiceOptions);
         $renderer = $this->createRenderer($container, $specificMailServiceOptions);
@@ -72,6 +77,42 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
         return $mailService;
     }
 
+    private function buildConfig(array $mailOptions, array $specificOptions): array
+    {
+        if (! isset($specificOptions['extends'])) {
+            return $specificOptions;
+        }
+
+        // Recursively extend
+        $mailServices = $mailOptions['mail_services'];
+        $processedExtends = [];
+        do {
+            $serviceToExtend = $specificOptions['extends'] ?? null;
+            // Unset the extends value to allow recursive inheritance
+            unset($specificOptions['extends']);
+
+            // Prevent an infinite loop by self inheritance
+            if (\in_array($serviceToExtend, $processedExtends, true)) {
+                throw new Exception\ServiceNotCreatedException(
+                    'It wasn\'t possible to create a mail service due to circular inheritance. Review "extends".'
+                );
+            }
+            $processedExtends[] = $serviceToExtend;
+
+            // Ensure the service from which we have to extend has been configured
+            if (! isset($mailServices[$serviceToExtend])) {
+                throw new Exception\InvalidArgumentException(\sprintf(
+                    'Provided service "%s" to extend from is not configured inside acmailer_options.mail_services',
+                    $serviceToExtend
+                ));
+            }
+
+            $specificOptions = ArrayUtils::merge($mailServices[$serviceToExtend], $specificOptions);
+        } while (isset($specificOptions['extends']));
+
+        return $specificOptions;
+    }
+
     /**
      * @param ContainerInterface $container
      * @param array $mailOptions
@@ -80,7 +121,7 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function createTransport(ContainerInterface $container, array $mailOptions): Transport\TransportInterface
+    private function createTransport(ContainerInterface $container, array $mailOptions): Transport\TransportInterface
     {
         $transport = $mailOptions['transport'] ?? null;
         if (! \is_string($transport) && ! $transport instanceof Transport\TransportInterface) {
@@ -132,7 +173,7 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
      * @param array $mailOptions
      * @return Transport\TransportInterface
      */
-    protected function setupTransportConfig(
+    private function setupTransportConfig(
         Transport\TransportInterface $transport,
         array $mailOptions
     ): Transport\TransportInterface {
@@ -152,7 +193,7 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function createRenderer(ContainerInterface $container, array $mailOptions)
+    private function createRenderer(ContainerInterface $container, array $mailOptions)
     {
         // Try to return the configured renderer. If it points to an undefined service, create a renderer on the fly
         $serviceName = $mailOptions['renderer'] ?? null;
@@ -212,7 +253,7 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
      * @return array
      * @throws ContainerExceptionInterface
      */
-    protected function getSpecificConfig(ContainerInterface $container, $configKey): array
+    private function getSpecificConfig(ContainerInterface $container, $configKey): array
     {
         return $container->get('config')[$configKey] ?? [];
     }
@@ -227,7 +268,7 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
      * @throws Exception\InvalidArgumentException
      * @throws NotFoundExceptionInterface
      */
-    protected function attachMailListeners(
+    private function attachMailListeners(
         EventsCapableInterface $service,
         ContainerInterface $container,
         array $mailOptions
