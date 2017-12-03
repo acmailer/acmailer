@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace AcMailer;
 
-use AcMailer\Model;
-
 return [
 
     'service_manager' => [
@@ -23,18 +21,6 @@ return [
             'mailservice' => 'acmailer.mailservice.default',
 
             'mailviewrenderer' => 'viewrenderer',
-        ],
-    ],
-
-    'controller_plugins' => [
-        'abstract_factories' => [
-            Controller\Plugin\Factory\SendMailPluginAbstractFactory::class,
-        ]
-    ],
-
-    'view_manager' => [
-        'template_path_stack' => [
-            __DIR__ . '/../view',
         ],
     ],
 
