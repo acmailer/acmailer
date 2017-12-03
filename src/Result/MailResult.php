@@ -66,4 +66,13 @@ class MailResult implements ResultInterface
     {
         return $this->exception;
     }
+
+    /**
+     * Tells if the email sending was cancelled, usually by a preSend listener
+     * @return bool
+     */
+    public function isCancelled(): bool
+    {
+        return ! $this->isValid() && ! $this->hasException();
+    }
 }

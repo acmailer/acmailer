@@ -17,10 +17,16 @@ interface ResultInterface
     public function getEmail(): Email;
     
     /**
-     * Tells if the MailService that produced this result was properly sent
+     * Tells if the email was properly sent
      * @return bool
      */
     public function isValid(): bool;
+
+    /**
+     * Tells if the email sending was cancelled, usually by a preSend listener
+     * @return bool
+     */
+    public function isCancelled(): bool;
 
     /**
      * Tells if this Result has an exception. Usually only non-valid result should wrap an exception

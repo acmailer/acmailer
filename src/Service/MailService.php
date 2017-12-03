@@ -94,8 +94,11 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
             throw Exception\InvalidArgumentException::fromValidTypes(['string', 'array', Email::class], $email);
         }
 
-        // Trigger pre send event
-        $this->events->triggerEvent($this->createMailEvent($email));
+        // Trigger pre send event, an cancel email sending if any listener returned false
+        $eventResp = $this->events->triggerEvent($this->createMailEvent($email));
+        if ($eventResp->contains(false)) {
+            return new MailResult($email, false);
+        }
 
         try {
             // Build the message object to send
@@ -110,20 +113,14 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
             $this->events->triggerEvent($this->createMailEvent($email, MailEvent::EVENT_MAIL_POST_SEND, $result));
             return $result;
         } catch (\Throwable $e) {
-            // Trigger send error event
-            $errorResult = new MailResult(
+            // Trigger error event, notifying listeners of the error
+            $this->events->triggerEvent($this->createMailEvent($email, MailEvent::EVENT_MAIL_SEND_ERROR, new MailResult(
                 $email,
                 false,
                 $e
-            );
-            $this->events->triggerEvent($this->createMailEvent($email, MailEvent::EVENT_MAIL_SEND_ERROR, $errorResult));
+            )));
 
-            // If the exception produced is not a Zend\Mail exception, rethrow it as a MailException
-            if (! $e instanceof ZendMailException) {
-                throw new Exception\MailException('An error occurred while trying to send the email', -1, $e);
-            }
-
-            return $errorResult;
+            throw new Exception\MailException('An error occurred while trying to send the email', $e->getCode(), $e);
         }
     }
 

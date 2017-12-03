@@ -6,7 +6,6 @@ namespace AcMailer\Exception;
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailException extends \Exception implements ExceptionInterface
+class MailException extends \RuntimeException implements ExceptionInterface
 {
-
 }
