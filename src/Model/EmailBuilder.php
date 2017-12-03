@@ -29,10 +29,24 @@ class EmailBuilder implements EmailBuilderInterface
      */
     public function build(string $name, array $options = []): Email
     {
+        return new Email($this->buildOptions($name, $options));
+    }
+
+    private function buildOptions(string $name, array $options): array
+    {
         if (! isset($this->emailsConfig[$name])) {
             throw Exception\EmailNotFoundException::fromName($name);
         }
 
-        return new Email(ArrayUtils::merge($this->emailsConfig[$name], $options));
+        // Recursively extend emails
+        $options = ArrayUtils::merge($this->emailsConfig[$name], $options);
+        if (! isset($options['extends'])) {
+            return $options;
+        }
+
+        $emailToExtend = $options['extends'];
+        unset($options['extends']);
+
+        return ArrayUtils::merge($this->buildOptions($emailToExtend, []), $options);
     }
 }

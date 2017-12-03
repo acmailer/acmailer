@@ -27,8 +27,11 @@ class EmailBuilderTest extends TestCase
             'another_email' => [
                 'fromName' => 'something',
                 'bcc' => [
-                    'foo@bar.com',
+                    'bar@foo.com',
                 ],
+            ],
+            'extended_email' => [
+                'extends' => 'an_email',
             ],
         ]);
     }
@@ -68,5 +71,29 @@ class EmailBuilderTest extends TestCase
         $this->expectException(EmailNotFoundException::class);
         $this->expectExceptionMessage('An email with name "invalid" could not be found in registered emails list');
         $this->builder->build('invalid');
+    }
+
+    /**
+     * @test
+     */
+    public function emailCanBeExtended()
+    {
+        $email = $this->builder->build('an_email', ['extends' => 'another_email']);
+
+        $this->assertEquals([
+            'foo@bar.com',
+        ], $email->getCc());
+        $this->assertEquals([
+            'bar@foo.com',
+        ], $email->getBcc());
+        $this->assertEquals('foobar', $email->getFromName());
+
+
+        $email = $this->builder->build('extended_email');
+
+        $this->assertEquals([
+            'foo@bar.com',
+        ], $email->getCc());
+        $this->assertEquals('foobar', $email->getFromName());
     }
 }
