@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace AcMailerTest\Model;
 
 use AcMailer\Exception\EmailNotFoundException;
+use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Model\Email;
 use AcMailer\Model\EmailBuilder;
 use PHPUnit\Framework\TestCase;
@@ -32,6 +33,13 @@ class EmailBuilderTest extends TestCase
             ],
             'extended_email' => [
                 'extends' => 'an_email',
+            ],
+
+            'invalid_extends' => [
+                'extends' => 'another',
+            ],
+            'another' => [
+                'extends' => 'invalid_extends',
             ],
         ]);
     }
@@ -95,5 +103,14 @@ class EmailBuilderTest extends TestCase
             'foo@bar.com',
         ], $email->getCc());
         $this->assertEquals('foobar', $email->getFromName());
+    }
+
+    /**
+     * @test
+     */
+    public function circularExtendsThrowException()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->builder->build('invalid_extends');
     }
 }

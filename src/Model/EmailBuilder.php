@@ -32,7 +32,7 @@ class EmailBuilder implements EmailBuilderInterface
         return new Email($this->buildOptions($name, $options));
     }
 
-    private function buildOptions(string $name, array $options): array
+    private function buildOptions(string $name, array $options, array &$alreadyExtendedEmails = []): array
     {
         if (! isset($this->emailsConfig[$name])) {
             throw Exception\EmailNotFoundException::fromName($name);
@@ -44,9 +44,16 @@ class EmailBuilder implements EmailBuilderInterface
             return $options;
         }
 
+        // Get the email from which to extend, and ensure it has not been processed yet, to prevent an infinite loop
         $emailToExtend = $options['extends'];
+        if (\in_array($emailToExtend, $alreadyExtendedEmails, true)) {
+            throw new Exception\InvalidArgumentException(
+                'It wasn\'t possible to create an email due to circular inheritance. Review "extends".'
+            );
+        }
+        $alreadyExtendedEmails[] = $emailToExtend;
         unset($options['extends']);
 
-        return ArrayUtils::merge($this->buildOptions($emailToExtend, []), $options);
+        return ArrayUtils::merge($this->buildOptions($emailToExtend, [], $alreadyExtendedEmails), $options);
     }
 }
