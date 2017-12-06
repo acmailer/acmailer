@@ -42,23 +42,24 @@ class MailViewRendererFactory
             $renderer = new PhpRenderer();
 
             // Check what kind of view_manager configuration has been defined
-            if (isset($vmConfig['template_map'], $vmConfig['template_path_stack'])) {
-                // If both a template_map and a template_path_stack have been defined, create an AggregateResolver
-                $pathStackResolver = new TemplatePathStack();
-                $pathStackResolver->setPaths($vmConfig['template_path_stack']);
-                $resolver = new AggregateResolver();
-                $resolver->attach($pathStackResolver)
-                    ->attach(new TemplateMapResolver($vmConfig['template_map']));
-                $renderer->setResolver($resolver);
-            } elseif (isset($vmConfig['template_map'])) {
+            $resolversStack = [];
+            if (isset($vmConfig['template_map'])) {
                 // Create a TemplateMapResolver in case only the template_map has been defined
-                $renderer->setResolver(new TemplateMapResolver($vmConfig['template_map']));
-            } elseif (isset($vmConfig['template_path_stack'])) {
+                $resolversStack[] = new TemplateMapResolver($vmConfig['template_map']);
+            }
+            if (isset($vmConfig['template_path_stack'])) {
                 // Create a TemplatePathStack resolver in case only the template_path_stack has been defined
                 $pathStackResolver = new TemplatePathStack();
                 $pathStackResolver->setPaths($vmConfig['template_path_stack']);
-                $renderer->setResolver($pathStackResolver);
+                $resolversStack[] = $pathStackResolver;
             }
+
+            // Attach all resolvers to the aggregate, and add it to the renderer
+            $aggregateResolver = new AggregateResolver();
+            foreach ($resolversStack as $resolver) {
+                $aggregateResolver->attach($resolver);
+            }
+            $renderer->setResolver($resolver);
 
             // Create a HelperPluginManager with default view helpers and user defined view helpers
             $renderer->setHelperPluginManager($this->createHelperPluginManager($container));
