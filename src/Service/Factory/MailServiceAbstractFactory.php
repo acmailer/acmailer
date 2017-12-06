@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace AcMailer\Service\Factory;
 
 use AcMailer\Event\MailEvent;
