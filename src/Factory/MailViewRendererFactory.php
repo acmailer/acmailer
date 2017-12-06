@@ -9,7 +9,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Zend\Mvc\Service\ViewHelperManagerFactory;
 use Zend\ServiceManager\Config;
-use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\View\Exception\InvalidArgumentException;
 use Zend\View\HelperPluginManager;
 use Zend\View\Renderer\PhpRenderer;
@@ -27,16 +26,12 @@ class MailViewRendererFactory
      * @return RendererInterface
      * @throws InvalidArgumentException
      * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function __invoke(ContainerInterface $container): RendererInterface
     {
-        // Try to return the configured renderer. If it points to an undefined service, create a renderer on the fly
-        $serviceName = 'viewrenderer';
-
         try {
-            return $container->get($serviceName);
-        } catch (ServiceNotFoundException $e) {
+            return $container->get('viewrenderer');
+        } catch (NotFoundExceptionInterface $e) {
             // In case the renderer service is not defined, try to construct it
             $vmConfig = $this->getSpecificConfig($container, 'view_manager');
             $renderer = new PhpRenderer();
