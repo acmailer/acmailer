@@ -5,6 +5,7 @@ use AcMailer\Event\MailEvent;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception;
 use AcMailer\Factory\AbstractAcMailerFactory;
+use AcMailer\Factory\MailViewRendererFactory;
 use AcMailer\Model\EmailBuilder;
 use AcMailer\Service\MailService;
 use Interop\Container\ContainerInterface;
@@ -14,16 +15,8 @@ use Zend\EventManager\EventsCapableInterface;
 use Zend\EventManager\Exception\InvalidArgumentException;
 use Zend\EventManager\LazyListenerAggregate;
 use Zend\Mail\Transport;
-use Zend\Mvc\Service\ViewHelperManagerFactory;
-use Zend\ServiceManager\Config;
-use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\Stdlib\ArrayUtils;
-use Zend\View\HelperPluginManager;
-use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Renderer\RendererInterface;
-use Zend\View\Resolver\AggregateResolver;
-use Zend\View\Resolver\TemplateMapResolver;
-use Zend\View\Resolver\TemplatePathStack;
 
 class MailServiceAbstractFactory extends AbstractAcMailerFactory
 {
@@ -193,69 +186,13 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    private function createRenderer(ContainerInterface $container, array $mailOptions)
+    private function createRenderer(ContainerInterface $container, array $mailOptions): RendererInterface
     {
-        // Try to return the configured renderer. If it points to an undefined service, create a renderer on the fly
-        $serviceName = $mailOptions['renderer'] ?? null;
-
-        try {
-            return $container->get($serviceName);
-        } catch (ServiceNotFoundException $e) {
-            // In case the renderer service is not defined, try to construct it
-            $vmConfig = $this->getSpecificConfig($container, 'view_manager');
-            $renderer = new PhpRenderer();
-
-            // Check what kind of view_manager configuration has been defined
-            if (isset($vmConfig['template_map'], $vmConfig['template_path_stack'])) {
-                // If both a template_map and a template_path_stack have been defined, create an AggregateResolver
-                $pathStackResolver = new TemplatePathStack();
-                $pathStackResolver->setPaths($vmConfig['template_path_stack']);
-                $resolver = new AggregateResolver();
-                $resolver->attach($pathStackResolver)
-                    ->attach(new TemplateMapResolver($vmConfig['template_map']));
-                $renderer->setResolver($resolver);
-            } elseif (isset($vmConfig['template_map'])) {
-                // Create a TemplateMapResolver in case only the template_map has been defined
-                $renderer->setResolver(new TemplateMapResolver($vmConfig['template_map']));
-            } elseif (isset($vmConfig['template_path_stack'])) {
-                // Create a TemplatePathStack resolver in case only the template_path_stack has been defined
-                $pathStackResolver = new TemplatePathStack();
-                $pathStackResolver->setPaths($vmConfig['template_path_stack']);
-                $renderer->setResolver($pathStackResolver);
-            }
-
-            // Create a HelperPluginManager with default view helpers and user defined view helpers
-            $renderer->setHelperPluginManager($this->createHelperPluginManager($container));
-            return $renderer;
+        if (isset($mailOptions['renderer'])) {
+            return $container->get($mailOptions['renderer']);
         }
-    }
 
-    /**
-     * Creates a view helper manager
-     * @param ContainerInterface $container
-     * @return HelperPluginManager
-     * @throws ContainerExceptionInterface
-     */
-    private function createHelperPluginManager(ContainerInterface $container): HelperPluginManager
-    {
-        $factory = new ViewHelperManagerFactory();
-        /** @var HelperPluginManager $helperManager */
-        $helperManager = $factory($container, ViewHelperManagerFactory::PLUGIN_MANAGER_CLASS);
-        $config = new Config($this->getSpecificConfig($container, 'view_helpers'));
-        $config->configureServiceManager($helperManager);
-        return $helperManager;
-    }
-
-    /**
-     * Returns a specific configuration defined by provided key
-     * @param ContainerInterface $container
-     * @param $configKey
-     * @return array
-     * @throws ContainerExceptionInterface
-     */
-    private function getSpecificConfig(ContainerInterface $container, $configKey): array
-    {
-        return $container->get('config')[$configKey] ?? [];
+        return $container->get(MailViewRendererFactory::SERVICE_NAME);
     }
 
     /**

@@ -17,6 +17,7 @@ return [
         'factories' => [
             Model\EmailBuilder::class => Model\EmailBuilderFactory::class,
             'acmailer.mailservice.default' => Service\Factory\MailServiceAbstractFactory::class,
+            Factory\MailViewRendererFactory::SERVICE_NAME => Factory\MailViewRendererFactory::class,
         ],
 
         'abstract_factories' => [
@@ -28,7 +29,7 @@ return [
             Service\MailService::class => 'acmailer.mailservice.default',
             'mailservice' => 'acmailer.mailservice.default',
 
-            'mailviewrenderer' => 'viewrenderer',
+            'mailviewrenderer' => Factory\MailViewRendererFactory::SERVICE_NAME,
         ],
     ],
 
