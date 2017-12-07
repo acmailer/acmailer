@@ -49,7 +49,7 @@ final class Email extends AbstractOptions
      */
     private $subject = '';
     /**
-     * @var string
+     * @var string|Part|Message
      */
     private $body = '';
     /**
@@ -236,9 +236,9 @@ final class Email extends AbstractOptions
     }
 
     /**
-     * @return string
+     * @return string|Part|Message
      */
-    public function getBody(): string
+    public function getBody()
     {
         return $this->body;
     }

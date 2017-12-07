@@ -81,11 +81,11 @@ class MailViewRendererFactory
     /**
      * Returns a specific configuration defined by provided key
      * @param ContainerInterface $container
-     * @param $configKey
+     * @param string $configKey
      * @return array
      * @throws ContainerExceptionInterface
      */
-    private function getSpecificConfig(ContainerInterface $container, $configKey): array
+    private function getSpecificConfig(ContainerInterface $container, string $configKey): array
     {
         return $container->get('config')[$configKey] ?? [];
     }

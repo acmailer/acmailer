@@ -228,6 +228,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         }
 
         // Get old message parts
+        /** @var string|Mime\Message|Mime\Part $mimeMessage */
         $mimeMessage = $message->getBody();
         if (\is_string($mimeMessage)) {
             $isHtml = $mimeMessage !== \strip_tags($mimeMessage);
