@@ -13,6 +13,7 @@ use AcMailer\View\MailViewRendererFactory;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Mail\Transport\Sendmail;
 use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\TransportInterface;
@@ -101,10 +102,10 @@ class MailServiceAbstractFactoryTest extends TestCase
         ]);
         $this->container->has(Sendmail::class)->willReturn(false);
         $this->container->get(MailViewRendererFactory::SERVICE_NAME)->willReturn(
-            $this->prophesize(RendererInterface::class)->reveal()
+            $this->prophesize(TemplateRendererInterface::class)->reveal()
         );
         $this->container->get('my_renderer')->willReturn(
-            $this->prophesize(RendererInterface::class)->reveal()
+            $this->prophesize(TemplateRendererInterface::class)->reveal()
         );
         $this->container->get(EmailBuilder::class)->willReturn(
             $this->prophesize(EmailBuilderInterface::class)->reveal()
@@ -165,6 +166,33 @@ class MailServiceAbstractFactoryTest extends TestCase
             ['my_transport', true],
             ['my_transport', false],
         ];
+    }
+
+    /**
+     * @test
+     */
+    public function wrongCustomRendererThrowsException()
+    {
+        $this->container->get('config')->willReturn([
+            'acmailer_options' => [
+                'mail_services' => [
+                    'default' => [
+                        'transport' => 'sendmail',
+                        'renderer' => 'foo_renderer',
+                    ],
+                ],
+            ],
+        ]);
+        $this->container->has(Sendmail::class)->willReturn(false);
+        $this->container->get('foo_renderer')->willReturn(new \stdClass());
+
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage(\sprintf(
+            'Defined renderer of type "%s" is not valid. The renderer must resolve to a "%s" instance',
+            \stdClass::class,
+            TemplateRendererInterface::class
+        ));
+        $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
     }
 
     /**
@@ -259,7 +287,7 @@ class MailServiceAbstractFactoryTest extends TestCase
             $this->prophesize(TransportInterface::class)->reveal()
         )->shouldBeCalled();
         $this->container->get('my_renderer')->willReturn(
-            $this->prophesize(RendererInterface::class)->reveal()
+            $this->prophesize(TemplateRendererInterface::class)->reveal()
         )->shouldBeCalled();
         $this->container->get(EmailBuilder::class)->willReturn(
             $this->prophesize(EmailBuilderInterface::class)->reveal()
@@ -294,7 +322,7 @@ class MailServiceAbstractFactoryTest extends TestCase
         ]);
         $this->container->has(Sendmail::class)->willReturn(false);
         $this->container->get(MailViewRendererFactory::SERVICE_NAME)->willReturn(
-            $this->prophesize(RendererInterface::class)->reveal()
+            $this->prophesize(TemplateRendererInterface::class)->reveal()
         );
         $this->container->get(EmailBuilder::class)->willReturn(
             $this->prophesize(EmailBuilderInterface::class)->reveal()
