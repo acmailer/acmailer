@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace AcMailerTest\Factory;
 
-use AcMailer\Factory\MailViewRendererFactory;
+use AcMailer\View\MailViewRendererFactory;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\NotFoundExceptionInterface;

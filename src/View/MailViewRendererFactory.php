@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace AcMailer\Factory;
+namespace AcMailer\View;
 
 use Interop\Container\ContainerInterface as InteropContainer;
 use Psr\Container\ContainerExceptionInterface;

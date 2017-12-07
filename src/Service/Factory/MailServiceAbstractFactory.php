@@ -6,7 +6,7 @@ namespace AcMailer\Service\Factory;
 use AcMailer\Event\MailEvent;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception;
-use AcMailer\Factory\MailViewRendererFactory;
+use AcMailer\View\MailViewRendererFactory;
 use AcMailer\Model\EmailBuilder;
 use AcMailer\Service\MailService;
 use Interop\Container\ContainerInterface;
