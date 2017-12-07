@@ -1,366 +1,152 @@
 <?php
+declare(strict_types=1);
+
 namespace AcMailerTest\Service;
 
+use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception\InvalidArgumentException;
-use AcMailer\Service\MailServiceInterface;
-use AcMailer\View\DefaultLayout;
-use AcMailerTest\Event\MailListenerMock;
-use Zend\Mail\Message;
-use AcMailerTest\Mail\Transport\MockTransport;
-use Zend\View\Model\ViewModel;
-use Zend\View\Renderer\PhpRenderer;
+use AcMailer\Exception\MailException;
+use AcMailer\Model\Email;
+use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Service\MailService;
-use Zend\Mime;
-use AcMailer\Result\MailResult;
-use Zend\View\Resolver\TemplatePathStack;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
+use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\ResponseCollection;
+use Zend\Mail\Message;
+use Zend\Mail\Transport\TransportInterface;
+use Zend\View\Renderer\RendererInterface;
 
-/**
- * Mail service test case
- * @author Alejandro Celaya Alastrué
- * @link http://www.alejandrocelaya.com
- */
 class MailServiceTest extends TestCase
 {
     /**
-     * @var \AcMailerTest\Mail\Transport\MockTransport
+     * @var MailService
+     */
+    private $mailService;
+    /**
+     * @var ObjectProphecy
      */
     private $transport;
     /**
-     * @var \AcMailer\Service\MailService
+     * @var ObjectProphecy
      */
-    private $mailService;
+    private $renderer;
+    /**
+     * @var ObjectProphecy
+     */
+    private $emailBuilder;
+    /**
+     * @var ObjectProphecy
+     */
+    private $eventManager;
 
     public function setUp()
     {
-        $this->transport = new MockTransport();
-        $config = include __DIR__ . '/../../config/module.config.php';
-        $renderer = new PhpRenderer();
-        $renderer->setResolver(new TemplatePathStack($config['view_manager']['template_path_stack']));
-        $this->mailService = new MailService(new Message(), $this->transport, $renderer);
-    }
+        $this->transport = $this->prophesize(TransportInterface::class);
+        $this->renderer = $this->prophesize(RendererInterface::class);
+        $this->emailBuilder = $this->prophesize(EmailBuilderInterface::class);
+        $this->eventManager = $this->prophesize(EventManagerInterface::class);
 
-    public function testMimePartBodyCasting()
-    {
-        $this->mailService->setBody(new Mime\Part('Foo'));
-        $this->assertTrue($this->mailService->getMessage()->getBody() instanceof Mime\Message);
+        $this->eventManager->setIdentifiers(Argument::cetera())->willReturn(null);
 
-        /** @var Mime\Message $body */
-        $body = $this->mailService->getMessage()->getBody();
-        $this->assertNull($body->getParts()[0]->charset);
-
-        $this->mailService->setBody(new Mime\Part('Foo'), MailServiceInterface::DEFAULT_CHARSET);
-        /** @var Mime\Message $body */
-        $body = $this->mailService->getMessage()->getBody();
-        $this->assertEquals(MailServiceInterface::DEFAULT_CHARSET, $body->getParts()[0]->charset);
-    }
-
-    public function testHtmlBodyCasting()
-    {
-        $this->mailService->setBody('<div>Html body</div>');
-        $this->assertTrue($this->mailService->getMessage()->getBody() instanceof Mime\Message);
-    }
-
-    public function testStringBodyCasting()
-    {
-        $expected = 'String body';
-        $this->mailService->setBody($expected);
-        $this->assertTrue($this->mailService->getMessage()->getBody() instanceof Mime\Message);
-    }
-
-    public function testMimeMessageBodyRemainsUnchanged()
-    {
-        $part = new Mime\Part('Foo');
-        $message = new Mime\Message();
-        $message->addPart($part);
-        $this->mailService->setBody($message);
-
-        $this->assertTrue($this->mailService->getMessage()->getBody() instanceof Mime\Message);
-        $this->assertEquals($message, $this->mailService->getMessage()->getBody());
-    }
-
-    public function testCharsetIsRespectedWhenSettingHtmlStringBody()
-    {
-        $expected = 'foo';
-        $this->mailService->setBody('<h2>string</h2>', $expected);
-        /** @var Mime\Message $body */
-        $body = $this->mailService->getMessage()->getBody();
-        $part = $body->getParts();
-        $this->assertCount(1, $part);
-
-        /** @var Mime\Part $part */
-        $part = $part[0];
-        $this->assertEquals($expected, $part->charset);
+        $this->mailService = new MailService(
+            $this->transport->reveal(),
+            $this->renderer->reveal(),
+            $this->emailBuilder->reveal(),
+            $this->eventManager->reveal()
+        );
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @test
+     * @dataProvider provideInvalidEmails
+     * @param $email
      */
-    public function testInvalidBodyThrowsException()
+    public function sendInvalidEmailThrowsException($email)
     {
-        $this->mailService->setBody(new \stdClass());
+        $this->expectException(InvalidArgumentException::class);
+        $this->mailService->send($email);
     }
 
-    public function testSetSubject()
+    public function provideInvalidEmails(): array
     {
-        $expected = 'This is the subject';
-
-        $this->mailService->getMessage()->setSubject($expected);
-        $this->assertEquals($expected, $this->mailService->getMessage()->getSubject());
-    }
-
-    public function testSuccessfulSending()
-    {
-        $result = $this->mailService->send();
-
-        $this->assertTrue($result->isValid());
-        $this->assertEquals(MailResult::DEFAULT_MESSAGE, $result->getMessage());
-    }
-
-    public function testSendingWithError()
-    {
-        $this->transport->setForceError(true);
-        $result = $this->mailService->send();
-
-        $this->assertFalse($result->isValid());
-        $this->assertEquals(MockTransport::ERROR_MESSAGE, $result->getMessage());
+        return [
+            [null],
+            [new \stdClass()],
+            [50],
+        ];
     }
 
     /**
-     * @expectedException \Exception
+     * @test
+     * @dataProvider provideValidEmails
+     * @param $email
      */
-    public function testWithUncatchedException()
+    public function validEmailIsProperlySent($email)
     {
-        $this->transport->setForceError(true, new \Exception());
-        $this->mailService->send();
+        $buildEmail = $this->emailBuilder->build(Argument::cetera())->willReturn(new Email());
+        $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
+        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn(new ResponseCollection());
+
+        $this->mailService->send($email);
+
+        $buildEmail->shouldHaveBeenCalledTimes(\is_object($email) ? 0 : 1);
+        $send->shouldHaveBeenCalled();
+        $trigger->shouldHaveBeenCalledTimes(2);
     }
 
-    public function testZendMailExceptionsAreNotRethrown()
+    public function provideValidEmails(): array
     {
-        $this->transport->setForceError(true, new \Zend\Mail\Exception\InvalidArgumentException());
-        $result = $this->mailService->send();
-        $this->assertFalse($result->isValid());
-
-        $this->transport->setForceError(true, new \Zend\Mail\Exception\BadMethodCallException());
-        $result = $this->mailService->send();
-        $this->assertFalse($result->isValid());
-
-        $this->transport->setForceError(true, new \Zend\Mail\Protocol\Exception\InvalidArgumentException());
-        $result = $this->mailService->send();
-        $this->assertFalse($result->isValid());
-    }
-
-    public function testSetTransport()
-    {
-        $this->assertSame($this->transport, $this->mailService->getTransport());
-        $anotherTransport = new MockTransport();
-        $this->assertSame($this->mailService, $this->mailService->setTransport($anotherTransport));
-        $this->assertSame($anotherTransport, $this->mailService->getTransport());
-    }
-
-    public function testSetRenderer()
-    {
-        $this->assertInstanceOf('Zend\View\Renderer\PhpRenderer', $this->mailService->getRenderer());
-        $anotherRenderer = new PhpRenderer();
-        $this->assertSame($this->mailService, $this->mailService->setRenderer($anotherRenderer));
-        $this->assertSame($anotherRenderer, $this->mailService->getRenderer());
-    }
-
-    public function testSuccessfulMailEvent()
-    {
-        $mailListener = new MailListenerMock();
-        $this->mailService->attachMailListener($mailListener);
-        $result = $this->mailService->send();
-
-        $this->assertTrue($result->isValid());
-        $this->assertTrue($mailListener->isOnPreSendCalled());
-        $this->assertTrue($mailListener->isOnPostSendCalled());
-        $this->assertFalse($mailListener->isOnSendErrorCalled());
-    }
-
-    public function testMailEventWithError()
-    {
-        $mailListener = new MailListenerMock();
-        $this->transport->setForceError(true);
-        $this->mailService->attachMailListener($mailListener);
-        $result = $this->mailService->send();
-
-        $this->assertFalse($result->isValid());
-        $this->assertTrue($mailListener->isOnPreSendCalled());
-        $this->assertFalse($mailListener->isOnPostSendCalled());
-        $this->assertTrue($mailListener->isOnSendErrorCalled());
-    }
-
-    public function testDetachedMailListenerIsNotTriggered()
-    {
-        $mailListener = new MailListenerMock();
-        $this->mailService->attachMailListener($mailListener);
-        $this->mailService->detachMailListener($mailListener);
-        $result = $this->mailService->send();
-
-        $this->assertTrue($result->isValid());
-        $this->assertFalse($mailListener->isOnPreSendCalled());
-        $this->assertFalse($mailListener->isOnPostSendCalled());
-        $this->assertFalse($mailListener->isOnSendErrorCalled());
-    }
-
-    public function testValidTemplateMakesBodyToBeMimeMessage()
-    {
-        $resolver = new TemplatePathStack();
-        $resolver->addPath(__DIR__ . '/../../view');
-        $this->mailService->getRenderer()->setResolver($resolver);
-        $this->mailService->setTemplate('ac-mailer/mail-templates/mail.phtml');
-
-        $this->assertInstanceOf('Zend\Mime\Message', $this->mailService->getMessage()->getBody());
+        return [
+            ['the_email'],
+            [[]],
+            [new Email()],
+        ];
     }
 
     /**
-     * @expectedException \Zend\View\Exception\RuntimeException
+     * @test
      */
-    public function testInvalidTemplateThrowsException()
+    public function exceptionIsThrownInCaseOfError()
     {
-        $this->mailService->setTemplate('foo/bar');
+        $this->transport->send(Argument::type(Message::class))->willThrow(\Exception::class)
+                                                              ->shouldBeCalled();
+        $this->eventManager->triggerEvent(Argument::cetera())->willReturn(new ResponseCollection())
+                                                             ->shouldBeCalled();
+
+        $this->expectException(MailException::class);
+        $this->mailService->send(new Email());
     }
 
-    public function testAttachmentsTotal()
+    /**
+     * @test
+     */
+    public function whenPreSendReturnsFalseEmailsSendingIsCancelled()
     {
-        $this->assertCount(0, $this->mailService->getAttachments());
+        $collections = new ResponseCollection();
+        $collections->add(0, false);
 
-        $this->mailService->setAttachments(['one', 'two', 'three']);
-        $this->mailService->addAttachments(['four', 'five', 'six']);
-        $this->mailService->addAttachment('seven');
-        $this->mailService->addAttachment('eight', 'with-alias');
-        $this->assertCount(8, $this->mailService->getAttachments());
+        $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
+        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn($collections);
 
-        $this->mailService->setAttachments(['one', 'two']);
-        $this->assertCount(2, $this->mailService->getAttachments());
+        $this->mailService->send(new Email());
 
-        $this->mailService->addAttachments(['three', 'four']);
-        $this->assertCount(4, $this->mailService->getAttachments());
+        $send->shouldNotHaveBeenCalled();
+        $trigger->shouldHaveBeenCalledTimes(1);
     }
 
-    public function testAttachmentsAreAddedAsMimeParts()
+    /**
+     * @test
+     */
+    public function attachListeners()
     {
-        $cwd = getcwd();
-        chdir(dirname(__DIR__));
-        $this->mailService->setAttachments([
-            'attachments/file1',
-            'with_name' => new Mime\Part(fopen('attachments/file2', 'r+b')),
-            'attachments/dir/file3',
-            'invalid/attachment'
-        ]);
-        $this->mailService->setBody('Body as string');
-        $result = $this->mailService->send();
-        $this->assertTrue($result->isValid());
+        $listener = $this->prophesize(MailListenerInterface::class);
 
-        /* @var Mime\Message $body */
-        $body = $this->mailService->getMessage()->getBody();
-        $this->assertInstanceOf('Zend\Mime\Message', $body);
-        // The body and the three attached files make it a total of 4 parts
-        $parts = $body->getParts();
-        $this->assertCount(4, $parts);
-        $this->assertEquals('file1', $parts[1]->filename);
-        $this->assertEquals('with_name', $parts[2]->filename);
-        $this->assertEquals('file3', $parts[3]->filename);
-        chdir($cwd);
-    }
+        $listener->attach(Argument::cetera())->shouldBeCalled();
+        $listener->detach(Argument::cetera())->shouldBeCalled();
 
-    public function testAttachmentsAsResource()
-    {
-        $cwd = getcwd();
-        chdir(dirname(__DIR__));
-        $this->mailService->setAttachments([
-            'first' => fopen('attachments/file1', 'r+b'),
-            'second' => fopen('attachments/file2', 'r+b'),
-            'third' => fopen('attachments/dir/file3', 'r+b'),
-        ]);
-        $this->mailService->setBody('Body as string');
-        $result = $this->mailService->send();
-        $this->assertTrue($result->isValid());
-
-        /* @var Mime\Message $body */
-        $body = $this->mailService->getMessage()->getBody();
-        $parts = $body->getParts();
-        $this->assertCount(4, $parts);
-        $this->assertEquals('first', $parts[1]->filename);
-        $this->assertEquals(Mime\Mime::ENCODING_BASE64, $parts[1]->encoding);
-        $this->assertEquals(Mime\Mime::DISPOSITION_ATTACHMENT, $parts[1]->disposition);
-        $this->assertEquals('second', $parts[2]->filename);
-        $this->assertEquals('third', $parts[3]->filename);
-        chdir($cwd);
-    }
-
-    public function testAttachmentsAsArray()
-    {
-        $cwd = getcwd();
-        chdir(dirname(__DIR__));
-        $this->mailService->setAttachments([
-            'this_will_overwrite' => [
-                'id' => 'foo',
-                'filename' => 'foo',
-                'type' => 'image/png',
-                'encoding' => Mime\Mime::ENCODING_8BIT,
-                'disposition' => Mime\Mime::DISPOSITION_INLINE,
-                'content' => fopen('attachments/file1', 'r+b'),
-            ],
-            [
-                'id' => 'bar',
-                'filename' => 'bar',
-                'type' => 'image/gif',
-            ]
-        ]);
-        $this->mailService->setBody('Body as string');
-        $result = $this->mailService->send();
-        $this->assertTrue($result->isValid());
-
-        /* @var Mime\Message $body */
-        $body = $this->mailService->getMessage()->getBody();
-        $parts = $body->getParts();
-        $this->assertCount(3, $parts);
-        $this->assertEquals('this_will_overwrite', $parts[1]->id);
-        $this->assertEquals('this_will_overwrite', $parts[1]->filename);
-        $this->assertEquals('image/png', $parts[1]->type);
-        $this->assertEquals(Mime\Mime::ENCODING_8BIT, $parts[1]->encoding);
-        $this->assertEquals(Mime\Mime::DISPOSITION_INLINE, $parts[1]->disposition);
-        $this->assertTrue($parts[1]->isStream());
-        $this->assertEquals('bar', $parts[2]->id);
-        $this->assertEquals('bar', $parts[2]->filename);
-        $this->assertEquals('image/gif', $parts[2]->type);
-        $this->assertEquals(Mime\Mime::ENCODING_BASE64, $parts[2]->encoding);
-        $this->assertEquals(Mime\Mime::DISPOSITION_ATTACHMENT, $parts[2]->disposition);
-        $this->assertEquals('', $parts[2]->getContent());
-        $this->assertFalse($parts[2]->isStream());
-        chdir($cwd);
-    }
-
-    public function testStringBypassedBodyIsWrappedIntoMimePartWithAttachments()
-    {
-        $cwd = getcwd();
-        chdir(dirname(__DIR__));
-        $this->mailService->setAttachments([
-            'attachments/file1',
-            'attachments/file2'
-        ]);
-        $this->mailService->getMessage()->setBody('Btpassed body as string');
-        $result = $this->mailService->send();
-        $this->assertTrue($result->isValid());
-
-        /* @var Mime\Message $body */
-        $body = $this->mailService->getMessage()->getBody();
-        $this->assertInstanceOf('Zend\Mime\Message', $body);
-        chdir($cwd);
-    }
-
-    public function testWithDefaultLayout()
-    {
-        $resolver = new TemplatePathStack();
-        $resolver->addPath(__DIR__ . '/../../view');
-        $this->mailService->getRenderer()->setResolver($resolver);
-
-        $model = new ViewModel();
-        $model->setTemplate('ac-mailer/mail-templates/layout.phtml');
-        $this->mailService->setDefaultLayout(new DefaultLayout($model));
-        $this->mailService->setTemplate('ac-mailer/mail-templates/mail.phtml');
-        $this->assertInstanceOf('Zend\Mime\Message', $this->mailService->getMessage()->getBody());
+        $this->mailService->attachMailListener($listener->reveal());
+        $this->mailService->detachMailListener($listener->reveal());
     }
 }

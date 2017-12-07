@@ -14,7 +14,6 @@ use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\EventsCapableInterface;
 use Zend\EventManager\SharedEventManager;
-use Zend\Mail\Exception\ExceptionInterface as ZendMailException;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mime;
@@ -61,12 +60,12 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         $this->transport = $transport;
         $this->renderer = $renderer;
         $this->emailBuilder = $emailBuilder;
-        $this->events = $events ?: $this->createEventManager();
+        $this->events = $this->initEventManager($events);
     }
 
-    private function createEventManager(): EventManagerInterface
+    private function initEventManager(EventManagerInterface $events = null): EventManagerInterface
     {
-        $events = new EventManager(new SharedEventManager());
+        $events = $events ?: new EventManager(new SharedEventManager());
         $events->setIdentifiers([
             __CLASS__,
             static::class,

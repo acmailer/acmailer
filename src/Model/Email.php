@@ -51,7 +51,7 @@ final class Email extends AbstractOptions
     /**
      * @var string
      */
-    private $body;
+    private $body = '';
     /**
      * @var string|null
      */
