@@ -6,7 +6,6 @@ namespace AcMailer\Service\Factory;
 use AcMailer\Event\MailEvent;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception;
-use AcMailer\Factory\AbstractAcMailerFactory;
 use AcMailer\Factory\MailViewRendererFactory;
 use AcMailer\Model\EmailBuilder;
 use AcMailer\Service\MailService;
@@ -17,12 +16,14 @@ use Zend\EventManager\EventsCapableInterface;
 use Zend\EventManager\Exception\InvalidArgumentException;
 use Zend\EventManager\LazyListenerAggregate;
 use Zend\Mail\Transport;
+use Zend\ServiceManager\Factory\AbstractFactoryInterface;
 use Zend\Stdlib\ArrayUtils;
 use Zend\View\Renderer\RendererInterface;
 
-class MailServiceAbstractFactory extends AbstractAcMailerFactory
+class MailServiceAbstractFactory implements AbstractFactoryInterface
 {
-    const SPECIFIC_PART = 'mailservice';
+    const ACMAILER_PART = 'acmailer';
+    const MAIL_SERVICE_PART = 'mailservice';
     const TRANSPORT_MAP = [
         'sendmail' => Transport\Sendmail::class,
         'smtp' => Transport\Smtp::class,
@@ -30,6 +31,30 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
         'in_memory' => Transport\InMemory::class,
         'null' => Transport\InMemory::class,
     ];
+
+    /**
+     * Can the factory create an instance for the service?
+     *
+     * @param  ContainerInterface $container
+     * @param  string $requestedName
+     * @return bool
+     * @throws ContainerExceptionInterface
+     */
+    public function canCreate(ContainerInterface $container, $requestedName): bool
+    {
+        $parts = \explode('.', $requestedName);
+        if (\count($parts) !== 3) {
+            return false;
+        }
+
+        if ($parts[0] !== self::ACMAILER_PART || $parts[1] !== static::MAIL_SERVICE_PART) {
+            return false;
+        }
+
+        $specificServiceName = $parts[2];
+        $config = $container->get('config')['acmailer_options']['mail_services'] ?? [];
+        return \array_key_exists($specificServiceName, $config);
+    }
 
     /**
      * Create an object
@@ -137,9 +162,9 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
         // Check if the adapter is a service
         if ($container->has($transport)) {
             /** @var Transport\TransportInterface $transport */
-            $transport = $container->get($transport);
-            if ($transport instanceof Transport\TransportInterface) {
-                return $this->setupTransportConfig($transport, $mailOptions);
+            $transportInstance = $container->get($transport);
+            if ($transportInstance instanceof Transport\TransportInterface) {
+                return $this->setupTransportConfig($transportInstance, $mailOptions);
             }
 
             throw new Exception\InvalidArgumentException(\sprintf(
@@ -173,9 +198,9 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
         array $mailOptions
     ): Transport\TransportInterface {
         if ($transport instanceof Transport\Smtp) {
-            $transport->setOptions(new Transport\SmtpOptions($mailOptions['transport_options']));
+            $transport->setOptions(new Transport\SmtpOptions($mailOptions['transport_options'] ?? []));
         } elseif ($transport instanceof Transport\File) {
-            $transport->setOptions(new Transport\FileOptions($mailOptions['transport_options']));
+            $transport->setOptions(new Transport\FileOptions($mailOptions['transport_options'] ?? []));
         }
 
         return $transport;
