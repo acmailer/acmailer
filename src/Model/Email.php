@@ -57,10 +57,6 @@ final class Email extends AbstractOptions
      */
     private $template;
     /**
-     * @var string
-     */
-    private $charset = self::DEFAULT_CHARSET;
-    /**
      * @var array
      */
     private $templateParams = [];
@@ -72,6 +68,10 @@ final class Email extends AbstractOptions
      * @var array
      */
     private $attachmentsDir = [];
+    /**
+     * @var string
+     */
+    private $charset = self::DEFAULT_CHARSET;
 
     /**
      * @return string

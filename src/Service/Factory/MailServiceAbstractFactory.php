@@ -143,7 +143,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
      */
     private function createTransport(ContainerInterface $container, array $mailOptions): Transport\TransportInterface
     {
-        $transport = $mailOptions['transport'] ?? null;
+        $transport = $mailOptions['transport'] ?? Transport\Sendmail::class;
         if (! \is_string($transport) && ! $transport instanceof Transport\TransportInterface) {
             // The adapter is not valid. Throw an exception
             throw Exception\InvalidArgumentException::fromValidTypes(
