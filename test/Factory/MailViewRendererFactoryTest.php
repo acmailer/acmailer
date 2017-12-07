@@ -6,7 +6,8 @@ namespace AcMailerTest\Factory;
 use AcMailer\View\MailViewRendererFactory;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\NotFoundExceptionInterface;
+use Zend\Expressive\Template\TemplateRendererInterface;
+use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\View\Renderer\PhpRenderer;
 
 class MailViewRendererFactoryTest extends TestCase
@@ -26,28 +27,48 @@ class MailViewRendererFactoryTest extends TestCase
      */
     public function ifStandardServiceIsFoundItIsReturned()
     {
-        $theRenderer = new PhpRenderer();
+        $theRenderer = $this->prophesize(TemplateRendererInterface::class)->reveal();
 
         $container = $this->prophesize(ContainerInterface::class);
-        $getViewRenderer = $container->get('viewrenderer')->willReturn($theRenderer);
+        $hasViewRenderer = $container->has(TemplateRendererInterface::class)->willReturn(true);
+        $getViewRenderer = $container->get(TemplateRendererInterface::class)->willReturn($theRenderer);
 
         $result = $this->factory->__invoke($container->reveal());
 
         $this->assertSame($theRenderer, $result);
+        $hasViewRenderer->shouldHaveBeenCalledTimes(1);
         $getViewRenderer->shouldHaveBeenCalledTimes(1);
     }
 
     /**
      * @test
      */
-    public function ifStandardServiceIsNotFoundOneIsCreatedOnTheFly()
+    public function ifOldStandardServiceIsFoundItIsReturned()
+    {
+        $theRenderer = new PhpRenderer();
+
+        $container = $this->prophesize(ContainerInterface::class);
+        $hasViewRenderer = $container->has(TemplateRendererInterface::class)->willReturn(false);
+        $hasOldViewRenderer = $container->has('mailviewrenderer')->willReturn(true);
+        $getViewRenderer = $container->get('mailviewrenderer')->willReturn($theRenderer);
+
+        $result = $this->factory->__invoke($container->reveal());
+
+        $this->assertInstanceOf(ZendViewRenderer::class, $result);
+        $hasViewRenderer->shouldHaveBeenCalledTimes(1);
+        $hasOldViewRenderer->shouldHaveBeenCalledTimes(1);
+        $getViewRenderer->shouldHaveBeenCalledTimes(1);
+    }
+
+    /**
+     * @test
+     */
+    public function ifStandardServicesAreNotFoundOneIsCreatedOnTheFly()
     {
         $container = $this->prophesize(ContainerInterface::class);
 
-        $getViewRenderer = $container->get('viewrenderer')->willThrow(
-            new class extends \Exception implements NotFoundExceptionInterface {
-            }
-        );
+        $hasViewRenderer = $container->has(TemplateRendererInterface::class)->willReturn(false);
+        $hasOldViewRenderer = $container->has('mailviewrenderer')->willReturn(false);
         $getConfig = $container->get('config')->willReturn([
             'view_manager' => [
                 'template_map' => [],
@@ -58,8 +79,9 @@ class MailViewRendererFactoryTest extends TestCase
 
         $result = $this->factory->__invoke($container->reveal());
 
-        $this->assertInstanceOf(PhpRenderer::class, $result);
-        $getViewRenderer->shouldHaveBeenCalledTimes(1);
+        $this->assertInstanceOf(ZendViewRenderer::class, $result);
+        $hasViewRenderer->shouldHaveBeenCalledTimes(1);
+        $hasOldViewRenderer->shouldHaveBeenCalledTimes(1);
         $getConfig->shouldHaveBeenCalledTimes(2);
     }
 }

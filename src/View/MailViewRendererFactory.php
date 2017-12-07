@@ -7,6 +7,8 @@ use Interop\Container\ContainerInterface as InteropContainer;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Zend\Expressive\Template\TemplateRendererInterface;
+use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\Mvc\Service\ViewHelperManagerFactory;
 use Zend\ServiceManager\Config;
 use Zend\View\Exception\InvalidArgumentException;
@@ -14,6 +16,7 @@ use Zend\View\HelperPluginManager;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Renderer\RendererInterface;
 use Zend\View\Resolver\AggregateResolver;
+use Zend\View\Resolver\ResolverInterface;
 use Zend\View\Resolver\TemplateMapResolver;
 use Zend\View\Resolver\TemplatePathStack;
 
@@ -23,43 +26,57 @@ class MailViewRendererFactory
 
     /**
      * @param ContainerInterface $container
-     * @return RendererInterface
+     * @return TemplateRendererInterface
+     * @throws NotFoundExceptionInterface
      * @throws InvalidArgumentException
      * @throws ContainerExceptionInterface
      */
-    public function __invoke(ContainerInterface $container): RendererInterface
+    public function __invoke(ContainerInterface $container): TemplateRendererInterface
     {
-        try {
-            return $container->get('viewrenderer');
-        } catch (NotFoundExceptionInterface $e) {
-            // In case the renderer service is not defined, try to construct it
-            $vmConfig = $this->getSpecificConfig($container, 'view_manager');
-            $renderer = new PhpRenderer();
-
-            // Check what kind of view_manager configuration has been defined
-            $resolversStack = [];
-            if (isset($vmConfig['template_map'])) {
-                // Create a TemplateMapResolver in case only the template_map has been defined
-                $resolversStack[] = new TemplateMapResolver($vmConfig['template_map']);
-            }
-            if (isset($vmConfig['template_path_stack'])) {
-                // Create a TemplatePathStack resolver in case only the template_path_stack has been defined
-                $pathStackResolver = new TemplatePathStack();
-                $pathStackResolver->setPaths($vmConfig['template_path_stack']);
-                $resolversStack[] = $pathStackResolver;
-            }
-
-            // Attach all resolvers to the aggregate, and add it to the renderer
-            $aggregateResolver = new AggregateResolver();
-            foreach ($resolversStack as $resolver) {
-                $aggregateResolver->attach($resolver);
-            }
-            $renderer->setResolver($resolver);
-
-            // Create a HelperPluginManager with default view helpers and user defined view helpers
-            $renderer->setHelperPluginManager($this->createHelperPluginManager($container));
-            return $renderer;
+        // First, if the TemplateRendererInterface is registered as a service, use that service.
+        // This should be true in expressive applications
+        if ($container->has(TemplateRendererInterface::class)) {
+            return $container->get(TemplateRendererInterface::class);
         }
+
+        // If the mailviewrenderer is registered, wrap it into a ZendViewRenderer
+        // This should be true in Zend/MVC apps, run in a HTTP context
+        if ($container->has('mailviewrenderer')) {
+            return $this->wrapZendView($container->get('mailviewrenderer'));
+        }
+
+        // Finally, create a zend/view PhpRenderer and wrap it into a ZendViewRenderer
+        // This should be reached only in Zend/MVC apps run in a CLI context
+        $vmConfig = $this->getSpecificConfig($container, 'view_manager');
+        $renderer = new PhpRenderer();
+
+        // Check what kind of view_manager configuration has been defined
+        $resolversStack = [];
+        if (isset($vmConfig['template_map'])) {
+            // Create a TemplateMapResolver in case only the template_map has been defined
+            $resolversStack[] = new TemplateMapResolver($vmConfig['template_map']);
+        }
+        if (isset($vmConfig['template_path_stack'])) {
+            // Create a TemplatePathStack resolver in case only the template_path_stack has been defined
+            $pathStackResolver = new TemplatePathStack();
+            $pathStackResolver->setPaths($vmConfig['template_path_stack']);
+            $resolversStack[] = $pathStackResolver;
+        }
+
+        // Create the template resolver for the PhpRenderer
+        $resolver = $this->buildTemplateResolverFromStack($resolversStack);
+        if ($resolver !== null) {
+            $renderer->setResolver($resolver);
+        }
+
+        // Create a HelperPluginManager with default view helpers and user defined view helpers
+        $renderer->setHelperPluginManager($this->createHelperPluginManager($container));
+        return $this->wrapZendView($renderer);
+    }
+
+    private function wrapZendView(RendererInterface $renderer): TemplateRendererInterface
+    {
+        return new ZendViewRenderer($renderer);
     }
 
     /**
@@ -88,5 +105,27 @@ class MailViewRendererFactory
     private function getSpecificConfig(ContainerInterface $container, string $configKey): array
     {
         return $container->get('config')[$configKey] ?? [];
+    }
+
+    /**
+     * @param array $resolversStack
+     * @return ResolverInterface|null
+     */
+    private function buildTemplateResolverFromStack(array $resolversStack)
+    {
+        if (empty($resolversStack)) {
+            return null;
+        }
+
+        if (\count($resolversStack) === 1) {
+            return \array_shift($resolversStack);
+        }
+
+        // Attach all resolvers to the aggregate, if there's more than one
+        $aggregateResolver = new AggregateResolver();
+        foreach ($resolversStack as $resolver) {
+            $aggregateResolver->attach($resolver);
+        }
+        return $aggregateResolver;
     }
 }

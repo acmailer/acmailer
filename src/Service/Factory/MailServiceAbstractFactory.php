@@ -15,10 +15,10 @@ use Psr\Container\NotFoundExceptionInterface;
 use Zend\EventManager\EventsCapableInterface;
 use Zend\EventManager\Exception\InvalidArgumentException;
 use Zend\EventManager\LazyListenerAggregate;
+use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Mail\Transport;
 use Zend\ServiceManager\Factory\AbstractFactoryInterface;
 use Zend\Stdlib\ArrayUtils;
-use Zend\View\Renderer\RendererInterface;
 
 class MailServiceAbstractFactory implements AbstractFactoryInterface
 {
@@ -209,17 +209,27 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
     /**
      * @param ContainerInterface $container
      * @param array $mailOptions
-     * @return RendererInterface
+     * @return TemplateRendererInterface
+     * @throws Exception\InvalidArgumentException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    private function createRenderer(ContainerInterface $container, array $mailOptions): RendererInterface
+    private function createRenderer(ContainerInterface $container, array $mailOptions): TemplateRendererInterface
     {
-        if (isset($mailOptions['renderer'])) {
-            return $container->get($mailOptions['renderer']);
+        if (! isset($mailOptions['renderer'])) {
+            return $container->get(MailViewRendererFactory::SERVICE_NAME);
         }
 
-        return $container->get(MailViewRendererFactory::SERVICE_NAME);
+        // Resolve renderer service and ensure it has proper type
+        $renderer = $container->get($mailOptions['renderer']);
+        if (! $renderer instanceof TemplateRendererInterface) {
+            throw new Exception\InvalidArgumentException(\sprintf(
+                'Defined renderer of type "%s" is not valid. The renderer must resolve to a "%s" instance',
+                \is_object($renderer) ? \get_class($renderer) : \gettype($renderer),
+                TemplateRendererInterface::class
+            ));
+        }
+        return $renderer;
     }
 
     /**
