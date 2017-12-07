@@ -149,19 +149,11 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
     {
         $message = MessageFactory::createMessageFromEmail($email);
 
-        if (! $email->hasTemplate()) {
-            $body = $this->buildBody($email);
-
-            // The headers Content-type and Content-transfer-encoding are duplicated every time the body is set.
-            // Removing them before setting the body prevents this error
-            $message->getHeaders()->removeHeader('contenttype');
-            $message->getHeaders()->removeHeader('contenttransferencoding');
-            $message->setBody($body);
-        } else {
-            $message->setBody($this->renderer->render($email->getTemplate(), $email->getTemplateParams()));
+        if ($email->hasTemplate()) {
+            return $message->setBody($this->renderer->render($email->getTemplate(), $email->getTemplateParams()));
         }
 
-        return $message;
+        return $message->setBody($this->buildBody($email));
     }
 
     /**
