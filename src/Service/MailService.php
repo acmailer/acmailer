@@ -16,11 +16,11 @@ use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\EventsCapableInterface;
 use Zend\EventManager\SharedEventManager;
+use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mime;
 use Zend\Stdlib\ArrayUtils;
-use Zend\View\Renderer\RendererInterface;
 
 /**
  * Wraps Zend\Mail functionality
@@ -34,7 +34,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
      */
     private $transport;
     /**
-     * @var RendererInterface
+     * @var TemplateRendererInterface
      */
     private $renderer;
     /**
@@ -49,13 +49,13 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
     /**
      * Creates a new MailService
      * @param TransportInterface $transport
-     * @param RendererInterface $renderer
+     * @param TemplateRendererInterface $renderer
      * @param EmailBuilderInterface $emailBuilder
      * @param EventManagerInterface|null $events
      */
     public function __construct(
         TransportInterface $transport,
-        RendererInterface $renderer,
+        TemplateRendererInterface $renderer,
         EmailBuilderInterface $emailBuilder,
         EventManagerInterface $events = null
     ) {

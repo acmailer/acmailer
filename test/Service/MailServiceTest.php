@@ -14,9 +14,9 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ResponseCollection;
+use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
-use Zend\View\Renderer\RendererInterface;
 
 class MailServiceTest extends TestCase
 {
@@ -44,7 +44,7 @@ class MailServiceTest extends TestCase
     public function setUp()
     {
         $this->transport = $this->prophesize(TransportInterface::class);
-        $this->renderer = $this->prophesize(RendererInterface::class);
+        $this->renderer = $this->prophesize(TemplateRendererInterface::class);
         $this->emailBuilder = $this->prophesize(EmailBuilderInterface::class);
         $this->eventManager = $this->prophesize(EventManagerInterface::class);
 
@@ -148,5 +148,21 @@ class MailServiceTest extends TestCase
 
         $this->mailService->attachMailListener($listener->reveal());
         $this->mailService->detachMailListener($listener->reveal());
+    }
+
+    /**
+     * @test
+     */
+    public function templateIsRendererIfProvided()
+    {
+        $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
+        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn(new ResponseCollection());
+        $render = $this->renderer->render(Argument::cetera())->willReturn('');
+
+        $this->mailService->send((new Email())->setTemplate('some/template'));
+
+        $send->shouldHaveBeenCalledTimes(1);
+        $trigger->shouldHaveBeenCalled();
+        $render->shouldHaveBeenCalledTimes(1);
     }
 }
