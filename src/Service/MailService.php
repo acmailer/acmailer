@@ -148,33 +148,31 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
     private function createMessageFromEmail(Email $email): Message
     {
         $message = MessageFactory::createMessageFromEmail($email);
+        $rawBody = $email->hasTemplate()
+            ? $this->renderer->render($email->getTemplate(), $email->getTemplateParams())
+            : $email->getBody();
 
-        if ($email->hasTemplate()) {
-            return $message->setBody($this->renderer->render($email->getTemplate(), $email->getTemplateParams()));
-        }
-
-        return $message->setBody($this->buildBody($email));
+        return $message->setBody($this->buildBody($rawBody, $email->getCharset()));
     }
 
     /**
      * Sets the message body
-     * @param Email $email
+     * @param string|Mime\Part|Mime\Message $body
+     * @param string $charset
      * @return Mime\Message
      * @throws Mime\Exception\InvalidArgumentException
      */
-    private function buildBody(Email $email): Mime\Message
+    private function buildBody(string $body, string $charset): Mime\Message
     {
-        $body = $email->getBody();
-
         if (\is_string($body)) {
             // Create a Mime\Part and wrap it into a Mime\Message
             $mimePart = new Mime\Part($body);
             $mimePart->type = $body !== \strip_tags($body) ? Mime\Mime::TYPE_HTML : Mime\Mime::TYPE_TEXT;
-            $mimePart->charset = $email->getCharset();
+            $mimePart->charset = $charset;
             $body = new Mime\Message();
             $body->setParts([$mimePart]);
         } elseif ($body instanceof Mime\Part) {
-            $body->charset = $email->getCharset();
+            $body->charset = $charset;
 
             // The body is a Mime\Part. Wrap it into a Mime\Message
             $mimeMessage = new Mime\Message();
