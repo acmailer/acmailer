@@ -44,4 +44,6 @@
     <file>config</file>
     <file>src</file>
     <file>test</file>
+
+    <exclude-pattern>config/mail.global.php</exclude-pattern>
 </ruleset>
