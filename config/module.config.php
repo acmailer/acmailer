@@ -29,7 +29,7 @@ return [
             Service\MailService::class => 'acmailer.mailservice.default',
             'mailservice' => 'acmailer.mailservice.default',
 
-            'mailviewrenderer' => 'viewrenderer',
+            'mailviewrenderer' => 'ViewRenderer',
         ],
     ],
 
