@@ -286,7 +286,7 @@ final class Email extends AbstractOptions
     public function addAttachments(array $files): self
     {
         foreach ($files as $key => $file) {
-            $this->addAttachment($file, $key);
+            $this->addAttachment($file, \is_string($key) ? $key : null);
         }
 
         return $this;
@@ -337,7 +337,7 @@ final class Email extends AbstractOptions
      */
     public function hasAttachments(): bool
     {
-        return ! empty($this->attachments) && ! empty($this->attachmentsDir);
+        return ! empty($this->attachments) || ! empty($this->attachmentsDir);
     }
 
     /**

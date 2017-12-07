@@ -162,7 +162,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
      * @return Mime\Message
      * @throws Mime\Exception\InvalidArgumentException
      */
-    private function buildBody(string $body, string $charset): Mime\Message
+    private function buildBody($body, string $charset): Mime\Message
     {
         if (\is_string($body)) {
             // Create a Mime\Part and wrap it into a Mime\Message
@@ -225,8 +225,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
             $originalBodyPart = new Mime\Part($mimeMessage);
             $originalBodyPart->type = $isHtml ? Mime\Mime::TYPE_HTML : Mime\Mime::TYPE_TEXT;
 
-            $email->setBody($originalBodyPart);
-            $mimeMessage = $this->buildBody($email);
+            $mimeMessage = $this->buildBody($originalBodyPart, $email->getCharset());
         }
         $oldParts = $mimeMessage->getParts();
 
@@ -249,8 +248,11 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
                 $part = new Mime\Part(\fopen($attachment, 'r+b'));
                 $part->type = $info->file($attachment);
             } elseif (\is_resource($attachment)) {
+                $resourceData = \stream_get_meta_data($attachment);
+
                 // If the attachment is a resource, use it as the content for a new Mime\Part
                 $part = new Mime\Part($attachment);
+                $key = isset($resourceData['uri']) ? \basename($resourceData['uri']) : $key;
             } elseif (\is_array($attachment)) {
                 // If the attachment is an array, map a Mime\Part object with the array properties
                 $part = new Mime\Part();
