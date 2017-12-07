@@ -17,7 +17,7 @@ before_script:
 script:
   - mkdir build
   - mkdir test/attachments/dir/dirdept
-  - ./vendor/bin/phpcs --standard=PSR2 ./src/ ./test/ ./config
+  - ./vendor/bin/phpcs
 #  - if [[ $TRAVIS_PHP_VERSION = 7.1 ]] || [[ $TRAVIS_PHP_VERSION = 7.2 ]]; then ~/.composer/vendor/bin/phpstan analyse src/ --level=5; fi
   - ./vendor/bin/phpunit --coverage-clover build/clover.xml
 

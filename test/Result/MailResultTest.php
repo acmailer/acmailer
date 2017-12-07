@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace AcMailerTest\Result;
 
 use AcMailer\Model\Email;

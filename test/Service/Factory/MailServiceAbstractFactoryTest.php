@@ -5,11 +5,11 @@ namespace AcMailerTest\Service\Factory;
 
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception;
-use AcMailer\View\MailViewRendererFactory;
 use AcMailer\Model\EmailBuilder;
 use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Service\Factory\MailServiceAbstractFactory;
 use AcMailer\Service\MailService;
+use AcMailer\View\MailViewRendererFactory;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -286,7 +286,7 @@ class MailServiceAbstractFactoryTest extends TestCase
                             [
                                 'listener' => 'another_lazy_listener',
                                 'priority' => 3,
-                            ]
+                            ],
                         ],
                     ],
                 ],

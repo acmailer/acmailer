@@ -6,9 +6,9 @@ namespace AcMailer\Service\Factory;
 use AcMailer\Event\MailEvent;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception;
-use AcMailer\View\MailViewRendererFactory;
 use AcMailer\Model\EmailBuilder;
 use AcMailer\Service\MailService;
+use AcMailer\View\MailViewRendererFactory;
 use Interop\Container\ContainerInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -86,7 +86,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
 
         // Recursively extend configuration
         $specificMailServiceOptions = $this->buildConfig($mailOptions, $specificMailServiceOptions);
-        
+
         // Create the service
         $transport = $this->createTransport($container, $specificMailServiceOptions);
         $renderer = $this->createRenderer($container, $specificMailServiceOptions);

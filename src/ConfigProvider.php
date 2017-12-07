@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace AcMailer;
 
 class ConfigProvider
@@ -7,7 +9,7 @@ class ConfigProvider
     {
         $moduleConfig = include __DIR__ . '/../config/module.config.php';
         return [
-            'dependencies' => $moduleConfig['service_manager']
+            'dependencies' => $moduleConfig['service_manager'],
         ];
     }
 }

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace AcMailer\Result;
 
 use AcMailer\Model\Email;
@@ -15,7 +17,7 @@ interface ResultInterface
      * @return Email
      */
     public function getEmail(): Email;
-    
+
     /**
      * Tells if the email was properly sent
      * @return bool
