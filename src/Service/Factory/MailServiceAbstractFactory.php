@@ -157,7 +157,11 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             return $this->setupTransportConfig($transport, $mailOptions);
         }
 
+        // Check if the adapter is one of Zend's default adapters
         $transport = self::TRANSPORT_MAP[$transport] ?? $transport;
+        if (\is_subclass_of($transport, Transport\TransportInterface::class)) {
+            return $this->setupTransportConfig(new $transport(), $mailOptions);
+        }
 
         // Check if the adapter is a service
         if ($container->has($transport)) {
@@ -172,11 +176,6 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
                 $transport,
                 Transport\TransportInterface::class
             ));
-        }
-
-        // Check if the adapter is one of Zend's default adapters
-        if (\is_subclass_of($transport, Transport\TransportInterface::class)) {
-            return $this->setupTransportConfig(new $transport(), $mailOptions);
         }
 
         // The adapter is not valid. Throw an exception
