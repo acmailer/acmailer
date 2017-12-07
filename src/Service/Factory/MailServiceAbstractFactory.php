@@ -200,7 +200,9 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
         if ($transport instanceof Transport\Smtp) {
             $transport->setOptions(new Transport\SmtpOptions($mailOptions['transport_options'] ?? []));
         } elseif ($transport instanceof Transport\File) {
-            $transport->setOptions(new Transport\FileOptions($mailOptions['transport_options'] ?? []));
+            $transportOptions = $mailOptions['transport_options'] ?? [];
+            $transportOptions['path'] = $transportOptions['path'] ?? 'data/mail/output';
+            $transport->setOptions(new Transport\FileOptions($transportOptions));
         }
 
         return $transport;
