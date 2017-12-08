@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace AcMailer\Attachment\Parser;
 
 use AcMailer\Exception\InvalidAttachmentException;
-use Zend\Mime\Exception\InvalidArgumentException;
 use Zend\Mime;
+use Zend\Mime\Exception\InvalidArgumentException;
 
 class ResourceAttachmentParser implements AttachmentParserInterface
 {
