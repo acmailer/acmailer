@@ -283,6 +283,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
                 $part->encoding = Mime\Mime::ENCODING_BASE64;
                 $part->disposition = Mime\Mime::DISPOSITION_ATTACHMENT;
             }
+            $part->charset = $email->getCharset();
             $attachmentParts[] = $part;
         }
 
