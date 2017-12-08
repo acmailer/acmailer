@@ -5,7 +5,9 @@ namespace AcMailerTest\View;
 
 use AcMailer\View\SimpleZendViewRenderer;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\RendererInterface;
 
 class SimpleZendViewRendererTest extends TestCase
@@ -28,13 +30,25 @@ class SimpleZendViewRendererTest extends TestCase
     /**
      * @test
      */
-    public function renderDelegatesIntoZendRenderer()
+    public function renderDelegatesIntoZendRendererWhenNoLayoutIsProvided()
     {
-        $innerRender = $this->zendRenderer->render('foo', [])->willReturn('');
+        $innerRender = $this->zendRenderer->render(Argument::type(ViewModel::class))->willReturn('');
 
-        $this->simpleRenderer->render('foo', []);
+        $this->simpleRenderer->render('foo');
 
-        $innerRender->shouldHaveBeenCalled();
+        $innerRender->shouldHaveBeenCalledTimes(1);
+    }
+
+    /**
+     * @test
+     */
+    public function renderDelegatesIntoZendRendererWhenLayoutIsProvided()
+    {
+        $innerRender = $this->zendRenderer->render(Argument::type(ViewModel::class))->willReturn('');
+
+        $this->simpleRenderer->render('foo', ['layout' => 'bar']);
+
+        $innerRender->shouldHaveBeenCalledTimes(2);
     }
 
     /**

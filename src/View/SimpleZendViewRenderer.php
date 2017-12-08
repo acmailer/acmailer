@@ -5,6 +5,7 @@ namespace AcMailer\View;
 
 use Zend\Expressive\Template\TemplatePath;
 use Zend\Expressive\Template\TemplateRendererInterface;
+use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\RendererInterface;
 
 class SimpleZendViewRenderer implements TemplateRendererInterface
@@ -26,12 +27,27 @@ class SimpleZendViewRenderer implements TemplateRendererInterface
      * and allow omitting the filename extension.
      *
      * @param string $name
-     * @param array|\ArrayAccess $params
+     * @param array|\Traversable $params
      * @return string
      */
     public function render($name, $params = []): string
     {
-        return $this->renderer->render($name, $params);
+        $layout = $params['layout'] ?? null;
+        unset($params['layout']);
+
+        $viewModel = new ViewModel($params);
+        $viewModel->setTemplate($name);
+
+        // If a layout was provided, add the original view model as a child
+        if ($layout !== null) {
+            $layoutModel = new ViewModel([
+                'content' => $this->renderer->render($viewModel),
+            ]);
+            $layoutModel->setTemplate($layout);
+            $viewModel = $layoutModel;
+        }
+
+        return $this->renderer->render($viewModel);
     }
 
     /**
