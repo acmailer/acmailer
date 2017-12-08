@@ -341,6 +341,41 @@ final class Email extends AbstractOptions
     }
 
     /**
+     * Processes the attachments dir and merges the result with the attachments array, then returns the result
+     *
+     * @return array
+     */
+    public function getComputedAttachments(): array
+    {
+        if (! $this->hasAttachments()) {
+            return [];
+        }
+        $attachments = $this->getAttachments();
+
+        // Process the attachments dir if any, and include the files in that folder
+        $dir = $this->getAttachmentsDir();
+        $path = $dir['path'] ?? null;
+        $recursive = (bool) ($dir['recursive'] ?? false);
+
+        if (\is_string($path) && \is_dir($path)) {
+            $files = $recursive ? new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS),
+                \RecursiveIteratorIterator::CHILD_FIRST
+            ) : new \DirectoryIterator($path);
+
+            /* @var \SplFileInfo $fileInfo */
+            foreach ($files as $fileInfo) {
+                if ($fileInfo->isDir()) {
+                    continue;
+                }
+                $attachments[] = $fileInfo->getPathname();
+            }
+        }
+
+        return $attachments;
+    }
+
+    /**
      * @return string|null
      */
     public function getTemplate()

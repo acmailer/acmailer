@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace AcMailer\Service;
 
+use AcMailer\Attachment\AttachmentParserManagerInterface;
 use AcMailer\Event\MailEvent;
 use AcMailer\Event\MailListenerAwareInterface;
 use AcMailer\Event\MailListenerInterface;
@@ -45,23 +46,30 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
      * @var EmailBuilderInterface
      */
     private $emailBuilder;
+    /**
+     * @var AttachmentParserManagerInterface
+     */
+    private $attachmentParserManager;
 
     /**
      * Creates a new MailService
      * @param TransportInterface $transport
      * @param TemplateRendererInterface $renderer
      * @param EmailBuilderInterface $emailBuilder
+     * @param AttachmentParserManagerInterface $attachmentParserManager
      * @param EventManagerInterface|null $events
      */
     public function __construct(
         TransportInterface $transport,
         TemplateRendererInterface $renderer,
         EmailBuilderInterface $emailBuilder,
+        AttachmentParserManagerInterface $attachmentParserManager,
         EventManagerInterface $events = null
     ) {
         $this->transport = $transport;
         $this->renderer = $renderer;
         $this->emailBuilder = $emailBuilder;
+        $this->attachmentParserManager = $attachmentParserManager;
         $this->events = $this->initEventManager($events);
     }
 
@@ -196,37 +204,11 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         if (! $email->hasAttachments()) {
             return;
         }
-        $attachments = $email->getAttachments();
-
-        // Process the attachments dir if any, and include the files in that folder
-        $dir = $email->getAttachmentsDir();
-        $path = $dir['path'] ?? null;
-        $recursive = (bool) ($dir['recursive'] ?? false);
-        if ($path !== null && \is_string($path) && \is_dir($path)) {
-            $files = $recursive ? new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS),
-                \RecursiveIteratorIterator::CHILD_FIRST
-            ) : new \DirectoryIterator($path);
-
-            /* @var \SplFileInfo $fileInfo */
-            foreach ($files as $fileInfo) {
-                if ($fileInfo->isDir()) {
-                    continue;
-                }
-                $attachments[] = $fileInfo->getPathname();
-            }
-        }
+        $attachments = $email->getComputedAttachments();
 
         // Get old message parts
-        /** @var string|Mime\Message|Mime\Part $mimeMessage */
+        /** @var Mime\Message $mimeMessage */
         $mimeMessage = $message->getBody();
-        if (\is_string($mimeMessage)) {
-            $isHtml = $mimeMessage !== \strip_tags($mimeMessage);
-            $originalBodyPart = new Mime\Part($mimeMessage);
-            $originalBodyPart->type = $isHtml ? Mime\Mime::TYPE_HTML : Mime\Mime::TYPE_TEXT;
-
-            $mimeMessage = $this->buildBody($originalBodyPart, $email->getCharset());
-        }
         $oldParts = $mimeMessage->getParts();
 
         // Generate a new Mime\Part for each attachment
@@ -241,7 +223,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
                 $encodingAndDispositionAreSet = true;
             } elseif (\is_string($attachment) && \is_file($attachment)) {
                 // If the attachment is a string that corresponds to a file, process it and create a Mime\Part
-                $info = $info ?? new \finfo(FILEINFO_MIME_TYPE);
+                $info = $info ?? new \finfo(\FILEINFO_MIME_TYPE);
                 // If the key is not defined, use the attachment's \basename
                 $key = \is_string($key) ? $key : \basename($attachment);
 

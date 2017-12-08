@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace AcMailer\Service\Factory;
 
+use AcMailer\Attachment\AttachmentParserManager;
 use AcMailer\Event\MailEvent;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception;
@@ -90,7 +91,12 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
         // Create the service
         $transport = $this->createTransport($container, $specificMailServiceOptions);
         $renderer = $this->createRenderer($container, $specificMailServiceOptions);
-        $mailService = new MailService($transport, $renderer, $container->get(EmailBuilder::class));
+        $mailService = new MailService(
+            $transport,
+            $renderer,
+            $container->get(AttachmentParserManager::class),
+            $container->get(EmailBuilder::class)
+        );
 
         // Attach mail listeners
         $this->attachMailListeners($mailService, $container, $specificMailServiceOptions);

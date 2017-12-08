@@ -18,9 +18,9 @@ class Module
     public function __invoke()
     {
         $moduleConfig = $this->getConfig();
-        return [
-            'dependencies' => $moduleConfig['service_manager'],
-            'acmailer_options' => $moduleConfig['acmailer_options'],
-        ];
+        $moduleConfig['dependencies'] = $moduleConfig['service_manager'];
+        unset($moduleConfig['service_manager']);
+
+        return $moduleConfig;
     }
 }
