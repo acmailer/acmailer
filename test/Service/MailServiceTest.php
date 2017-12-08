@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace AcMailerTest\Service;
 
+use AcMailer\Attachment\AttachmentParserManagerInterface;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Exception\MailException;
@@ -40,12 +41,17 @@ class MailServiceTest extends TestCase
      * @var ObjectProphecy
      */
     private $eventManager;
+    /**
+     * @var ObjectProphecy
+     */
+    private $attachmentParsers;
 
     public function setUp()
     {
         $this->transport = $this->prophesize(TransportInterface::class);
         $this->renderer = $this->prophesize(TemplateRendererInterface::class);
         $this->emailBuilder = $this->prophesize(EmailBuilderInterface::class);
+        $this->attachmentParsers = $this->prophesize(AttachmentParserManagerInterface::class);
         $this->eventManager = $this->prophesize(EventManagerInterface::class);
 
         $this->eventManager->setIdentifiers(Argument::cetera())->willReturn(null);
@@ -54,6 +60,7 @@ class MailServiceTest extends TestCase
             $this->transport->reveal(),
             $this->renderer->reveal(),
             $this->emailBuilder->reveal(),
+            $this->attachmentParsers->reveal(),
             $this->eventManager->reveal()
         );
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace AcMailer\Service;
 
 use AcMailer\Attachment\AttachmentParserManagerInterface;
+use AcMailer\Attachment\Parser\AttachmentParserInterface;
 use AcMailer\Event\MailEvent;
 use AcMailer\Event\MailListenerAwareInterface;
 use AcMailer\Event\MailListenerInterface;
@@ -13,15 +14,17 @@ use AcMailer\Model\Email;
 use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Result\MailResult;
 use AcMailer\Result\ResultInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\EventsCapableInterface;
 use Zend\EventManager\SharedEventManager;
 use Zend\Expressive\Template\TemplateRendererInterface;
+use Zend\Mail\Exception\InvalidArgumentException;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mime;
-use Zend\Stdlib\ArrayUtils;
 
 /**
  * Wraps Zend\Mail functionality
@@ -88,6 +91,8 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
      * @param string|array|Email $email
      * @param array $options
      * @return ResultInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
      * @throws Exception\InvalidArgumentException
      * @throws Exception\EmailNotFoundException
      * @throws Exception\MailException
@@ -195,9 +200,10 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
      * Attaches files to the message if any
      * @param Message $message
      * @param Email $email
-     * @throws Exception\InvalidArgumentException
-     * @throws \Zend\Mail\Exception\InvalidArgumentException
-     * @throws Mime\Exception\InvalidArgumentException
+     * @throws Exception\InvalidAttachmentException
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws InvalidArgumentException
      */
     private function attachFiles(Message $message, Email $email)
     {
@@ -215,60 +221,20 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         $attachmentParts = [];
         $info = null;
         foreach ($attachments as $key => $attachment) {
-            $encodingAndDispositionAreSet = false;
-
-            if ($attachment instanceof Mime\Part) {
-                // If the attachment is already a Mime\Part object, just add it
-                $part = $attachment;
-                $encodingAndDispositionAreSet = true;
-            } elseif (\is_string($attachment) && \is_file($attachment)) {
-                // If the attachment is a string that corresponds to a file, process it and create a Mime\Part
-                $info = $info ?? new \finfo(\FILEINFO_MIME_TYPE);
-                // If the key is not defined, use the attachment's \basename
-                $key = \is_string($key) ? $key : \basename($attachment);
-
-                $part = new Mime\Part(\fopen($attachment, 'r+b'));
-                $part->type = $info->file($attachment);
-            } elseif (\is_resource($attachment)) {
-                $resourceData = \stream_get_meta_data($attachment);
-
-                // If the attachment is a resource, use it as the content for a new Mime\Part
-                $part = new Mime\Part($attachment);
-                $key = isset($resourceData['uri']) ? \basename($resourceData['uri']) : $key;
-            } elseif (\is_array($attachment)) {
-                // If the attachment is an array, map a Mime\Part object with the array properties
-                $part = new Mime\Part();
-                $encodingAndDispositionAreSet = true;
-                // Set default values for certain properties in the Mime\Part object
-                $attachment = ArrayUtils::merge([
-                    'encoding' => Mime\Mime::ENCODING_BASE64,
-                    'disposition' => Mime\Mime::DISPOSITION_ATTACHMENT,
-                ], $attachment);
-                foreach ($attachment as $property => $value) {
-                    $method = 'set' . $property;
-                    if (\method_exists($part, $method)) {
-                        $part->{$method}($value);
-                    }
-                }
-            } else {
-                // Ignore any other kind of attachment
+            $parserName = \is_object($attachment) ? \get_class($attachment) : \gettype($attachment);
+            if (! $this->attachmentParserManager->has($parserName)) {
                 continue;
             }
 
-            // Overwrite the id and filename of the Mime\Part with provided key if any
-            if (\is_string($key)) {
-                $part->id = $key;
-                $part->filename = $key;
-            }
-            // Make sure encoding and disposition have a default value
-            if (! $encodingAndDispositionAreSet) {
-                $part->encoding = Mime\Mime::ENCODING_BASE64;
-                $part->disposition = Mime\Mime::DISPOSITION_ATTACHMENT;
-            }
+            /** @var AttachmentParserInterface $parser */
+            $parser = $this->attachmentParserManager->get($parserName);
+            $part = $parser->parse($attachment, \is_string($key) ? $key : null);
+
             $part->charset = $email->getCharset();
             $attachmentParts[] = $part;
         }
 
+        // Create a new body for the message, merging the attachment parts and all the old parts
         $body = new Mime\Message();
         $body->setParts(\array_merge($oldParts, $attachmentParts));
         $message->setBody($body);

@@ -94,8 +94,8 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
         $mailService = new MailService(
             $transport,
             $renderer,
-            $container->get(AttachmentParserManager::class),
-            $container->get(EmailBuilder::class)
+            $container->get(EmailBuilder::class),
+            $container->get(AttachmentParserManager::class)
         );
 
         // Attach mail listeners

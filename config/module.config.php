@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace AcMailer;
 
+use Zend\Mime\Part;
+use Zend\ServiceManager\Factory\InvokableFactory;
+
 return [
 
     'acmailer_options' => [
@@ -36,7 +39,17 @@ return [
 
     'attachment_parsers' => [
         'factories' => [
+            Attachment\Parser\ArrayAttachmentParser::class => InvokableFactory::class,
+            Attachment\Parser\FilePathAttachmentParser::class => InvokableFactory::class,
+            Attachment\Parser\MimePartAttachmentParser::class => InvokableFactory::class,
+            Attachment\Parser\ResourceAttachmentParser::class => InvokableFactory::class,
+        ],
 
+        'aliases' => [
+            'array' => Attachment\Parser\ArrayAttachmentParser::class,
+            'string' => Attachment\Parser\FilePathAttachmentParser::class,
+            Part::class => Attachment\Parser\MimePartAttachmentParser::class,
+            'resource' => Attachment\Parser\ResourceAttachmentParser::class,
         ],
     ],
 

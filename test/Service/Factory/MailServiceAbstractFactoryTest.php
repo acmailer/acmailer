@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace AcMailerTest\Service\Factory;
 
+use AcMailer\Attachment\AttachmentParserManager;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception;
 use AcMailer\Model\EmailBuilder;
@@ -109,6 +110,9 @@ class MailServiceAbstractFactoryTest extends TestCase
         );
         $this->container->get(EmailBuilder::class)->willReturn(
             $this->prophesize(EmailBuilderInterface::class)->reveal()
+        );
+        $this->container->get(AttachmentParserManager::class)->willReturn(
+            $this->prophesize(AttachmentParserManager::class)->reveal()
         );
 
         $result = $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
@@ -292,6 +296,9 @@ class MailServiceAbstractFactoryTest extends TestCase
         $this->container->get(EmailBuilder::class)->willReturn(
             $this->prophesize(EmailBuilderInterface::class)->reveal()
         );
+        $this->container->get(AttachmentParserManager::class)->willReturn(
+            $this->prophesize(AttachmentParserManager::class)->reveal()
+        );
 
         $result = $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
 
@@ -326,6 +333,9 @@ class MailServiceAbstractFactoryTest extends TestCase
         );
         $this->container->get(EmailBuilder::class)->willReturn(
             $this->prophesize(EmailBuilderInterface::class)->reveal()
+        );
+        $this->container->get(AttachmentParserManager::class)->willReturn(
+            $this->prophesize(AttachmentParserManager::class)->reveal()
         );
 
         $result = $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
