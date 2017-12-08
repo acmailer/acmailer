@@ -26,7 +26,7 @@ class SimpleZendViewRenderer implements TemplateRendererInterface
      * and allow omitting the filename extension.
      *
      * @param string $name
-     * @param array|object $params
+     * @param array|\ArrayAccess $params
      * @return string
      */
     public function render($name, $params = []): string
