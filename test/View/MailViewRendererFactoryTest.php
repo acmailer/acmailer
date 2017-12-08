@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace AcMailerTest\Factory;
+namespace AcMailerTest\View;
 
 use AcMailer\View\MailViewRendererFactory;
+use AcMailer\View\SimpleZendViewRenderer;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\View\Renderer\PhpRenderer;
 
 class MailViewRendererFactoryTest extends TestCase
@@ -54,7 +54,7 @@ class MailViewRendererFactoryTest extends TestCase
 
         $result = $this->factory->__invoke($container->reveal());
 
-        $this->assertInstanceOf(ZendViewRenderer::class, $result);
+        $this->assertInstanceOf(SimpleZendViewRenderer::class, $result);
         $hasViewRenderer->shouldHaveBeenCalledTimes(1);
         $hasOldViewRenderer->shouldHaveBeenCalledTimes(1);
         $getViewRenderer->shouldHaveBeenCalledTimes(1);
@@ -79,7 +79,7 @@ class MailViewRendererFactoryTest extends TestCase
 
         $result = $this->factory->__invoke($container->reveal());
 
-        $this->assertInstanceOf(ZendViewRenderer::class, $result);
+        $this->assertInstanceOf(SimpleZendViewRenderer::class, $result);
         $hasViewRenderer->shouldHaveBeenCalledTimes(1);
         $hasOldViewRenderer->shouldHaveBeenCalledTimes(1);
         $getConfig->shouldHaveBeenCalledTimes(2);

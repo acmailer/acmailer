@@ -33,13 +33,13 @@
         "phpunit/phpunit": "^6.0",
         "slevomat/coding-standard": "^4.0",
         "squizlabs/php_codesniffer": "^3.1",
-        "zendframework/zend-expressive-zendviewrenderer": "^1.4",
+        "zendframework/zend-view": "^2.9",
         "zendframework/zend-mvc": "^3.1"
     },
     "suggest": {
-        "zendframework/zend-expressive-zendviewrenderer": "If you want to render email templates using zend/view",
-        "zendframework/zend-expressive-twigrenderer": "If you want to render email templates using twig/twig",
-        "zendframework/zend-expressive-platesrenderer": "If you want to render email templates using league/plates"
+        "zendframework/zend-expressive-zendviewrenderer": "If you want to render email templates using zend/view In Expressive applications",
+        "zendframework/zend-expressive-twigrenderer": "If you want to render email templates using twig/twig In Expressive applications",
+        "zendframework/zend-expressive-platesrenderer": "If you want to render email templates using league/plates In Expressive applications"
     },
     "autoload" : {
         "psr-4" : {

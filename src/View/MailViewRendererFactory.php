@@ -8,7 +8,6 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\Mvc\Service\ViewHelperManagerFactory;
 use Zend\ServiceManager\Config;
 use Zend\View\Exception\InvalidArgumentException;
@@ -76,7 +75,7 @@ class MailViewRendererFactory
 
     private function wrapZendView(RendererInterface $renderer): TemplateRendererInterface
     {
-        return new ZendViewRenderer($renderer);
+        return new SimpleZendViewRenderer($renderer);
     }
 
     /**
