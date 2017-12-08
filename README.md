@@ -396,8 +396,7 @@ var_dump($result->isCancelled()); // This will print true
 
 An example configuration file is provided in `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` that comes with one example email and service already defined.
 
-**Emails**:
-
+- **Emails**:
     - **extends**: Defines other email from which to extend configuration, so that you only need to define the configuration that is different. By default this is null, which means that no configuration is extended.
     - **from**: From email address as string.
     - **from_name**: From name to be displayed as string.
@@ -417,8 +416,7 @@ An example configuration file is provided in `vendor/acelaya/zf2-acmailer/config
         - *recursive*: True or false. Tells if nested directories should be recursively iterated too.
     - **charset**: The charset used on every part of the email. Defaults to 'utf-8'.
 
-**Mail services**:
-
+- **Mail services**:
     - **extends**: Defines other service from which to extend configuration, so that you only need to define the configuration that is different. By default this is null, which means that no configuration is extended.
     - **transport**: Tells the mail service which type of transport adapter should be used. Any instance or class name implementing `Zend\Mail\Transport\TransportInterface` is valid. It is also possible to define a service and it will be automatically fetched.
     - **transport_options**: Wraps the SMTP or File configuration that is used when the mail adapter is a `Zend\Mail\Transport\Smtp` or `Zend\Mail\Transport\File` instance.
