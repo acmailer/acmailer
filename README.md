@@ -7,36 +7,49 @@
 [![Total Downloads](https://poser.pugx.org/acelaya/zf2-acmailer/downloads.png)](https://packagist.org/packages/acelaya/zf2-acmailer)
 [![License](https://poser.pugx.org/acelaya/zf2-acmailer/license.png)](https://packagist.org/packages/acelaya/zf2-acmailer)
 
-This module, once enabled, allows you to register services that wrap ZF2 mailing functionality, allowing to configure mail information to be used to send emails.
-It supports file attachment and template email composition.
+This module provides a way to easily send emails from Zend Framework and Zend Expressive applications. It allows you to preconfigure emails and transport configurations, and then send those emails at runtime.
+
+You will be able to compose emails from templates, and easily attach files to that email using different strategies.
 
 ### Installation
 
 * * *
 
-Install composer in your project
+The recommended way to install this module is by using composer
 
-    curl -s http://getcomposer.org/installer | php
+    composer require acelaya/zf2-acmailer
 
-Then run 
+If you have the zendframework/zend-component-installer package installed, it will ask you to enable the module, both in ZF and Expressive. Otherwise, add the module to the list.
 
-    php composer.phar require acelaya/zf2-acmailer
-    
-Add the module `AcMailer` to your `config/application.config.php` file
+In Zend Framework:
 
 ```php
 <?php
 
 return [
-    // This should be an array of module namespaces used in the application.
     'modules' => [
+        // ...
+        'Application',
         'AcMailer',
-        'Application'
+        // ...
     ],
-]
+];
+```
+
+In Zend Expressive:
+
+```php
+<?php
+$aggregator = new ConfigAggregator([
+    // ...
+    App\ConfigProvider::class,
+    AcMailer\ConfigProvider::class,
+    // ...
+], '');
 ```
 
 > **IMPORTANT! Version notes** 
+> * Version **7.0.0**: A deep refactoring of the module has been made, improving the code and simplifying the overall usage. As a consequence, some BC breaks have been introduced. Read the migration guide.
 > * Version **6.0.0**: Support for ZF2 has been dropped and this module is now compatible with ZF3 only. If you need ZF2 support, stick with v5 of this module.
 > * Version **5.0.0**: Important BC breaks have been introduced, so make sure not to update from earlier versions in production without reading this documentation first. It is possible to autogenerate the new configuration structure from the command line. Read the configuration section at the end of this document for more information.
 
@@ -46,131 +59,136 @@ return [
 
 After installation, copy `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` to `config/autoload/mail.global.php` and customize any of the params.
 
-As with any ZF2 configs, you can choose to put any of the settings into a `config/autoload/mail.local.php` or into your existing `config/autoload/local.php` so you can make environment-specific mail settings, and avoid committing credentials into Git.
+As with any other MVC or Expressive configuration, you can choose to put any of the settings into a local configuration file so you can make environment-specific mail settings, and avoid sending credentials to version control.
 
 Configuration options are explained later.
 
-By default, this configuration will register an `acmailer.mailservice.default` service, which is also aliased by the service names `AcMailer\Service\MailService` and `mailservice`.
+By default, a service with name `acmailer.mailservice.default` will be registered for you, which is also aliased by the service names `AcMailer\Service\MailService`, `AcMailer\Service\MailServiceInterface` and `mailservice`.
 
-All the services in the `acmailer.mailservice` namespace will return `AcMailer\Service\MailService` instances. The last part is the specific name, so that you can configure multiple mail services, even extending configurations between them.
-
-Once you get the `acmailer.mailservice.default` service, the default MailService instance will be returned and you will be allowed to set the body and send the message.
+All the services in the `acmailer.mailservice` namespace will return `AcMailer\Service\MailService` instances. The last part is the specific name, so that you can configure multiple mail services, each one with its own transport configuration.
 
 ```php
-$mailService = $serviceManager->get('acmailer.mailservice.default');
-// The body can be a string, HTML or even a zend\Mime\Message or a Zend\Mime\Part
-$mailService->setBody('This is the body');
+<?php
+class IndexControllerFactory
+{
+    public function __invoke(ContainerInterface $container)
+    {
+        $mailService = $container->get('acmailer.mailservice.default');
+        return new IndexController($mailService);
+    }
+}
 
-$result = $mailService->send();
-if ($result->isValid()) {
-    echo 'Message sent. Congratulations!';
-} else {
-    if ($result->hasException()) {
-        echo sprintf('An error occurred. Exception: \n %s', $result->getException()->getTraceAsString());
-    } else {
-        echo sprintf('An error occurred. Message: %s', $result->getMessage());
+class IndexController
+{
+    public function __construct(MailServiceInterface $mailService)
+    {
+        $this->mailService = $mailService;
+    }
+    
+    public function sendContactAction()
+    {
+        $result = $this->mailService->send('contact');
+        return new ViewModel(['result' => $result]);
     }
 }
 ```
 
-#### Via controller plugin
+#### Send emails
 
-Inside controllers, you can access and use any MailService by using the `sendMail` controller plugin. It returns the MailService when no arguments are provided.
- 
-```php
-// In a class extending Zend\Mvc\AbstractController...
-$mailService = $this->sendMail();
-$mailService->setBody('This is the body');
-
-$result = $mailService->send();
-```
-
-But you can pass some basic information, making the email to be sent right away and the result to be returned.
+There are different ways to send emails. By using the name of a preconfigured email (as in previous example), by passing the configuration of an email as array, or by passing a `AcMailer\Model\Email` instance.
 
 ```php
-// In a class extending Zend\Mvc\AbstractController...
-$result = $this->sendMail(
-    'The body',
-    'The subject',
-    ['recipient_one@domain.com', 'recipient_two@domain.com']
+<?php
+// Using an array
+$result = $mailService->send([
+    'from' => 'my@address.com',
+    'to' => ['your@address.com'],
+    'subject' => 'Greetings!',
+    'body' => 'Hello!',
+]);
+
+// Using a model
+$result = $mailService->send(
+    (new AcMailer\Model\Email())->setFrom('my@address.com')
+                                ->setTo(['your@address.com'])
+                                ->setSubject('Greetings!')
+                                ->setBody('Hello!')
 );
-// Send another one
-$result = $this->sendMail([
-    'subject' => 'Hello there!',
-    'from' => ['my_address@domain.com', 'John Doe']
+
+// You can even use a preconfigured email, but override any option
+$result = $mailService->send('contact', [
+    'to' => ['your@address.com'],
 ]);
 ```
 
-Adapters configuration can't be provided here, and should be defined at configuration level. Any other information not provided here will be read from configuration.
+### Preconfigure emails
 
-The plugin accepts a maximum of 7 arguments, which are the body, the subject, the 'to', the 'from', the 'cc', the 'bcc' and the attachments. They can be provided as an associative array too.
+It is very likely that some of the emails of your system have always the same structure. It is possible to preconfigure those emails, so that you can then reference to them by their name.
 
-By default this plugin uses the `default` MailService, but it is possible to define which one to use, by attaching its name to the sendMail part. For example, if you call `sendMailEmployees`, the `employees` mail service will be used.
-
-```php
-$mailService = $this->sendMailEmployees();
-$mailService->setBody('This is the body');
-
-$result = $mailService->send();
-```
-
-#### Rendering views
-
-Instead of setting a plain string, the body of the message can be set from a view script by using `setTemplate` instead of `setBody`. It will use a renderer to render defined template and then set it as the email body internally.
-
-You can set the template as a string and pass the arguments for it.
+Preconfigured emails have to be defined under the `acmailer_options.emails` configuration entry.
 
 ```php
-$mailService = $serviceManager->get('acmailer.mailservice.default');
-$mailService->setTemplate('application/emails/merry-christmas', ['name' => 'John Doe', 'date' => date('Y-m-d')]);
-```
-
-You can also set the template as a `Zend\View\Model\ViewModel` object, which will render child templates too.
-
-```php
-$mailService = $serviceManager->get('acmailer.mailservice.default');
-
-$layout = new \Zend\View\Model\ViewModel([
-    'name' => 'John Doe',
-    'date' => date('Y-m-d')
-]);
-$layout->setTemplate('application/emails/merry-christmas');
-
-$footer = new \Zend\View\Model\ViewModel();
-$footer->setTemplate('application/emails/footer');
-
-$layout->addChild($footer, 'footer');
-
-$mailService->setTemplate($layout);
-```
-
-If you are going to send more then one email with different templates but you want all of them to share a common layout, you can set a defaultLayout too.
-
-```php
-$mailService = $serviceManager->get('acmailer.mailservice.default');
-$mailService->setDefaultLayout(new AcMailer\View\DefaultLayout(
-    'application/emails/layout',
-    [
-        'title' => 'Something',
+<?php
+return [
+    
+    'acmailer_options' => [
+        'emails' => [
+            'base' => [
+                'from' => 'no-reply@mycompany.com',
+                'from_name' => 'My company',
+            ],
+            'welcome' => [
+                'extends' => 'base',
+                'subject' => 'Welcome to our service!',
+                'template' => 'App::emails/welcome',
+            ],
+            'support' => [
+                'extends' => 'base',
+                'subject' => 'Support request received',
+                'template' => 'App::emails/support',
+            ],
+        ],
+        
+        // ...
     ],
-    'captureToKey' // This is the capture to for the template inside the layout
-));
-
-// From this point, all the templates will be set as children of the previous layout
-$mailService->setTemplate(
-    'application/emails/merry-christmas',
-    ['name' => 'John Doe', 'date' => date('Y-m-d')]
-);
-$mailService->send();
-
-$mailService->setTemplate(
-    'application/emails/another',
-    ['doo' => 'bar']
-);
-$mailService->send();
+    
+];
 ```
 
-The renderer that is internally used can be changed to another one (like Twig or Blade). It just needs to implement `Zend\View\Renderer\RendererInterface`.
+Now, you can send any of those emails just by referencing to them by its name, and also provide any non-static option.
+
+```php
+<?php
+try {
+    $result = $mailService->send('welcome', ['to' => ['new-user@gmail.com']]);
+    if ($result->isValid()) {
+        // Email properly sent
+    }
+} catch (AcMailer\Exception\MailException $e) {
+    // Error sending email
+}
+```
+
+#### Rendering templates
+
+Instead of setting a plain string, the body of the message can be set from a template by defining the `template` option instead of the `body` option.
+
+You can also pass params to the template using the `template_params` option.
+
+All MailServices compose a `Zend\Expressive\Template\TemplateRendererInterface` instance, which is internally used to render defined template.
+
+In Expressive applications the `Zend\Expressive\Template\TemplateRendererInterface` service will be used, and in MVC, a very simple wrapper is included that composes the zend/view renderer.
+
+The rendered template can use a layout. When using twig or plates renderers, you can use their own way to extend from layouts. When using zend/view, you can provide a "layout" param, with the name of the layout.
+
+```php
+<?php
+$mailService->send('contact', ['template_params' => [
+    'layout' => 'application/mail/layout',
+]]);
+```
+
+In Zend MVC, the renderer that is internally used can be changed to another one (like Twig or Blade). It just needs to implement `Zend\View\Renderer\RendererInterface`.
 
 By default AcMailer uses the default `ViewRenderer` service via an alias, `mailviewrenderer`. You can override that alias in your `service_manager` configuration in order to change the renderer service to be used (thanks to [kusmierz](https://github.com/kusmierz)):
 
@@ -185,9 +203,7 @@ return [
 ];
 ```
 
-Alternatively you can just set it via setter: `$mailService->setRenderer($renderer);`.
-
-If you need different view renderers to be used by each mail service, you can define the renderer service name in the **renderer** configuration property of that service.
+If you need different view renderers to be used by each mail service, you can define the renderer service name in the **renderer** configuration property of that service. It has to be a service name that resolves to a `Zend\Expressive\Template\TemplateRendererInterface`.
 
 #### Rendering in CLI executions
 
