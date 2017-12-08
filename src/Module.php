@@ -14,4 +14,13 @@ class Module
     {
         return include __DIR__ . '/../config/module.config.php';
     }
+
+    public function __invoke()
+    {
+        $moduleConfig = $this->getConfig();
+        return [
+            'dependencies' => $moduleConfig['service_manager'],
+            'acmailer_options' => $moduleConfig['acmailer_options'],
+        ];
+    }
 }

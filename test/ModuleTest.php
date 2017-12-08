@@ -23,10 +23,26 @@ class ModuleTest extends TestCase
         $this->module = new Module();
     }
 
-    public function testGetConfig()
+    /**
+     * @test
+     */
+    public function getConfigReturnsContentsFromModuleConfigFile()
     {
         $expectedConfig = include __DIR__ . '/../config/module.config.php';
         $returnedConfig = $this->module->getConfig();
+
+        $this->assertEquals($expectedConfig, $returnedConfig);
+    }
+
+    /**
+     * @test
+     */
+    public function invokeReturnsContentsFromModuleConfigFile()
+    {
+        $expectedConfig = include __DIR__ . '/../config/module.config.php';
+        $expectedConfig['dependencies'] = $expectedConfig['service_manager'];
+        unset($expectedConfig['service_manager']);
+        $returnedConfig = $this->module->__invoke();
 
         $this->assertEquals($expectedConfig, $returnedConfig);
     }
