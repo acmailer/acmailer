@@ -73,6 +73,12 @@ final class Email extends AbstractOptions
      */
     private $charset = self::DEFAULT_CHARSET;
 
+    public function __construct($options = null)
+    {
+        $this->__strictMode__ = false;
+        parent::__construct($options);
+    }
+
     /**
      * @return string
      */
