@@ -163,6 +163,12 @@ final class Email extends AbstractOptions
         return $this;
     }
 
+    public function addTo(string $to): self
+    {
+        $this->to[] = $to;
+        return $this;
+    }
+
     /**
      * @return array
      */
@@ -181,6 +187,12 @@ final class Email extends AbstractOptions
         return $this;
     }
 
+    public function addCc(string $cc): self
+    {
+        $this->cc[] = $cc;
+        return $this;
+    }
+
     /**
      * @return array
      */
@@ -196,6 +208,12 @@ final class Email extends AbstractOptions
     public function setBcc(array $bcc): self
     {
         $this->bcc = $bcc;
+        return $this;
+    }
+
+    public function addBcc(string $bcc): self
+    {
+        $this->bcc[] = $bcc;
         return $this;
     }
 
