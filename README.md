@@ -11,6 +11,11 @@ This module provides a way to easily send emails from Zend Framework and Zend Ex
 
 You will be able to compose emails from templates, and easily attach files to those emails using different strategies.
 
+> **IMPORTANT! Version notes**
+> * You are reading the documentation for this component's **v7**. Access [here](https://github.com/acelaya/ZF-AcMailer/blob/master/UPGRADE.md#upgrade-from-5x6x-to-7x) to see how to upgrade from previous versions.
+> * Access **v6** documentation [here](https://github.com/acelaya/ZF-AcMailer/tree/6.x).
+> * Access **v5** documentation [here](https://github.com/acelaya/ZF-AcMailer/tree/5.x).
+
 ### Installation
 
 * * *
@@ -47,11 +52,6 @@ $aggregator = new ConfigAggregator([
     // ...
 ], '...');
 ```
-
-> **IMPORTANT! Version notes** 
-> * You are reading the documentation for this component's **v7**.
-> * Access **v6** documentation [here](https://github.com/acelaya/ZF-AcMailer/tree/6.x).
-> * Access **v5** documentation [here](https://github.com/acelaya/ZF-AcMailer/tree/5.x).
 
 ### Usage
 
@@ -392,7 +392,7 @@ var_dump($result->isCancelled()); // This will print true
 
 * * *
 
-**Important!** The configuration has completely changed in v5.x and v7.x and is not compatible with earlier versions. If you want to upgrade, please, read this section.
+**Important!** The configuration has completely changed in v7.x and is not compatible with earlier versions. If you want to upgrade, please, read this section, the [upgrade guide](https://github.com/acelaya/ZF-AcMailer/blob/master/UPGRADE.md#upgrade-from-5x6x-to-7x), and take a look at [this tool](https://github.com/acelaya/zf-acmailer-tooling) that can automatically migrate from older configurations to the new one.
 
 An example configuration file is provided in `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` that comes with one example email and service already defined.
 
