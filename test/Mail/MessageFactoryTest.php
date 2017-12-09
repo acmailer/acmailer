@@ -22,7 +22,10 @@ class MessageFactoryTest extends TestCase
                               ->setCc(['you-copy@domain.com'])
                               ->setBcc(['you-blind@domain.com'])
                               ->setEncoding('encoding')
-                              ->setSubject('subject');
+                              ->setSubject('subject')
+                              ->setBody('the body')
+                              ->setCharset('utf-8')
+                              ->setTemplateParams([]);
 
         $message = MessageFactory::createMessageFromEmail($email);
 
