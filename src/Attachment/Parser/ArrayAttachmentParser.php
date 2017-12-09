@@ -32,12 +32,23 @@ class ArrayAttachmentParser implements AttachmentParserInterface
         // Map a Mime\Part object with the array properties
         $part = new Mime\Part();
         foreach ($attachment as $property => $value) {
-            $method = 'set' . $property;
+            $method = $this->buildSetter($property);
             if (\method_exists($part, $method)) {
                 $part->{$method}($value);
             }
         }
 
+        // Override name if provided
+        if ($attachmentName !== null) {
+            $part->id = $attachmentName;
+            $part->filename = $attachmentName;
+        }
+
         return $part;
+    }
+
+    private function buildSetter(string $property): string
+    {
+        return 'set' . str_replace('_', ' ', $property);
     }
 }
