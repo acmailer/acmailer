@@ -6,4 +6,5 @@
 /phpunit.xml export-ignore
 /composer.lock export-ignore
 /CHANGELOG.md export-ignore
+/UPGRADE.md export-ignore
 /test export-ignore
