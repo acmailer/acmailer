@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace AcMailer\Attachment\Parser;
 
+use AcMailer\Attachment\Helper\AttachmentHelperTrait;
 use AcMailer\Exception\InvalidAttachmentException;
 use Zend\Mime;
 use Zend\Mime\Exception\InvalidArgumentException;
@@ -10,6 +11,8 @@ use Zend\Stdlib\ArrayUtils;
 
 class ArrayAttachmentParser implements AttachmentParserInterface
 {
+    use AttachmentHelperTrait;
+
     /**
      * @param string|resource|array|Mime\Part $attachment
      * @param string|null $attachmentName
@@ -38,13 +41,7 @@ class ArrayAttachmentParser implements AttachmentParserInterface
             }
         }
 
-        // Override name if provided
-        if ($attachmentName !== null) {
-            $part->id = $attachmentName;
-            $part->filename = $attachmentName;
-        }
-
-        return $part;
+        return $this->applyNameToPart($part, $attachmentName);
     }
 
     private function buildSetter(string $property): string

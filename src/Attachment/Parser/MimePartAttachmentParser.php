@@ -3,11 +3,14 @@ declare(strict_types=1);
 
 namespace AcMailer\Attachment\Parser;
 
+use AcMailer\Attachment\Helper\AttachmentHelperTrait;
 use AcMailer\Exception\InvalidAttachmentException;
 use Zend\Mime;
 
 class MimePartAttachmentParser implements AttachmentParserInterface
 {
+    use AttachmentHelperTrait;
+
     /**
      * @param string|resource|array|Mime\Part $attachment
      * @param string|null $attachmentName
@@ -20,12 +23,6 @@ class MimePartAttachmentParser implements AttachmentParserInterface
             throw InvalidAttachmentException::fromExpectedType(Mime\Part::class);
         }
 
-        // If the attachment name was provided, use it for the id and filename
-        if ($attachmentName !== null) {
-            $attachment->id = $attachmentName;
-            $attachment->filename = $attachmentName;
-        }
-
-        return $attachment;
+        return $this->applyNameToPart($attachment, $attachmentName);
     }
 }
