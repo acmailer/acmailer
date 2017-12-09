@@ -169,7 +169,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             return $this->setupTransportConfig(new $transport(), $mailOptions);
         }
 
-        // Check if the adapter is a service
+        // Check if the transport is a service
         if ($container->has($transport)) {
             /** @var Transport\TransportInterface $transport */
             $transportInstance = $container->get($transport);

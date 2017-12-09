@@ -88,6 +88,11 @@
         'bcc' => ['hidden@domain.com'],
     ]);
     ```
+    
+    Other methods designed to edit the email have been removed too, like `setBody()`, `setTemplate()`, `setSubject()`, `setAttachments()` and such.
+    
+    All the email data is now wrapped in the `AcMailer\Model\Email` object instead.
+    
 - **Render templates**
 
     In order to make it compatible with Zend Expressive, it is no longer possible to pass a `Zend\View\Model\ModelInterface` object when defining email templates.
@@ -176,6 +181,14 @@
     }
     ```
     
+    Also, the methods `attachMailListener` and `detachMailListener` in mail services, no longer return `$this`, so it is not possible to perform method chaining anymore.
+    
+- **Mail results**
+
+    After an email has been sent, a `AcMailer\Result\MailResult` object is returned. These objects used to include a result message as string, which wasn't really useful.
+    
+    This message is no longer included, but, on the other hand, the `AcMailer\Model\Email` that was sent is included now.
+    
 - **MailServiceMock**
 
     Previous versions used to include a `AcMailer\Service\MailServiceMock` which has been removed. You should create your own mocks now.
@@ -183,3 +196,19 @@
 - **Deprecations**
 
     All classes and methods that were deprecated have been removed in this version.
+    
+- **Options objects removed**
+
+    The module used to include various options classes that have been removed, since configuration has been simplified and the `AcMailer\Model\Email` model has been included instead.
+
+    It is not very likely that you were using these objects, since they were used during services creation, but if for some reason you were using any of them, you will have to update your code.
+    
+- **Exceptions while sending an email**
+
+    In previous versions, when the method `send` was called and an exception was thrown, the `EVENT_MAIL_SEND_ERROR` was triggered, and then, if the exception implemented `Zend\Mail\Exception\ExceptionInterface`, it was wrapped in a `AcMailer\Exception\MailException` and rethrown. In any other case, the exception was lost.
+    
+    Since that's dangerous and can hide potential bugs, the service now always rethrows the exception, whichever the type.
+    
+- **Mail service aware**
+
+    The `AcMailer\Service\MailServiceAwareInterface` and `AcMailer\Service\MailServiceAwareTrait` files have been removed, because I want to promote constructor dependency injection 
