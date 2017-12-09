@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace AcMailerTest\Service;
 
 use AcMailer\Attachment\AttachmentParserManagerInterface;
+use AcMailer\Attachment\Parser\AttachmentParserInterface;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Exception\MailException;
@@ -18,6 +19,7 @@ use Zend\EventManager\ResponseCollection;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
+use Zend\Mime\Part;
 
 class MailServiceTest extends TestCase
 {
@@ -171,5 +173,30 @@ class MailServiceTest extends TestCase
         $send->shouldHaveBeenCalledTimes(1);
         $trigger->shouldHaveBeenCalled();
         $render->shouldHaveBeenCalledTimes(1);
+    }
+
+    /**
+     * @test
+     */
+    public function attachmentsAreProperlyAddedToMessage()
+    {
+        $attachmentParser = $this->prophesize(AttachmentParserInterface::class);
+        $parse = $attachmentParser->parse(Argument::cetera())->willReturn(new Part());
+
+        $hasStringParser = $this->attachmentParsers->has('string')->willReturn(true);
+        $hasArrayParser = $this->attachmentParsers->has('array')->willReturn(false);
+        $getStringParser = $this->attachmentParsers->get('string')->willReturn($attachmentParser->reveal());
+
+        $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
+        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn(new ResponseCollection());
+
+        $this->mailService->send((new Email())->setAttachments(['', '', '', []]));
+
+        $send->shouldHaveBeenCalled();
+        $trigger->shouldHaveBeenCalled();
+        $hasStringParser->shouldHaveBeenCalled();
+        $hasArrayParser->shouldHaveBeenCalled();
+        $getStringParser->shouldHaveBeenCalled();
+        $parse->shouldHaveBeenCalledTimes(3);
     }
 }

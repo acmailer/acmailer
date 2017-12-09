@@ -177,23 +177,19 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
      */
     private function buildBody($body, string $charset): Mime\Message
     {
-        if (\is_string($body)) {
-            // Create a Mime\Part and wrap it into a Mime\Message
-            $mimePart = new Mime\Part($body);
-            $mimePart->type = $body !== \strip_tags($body) ? Mime\Mime::TYPE_HTML : Mime\Mime::TYPE_TEXT;
-            $mimePart->charset = $charset;
-            $body = new Mime\Message();
-            $body->setParts([$mimePart]);
-        } elseif ($body instanceof Mime\Part) {
-            $body->charset = $charset;
-
-            // The body is a Mime\Part. Wrap it into a Mime\Message
-            $mimeMessage = new Mime\Message();
-            $mimeMessage->setParts([$body]);
-            $body = $mimeMessage;
+        if ($body instanceof Mime\Message) {
+            return $body;
         }
 
-        return $body;
+        // If the body is a string, wrap it into a Mime\Part
+        if (\is_string($body)) {
+            $mimePart = new Mime\Part($body);
+            $mimePart->type = $body !== \strip_tags($body) ? Mime\Mime::TYPE_HTML : Mime\Mime::TYPE_TEXT;
+            $body = $mimePart;
+        }
+
+        $body->charset = $charset;
+        return (new Mime\Message())->setParts([$body]);
     }
 
     /**
