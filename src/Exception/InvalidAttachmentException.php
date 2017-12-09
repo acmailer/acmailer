@@ -7,6 +7,6 @@ class InvalidAttachmentException extends \RuntimeException implements ExceptionI
 {
     public static function fromExpectedType(string $type): self
     {
-        return new self(\sprintf('Provided attachment is not valid. Expected "%s" to be passed', $type));
+        return new self(\sprintf('Provided attachment is not valid. Expected "%s"', $type));
     }
 }

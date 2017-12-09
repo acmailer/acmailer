@@ -32,7 +32,7 @@ class FilePathAttachmentParserTest extends TestCase
     public function exceptionIsThrownIfAttachmentHasInvalidType()
     {
         $this->expectException(InvalidAttachmentException::class);
-        $this->expectExceptionMessage('Provided attachment is not valid. Expected "file path" to be passed');
+        $this->expectExceptionMessage('Provided attachment is not valid. Expected "file path"');
         $this->parser->parse('');
     }
 

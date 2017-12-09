@@ -26,7 +26,7 @@ class ArrayAttachmentParserTest extends TestCase
     public function exceptionIsThrownIfAttachmentHasInvalidType()
     {
         $this->expectException(InvalidAttachmentException::class);
-        $this->expectExceptionMessage('Provided attachment is not valid. Expected "array" to be passed');
+        $this->expectExceptionMessage('Provided attachment is not valid. Expected "array"');
         $this->parser->parse('');
     }
 
