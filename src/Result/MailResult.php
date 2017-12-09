@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace AcMailer\Result;
 
-use Exception;
+use AcMailer\Model\Email;
 
 /**
  * Object returned by send method in MailService
@@ -11,42 +13,40 @@ use Exception;
  */
 class MailResult implements ResultInterface
 {
-    const DEFAULT_MESSAGE = 'Success!!';
-    
     /**
-     * @var boolean
+     * @var bool
      */
     private $valid;
     /**
-     * @var string
+     * @var Email
      */
-    private $message;
+    private $email;
     /**
-     * @var Exception
+     * @var \Throwable
      */
     private $exception;
-    
-    public function __construct($valid = true, $message = self::DEFAULT_MESSAGE, $exception = null)
+
+    public function __construct(Email $email, bool $valid = true, \Throwable $exception = null)
     {
-        $this->valid        = (bool) $valid;
-        $this->message      = $message;
-        $this->exception    = $exception;
+        $this->email = $email;
+        $this->valid = $valid;
+        $this->exception = $exception;
     }
 
     /**
-     * Returns error message when an error occurs
-     * @return string
+     * Returns the email that was tried to be sent
+     * @return Email
      */
-    public function getMessage()
+    public function getEmail(): Email
     {
-        return $this->message;
+        return $this->email;
     }
 
     /**
      * Tells if the MailService that produced this result was properly sent
      * @return bool
      */
-    public function isValid()
+    public function isValid(): bool
     {
         return $this->valid;
     }
@@ -55,17 +55,26 @@ class MailResult implements ResultInterface
      * Tells if this Result has an exception. Usually only non-valid result should wrap an exception
      * @return bool
      */
-    public function hasException()
+    public function hasException(): bool
     {
-        return $this->exception instanceof Exception;
+        return $this->exception !== null;
     }
 
     /**
-     * Returns the exception wraped by this Result
-     * @return \Exception
+     * Returns the exception wrapped by this Result if any, or null otherwise
+     * @return \Throwable|null
      */
     public function getException()
     {
         return $this->exception;
+    }
+
+    /**
+     * Tells if the email sending was cancelled, usually by a preSend listener
+     * @return bool
+     */
+    public function isCancelled(): bool
+    {
+        return ! $this->isValid() && ! $this->hasException();
     }
 }

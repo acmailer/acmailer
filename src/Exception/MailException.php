@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace AcMailer\Exception;
 
 /**
@@ -6,7 +8,6 @@ namespace AcMailer\Exception;
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class MailException extends \Exception implements ExceptionInterface
+class MailException extends \RuntimeException implements ExceptionInterface
 {
-
 }

@@ -1,6 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace AcMailerTest\Result;
 
+use AcMailer\Model\Email;
 use AcMailer\Result\MailResult;
 use AcMailer\Result\ResultInterface;
 use PHPUnit\Framework\TestCase;
@@ -16,33 +19,67 @@ class MailResultTest extends TestCase
      * @var ResultInterface
      */
     private $mailResult;
-    
-    public function testDefaultValues()
+
+    /**
+     * @test
+     */
+    public function defaultValuesAreApplied()
     {
-        $this->mailResult = new MailResult();
+        $email = new Email();
+
+        $this->mailResult = new MailResult($email);
+
         $this->assertTrue($this->mailResult->isValid());
-        $this->assertEquals('Success!!', $this->mailResult->getMessage());
-        $this->assertFalse($this->mailResult->hasException());
-        $this->assertNull($this->mailResult->getException());
-    }
-    
-    public function testCustomValues()
-    {
-        $expectedError = 'Custom error message';
-        $this->mailResult = new MailResult(false, $expectedError);
-        $this->assertFalse($this->mailResult->isValid());
-        $this->assertEquals($expectedError, $this->mailResult->getMessage());
+        $this->assertFalse($this->mailResult->isCancelled());
+        $this->assertSame($email, $this->mailResult->getEmail());
         $this->assertFalse($this->mailResult->hasException());
         $this->assertNull($this->mailResult->getException());
     }
 
-    public function testWithException()
+    /**
+     * @test
+     * @dataProvider provideResultData
+     * @param bool $isValid
+     * @param \Throwable|null $e
+     */
+    public function customValuesAreApplied(bool $isValid, \Throwable $e = null)
     {
-        $e = new \Exception('The exception', -2);
-        $this->mailResult = new MailResult(false, $e->getMessage(), $e);
-        $this->assertFalse($this->mailResult->isValid());
-        $this->assertEquals($e->getMessage(), $this->mailResult->getMessage());
-        $this->assertTrue($this->mailResult->hasException());
+        $this->mailResult = new MailResult(new Email(), $isValid, $e);
+
+        $this->assertEquals($isValid, $this->mailResult->isValid());
+        $this->assertEquals($e !== null, $this->mailResult->hasException());
         $this->assertEquals($e, $this->mailResult->getException());
+        $this->assertEquals(! $isValid && $e === null, $this->mailResult->isCancelled());
+    }
+
+    public function provideResultData(): array
+    {
+        return [
+            [true, null],
+            [false, null],
+            [false, new \Exception()],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider provideExceptions
+     * @param bool $hasException
+     * @param \Throwable|null $e
+     */
+    public function exceptionReturnsExpectedValue(bool $hasException, \Throwable $e = null)
+    {
+        $this->mailResult = new MailResult(new Email(), false, $e);
+
+        $this->assertEquals($hasException, $this->mailResult->hasException());
+        $this->assertEquals($e, $this->mailResult->getException());
+    }
+
+    public function provideExceptions(): array
+    {
+        return [
+            [true, new \Exception()],
+            [false, null],
+        ];
     }
 }

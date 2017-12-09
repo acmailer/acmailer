@@ -2,24 +2,24 @@ language: php
 
 branches:
   only:
-    - master
-    - 5.x
+    - /.*/
 
 php:
-  - 5.6
   - 7
   - 7.1
+  - 7.2
 
 before_script:
   - composer self-update
-  - composer --version
   - composer install --no-interaction
+  - if [[ $TRAVIS_PHP_VERSION = 7.1 ]] || [[ $TRAVIS_PHP_VERSION = 7.2 ]]; then composer global require --dev phpstan/phpstan:0.9.*; fi
 
 script:
   - mkdir build
   - mkdir test/attachments/dir/dirdept
-  - ./vendor/bin/phpunit -c test/phpunit.xml --coverage-clover build/clover.xml
-  - ./vendor/bin/phpcs --standard=PSR2 ./src/ ./test/ ./config
+  - ./vendor/bin/phpcs
+  - if [[ $TRAVIS_PHP_VERSION = 7.1 ]] || [[ $TRAVIS_PHP_VERSION = 7.2 ]]; then ~/.composer/vendor/bin/phpstan analyse src/ --level=5; fi
+  - ./vendor/bin/phpunit --coverage-clover build/clover.xml
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar

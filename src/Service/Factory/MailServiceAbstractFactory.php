@@ -1,39 +1,61 @@
 <?php
+declare(strict_types=1);
+
 namespace AcMailer\Service\Factory;
 
-use AcMailer\Event\MailListenerAwareInterface;
+use AcMailer\Attachment\AttachmentParserManager;
+use AcMailer\Event\MailEvent;
 use AcMailer\Event\MailListenerInterface;
-use AcMailer\Exception\InvalidArgumentException;
-use AcMailer\Factory\AbstractAcMailerFactory;
-use AcMailer\Options\Factory\MailOptionsAbstractFactory;
-use AcMailer\Options\MailOptions;
+use AcMailer\Exception;
+use AcMailer\Model\EmailBuilder;
 use AcMailer\Service\MailService;
-use AcMailer\View\DefaultLayout;
+use AcMailer\View\MailViewRendererFactory;
 use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\ContainerException;
-use Zend\Mail\Message;
-use Zend\Mail\Transport\File;
-use Zend\Mail\Transport\Smtp;
-use Zend\Mail\Transport\TransportInterface;
-use Zend\Mvc\Service\ViewHelperManagerFactory;
-use Zend\ServiceManager\Config;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use Zend\ServiceManager\Exception\ServiceNotFoundException;
-use Zend\View\HelperPluginManager;
-use Zend\View\Renderer\PhpRenderer;
-use Zend\View\Renderer\RendererInterface;
-use Zend\View\Resolver\AggregateResolver;
-use Zend\View\Resolver\TemplateMapResolver;
-use Zend\View\Resolver\TemplatePathStack;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Zend\EventManager\EventsCapableInterface;
+use Zend\EventManager\Exception\InvalidArgumentException;
+use Zend\EventManager\LazyListenerAggregate;
+use Zend\Expressive\Template\TemplateRendererInterface;
+use Zend\Mail\Transport;
+use Zend\ServiceManager\Factory\AbstractFactoryInterface;
+use Zend\Stdlib\ArrayUtils;
 
-class MailServiceAbstractFactory extends AbstractAcMailerFactory
+class MailServiceAbstractFactory implements AbstractFactoryInterface
 {
-    const SPECIFIC_PART = 'mailservice';
+    const ACMAILER_PART = 'acmailer';
+    const MAIL_SERVICE_PART = 'mailservice';
+    const TRANSPORT_MAP = [
+        'sendmail' => Transport\Sendmail::class,
+        'smtp' => Transport\Smtp::class,
+        'file' => Transport\File::class,
+        'in_memory' => Transport\InMemory::class,
+        'null' => Transport\InMemory::class,
+    ];
 
     /**
-     * @var MailOptions
+     * Can the factory create an instance for the service?
+     *
+     * @param  ContainerInterface $container
+     * @param  string $requestedName
+     * @return bool
+     * @throws ContainerExceptionInterface
      */
-    protected $mailOptions;
+    public function canCreate(ContainerInterface $container, $requestedName): bool
+    {
+        $parts = \explode('.', $requestedName);
+        if (\count($parts) !== 3) {
+            return false;
+        }
+
+        if ($parts[0] !== self::ACMAILER_PART || $parts[1] !== static::MAIL_SERVICE_PART) {
+            return false;
+        }
+
+        $specificServiceName = $parts[2];
+        $config = $container->get('config')['acmailer_options']['mail_services'] ?? [];
+        return \array_key_exists($specificServiceName, $config);
+    }
 
     /**
      * Create an object
@@ -41,155 +63,151 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
      * @param  ContainerInterface $container
      * @param  string $requestedName
      * @param  null|array $options
-     * @return object
-     * @throws ServiceNotFoundException if unable to resolve the service.
-     * @throws ServiceNotCreatedException if an exception is raised when
-     *     creating a service.
-     * @throws ContainerException if any other error occurs
+     * @return MailService
+     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\ServiceNotCreatedException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): MailService
     {
-        $specificServiceName = \explode('.', $requestedName)[2];
-        $this->mailOptions = $container->get(
-            \sprintf('%s.%s.%s', self::ACMAILER_PART, MailOptionsAbstractFactory::SPECIFIC_PART, $specificServiceName)
-        );
+        $specificServiceName = \explode('.', $requestedName)[2] ?? null;
+        $mailOptions = $container->get('config')['acmailer_options'] ?? [];
+        $specificMailServiceOptions = $mailOptions['mail_services'][$specificServiceName] ?? null;
+
+        if ($specificMailServiceOptions === null) {
+            throw new Exception\ServiceNotCreatedException(\sprintf(
+                'Requested MailService with name "%s" could not be found. Make sure you have registered it with name'
+                . ' "%s" under the acmailer_options.mail_services config entry',
+                $requestedName,
+                $specificServiceName
+            ));
+        }
+
+        // Recursively extend configuration
+        $specificMailServiceOptions = $this->buildConfig($mailOptions, $specificMailServiceOptions);
 
         // Create the service
-        $message        = $this->createMessage();
-        $transport      = $this->createTransport($container);
-        $renderer       = $this->createRenderer($container);
-        $mailService    = new MailService($message, $transport, $renderer);
-
-        // Set subject
-        $mailService->setSubject($this->mailOptions->getMessageOptions()->getSubject());
-
-        // Set body, either by using a template or a raw body
-        $body = $this->mailOptions->getMessageOptions()->getBody();
-        if ($body->getUseTemplate()) {
-            $defaultLayoutConfig = $body->getTemplate()->getDefaultLayout();
-            if (isset($defaultLayoutConfig['path'])) {
-                $params = isset($defaultLayoutConfig['params']) ? $defaultLayoutConfig['params'] : [];
-                $captureTo = isset($defaultLayoutConfig['template_capture_to'])
-                    ? $defaultLayoutConfig['template_capture_to']
-                    : 'content';
-                $mailService->setDefaultLayout(new DefaultLayout($defaultLayoutConfig['path'], $params, $captureTo));
-            }
-            $mailService->setTemplate($body->getTemplate()->toViewModel(), ['charset' => $body->getCharset()]);
-        } else {
-            $mailService->setBody($body->getContent(), $body->getCharset());
-        }
-
-        // Attach files
-        $files = $this->mailOptions->getMessageOptions()->getAttachments()->getFiles();
-        $mailService->addAttachments($files);
-
-        // Attach files from dir
-        $dir = $this->mailOptions->getMessageOptions()->getAttachments()->getDir();
-        if ($dir['iterate'] === true && \is_string($dir['path']) && \is_dir($dir['path'])) {
-            $files = $dir['recursive'] === true ?
-                new \RecursiveIteratorIterator(
-                    new \RecursiveDirectoryIterator($dir['path'], \RecursiveDirectoryIterator::SKIP_DOTS),
-                    \RecursiveIteratorIterator::CHILD_FIRST
-                ):
-                new \DirectoryIterator($dir['path']);
-
-            /* @var \SplFileInfo $fileInfo */
-            foreach ($files as $fileInfo) {
-                if ($fileInfo->isDir()) {
-                    continue;
-                }
-                $mailService->addAttachment($fileInfo->getPathname());
-            }
-        }
+        $transport = $this->createTransport($container, $specificMailServiceOptions);
+        $renderer = $this->createRenderer($container, $specificMailServiceOptions);
+        $mailService = new MailService(
+            $transport,
+            $renderer,
+            $container->get(EmailBuilder::class),
+            $container->get(AttachmentParserManager::class)
+        );
 
         // Attach mail listeners
-        $this->attachMailListeners($mailService, $container);
+        $this->attachMailListeners($mailService, $container, $specificMailServiceOptions);
         return $mailService;
     }
 
-    /**
-     * @return Message
-     */
-    protected function createMessage()
+    private function buildConfig(array $mailOptions, array $specificOptions): array
     {
-        $options = $this->mailOptions->getMessageOptions();
-        // Prepare Mail Message
-        $message = new Message();
-        $from = $options->getFrom();
-        if (! empty($from)) {
-            $message->setFrom($from, $options->getFromName());
-        }
-        $replyTo = $options->getReplyTo();
-        if (! empty($replyTo)) {
-            $message->setReplyTo($replyTo, $options->getReplyToName());
-        }
-        $to = $options->getTo();
-        if (! empty($to)) {
-            $message->setTo($to);
-        }
-        $cc = $options->getCc();
-        if (! empty($cc)) {
-            $message->setCc($cc);
-        }
-        $bcc = $options->getBcc();
-        if (! empty($bcc)) {
-            $message->setBcc($bcc);
-        }
-        $encoding = $options->getEncoding();
-        if (! empty($encoding)) {
-            $message->setEncoding($encoding);
+        if (! isset($specificOptions['extends'])) {
+            return $specificOptions;
         }
 
-        return $message;
+        // Recursively extend
+        $mailServices = $mailOptions['mail_services'];
+        $processedExtends = [];
+        do {
+            $serviceToExtend = $specificOptions['extends'] ?? null;
+            // Unset the extends value to allow recursive inheritance
+            unset($specificOptions['extends']);
+
+            // Prevent an infinite loop by self inheritance
+            if (\in_array($serviceToExtend, $processedExtends, true)) {
+                throw new Exception\ServiceNotCreatedException(
+                    'It wasn\'t possible to create a mail service due to circular inheritance. Review "extends".'
+                );
+            }
+            $processedExtends[] = $serviceToExtend;
+
+            // Ensure the service from which we have to extend has been configured
+            if (! isset($mailServices[$serviceToExtend])) {
+                throw new Exception\InvalidArgumentException(\sprintf(
+                    'Provided service "%s" to extend from is not configured inside acmailer_options.mail_services',
+                    $serviceToExtend
+                ));
+            }
+
+            $specificOptions = ArrayUtils::merge($mailServices[$serviceToExtend], $specificOptions);
+        } while (isset($specificOptions['extends']));
+
+        return $specificOptions;
     }
 
     /**
      * @param ContainerInterface $container
-     * @return TransportInterface
+     * @param array $mailOptions
+     * @return Transport\TransportInterface
+     * @throws Exception\InvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    protected function createTransport(ContainerInterface $container)
+    private function createTransport(ContainerInterface $container, array $mailOptions): Transport\TransportInterface
     {
-        $adapter = $this->mailOptions->getMailAdapter();
-        // A transport instance can be returned as is
-        if ($adapter instanceof TransportInterface) {
-            return $this->setupTransportConfig($adapter);
+        $transport = $mailOptions['transport'] ?? Transport\Sendmail::class;
+        if (! \is_string($transport) && ! $transport instanceof Transport\TransportInterface) {
+            // The adapter is not valid. Throw an exception
+            throw Exception\InvalidArgumentException::fromValidTypes(
+                ['string', Transport\TransportInterface::class],
+                $transport
+            );
         }
 
-        // Check if the adapter is a service
-        if (\is_string($adapter) && $container->has($adapter)) {
-            /** @var TransportInterface $transport */
-            $transport = $container->get($adapter);
-            if ($transport instanceof TransportInterface) {
-                return $this->setupTransportConfig($transport);
-            } else {
-                throw new InvalidArgumentException(
-                    'Provided mail_adapter service does not return a "Zend\Mail\Transport\TransportInterface" instance'
-                );
-            }
+        // A transport instance can be returned as is
+        if ($transport instanceof Transport\TransportInterface) {
+            return $this->setupTransportConfig($transport, $mailOptions);
         }
 
         // Check if the adapter is one of Zend's default adapters
-        if (\is_string($adapter) && \is_subclass_of($adapter, 'Zend\Mail\Transport\TransportInterface')) {
-            return $this->setupTransportConfig(new $adapter());
+        $transport = self::TRANSPORT_MAP[$transport] ?? $transport;
+        if (\is_subclass_of($transport, Transport\TransportInterface::class)) {
+            return $this->setupTransportConfig(new $transport(), $mailOptions);
+        }
+
+        // Check if the transport is a service
+        if ($container->has($transport)) {
+            /** @var Transport\TransportInterface $transport */
+            $transportInstance = $container->get($transport);
+            if ($transportInstance instanceof Transport\TransportInterface) {
+                return $this->setupTransportConfig($transportInstance, $mailOptions);
+            }
+
+            throw new Exception\InvalidArgumentException(\sprintf(
+                'Provided transport service with name "%s" does not return a "%s" instance',
+                $transport,
+                Transport\TransportInterface::class
+            ));
         }
 
         // The adapter is not valid. Throw an exception
-        throw new InvalidArgumentException(\sprintf(
-            'mail_adapter must be an instance of "Zend\Mail\Transport\TransportInterface" or string, "%s" provided',
-            \is_object($adapter) ? \get_class($adapter) : \gettype($adapter)
+        throw new Exception\InvalidArgumentException(\sprintf(
+            'Registered transport "%s" is not either one of ["%s"], a "%s" subclass or a registered service.',
+            $transport,
+            \implode('", "', \array_keys(self::TRANSPORT_MAP)),
+            Transport\TransportInterface::class
         ));
     }
 
     /**
-     * @param TransportInterface $transport
-     * @return TransportInterface
+     * @param Transport\TransportInterface $transport
+     * @param array $mailOptions
+     * @return Transport\TransportInterface
      */
-    protected function setupTransportConfig(TransportInterface $transport)
-    {
-        if ($transport instanceof Smtp) {
-            $transport->setOptions($this->mailOptions->getSmtpOptions());
-        } elseif ($transport instanceof File) {
-            $transport->setOptions($this->mailOptions->getFileOptions());
+    private function setupTransportConfig(
+        Transport\TransportInterface $transport,
+        array $mailOptions
+    ): Transport\TransportInterface {
+        if ($transport instanceof Transport\Smtp) {
+            $transport->setOptions(new Transport\SmtpOptions($mailOptions['transport_options'] ?? []));
+        } elseif ($transport instanceof Transport\File) {
+            $transportOptions = $mailOptions['transport_options'] ?? [];
+            $transportOptions['path'] = $transportOptions['path'] ?? 'data/mail/output';
+            $transport->setOptions(new Transport\FileOptions($transportOptions));
         }
 
         return $transport;
@@ -197,100 +215,95 @@ class MailServiceAbstractFactory extends AbstractAcMailerFactory
 
     /**
      * @param ContainerInterface $container
-     * @return RendererInterface
+     * @param array $mailOptions
+     * @return TemplateRendererInterface
+     * @throws Exception\InvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    protected function createRenderer(ContainerInterface $container)
+    private function createRenderer(ContainerInterface $container, array $mailOptions): TemplateRendererInterface
     {
-        // Try to return the configured renderer. If it points to an undefined service, create a renderer on the fly
-        $serviceName = $this->mailOptions->getRenderer();
-
-        try {
-            $renderer = $container->get($serviceName);
-            return $renderer;
-        } catch (ServiceNotFoundException $e) {
-            // In case the renderer service is not defined, try to construct it
-            $vmConfig = $this->getSpecificConfig($container, 'view_manager');
-            $renderer = new PhpRenderer();
-
-            // Check what kind of view_manager configuration has been defined
-            if (isset($vmConfig['template_map']) && isset($vmConfig['template_path_stack'])) {
-                // If both a template_map and a template_path_stack have been defined, create an AggregateResolver
-                $pathStackResolver = new TemplatePathStack();
-                $pathStackResolver->setPaths($vmConfig['template_path_stack']);
-                $resolver = new AggregateResolver();
-                $resolver->attach($pathStackResolver)
-                    ->attach(new TemplateMapResolver($vmConfig['template_map']));
-                $renderer->setResolver($resolver);
-            } elseif (isset($vmConfig['template_map'])) {
-                // Create a TemplateMapResolver in case only the template_map has been defined
-                $renderer->setResolver(new TemplateMapResolver($vmConfig['template_map']));
-            } elseif (isset($vmConfig['template_path_stack'])) {
-                // Create a TemplatePathStack resolver in case only the template_path_stack has been defined
-                $pathStackResolver = new TemplatePathStack();
-                $pathStackResolver->setPaths($vmConfig['template_path_stack']);
-                $renderer->setResolver($pathStackResolver);
-            }
-
-            // Create a HelperPluginManager with default view helpers and user defined view helpers
-            $renderer->setHelperPluginManager($this->createHelperPluginManager($container));
-            return $renderer;
+        if (! isset($mailOptions['renderer'])) {
+            return $container->get(MailViewRendererFactory::SERVICE_NAME);
         }
-    }
 
-    /**
-     * Creates a view helper manager
-     * @param ContainerInterface $container
-     * @return HelperPluginManager
-     */
-    protected function createHelperPluginManager(ContainerInterface $container)
-    {
-        $factory = new ViewHelperManagerFactory();
-        /** @var HelperPluginManager $helperManager */
-        $helperManager = $factory->__invoke($container, ViewHelperManagerFactory::PLUGIN_MANAGER_CLASS);
-        $config = new Config($this->getSpecificConfig($container, 'view_helpers'));
-        $config->configureServiceManager($helperManager);
-        return $helperManager;
-    }
-
-    /**
-     * Returns a specific configuration defined by provided key
-     * @param ContainerInterface $container
-     * @param $configKey
-     * @return array
-     */
-    protected function getSpecificConfig(ContainerInterface $container, $configKey)
-    {
-        $config = $container->get('Config');
-        return ! empty($config) && isset($config[$configKey]) ? $config[$configKey] : [];
+        // Resolve renderer service and ensure it has proper type
+        $renderer = $container->get($mailOptions['renderer']);
+        if (! $renderer instanceof TemplateRendererInterface) {
+            throw new Exception\InvalidArgumentException(\sprintf(
+                'Defined renderer of type "%s" is not valid. The renderer must resolve to a "%s" instance',
+                \is_object($renderer) ? \get_class($renderer) : \gettype($renderer),
+                TemplateRendererInterface::class
+            ));
+        }
+        return $renderer;
     }
 
     /**
      * Attaches the preconfigured mail listeners to the mail service
      *
-     * @param MailListenerAwareInterface $service
+     * @param EventsCapableInterface $service
      * @param ContainerInterface $container
+     * @param array $mailOptions
      * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
+     * @throws NotFoundExceptionInterface
      */
-    protected function attachMailListeners(MailListenerAwareInterface $service, ContainerInterface $container)
-    {
-        $listeners = $this->mailOptions->getMailListeners();
+    private function attachMailListeners(
+        EventsCapableInterface $service,
+        ContainerInterface $container,
+        array $mailOptions
+    ) {
+        $listeners = (array) ($mailOptions['mail_listeners'] ?? []);
+        if (empty($listeners)) {
+            return;
+        }
+
+        $definitions = [];
         foreach ($listeners as $listener) {
-            // Try to fetch the listener from the ServiceManager or lazily create an instance
-            if (\is_string($listener) && $container->has($listener)) {
-                $listener = $container->get($listener);
-            } elseif (\is_string($listener) && \class_exists($listener)) {
-                $listener = new $listener();
+            $priority = 1;
+            if (\is_array($listener) && array_key_exists('listener', $listener)) {
+                $listener = $listener['listener'];
+                $priority = $listener['priority'] ?? 1;
             }
 
-            // At this point, the listener should be an instance of MailListenerInterface, otherwise it is invalid
-            if (! $listener instanceof MailListenerInterface) {
-                throw new InvalidArgumentException(\sprintf(
-                    'Provided listener of type "%s" is not valid. '
-                    . 'Expected "string" or "AcMailer\Listener\MailListenerInterface"',
-                    \is_object($listener) ? \get_class($listener) : \gettype($listener)
-                ));
+            // If the listener is already an instance, just register it
+            if ($listener instanceof MailListenerInterface) {
+                $listener->attach($service->getEventManager(), $priority);
+                continue;
             }
-            $service->attachMailListener($listener);
+
+            // Ensure the listener is a string
+            if (! \is_string($listener)) {
+                throw Exception\InvalidArgumentException::fromValidTypes(
+                    ['string', MailListenerInterface::class],
+                    $listener
+                );
+            }
+
+            $definitions[] = [
+                'listener' => $listener,
+                'method' => 'onPreSend',
+                'event' => MailEvent::EVENT_MAIL_PRE_SEND,
+                'priority' => $priority,
+            ];
+            $definitions[] = [
+                'listener' => $listener,
+                'method' => 'onPostSend',
+                'event' => MailEvent::EVENT_MAIL_POST_SEND,
+                'priority' => $priority,
+            ];
+            $definitions[] = [
+                'listener' => $listener,
+                'method' => 'onSendError',
+                'event' => MailEvent::EVENT_MAIL_SEND_ERROR,
+                'priority' => $priority,
+            ];
+        }
+
+        // Attach lazy event listeners if any
+        if (! empty($definitions)) {
+            (new LazyListenerAggregate($definitions, $container))->attach($service->getEventManager());
         }
     }
 }
