@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### 7.0.2
+
+**Bugs**
+
+* [182: When an Email has a template, the result of rendering it should be set as the body](https://github.com/acelaya/ZF-AcMailer/issues/182)
+
 ### 7.0.1
 
 **Tasks**
