@@ -9,6 +9,7 @@ use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\View\Renderer\PhpRenderer;
+use Zend\View\Resolver;
 
 class MailViewRendererFactoryTest extends TestCase
 {
@@ -83,5 +84,45 @@ class MailViewRendererFactoryTest extends TestCase
         $hasViewRenderer->shouldHaveBeenCalledTimes(1);
         $hasOldViewRenderer->shouldHaveBeenCalledTimes(1);
         $getConfig->shouldHaveBeenCalledTimes(2);
+    }
+
+    /**
+     * @test
+     * @dataProvider provideViewManagerConfigs
+     * @param array $viewManagerConfig
+     * @param string $expectedResolver
+     */
+    public function oneResolverIsUsedWhenOnlyOneTemplateConfigExists(
+        array $viewManagerConfig,
+        string $expectedResolver
+    ) {
+        $container = $this->prophesize(ContainerInterface::class);
+
+        $hasViewRenderer = $container->has(TemplateRendererInterface::class)->willReturn(false);
+        $hasOldViewRenderer = $container->has('mailviewrenderer')->willReturn(false);
+        $getConfig = $container->get('config')->willReturn([
+            'view_manager' => $viewManagerConfig,
+        ]);
+
+        $result = $this->factory->__invoke($container->reveal());
+        $ref = new \ReflectionObject($result);
+        $wrappedRenderer = $ref->getProperty('renderer');
+        $wrappedRenderer->setAccessible(true);
+        /** @var PhpRenderer $wrappedRenderer */
+        $wrappedRenderer = $wrappedRenderer->getValue($result);
+
+        $this->assertInstanceOf($expectedResolver, $wrappedRenderer->resolver());
+        $hasViewRenderer->shouldHaveBeenCalledTimes(1);
+        $hasOldViewRenderer->shouldHaveBeenCalledTimes(1);
+        $getConfig->shouldHaveBeenCalledTimes(2);
+    }
+
+    public function provideViewManagerConfigs(): array
+    {
+        return [
+            [[], Resolver\TemplatePathStack::class],
+            [['template_map' => []], Resolver\TemplateMapResolver::class],
+            [['template_path_stack' => []], Resolver\TemplatePathStack::class],
+        ];
     }
 }

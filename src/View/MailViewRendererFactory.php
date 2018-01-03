@@ -112,11 +112,7 @@ class MailViewRendererFactory
      */
     private function buildTemplateResolverFromStack(array $resolversStack)
     {
-        if (empty($resolversStack)) {
-            return null;
-        }
-
-        if (\count($resolversStack) === 1) {
+        if (\count($resolversStack) <= 1) {
             return \array_shift($resolversStack);
         }
 
