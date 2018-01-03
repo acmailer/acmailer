@@ -164,12 +164,15 @@ class MailServiceTest extends TestCase
      */
     public function templateIsRendererIfProvided()
     {
+        $expectedBody = '<p>rendering result</p>';
+
         $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
         $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn(new ResponseCollection());
-        $render = $this->renderer->render(Argument::cetera())->willReturn('');
+        $render = $this->renderer->render(Argument::cetera())->willReturn($expectedBody);
 
-        $this->mailService->send((new Email())->setTemplate('some/template'));
+        $result = $this->mailService->send((new Email())->setTemplate('some/template'));
 
+        $this->assertEquals($expectedBody, $result->getEmail()->getBody());
         $send->shouldHaveBeenCalledTimes(1);
         $trigger->shouldHaveBeenCalled();
         $render->shouldHaveBeenCalledTimes(1);

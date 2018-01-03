@@ -165,6 +165,9 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
             ? $this->renderer->render($email->getTemplate(), $this->injectLayoutParam($email->getTemplateParams()))
             : $email->getBody();
 
+        // Set the email's body in case if has been rendered from a template
+        $email->setBody($rawBody);
+
         return $message->setBody($this->buildBody($rawBody, $email->getCharset()));
     }
 

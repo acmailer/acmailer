@@ -207,6 +207,8 @@ If you need different view renderers to be used by each mail service, you can de
 
 Also, when using zendframework/zend-mvc-console to run Zend MVC apps from the console, a renderer is created from scratch, honoring your `view_manager` and `view_helpers` configurations.
 
+When an email is rendered from a template, the `AcMailer\Model\Email` object wrapped in the result and passed to event listeners, will have the result of that rendering in its `body` property, so calling `$email->getBody()` will return the generated HTML as a string.
+
 #### Attachments
 
 Files can be attached to the email before sending it by providing their paths with `addAttachment`, `addAttachments`, `setAttachments` or `setAttachmentsDir` methods.
