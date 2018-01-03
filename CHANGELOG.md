@@ -1,5 +1,16 @@
 ## CHANGELOG
 
+### 7.0.1
+
+**Tasks**
+
+* [180: Increase phpstan level used in build matrix from 5 to 6](https://github.com/acelaya/ZF-AcMailer/issues/180)
+
+**Bugs**
+
+* [179: Make ExceptionInterface extend Throwable](https://github.com/acelaya/ZF-AcMailer/issues/179)
+* [174: When using expressive and zend/view, a layout is configured for all templates. Make it not be used for emails](https://github.com/acelaya/ZF-AcMailer/issues/174)
+
 ### 7.0.0
 
 **Enhancements:**

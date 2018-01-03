@@ -162,10 +162,21 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
     {
         $message = MessageFactory::createMessageFromEmail($email);
         $rawBody = $email->hasTemplate()
-            ? $this->renderer->render($email->getTemplate(), $email->getTemplateParams())
+            ? $this->renderer->render($email->getTemplate(), $this->injectLayoutParam($email->getTemplateParams()))
             : $email->getBody();
 
         return $message->setBody($this->buildBody($rawBody, $email->getCharset()));
+    }
+
+    private function injectLayoutParam(array $original): array
+    {
+        // When using Zend/View in expressive, a layout could have been globally configured.
+        // We have to override it unless explicitly provided. It won't affect other renderers.
+        if (! \array_key_exists('layout', $original)) {
+            $original['layout'] = false;
+        }
+
+        return $original;
     }
 
     /**
