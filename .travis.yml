@@ -15,10 +15,7 @@ before_script:
 script:
   - mkdir build
   - mkdir test/attachments/dir/dirdept
-  - ./vendor/bin/phpcs
-  - ./vendor/bin/phpstan analyse src/ --level=6
-  - ./vendor/bin/phpunit --coverage-clover build/clover.xml
-  - ./vendor/bin/infection --threads=4 --min-msi=80
+  - composer ci
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar

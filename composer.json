@@ -31,7 +31,7 @@
     "require-dev": {
         "infection/infection": "^0.7.1",
         "phpstan/phpstan": "^0.9.2",
-        "phpunit/phpunit": "^6.0",
+        "phpunit/phpunit": "^7.0",
         "slevomat/coding-standard": "^4.0",
         "squizlabs/php_codesniffer": "^3.1",
         "zendframework/zend-mvc": "^3.1",
