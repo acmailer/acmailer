@@ -62,17 +62,25 @@
         }
     },
     "scripts": {
-        "ci": [
+        "ac:ci": [
             "@cs",
             "@stan",
             "@test",
             "@infection"
         ],
 
-        "cs": "phpcs",
-        "cs-fix": "phpcbf",
-        "stan": "phpstan analyse src/ --level=6",
-        "test": "phpunit --coverage-clover build/clover.xml",
-        "infection": "infection --threads=4 --min-msi=80"
+        "ac:cs": "phpcs",
+        "ac:cs-fix": "phpcbf",
+        "ac:stan": "phpstan analyse src/ --level=6",
+        "ac:test": "phpunit --coverage-clover build/clover.xml",
+        "ac:infection": "infection --threads=4 --min-msi=80"
+    },
+    "scripts-descriptions": {
+        "ac:cs": "Check coding styles with PHP_CodeSniffer",
+        "ac:cs-fix": "Fix coding styles with PHP Code beautifier",
+        "ac:stan": "Check code quality with phpstan",
+        "ac:test": "Run unit tests with phpunit",
+        "ac:infection": "Check tests quality using mutation testing with infection",
+        "ac:ci": "Alias for \"cs\", \"stan\", \"test\" and \"infection\""
     }
 }
