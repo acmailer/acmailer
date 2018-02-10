@@ -73,7 +73,7 @@
         "ac:cs-fix": "phpcbf",
         "ac:stan": "phpstan analyse src/ --level=6",
         "ac:test": "phpunit --coverage-clover build/clover.xml",
-        "ac:infection": "infection --threads=4 --min-msi=80"
+        "ac:infection": "infection --threads=4 --min-msi=80 --only-covered"
     },
     "scripts-descriptions": {
         "ac:cs": "Check coding styles with PHP_CodeSniffer",
