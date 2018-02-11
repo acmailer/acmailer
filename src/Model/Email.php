@@ -10,7 +10,7 @@ use Zend\Stdlib\AbstractOptions;
 
 final class Email extends AbstractOptions
 {
-    const DEFAULT_CHARSET = 'utf-8';
+    public const DEFAULT_CHARSET = 'utf-8';
 
     /**
      * @var string
