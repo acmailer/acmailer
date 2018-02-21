@@ -202,4 +202,25 @@ class MailServiceTest extends TestCase
         $getStringParser->shouldHaveBeenCalled();
         $parse->shouldHaveBeenCalledTimes(3);
     }
+
+    /**
+     * @test
+     */
+    public function templateIsRenderedBeforeFirstEventIsTriggered()
+    {
+        $expectedBody = '<p>rendering result</p>';
+        $resp = new ResponseCollection();
+        $resp->push(false);
+
+        $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
+        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn($resp);
+        $render = $this->renderer->render(Argument::cetera())->willReturn($expectedBody);
+
+        $result = $this->mailService->send((new Email())->setTemplate('some/template'));
+
+        $this->assertEquals($expectedBody, $result->getEmail()->getBody());
+        $send->shouldNotHaveBeenCalled();
+        $trigger->shouldHaveBeenCalledTimes(1);
+        $render->shouldHaveBeenCalledTimes(1);
+    }
 }

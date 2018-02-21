@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### 7.0.3
+
+**Bugs**
+
+* [187: Make sure email templates are rendered before the PRE_SEND event is triggered](https://github.com/acelaya/ZF-AcMailer/issues/187)
+
 ### 7.0.2
 
 **Bugs**
