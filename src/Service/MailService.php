@@ -108,6 +108,9 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
             throw Exception\InvalidArgumentException::fromValidTypes(['string', 'array', Email::class], $email);
         }
 
+        // Render the email's body in case it has to be composed from a template
+        $this->renderEmailBody($email);
+
         // Trigger pre send event, an cancel email sending if any listener returned false
         $eventResp = $this->events->triggerEvent($this->createMailEvent($email));
         if ($eventResp->contains(false)) {
@@ -116,7 +119,9 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
 
         try {
             // Build the message object to send
-            $message = $this->createMessageFromEmail($email);
+            $message = MessageFactory::createMessageFromEmail($email)->setBody(
+                $this->buildBody($email->getBody(), $email->getCharset())
+            );
             $this->attachFiles($message, $email);
 
             // Try to send the message
@@ -158,23 +163,27 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         return $event;
     }
 
-    private function createMessageFromEmail(Email $email): Message
+    /**
+     * @param Email $email
+     * @throws Exception\InvalidArgumentException
+     */
+    private function renderEmailBody(Email $email)
     {
-        $message = MessageFactory::createMessageFromEmail($email);
-        $rawBody = $email->hasTemplate()
-            ? $this->renderer->render($email->getTemplate(), $this->injectLayoutParam($email->getTemplateParams()))
-            : $email->getBody();
+        if (! $email->hasTemplate()) {
+            return;
+        }
 
-        // Set the email's body in case if has been rendered from a template
+        $rawBody = $this->renderer->render(
+            $email->getTemplate(),
+            $this->injectLayoutParam($email->getTemplateParams())
+        );
         $email->setBody($rawBody);
-
-        return $message->setBody($this->buildBody($rawBody, $email->getCharset()));
     }
 
     private function injectLayoutParam(array $original): array
     {
         // When using Zend/View in expressive, a layout could have been globally configured.
-        // We have to override it unless explicitly provided. It won't affect other renderers.
+        // We have to override it unless explicitly provided. It won't affect other renderer implementations.
         if (! \array_key_exists('layout', $original)) {
             $original['layout'] = false;
         }
