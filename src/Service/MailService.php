@@ -108,11 +108,12 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
             throw Exception\InvalidArgumentException::fromValidTypes(['string', 'array', Email::class], $email);
         }
 
-        // Render the email's body in case it has to be composed from a template
+        // Trigger the pre render event and then render the email's body in case it has to be composed from a template
+        $this->events->triggerEvent($this->createMailEvent($email, MailEvent::EVENT_MAIL_PRE_RENDER));
         $this->renderEmailBody($email);
 
-        // Trigger pre send event, an cancel email sending if any listener returned false
-        $eventResp = $this->events->triggerEvent($this->createMailEvent($email));
+        // Trigger pre send event, and cancel email sending if any listener returned false
+        $eventResp = $this->events->triggerEvent($this->createMailEvent($email, MailEvent::EVENT_MAIL_PRE_SEND));
         if ($eventResp->contains(false)) {
             return new MailResult($email, false);
         }
@@ -152,7 +153,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
      */
     private function createMailEvent(
         Email $email,
-        $name = MailEvent::EVENT_MAIL_PRE_SEND,
+        string $name,
         ResultInterface $result = null
     ): MailEvent {
         $event = new MailEvent($email, $name);

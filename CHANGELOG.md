@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### 7.0.4
+
+**Bugs**
+
+* [190: It is no longer possible to preconfigure services before rendering the email since 7.0.3 was released](https://github.com/acelaya/ZF-AcMailer/issues/190)
+
 ### 7.0.3
 
 **Bugs**

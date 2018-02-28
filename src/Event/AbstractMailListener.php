@@ -19,13 +19,26 @@ abstract class AbstractMailListener extends AbstractListenerAggregate implements
      */
     public function attach(EventManagerInterface $events, $priority = 1)
     {
+        $this->listeners[] = $events->attach(MailEvent::EVENT_MAIL_PRE_RENDER, [$this, 'onPreRender'], $priority);
         $this->listeners[] = $events->attach(MailEvent::EVENT_MAIL_PRE_SEND, [$this, 'onPreSend'], $priority);
         $this->listeners[] = $events->attach(MailEvent::EVENT_MAIL_POST_SEND, [$this, 'onPostSend'], $priority);
         $this->listeners[] = $events->attach(MailEvent::EVENT_MAIL_SEND_ERROR, [$this, 'onSendError'], $priority);
     }
 
     /**
-     * Called before sending the email
+     * Called before rendering the email, in case it is composed by a template
+     *
+     * @param MailEvent $e
+     * @return mixed
+     */
+    public function onPreRender(MailEvent $e)
+    {
+        // TODO: Implement onPreRender() method.
+    }
+
+    /**
+     * Called before sending the email, but after rendering it
+     *
      * @param MailEvent $e
      * @return mixed
      */
@@ -36,6 +49,7 @@ abstract class AbstractMailListener extends AbstractListenerAggregate implements
 
     /**
      * Called after sending the email
+     *
      * @param MailEvent $e
      * @return mixed
      */
@@ -46,6 +60,7 @@ abstract class AbstractMailListener extends AbstractListenerAggregate implements
 
     /**
      * Called if an error occurs while sending the email
+     *
      * @param MailEvent $e
      * @return mixed
      */

@@ -13,7 +13,16 @@ use Zend\EventManager\ListenerAggregateInterface;
 interface MailListenerInterface extends ListenerAggregateInterface
 {
     /**
-     * Called before sending the email
+     * Called before rendering the email, in case it is composed by a template
+     *
+     * @param MailEvent $e
+     * @return mixed
+     */
+    public function onPreRender(MailEvent $e);
+
+    /**
+     * Called before sending the email, but after rendering it
+     *
      * @param MailEvent $e
      * @return mixed
      */
@@ -21,6 +30,7 @@ interface MailListenerInterface extends ListenerAggregateInterface
 
     /**
      * Called after sending the email
+     *
      * @param MailEvent $e
      * @return mixed
      */
@@ -28,6 +38,7 @@ interface MailListenerInterface extends ListenerAggregateInterface
 
     /**
      * Called if an error occurs while sending the email
+     *
      * @param MailEvent $e
      * @return mixed
      */
