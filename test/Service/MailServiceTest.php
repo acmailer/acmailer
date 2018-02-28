@@ -11,6 +11,7 @@ use AcMailer\Exception\MailException;
 use AcMailer\Model\Email;
 use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Service\MailService;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -206,17 +207,35 @@ class MailServiceTest extends TestCase
     /**
      * @test
      */
-    public function templateIsRenderedBeforeFirstEventIsTriggered()
+    public function templateIsRenderedBeforeEmailIsSent()
     {
         $expectedBody = '<p>rendering result</p>';
         $resp = new ResponseCollection();
         $resp->push(false);
+        $email = (new Email())->setTemplate('some/template');
+        $count = 0;
 
         $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
-        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn($resp);
+        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->will(function () use (
+            $email,
+            $resp,
+            &$count
+        ) {
+            if ($count === 0) {
+                // On first event (pre-render), the body is still empty.
+                Assert::assertEmpty($email->getBody());
+            } else {
+                // On second event (pre-send), the template has already been rendered and set in the email body.
+                Assert::assertNotEmpty($email->getBody());
+            }
+
+            $count++;
+
+            return $resp;
+        });
         $render = $this->renderer->render(Argument::cetera())->willReturn($expectedBody);
 
-        $result = $this->mailService->send((new Email())->setTemplate('some/template'));
+        $result = $this->mailService->send($email);
 
         $this->assertEquals($expectedBody, $result->getEmail()->getBody());
         $send->shouldNotHaveBeenCalled();
