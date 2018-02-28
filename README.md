@@ -331,11 +331,12 @@ return [
 
 This module comes with a built-in event system.
 
-- An event is triggered before the mail is sent (`MailEvent::EVENT_MAIL_PRE_SEND`).
+- An event is triggered before the email's template is rendered, if any. (`MailEvent::EVENT_MAIL_PRE_RENDER`).
+- Another one is triggered before the email is sent, but after the body has been set. (`MailEvent::EVENT_MAIL_PRE_SEND`).
 - If everything was OK another event is triggered (`MailEvent::EVENT_MAIL_POST_SEND`) after the email has been sent.
 - If any `Throwable` is thrown while sending the email, an error event is triggered (`MailEvent::EVENT_MAIL_SEND_ERROR`), which wraps it.
 
-Managing mail events is as easy as extending `AcMailer\Event\AbstractMailListener`. It provides the `onPreSend`, `onPostSend` and `onSendError` methods, which get a `MailEvent` parameter which composes the sent `AcMailer\Model\Email` object and the produced `AcMailer\Result\MailResult`.
+Managing mail events is as easy as extending `AcMailer\Event\AbstractMailListener`. It provides the `onPreRender`, `onPreSend`, `onPostSend` and `onSendError` methods, which get a `MailEvent` parameter which composes the sent `AcMailer\Model\Email` object and the produced `AcMailer\Result\MailResult`.
 
 Then attach the listener object to the `MailService` and the corresponding method will be automatically called when calling the `send` method.
 
@@ -366,9 +367,9 @@ return [
 ];
 ```
 
-All events listeners registered as services will be lazily created when used. If no emails are sent, the listeners won't even be created.
+All event listeners registered as services will be lazily created when used. If no emails are sent, the listeners won't even be created.
 
-The value returned by any opf the listeners methods is ignored, except on the case of `onPreSend`. If that method returns a boolean `false`, the email sending will be cancelled, and the returned `AcMailer\Result\MailResult` object will notice it.
+The value returned by any of the listeners methods is ignored, except on the case of `onPreSend`. If that method returns a boolean `false`, the email sending will be cancelled, and the returned `AcMailer\Result\MailResult` object will indicate it.
 
 ```php
 <?php
@@ -389,6 +390,22 @@ $mailService->attachMailListener(new class extends AcMailer\Event\AbstractMailLi
 $result = $mailService->send('contact', ['to' => ['me@gmail.com']]);
 var_dump($result->isCancelled()); // This will print true
 ```
+
+If you need to configure any service that could cause the email's template to produce a different result (like on translatable emails), do it on the `onPreRender` method.
+
+```php
+<?php
+$mailService->attachMailListener(new class extends AcMailer\Event\AbstractMailListener {
+    private $translator;
+
+    public function onPreRender(AcMailer\Event\MailEvent $e)
+    {
+        $this->translator->setLocale(/* Get locale somehow */);
+    }
+});
+```
+
+If, for example, the same translator is being used to translate templates, this is the proper place to set the locale, so that the template gets rendered in the correct language.
 
 ### Configuration options
 
