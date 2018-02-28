@@ -102,7 +102,7 @@ class MailServiceTest extends TestCase
 
         $buildEmail->shouldHaveBeenCalledTimes(\is_object($email) ? 0 : 1);
         $send->shouldHaveBeenCalled();
-        $trigger->shouldHaveBeenCalledTimes(2);
+        $trigger->shouldHaveBeenCalledTimes(3);
     }
 
     public function provideValidEmails(): array
@@ -142,7 +142,7 @@ class MailServiceTest extends TestCase
         $this->mailService->send(new Email());
 
         $send->shouldNotHaveBeenCalled();
-        $trigger->shouldHaveBeenCalledTimes(1);
+        $trigger->shouldHaveBeenCalledTimes(2);
     }
 
     /**
@@ -220,7 +220,7 @@ class MailServiceTest extends TestCase
 
         $this->assertEquals($expectedBody, $result->getEmail()->getBody());
         $send->shouldNotHaveBeenCalled();
-        $trigger->shouldHaveBeenCalledTimes(1);
+        $trigger->shouldHaveBeenCalledTimes(2);
         $render->shouldHaveBeenCalledTimes(1);
     }
 }
