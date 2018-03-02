@@ -2,6 +2,8 @@
 
 ### 7.0.5
 
+**Bugs**
+
 * [192: Pre-render event is not properly registered when listeners are defined as services](https://github.com/acelaya/ZF-AcMailer/issues/192)
 
 ### 7.0.4
