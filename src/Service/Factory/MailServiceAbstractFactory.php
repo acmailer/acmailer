@@ -262,7 +262,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
         $definitions = [];
         foreach ($listeners as $listener) {
             $priority = 1;
-            if (\is_array($listener) && array_key_exists('listener', $listener)) {
+            if (\is_array($listener) && \array_key_exists('listener', $listener)) {
                 $listener = $listener['listener'];
                 $priority = $listener['priority'] ?? 1;
             }
@@ -281,6 +281,12 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
                 );
             }
 
+            $definitions[] = [
+                'listener' => $listener,
+                'method' => 'onPreRender',
+                'event' => MailEvent::EVENT_MAIL_PRE_RENDER,
+                'priority' => $priority,
+            ];
             $definitions[] = [
                 'listener' => $listener,
                 'method' => 'onPreSend',

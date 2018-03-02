@@ -345,6 +345,6 @@ class MailServiceAbstractFactoryTest extends TestCase
         $ref = new \ReflectionObject($result->getEventManager());
         $prop = $ref->getProperty('events');
         $prop->setAccessible(true);
-        $this->assertCount(3, $prop->getValue($result->getEventManager()));
+        $this->assertCount(4, $prop->getValue($result->getEventManager()));
     }
 }
