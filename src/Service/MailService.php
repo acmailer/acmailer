@@ -270,7 +270,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
     }
 
     /**
-     * @param $attachment
+     * @param string|resource|array|Mime\Part|Attachment $attachment
      * @return string
      */
     private function resolveParserNameFromAttachment($attachment): string
