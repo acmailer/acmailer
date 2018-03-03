@@ -24,9 +24,9 @@ use Zend\Stdlib\ArrayUtils;
 
 class MailServiceAbstractFactory implements AbstractFactoryInterface
 {
-    const ACMAILER_PART = 'acmailer';
-    const MAIL_SERVICE_PART = 'mailservice';
-    const TRANSPORT_MAP = [
+    private const ACMAILER_PART = 'acmailer';
+    private const MAIL_SERVICE_PART = 'mailservice';
+    private const TRANSPORT_MAP = [
         'sendmail' => Transport\Sendmail::class,
         'smtp' => Transport\Smtp::class,
         'file' => Transport\File::class,
@@ -104,6 +104,13 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
         return $mailService;
     }
 
+    /**
+     * @param array $mailOptions
+     * @param array $specificOptions
+     * @return array
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\ServiceNotCreatedException
+     */
     private function buildConfig(array $mailOptions, array $specificOptions): array
     {
         if (! isset($specificOptions['extends'])) {
@@ -255,7 +262,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
         EventsCapableInterface $service,
         ContainerInterface $container,
         array $mailOptions
-    ) {
+    ): void {
         $listeners = (array) ($mailOptions['mail_listeners'] ?? []);
         if (empty($listeners)) {
             return;

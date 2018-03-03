@@ -21,7 +21,7 @@ use Zend\View\Resolver\TemplatePathStack;
 
 class MailViewRendererFactory
 {
-    const SERVICE_NAME = 'AcMailer\MailViewRenderer';
+    public const SERVICE_NAME = 'AcMailer\MailViewRenderer';
 
     /**
      * @param ContainerInterface $container
