@@ -8,6 +8,8 @@ use AcMailer\Attachment\Parser\AttachmentParserInterface;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Exception\MailException;
+use AcMailer\Exception\ServiceNotCreatedException;
+use AcMailer\Model\Attachment;
 use AcMailer\Model\Email;
 use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Service\MailService;
@@ -184,24 +186,57 @@ class MailServiceTest extends TestCase
      */
     public function attachmentsAreProperlyAddedToMessage()
     {
+        $attachments = ['', '', '', [], new Attachment('foo', 'value')];
+
         $attachmentParser = $this->prophesize(AttachmentParserInterface::class);
         $parse = $attachmentParser->parse(Argument::cetera())->willReturn(new Part());
 
         $hasStringParser = $this->attachmentParsers->has('string')->willReturn(true);
-        $hasArrayParser = $this->attachmentParsers->has('array')->willReturn(false);
+        $hasArrayParser = $this->attachmentParsers->has('array')->willReturn(true);
+        $hasFooParser = $this->attachmentParsers->has('foo')->willReturn(true);
         $getStringParser = $this->attachmentParsers->get('string')->willReturn($attachmentParser->reveal());
+        $getArrayParser = $this->attachmentParsers->get('array')->willReturn($attachmentParser->reveal());
+        $getFooParser = $this->attachmentParsers->get('foo')->willReturn($attachmentParser->reveal());
 
         $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
         $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn(new ResponseCollection());
 
-        $this->mailService->send((new Email())->setAttachments(['', '', '', []]));
+        $this->mailService->send((new Email())->setAttachments($attachments));
 
         $send->shouldHaveBeenCalled();
         $trigger->shouldHaveBeenCalled();
         $hasStringParser->shouldHaveBeenCalled();
         $hasArrayParser->shouldHaveBeenCalled();
+        $hasFooParser->shouldHaveBeenCalled();
         $getStringParser->shouldHaveBeenCalled();
-        $parse->shouldHaveBeenCalledTimes(3);
+        $getArrayParser->shouldHaveBeenCalled();
+        $getFooParser->shouldHaveBeenCalled();
+        $parse->shouldHaveBeenCalledTimes(\count($attachments));
+    }
+
+    /**
+     * @test
+     */
+    public function attachmentsThrowExceptionWhenParserCannotBeFound()
+    {
+        $attachmentParser = $this->prophesize(AttachmentParserInterface::class);
+        $parse = $attachmentParser->parse(Argument::cetera())->willReturn(new Part());
+
+        $hasStringParser = $this->attachmentParsers->has('string')->willReturn(false);
+        $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
+        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn(new ResponseCollection());
+
+        try {
+            $this->mailService->send((new Email())->setAttachments(['']));
+        } catch (MailException $e) {
+            $this->assertInstanceOf(ServiceNotCreatedException::class, $e->getPrevious());
+            $this->assertEquals('The attachment parser "string" could not be found', $e->getPrevious()->getMessage());
+        }
+
+        $send->shouldNotHaveBeenCalled();
+        $trigger->shouldHaveBeenCalled();
+        $hasStringParser->shouldHaveBeenCalled();
+        $parse->shouldNotHaveBeenCalled();
     }
 
     /**

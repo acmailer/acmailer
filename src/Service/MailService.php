@@ -10,6 +10,7 @@ use AcMailer\Event\MailListenerAwareInterface;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception;
 use AcMailer\Mail\MessageFactory;
+use AcMailer\Model\Attachment;
 use AcMailer\Model\Email;
 use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Result\MailResult;
@@ -225,6 +226,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
      * @param Message $message
      * @param Email $email
      * @throws Exception\InvalidAttachmentException
+     * @throws Exception\ServiceNotCreatedException
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      * @throws InvalidArgumentException
@@ -245,14 +247,17 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         $attachmentParts = [];
         $info = null;
         foreach ($attachments as $key => $attachment) {
-            $parserName = \is_object($attachment) ? \get_class($attachment) : \gettype($attachment);
+            $parserName = $this->resolveParserNameFromAttachment($attachment);
             if (! $this->attachmentParserManager->has($parserName)) {
-                continue;
+                throw new Exception\ServiceNotCreatedException(
+                    \sprintf('The attachment parser "%s" could not be found', $parserName)
+                );
             }
 
             /** @var AttachmentParserInterface $parser */
             $parser = $this->attachmentParserManager->get($parserName);
-            $part = $parser->parse($attachment, \is_string($key) ? $key : null);
+            $attachmentValue = $attachment instanceof Attachment ? $attachment->getValue() : $attachment;
+            $part = $parser->parse($attachmentValue, \is_string($key) ? $key : null);
 
             $part->charset = $email->getCharset();
             $attachmentParts[] = $part;
@@ -262,6 +267,19 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         $body = new Mime\Message();
         $body->setParts(\array_merge($oldParts, $attachmentParts));
         $message->setBody($body);
+    }
+
+    /**
+     * @param $attachment
+     * @return string
+     */
+    private function resolveParserNameFromAttachment($attachment): string
+    {
+        if ($attachment instanceof Attachment) {
+            return $attachment->getParserName();
+        }
+
+        return \is_object($attachment) ? \get_class($attachment) : \gettype($attachment);
     }
 
     /**
