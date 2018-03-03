@@ -10,10 +10,11 @@ namespace AcMailer\Exception;
  */
 class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
 {
-    public static function fromValidTypes(array $types, $value): self
+    public static function fromValidTypes(array $types, $value, string $fieldName = 'value'): self
     {
         return new self(\sprintf(
-            'Provided email is not valid. Expected one of ["%s"], but "%s" was provided',
+            'Provided %s is not valid. Expected one of ["%s"], but "%s" was provided',
+            $fieldName,
             \implode('", "', $types),
             \is_object($value) ? \get_class($value) : \gettype($value)
         ));

@@ -275,7 +275,7 @@ final class Email extends AbstractOptions
     public function setBody($body): self
     {
         if (! \is_string($body) && ! $body instanceof Part && ! $body instanceof Message) {
-            throw InvalidArgumentException::fromValidTypes(['string', Part::class, Message::class], $body);
+            throw InvalidArgumentException::fromValidTypes(['string', Part::class, Message::class], $body, 'body');
         }
 
         $this->body = $body;
@@ -291,7 +291,11 @@ final class Email extends AbstractOptions
     public function addAttachment($file, string $filename = null): self
     {
         if (! \is_string($file) && ! \is_array($file) && ! \is_resource($file) && ! $file instanceof Part) {
-            throw InvalidArgumentException::fromValidTypes(['string', 'array', 'resource', Part::class], $file);
+            throw InvalidArgumentException::fromValidTypes(
+                ['string', 'array', 'resource', Part::class],
+                $file,
+                'attachment'
+            );
         }
 
         if ($filename !== null) {

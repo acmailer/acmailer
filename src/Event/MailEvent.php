@@ -15,10 +15,10 @@ use Zend\EventManager\Event;
  */
 class MailEvent extends Event implements ResultAwareInterface
 {
-    const EVENT_MAIL_PRE_RENDER = 'event.mail.pre.render';
-    const EVENT_MAIL_PRE_SEND = 'event.mail.pre.send';
-    const EVENT_MAIL_POST_SEND = 'event.mail.post.send';
-    const EVENT_MAIL_SEND_ERROR = 'event.mail.send.error';
+    public const EVENT_MAIL_PRE_RENDER = 'event.mail.pre.render';
+    public const EVENT_MAIL_PRE_SEND = 'event.mail.pre.send';
+    public const EVENT_MAIL_POST_SEND = 'event.mail.post.send';
+    public const EVENT_MAIL_SEND_ERROR = 'event.mail.send.error';
 
     /**
      * @var ResultInterface
@@ -47,7 +47,7 @@ class MailEvent extends Event implements ResultAwareInterface
      * @param ResultInterface $result
      * @return $this
      */
-    public function setResult(ResultInterface $result)
+    public function setResult(ResultInterface $result): self
     {
         $this->result = $result;
         return $this;
@@ -56,8 +56,18 @@ class MailEvent extends Event implements ResultAwareInterface
     /**
      * @return ResultInterface|null
      */
-    public function getResult()
+    public function getResult(): ?ResultInterface
     {
         return $this->result;
+    }
+
+    public static function getEventNames(): array
+    {
+        return [
+            'onPreRender' => self::EVENT_MAIL_PRE_RENDER,
+            'onPreSend' => self::EVENT_MAIL_PRE_SEND,
+            'onPostSend' => self::EVENT_MAIL_POST_SEND,
+            'onSendError' => self::EVENT_MAIL_SEND_ERROR,
+        ];
     }
 }

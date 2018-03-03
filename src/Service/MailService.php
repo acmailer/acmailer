@@ -105,7 +105,11 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         } elseif (\is_array($email)) {
             $email = $this->emailBuilder->build(Email::class, $email);
         } elseif (! $email instanceof Email) {
-            throw Exception\InvalidArgumentException::fromValidTypes(['string', 'array', Email::class], $email);
+            throw Exception\InvalidArgumentException::fromValidTypes(
+                ['string', 'array', Email::class],
+                $email,
+                'email'
+            );
         }
 
         // Trigger the pre render event and then render the email's body in case it has to be composed from a template
