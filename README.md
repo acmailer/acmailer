@@ -260,6 +260,40 @@ $mailService->send([
 
 The array attachment approach is very useful when you want to preconfigure the files to be attached to an email.
 
+**Custom attachment parsers**
+
+If for some reason none of the attachment strategies fits your needs, you can register your own attachment parsers.
+
+For example, imagine you want your attachments to be parsed using the [league/flysystem](https://flysystem.thephpleague.com/) package.
+
+You could define your own attachment parser, like this:
+
+```php
+<?php
+declare(strict_types=1);
+
+namespace App\Mail\Attachment;
+
+use AcMailer\Attachment\Parser\AttachmentParserInterface;
+use League\Flysystem\FilesystemInterface;
+use Zend\Mime\Part;
+
+class FlysystemAttachmentParser implements AttachmentParserInterface
+{
+    private $filesystem;
+
+    public function __construct(FilesystemInterface $filesystem)
+    {
+        $this->filesystem = $filesystem;
+    }
+
+    public function parse($attachment, string $attachmentName = null): Part
+    {
+
+    }
+}
+```
+
 #### Configure services
 
 We have seen how to configure and send emails, but we also need to configure the services that send them.
