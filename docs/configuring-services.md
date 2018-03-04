@@ -47,6 +47,8 @@ return [
 ];
 ```
 
+> See the full configuration documentation [here](/configuration-options).
+
 Then, every service can be fetched using the same formula to compose the service name. Three parts, separated by dots. The first one is **acmailer**, the second one is **mailservice**, and the third one is the specific service name, for example **default** or **mycompany**.
 
 In the example, service names would be **acmailer.mailservice.default** and **acmailer.mailservice.mycompany**.

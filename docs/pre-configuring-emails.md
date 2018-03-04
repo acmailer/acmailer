@@ -56,3 +56,5 @@ try {
     // Error sending email
 }
 ```
+
+> See the full configuration documentation [here](/configuration-options).
