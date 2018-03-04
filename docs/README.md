@@ -12,6 +12,6 @@ This module provides a way to easily send emails from Zend Framework and Zend Ex
 You will be able to compose emails from templates, and easily attach files to those emails using different strategies.
 
 > **IMPORTANT! Version notes**
-> * You are reading the documentation for this component's **v7**. Access [here](https://github.com/acelaya/ZF-AcMailer/blob/master/UPGRADE.md#upgrade-from-5x6x-to-7x ':ignore') to see how to upgrade from previous versions.
-> * Access **v6** documentation [here](https://github.com/acelaya/ZF-AcMailer/blob/6.x/README.md ':ignore').
-> * Access **v5** documentation [here](https://github.com/acelaya/ZF-AcMailer/blob/5.x/README.md ':ignore').
+> * You are reading the documentation for this component's **v7**. Access [here](https://github.com/acelaya/ZF-AcMailer/blob/master/UPGRADE.md#upgrade-from-5x6x-to-7x) to see how to upgrade from previous versions.
+> * Access **v6** documentation [here](https://github.com/acelaya/ZF-AcMailer/blob/6.x/README.md).
+> * Access **v5** documentation [here](https://github.com/acelaya/ZF-AcMailer/blob/5.x/README.md).

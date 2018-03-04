@@ -10,3 +10,11 @@ strong {
     font-size: 25.6px;
     font-size: 1.6rem;
 }
+
+.content {
+    padding-top: 20px;
+}
+
+.markdown-section pre>code {
+    line-height: 1.35;
+}
