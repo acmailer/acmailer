@@ -30,6 +30,7 @@ In Zend MVC:
 
 ```php
 <?php
+declare(strict_types=1);
 
 return [
     'modules' => [
@@ -45,6 +46,8 @@ In Zend Expressive:
 
 ```php
 <?php
+declare(strict_types=1);
+
 $aggregator = new ConfigAggregator([
     // ...
     App\ConfigProvider::class,
@@ -69,6 +72,8 @@ All the services in the `acmailer.mailservice` namespace will return `AcMailer\S
 
 ```php
 <?php
+declare(strict_types=1);
+
 class IndexControllerFactory
 {
     public function __invoke($container)
@@ -99,6 +104,8 @@ There are different ways to send emails. By using the name of a preconfigured em
 
 ```php
 <?php
+declare(strict_types=1);
+
 // Using an array
 $result = $mailService->send([
     'from' => 'my@address.com',
@@ -129,6 +136,8 @@ Preconfigured emails have to be defined under the `acmailer_options.emails` conf
 
 ```php
 <?php
+declare(strict_types=1);
+
 return [
     
     'acmailer_options' => [
@@ -159,6 +168,8 @@ Now, you can send any of those emails just by referencing to them by its name, a
 
 ```php
 <?php
+declare(strict_types=1);
+
 try {
     $result = $mailService->send('welcome', ['to' => ['new-user@gmail.com']]);
     if ($result->isValid()) {
@@ -183,6 +194,8 @@ The rendered template can use a layout. When using twig or plates renderers, you
 
 ```php
 <?php
+declare(strict_types=1);
+
 $mailService->send('contact', ['template_params' => [
     'layout' => 'application/mail/layout',
 ]]);
@@ -194,6 +207,8 @@ By default AcMailer uses the default `ViewRenderer` service via an alias, `mailv
 
 ```php
 <?php
+declare(strict_types=1);
+
 return [
     'service_manager' => [
         'aliases' => [
@@ -215,6 +230,8 @@ Files can be attached to the email before sending it by providing their paths wi
 
 ```php
 <?php
+declare(strict_types=1);
+
 $mailService->send(
     (new AcMailer\Model\Email())->addAttachment('data/mail/attachments/file1.pdf')
                                 ->addAttachment('data/mail/attachments/file2.pdf', 'different-filename.pdf')
@@ -244,14 +261,16 @@ Files can be attached as strings, which will be parsed as file paths, but resour
 
 ```php
 <?php
+declare(strict_types=1);
+
 $mailService->send([
     'attachments' => [
-        fopen('data/mail/attachments/file1.pdf', 'r+b'),
-        new Zend\Mime\Part(fopen('data/mail/attachments/file2.zip', 'r+b')),
+        \fopen('data/mail/attachments/file1.pdf', 'r+b'),
+        new Zend\Mime\Part(\fopen('data/mail/attachments/file2.zip', 'r+b')),
         [
             'id' => 'something',
             'filename' => 'something_else',
-            'content' => file_get_contents('data/mail/attachments/file2.pdf'), // A resource can be used here too
+            'content' => \file_get_contents('data/mail/attachments/file2.pdf'), // A resource can be used here too
             'encoding' => Zend\Mime\Mime::ENCODING_7BIT, // Defaults to Zend\Mime\Mime::ENCODING_BASE64
         ],
     ],
@@ -275,8 +294,10 @@ declare(strict_types=1);
 namespace App\Mail\Attachment;
 
 use AcMailer\Attachment\Parser\AttachmentParserInterface;
+use AcMailer\Exception\InvalidAttachmentException;
 use League\Flysystem\FilesystemInterface;
-use Zend\Mime\Part;
+use League\Flysystem\FileNotFoundException;
+use Zend\Mime;
 
 class FlysystemAttachmentParser implements AttachmentParserInterface
 {
@@ -287,11 +308,118 @@ class FlysystemAttachmentParser implements AttachmentParserInterface
         $this->filesystem = $filesystem;
     }
 
-    public function parse($attachment, string $attachmentName = null): Part
+    public function parse($attachment, string $attachmentName = null): Mime\Part
     {
+        if (! \is_string($attachment)) {
+            throw InvalidAttachmentException::fromExpectedType('string');
+        }
 
+        try {
+            $stream = $this->filesystem->readStream($attachment);
+            $mimeType = $this->filesystem->getMimetype($attachment);
+            $meta = $this->filesystem->getMetadata($attachment);
+            $name = $attachmentName ?? \basename($meta['path']);
+        } catch (FileNotFoundException $e) {
+            throw new InvalidAttachmentException(\sprintf(
+                'Provided attachment %s could not be found',
+                $attachment
+            ), -1, $e);
+        }
+
+        $part = new Mime\Part($stream);
+        $part->id = $name;
+        $part->filename = $name;
+        $part->type = $mimeType;
+        $part->encoding = Mime\Mime::ENCODING_BASE64;
+        $part->disposition = Mime\Mime::DISPOSITION_ATTACHMENT;
+
+        return $part;
     }
 }
+```
+
+Now you have to register the attachment parser, like this.
+
+```php
+<?php
+declare(strict_types=1);
+
+use App\Mail\Attachment\FlysystemAttachmentParser;
+use League\Flysystem\FilesystemInterface;
+
+return [
+
+    'acmailer_options' => [
+
+        // ...
+
+        'attachment_parsers' => [
+            'factories' => [
+                FlysystemAttachmentParser::class => function ($container) {
+                    $filesystem = $container->get(FilesystemInterface::class);
+                    return new FlysystemAttachmentParser($filesystem);
+                },
+            ],
+        ],
+
+    ],
+
+];
+```
+
+> The `attachment_parsers` configuration entry has a service manager-like structure, where you can define factories, aliases and such.
+
+Finally, you just need to remember to attach files using the `AcMailer\Model\Attachment` wrapper, which allows you to define not only the attachment value but the parsers which has to process it.
+
+```php
+<?php
+declare(strict_types=1);
+
+use AcMailer\Model;
+use App\Mail\Attachment\FlysystemAttachmentParser;
+
+$mailService->send(
+    (new Model\Email())->addAttachment(
+        new Model\Attachment(FlysystemAttachmentParser::class, 'data/mail/attachments/file1.pdf')
+    )
+);
+```
+
+If you want to preconfigure attachments which use a custom parser, you need to use a special array notation, where you specify the attachmentParser and the value of teh attachment, like this:
+
+```php
+<?php
+declare(strict_types=1);
+
+use App\Mail\Attachment\FlysystemAttachmentParser;
+use League\Flysystem\FilesystemInterface;
+
+return [
+
+    'acmailer_options' => [
+
+        'emails' => [
+            'contact' => [
+                'attachments' => [
+                    [
+                        'parser_name' => FlysystemAttachmentParser::class,
+                        'value' => 'data/mail/attachments/file1.pdf',
+                    ],
+
+                    // Other attachments...
+                ],
+            ],
+        ],
+
+        'attachment_parsers' => [
+            'factories' => [
+                FlysystemAttachmentParser::class => function ($container) {/* ... */},
+            ],
+        ],
+
+    ],
+
+];
 ```
 
 #### Configure services
@@ -302,8 +430,10 @@ The configuration for a mail services have to be defined under the `acmailer_opt
 
 ```php
 <?php
+declare(strict_types=1);
+
 return [
-    
+
     'acmailer_options' => [
         'mail_services' => [
             'default' => [
@@ -332,11 +462,11 @@ return [
                     ],
                 ],
             ],
-        
+
             // Define other services here
         ],
     ],
-    
+
 ];
 ```
 
@@ -348,6 +478,8 @@ All services will work from scratch, since this module registers an abstract fac
 
 ```php
 <?php
+declare(strict_types=1);
+
 return [
     
     'services_manager' => [ // 'dependencies' in the case of Expressive
@@ -376,6 +508,8 @@ Then attach the listener object to the `MailService` and the corresponding metho
 
 ```php
 <?php
+declare(strict_types=1);
+
 $mailListener = new Application\Event\MyMailListener();
 $mailService->attachMailListener($mailListener);
 ```
@@ -407,6 +541,8 @@ The value returned by any of the listeners methods is ignored, except on the cas
 
 ```php
 <?php
+declare(strict_types=1);
+
 $mailService->attachMailListener(new class extends AcMailer\Event\AbstractMailListener {
     public function onPreSend(AcMailer\Event\MailEvent $e)
     {
@@ -429,6 +565,8 @@ If you need to configure any service that could cause the email's template to pr
 
 ```php
 <?php
+declare(strict_types=1);
+
 $mailService->attachMailListener(new class extends AcMailer\Event\AbstractMailListener {
     private $translator;
 
