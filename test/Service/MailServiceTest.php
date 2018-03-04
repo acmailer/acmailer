@@ -242,6 +242,34 @@ class MailServiceTest extends TestCase
     /**
      * @test
      */
+    public function arrayAttachmentsWithSpecificKeysAreProperlyCast()
+    {
+        $attachments = [[
+            'parser_name' => 'foo',
+            'value' => 'the_value',
+        ]];
+
+        $attachmentParser = $this->prophesize(AttachmentParserInterface::class);
+        $parse = $attachmentParser->parse('the_value', null)->willReturn(new Part());
+
+        $hasFooParser = $this->attachmentParsers->has('foo')->willReturn(true);
+        $getFooParser = $this->attachmentParsers->get('foo')->willReturn($attachmentParser->reveal());
+
+        $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
+        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn(new ResponseCollection());
+
+        $this->mailService->send((new Email())->setAttachments($attachments));
+
+        $send->shouldHaveBeenCalled();
+        $trigger->shouldHaveBeenCalled();
+        $hasFooParser->shouldHaveBeenCalled();
+        $getFooParser->shouldHaveBeenCalled();
+        $parse->shouldHaveBeenCalledTimes(\count($attachments));
+    }
+
+    /**
+     * @test
+     */
     public function templateIsRenderedBeforeEmailIsSent()
     {
         $expectedBody = '<p>rendering result</p>';

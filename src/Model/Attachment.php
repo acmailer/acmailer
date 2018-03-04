@@ -20,6 +20,11 @@ final class Attachment
         $this->value = $value;
     }
 
+    public static function fromArray(array $data): self
+    {
+        return new self($data['parser_name'], $data['value']);
+    }
+
     /**
      * @return string
      */

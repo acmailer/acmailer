@@ -247,6 +247,11 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         $attachmentParts = [];
         $info = null;
         foreach ($attachments as $key => $attachment) {
+            // If the attachment is an array with "parser_name" and "value" keys, cast it into an Attachment object
+            if (\is_array($attachment) && isset($attachment['parser_name'], $attachment['value'])) {
+                $attachment = Attachment::fromArray($attachment);
+            }
+
             $parserName = $this->resolveParserNameFromAttachment($attachment);
             if (! $this->attachmentParserManager->has($parserName)) {
                 throw new Exception\ServiceNotCreatedException(
