@@ -1,6 +1,6 @@
 # Installation
 
-The recommended way to install this module is by using composer
+The recommended way to install this module is by using composer.
 
     composer require acelaya/zf2-acmailer
 
