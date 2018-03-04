@@ -5,6 +5,8 @@
 /phpcs.xml export-ignore
 /phpunit.xml export-ignore
 /composer.lock export-ignore
+/infection.json export-ignore
 /CHANGELOG.md export-ignore
 /UPGRADE.md export-ignore
 /test export-ignore
+/docs export-ignore

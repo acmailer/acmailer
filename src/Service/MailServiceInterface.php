@@ -15,7 +15,7 @@ use AcMailer\Result\ResultInterface;
 interface MailServiceInterface
 {
     /** @deprecated Use Email::DEFAULT_CHARSET instead */
-    const DEFAULT_CHARSET = Email::DEFAULT_CHARSET;
+    public const DEFAULT_CHARSET = Email::DEFAULT_CHARSET;
 
     /**
      * Tries to send the message, returning a MailResult object

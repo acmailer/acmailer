@@ -14,6 +14,22 @@ return [
         'mail_services' => [
             'default' => [],
         ],
+
+        'attachment_parsers' => [
+            'factories' => [
+                Attachment\Parser\ArrayAttachmentParser::class => InvokableFactory::class,
+                Attachment\Parser\FilePathAttachmentParser::class => InvokableFactory::class,
+                Attachment\Parser\MimePartAttachmentParser::class => InvokableFactory::class,
+                Attachment\Parser\ResourceAttachmentParser::class => InvokableFactory::class,
+            ],
+
+            'aliases' => [
+                'array' => Attachment\Parser\ArrayAttachmentParser::class,
+                'string' => Attachment\Parser\FilePathAttachmentParser::class,
+                Part::class => Attachment\Parser\MimePartAttachmentParser::class,
+                'resource' => Attachment\Parser\ResourceAttachmentParser::class,
+            ],
+        ],
     ],
 
     'service_manager' => [
@@ -34,22 +50,6 @@ return [
             'mailservice' => 'acmailer.mailservice.default',
 
             'mailviewrenderer' => 'ViewRenderer',
-        ],
-    ],
-
-    'attachment_parsers' => [
-        'factories' => [
-            Attachment\Parser\ArrayAttachmentParser::class => InvokableFactory::class,
-            Attachment\Parser\FilePathAttachmentParser::class => InvokableFactory::class,
-            Attachment\Parser\MimePartAttachmentParser::class => InvokableFactory::class,
-            Attachment\Parser\ResourceAttachmentParser::class => InvokableFactory::class,
-        ],
-
-        'aliases' => [
-            'array' => Attachment\Parser\ArrayAttachmentParser::class,
-            'string' => Attachment\Parser\FilePathAttachmentParser::class,
-            Part::class => Attachment\Parser\MimePartAttachmentParser::class,
-            'resource' => Attachment\Parser\ResourceAttachmentParser::class,
         ],
     ],
 

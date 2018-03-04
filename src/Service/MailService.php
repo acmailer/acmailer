@@ -10,6 +10,7 @@ use AcMailer\Event\MailListenerAwareInterface;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception;
 use AcMailer\Mail\MessageFactory;
+use AcMailer\Model\Attachment;
 use AcMailer\Model\Email;
 use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Result\MailResult;
@@ -105,7 +106,11 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         } elseif (\is_array($email)) {
             $email = $this->emailBuilder->build(Email::class, $email);
         } elseif (! $email instanceof Email) {
-            throw Exception\InvalidArgumentException::fromValidTypes(['string', 'array', Email::class], $email);
+            throw Exception\InvalidArgumentException::fromValidTypes(
+                ['string', 'array', Email::class],
+                $email,
+                'email'
+            );
         }
 
         // Trigger the pre render event and then render the email's body in case it has to be composed from a template
@@ -221,6 +226,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
      * @param Message $message
      * @param Email $email
      * @throws Exception\InvalidAttachmentException
+     * @throws Exception\ServiceNotCreatedException
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      * @throws InvalidArgumentException
@@ -241,14 +247,22 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         $attachmentParts = [];
         $info = null;
         foreach ($attachments as $key => $attachment) {
-            $parserName = \is_object($attachment) ? \get_class($attachment) : \gettype($attachment);
+            // If the attachment is an array with "parser_name" and "value" keys, cast it into an Attachment object
+            if (\is_array($attachment) && isset($attachment['parser_name'], $attachment['value'])) {
+                $attachment = Attachment::fromArray($attachment);
+            }
+
+            $parserName = $this->resolveParserNameFromAttachment($attachment);
             if (! $this->attachmentParserManager->has($parserName)) {
-                continue;
+                throw new Exception\ServiceNotCreatedException(
+                    \sprintf('The attachment parser "%s" could not be found', $parserName)
+                );
             }
 
             /** @var AttachmentParserInterface $parser */
             $parser = $this->attachmentParserManager->get($parserName);
-            $part = $parser->parse($attachment, \is_string($key) ? $key : null);
+            $attachmentValue = $attachment instanceof Attachment ? $attachment->getValue() : $attachment;
+            $part = $parser->parse($attachmentValue, \is_string($key) ? $key : null);
 
             $part->charset = $email->getCharset();
             $attachmentParts[] = $part;
@@ -258,6 +272,19 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         $body = new Mime\Message();
         $body->setParts(\array_merge($oldParts, $attachmentParts));
         $message->setBody($body);
+    }
+
+    /**
+     * @param string|resource|array|Mime\Part|Attachment $attachment
+     * @return string
+     */
+    private function resolveParserNameFromAttachment($attachment): string
+    {
+        if ($attachment instanceof Attachment) {
+            return $attachment->getParserName();
+        }
+
+        return \is_object($attachment) ? \get_class($attachment) : \gettype($attachment);
     }
 
     /**

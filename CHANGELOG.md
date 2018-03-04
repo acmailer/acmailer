@@ -1,6 +1,22 @@
 ## CHANGELOG
 
+### 7.1.0
+
+**Enhancements:**
+
+* [186: Define a MailListenerTrait that can be used when it is not possible to extend AbstractMailListener](https://github.com/acelaya/ZF-AcMailer/issues/186)
+* [185: Allow to register custom file attachment parsers](https://github.com/acelaya/ZF-AcMailer/issues/185)
+* [194: Improve InvalidArgumentException::fromValidTypes message](https://github.com/acelaya/ZF-AcMailer/issues/194)
+* [184: Include infection in the build process to improve tests](https://github.com/acelaya/ZF-AcMailer/issues/184)
+
+**Tasks**
+
+* [195: Include a docs dir with a docsify-powered documentation](https://github.com/acelaya/ZF-AcMailer/issues/195)
+* [183: Drop support for PHP <7.1](https://github.com/acelaya/ZF-AcMailer/issues/183)
+
 ### 7.0.5
+
+**Bugs**
 
 * [192: Pre-render event is not properly registered when listeners are defined as services](https://github.com/acelaya/ZF-AcMailer/issues/192)
 

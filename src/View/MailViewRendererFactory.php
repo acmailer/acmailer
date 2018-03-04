@@ -21,7 +21,7 @@ use Zend\View\Resolver\TemplatePathStack;
 
 class MailViewRendererFactory
 {
-    const SERVICE_NAME = 'AcMailer\MailViewRenderer';
+    public const SERVICE_NAME = 'AcMailer\MailViewRenderer';
 
     /**
      * @param ContainerInterface $container
@@ -110,7 +110,7 @@ class MailViewRendererFactory
      * @param array $resolversStack
      * @return ResolverInterface|null
      */
-    private function buildTemplateResolverFromStack(array $resolversStack)
+    private function buildTemplateResolverFromStack(array $resolversStack): ?ResolverInterface
     {
         if (\count($resolversStack) <= 1) {
             return \array_shift($resolversStack);

@@ -10,7 +10,7 @@ use Zend\Stdlib\AbstractOptions;
 
 final class Email extends AbstractOptions
 {
-    const DEFAULT_CHARSET = 'utf-8';
+    public const DEFAULT_CHARSET = 'utf-8';
 
     /**
      * @var string
@@ -275,7 +275,7 @@ final class Email extends AbstractOptions
     public function setBody($body): self
     {
         if (! \is_string($body) && ! $body instanceof Part && ! $body instanceof Message) {
-            throw InvalidArgumentException::fromValidTypes(['string', Part::class, Message::class], $body);
+            throw InvalidArgumentException::fromValidTypes(['string', Part::class, Message::class], $body, 'body');
         }
 
         $this->body = $body;
@@ -283,15 +283,24 @@ final class Email extends AbstractOptions
     }
 
     /**
-     * @param string|resource|array|Part $file
+     * @param string|resource|array|Part|Attachment $file
      * @param string|null $filename
      * @return $this
      * @throws InvalidArgumentException
      */
     public function addAttachment($file, string $filename = null): self
     {
-        if (! \is_string($file) && ! \is_array($file) && ! \is_resource($file) && ! $file instanceof Part) {
-            throw InvalidArgumentException::fromValidTypes(['string', 'array', 'resource', Part::class], $file);
+        if (! \is_string($file)
+            && ! \is_array($file)
+            && ! \is_resource($file)
+            && ! $file instanceof Part
+            && ! $file instanceof Attachment
+        ) {
+            throw InvalidArgumentException::fromValidTypes(
+                ['string', 'array', 'resource', Part::class, Attachment::class],
+                $file,
+                'attachment'
+            );
         }
 
         if ($filename !== null) {
@@ -303,7 +312,7 @@ final class Email extends AbstractOptions
     }
 
     /**
-     * @param array $files
+     * @param string[]|resource[]|array[]|Part[]|Attachment[] $files
      * @return $this
      * @throws InvalidArgumentException
      */
@@ -317,7 +326,7 @@ final class Email extends AbstractOptions
     }
 
     /**
-     * @param array $files
+     * @param string[]|resource[]|array[]|Part[]|Attachment[] $files
      * @return $this
      * @throws InvalidArgumentException
      */
@@ -331,7 +340,7 @@ final class Email extends AbstractOptions
 
     /**
      * Returns the list of attachments
-     * @return array
+     * @return string[]|resource[]|array[]|Part[]|Attachment[]
      */
     public function getAttachments(): array
     {

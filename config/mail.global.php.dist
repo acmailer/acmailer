@@ -249,5 +249,8 @@ return [
             // You can define as much mail services as you want
         ],
 
+        'attachment_parsers' => [
+            // You can register your custom attachment parsers here
+        ],
     ],
 ];

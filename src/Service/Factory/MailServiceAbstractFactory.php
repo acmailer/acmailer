@@ -13,6 +13,7 @@ use AcMailer\View\MailViewRendererFactory;
 use Interop\Container\ContainerInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\EventsCapableInterface;
 use Zend\EventManager\Exception\InvalidArgumentException;
 use Zend\EventManager\LazyListenerAggregate;
@@ -23,9 +24,9 @@ use Zend\Stdlib\ArrayUtils;
 
 class MailServiceAbstractFactory implements AbstractFactoryInterface
 {
-    const ACMAILER_PART = 'acmailer';
-    const MAIL_SERVICE_PART = 'mailservice';
-    const TRANSPORT_MAP = [
+    private const ACMAILER_PART = 'acmailer';
+    private const MAIL_SERVICE_PART = 'mailservice';
+    private const TRANSPORT_MAP = [
         'sendmail' => Transport\Sendmail::class,
         'smtp' => Transport\Smtp::class,
         'file' => Transport\File::class,
@@ -103,6 +104,13 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
         return $mailService;
     }
 
+    /**
+     * @param array $mailOptions
+     * @param array $specificOptions
+     * @return array
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\ServiceNotCreatedException
+     */
     private function buildConfig(array $mailOptions, array $specificOptions): array
     {
         if (! isset($specificOptions['extends'])) {
@@ -154,7 +162,8 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             // The adapter is not valid. Throw an exception
             throw Exception\InvalidArgumentException::fromValidTypes(
                 ['string', Transport\TransportInterface::class],
-                $transport
+                $transport,
+                'transport'
             );
         }
 
@@ -253,63 +262,60 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
         EventsCapableInterface $service,
         ContainerInterface $container,
         array $mailOptions
-    ) {
+    ): void {
         $listeners = (array) ($mailOptions['mail_listeners'] ?? []);
         if (empty($listeners)) {
             return;
         }
 
         $definitions = [];
+        $eventManager = $service->getEventManager();
         foreach ($listeners as $listener) {
-            $priority = 1;
-            if (\is_array($listener) && \array_key_exists('listener', $listener)) {
-                $listener = $listener['listener'];
-                $priority = $listener['priority'] ?? 1;
-            }
-
-            // If the listener is already an instance, just register it
-            if ($listener instanceof MailListenerInterface) {
-                $listener->attach($service->getEventManager(), $priority);
-                continue;
-            }
-
-            // Ensure the listener is a string
-            if (! \is_string($listener)) {
-                throw Exception\InvalidArgumentException::fromValidTypes(
-                    ['string', MailListenerInterface::class],
-                    $listener
-                );
-            }
-
-            $definitions[] = [
-                'listener' => $listener,
-                'method' => 'onPreRender',
-                'event' => MailEvent::EVENT_MAIL_PRE_RENDER,
-                'priority' => $priority,
-            ];
-            $definitions[] = [
-                'listener' => $listener,
-                'method' => 'onPreSend',
-                'event' => MailEvent::EVENT_MAIL_PRE_SEND,
-                'priority' => $priority,
-            ];
-            $definitions[] = [
-                'listener' => $listener,
-                'method' => 'onPostSend',
-                'event' => MailEvent::EVENT_MAIL_POST_SEND,
-                'priority' => $priority,
-            ];
-            $definitions[] = [
-                'listener' => $listener,
-                'method' => 'onSendError',
-                'event' => MailEvent::EVENT_MAIL_SEND_ERROR,
-                'priority' => $priority,
-            ];
+            $this->addDefinitions($definitions, $listener, $eventManager);
         }
 
         // Attach lazy event listeners if any
         if (! empty($definitions)) {
-            (new LazyListenerAggregate($definitions, $container))->attach($service->getEventManager());
+            (new LazyListenerAggregate($definitions, $container))->attach($eventManager);
+        }
+    }
+
+    /**
+     * @param array $definitions
+     * @param array|string|MailListenerInterface $listener
+     * @param EventManagerInterface $events
+     * @throws Exception\InvalidArgumentException
+     */
+    private function addDefinitions(array &$definitions, $listener, EventManagerInterface $events): void
+    {
+        $priority = 1;
+        if (\is_array($listener) && \array_key_exists('listener', $listener)) {
+            $listener = $listener['listener'];
+            $priority = $listener['priority'] ?? 1;
+        }
+
+        // If the listener is already an instance, just register it
+        if ($listener instanceof MailListenerInterface) {
+            $listener->attach($events, $priority);
+            return;
+        }
+
+        // Ensure the listener is a string
+        if (! \is_string($listener)) {
+            throw Exception\InvalidArgumentException::fromValidTypes(
+                ['string', 'array', MailListenerInterface::class],
+                $listener,
+                'listener'
+            );
+        }
+
+        foreach (MailEvent::getEventNames() as $method => $eventName) {
+            $definitions[] = [
+                'listener' => $listener,
+                'method' => $method,
+                'event' => $eventName,
+                'priority' => $priority,
+            ];
         }
     }
 }
