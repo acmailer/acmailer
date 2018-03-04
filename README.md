@@ -499,12 +499,14 @@ This module comes with a built-in event system.
 
 - An event is triggered before the email's template is rendered, if any. (`MailEvent::EVENT_MAIL_PRE_RENDER`).
 - Another one is triggered before the email is sent, but after the body has been set. (`MailEvent::EVENT_MAIL_PRE_SEND`).
-- If everything was OK another event is triggered (`MailEvent::EVENT_MAIL_POST_SEND`) after the email has been sent.
+- If everything was OK, another event is triggered (`MailEvent::EVENT_MAIL_POST_SEND`) after the email has been sent.
 - If any `Throwable` is thrown while sending the email, an error event is triggered (`MailEvent::EVENT_MAIL_SEND_ERROR`), which wraps it.
 
 Managing mail events is as easy as extending `AcMailer\Event\AbstractMailListener`. It provides the `onPreRender`, `onPreSend`, `onPostSend` and `onSendError` methods, which get a `MailEvent` parameter which composes the sent `AcMailer\Model\Email` object and the produced `AcMailer\Result\MailResult`.
 
-Then attach the listener object to the `MailService` and the corresponding method will be automatically called when calling the `send` method.
+Starting on version 7.1.0, if you need your listener to extend from another class, you can also just implement `AcMailer\Event\MailListenerInterface`, but in that case, remember to use the `AcMailer\Event\MailListenerTrait` too, which provides the event attachment boilerplate code which will make the listener properly work.
+
+When you attach listener objects to a `MailService`, the corresponding method will be automatically called when calling the `send` method on that service.
 
 ```php
 <?php
@@ -514,7 +516,7 @@ $mailListener = new Application\Event\MyMailListener();
 $mailService->attachMailListener($mailListener);
 ```
 
-You can also preregister listeners service names in the service configuration:
+You can also preregister listener service names in the service configuration:
 
 ```php
 <?php
