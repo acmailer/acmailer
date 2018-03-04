@@ -369,7 +369,7 @@ return [
 
 > The `attachment_parsers` configuration entry has a service manager-like structure, where you can define factories, aliases and such.
 
-Finally, you just need to remember to attach files using the `AcMailer\Model\Attachment` wrapper, which allows you to define not only the attachment value but the parsers which has to process it.
+Finally, you just need to remember to attach files using the `AcMailer\Model\Attachment` wrapper, which allows you to define not only the attachment value but the parser which has to process it.
 
 ```php
 <?php
