@@ -1,6 +1,6 @@
 <?php
-
 return [
+
     'acmailer_options' => [
 
         /*
@@ -127,7 +127,7 @@ return [
          * This defines different services to send emails.
          * All of them will be capable of sending any of the previously configured emails.
          */
-        'mail_services' => [
+        'mail_senders' => [
             'default' => [
                 /*
                  * Tells which other mail service configuration to extend.
@@ -155,13 +155,13 @@ return [
                  *
                  * Default value is 'sendmail'
                  */
-                //'transport' => 'sendmail',
+                'transport' => 'smtp',
 
                 /*
                  * This defines specific options needed by the transport when using one of 'smtp' or 'file'.
                  * If you use a custom service or any of the other transport, you don't need to define this
                  */
-                //'transport_options' => [
+                'transport_options' => [
                     /********/
                     /* SMTP */
                     /********/
@@ -170,41 +170,41 @@ return [
                      * Hostname or IP address of the mail server.
                      * Default value is localhost
                      */
-                    //'host' => 'localhost',
+                    'host' => 'smtp.gmail.com',
 
                     /*
                      * Port of the mail server.
                      * Default value is 25
                      */
-                    //'port' => 25,
+                    'port' => 587,
 
                     /*
                      * The connection class used for authentication.
                      * The value can be one of 'smtp', 'plain', 'login' or 'crammd5'.
                      * Default value is 'smtp'.
                      */
-                    //'connection_class' => 'smtp',
+                    'connection_class' => 'login',
 
-                    //'connection_config' => [
+                    'connection_config' => [
                         /*
                          * The SMTP authentication identity.
                          * Default value is an empty string
                          */
-                        //'username' => '',
+                        'username' => 'alejandrocelaya@gmail.com',
 
                         /*
                          * The SMTP authentication credential.
                          * Default value is an empty string
                          */
-                        //'password' => '',
+                        'password' => 'nitgrhgsfypqjmkz',
 
                         /*
                          * This defines the encryption type to be used, 'ssl' or 'tls'.
                          * Null should be used to disable SSL.
                          * Default value is null
                          */
-                        //'ssl' => null,
-                    //],
+                        'ssl' => 'tls',
+                    ],
 
                     /********/
                     /* FILE */
@@ -222,7 +222,7 @@ return [
                      * Default value is null, in which case an empty callable will be used.
                      */
                     //'callback' => null,
-                //],
+                ],
 
                 /*
                  * The renderer service name to be used to render email templates.
@@ -249,5 +249,9 @@ return [
             // You can define as much mail services as you want
         ],
 
-    ],
+        'attachment_parsers' => [
+            // You can register your custom attachment parsers here
+        ],
+    ]
+
 ];

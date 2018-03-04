@@ -5,6 +5,7 @@ namespace AcMailer\Attachment;
 
 use Interop\Container\ContainerInterface;
 use Psr\Container;
+use Zend\Stdlib\ArrayUtils;
 
 class AttachmentParserManagerFactory
 {
@@ -17,8 +18,9 @@ class AttachmentParserManagerFactory
     public function __invoke(ContainerInterface $container): AttachmentParserManager
     {
         $config = $container->get('config');
-        $attachmentParsers = $config['attachment_parsers'] ?? [];
+        $oldAttachmentParsers = $config['attachment_parsers'] ?? [];
+        $attachmentParsers = $config['acmailer_options']['attachment_parsers'] ?? [];
 
-        return new AttachmentParserManager($container, $attachmentParsers);
+        return new AttachmentParserManager($container, ArrayUtils::merge($oldAttachmentParsers, $attachmentParsers));
     }
 }
