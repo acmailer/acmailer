@@ -1,0 +1,12 @@
+.markdown-section pre {
+    padding: 0;
+}
+
+strong {
+    font-weight: 600 !important;
+}
+
+.markdown-section h2 {
+    font-size: 25.6px;
+    font-size: 1.6rem;
+}
