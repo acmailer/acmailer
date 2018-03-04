@@ -2,7 +2,7 @@
 
 This module comes with a built-in events system.
 
-- An event is triggered before the email's template is rendered, if any. (`MailEvent::EVENT_MAIL_PRE_RENDER`).
+- An event is triggered before the email's template is rendered, if any (`MailEvent::EVENT_MAIL_PRE_RENDER`. This event was included in v7.0.4).
 - Another one is triggered before the email is sent, but after the body has been set. (`MailEvent::EVENT_MAIL_PRE_SEND`).
 - If everything was OK, another event is triggered (`MailEvent::EVENT_MAIL_POST_SEND`) after the email has been sent.
 - If any `Throwable` is thrown while sending the email, an error event is triggered (`MailEvent::EVENT_MAIL_SEND_ERROR`), which wraps it.
