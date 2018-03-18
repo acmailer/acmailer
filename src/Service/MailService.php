@@ -15,13 +15,13 @@ use AcMailer\Model\Email;
 use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Result\MailResult;
 use AcMailer\Result\ResultInterface;
+use AcMailer\View\MailViewRendererInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\EventsCapableInterface;
 use Zend\EventManager\SharedEventManager;
-use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Mail\Exception\InvalidArgumentException;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
@@ -39,7 +39,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
      */
     private $transport;
     /**
-     * @var TemplateRendererInterface
+     * @var MailViewRendererInterface
      */
     private $renderer;
     /**
@@ -58,14 +58,14 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
     /**
      * Creates a new MailService
      * @param TransportInterface $transport
-     * @param TemplateRendererInterface $renderer
+     * @param MailViewRendererInterface $renderer
      * @param EmailBuilderInterface $emailBuilder
      * @param AttachmentParserManagerInterface $attachmentParserManager
      * @param EventManagerInterface|null $events
      */
     public function __construct(
         TransportInterface $transport,
-        TemplateRendererInterface $renderer,
+        MailViewRendererInterface $renderer,
         EmailBuilderInterface $emailBuilder,
         AttachmentParserManagerInterface $attachmentParserManager,
         EventManagerInterface $events = null
