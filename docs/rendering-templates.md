@@ -4,9 +4,9 @@ Instead of setting a plain string, the body of the message can be composed by a 
 
 You can also pass params to the template using the `template_params` option.
 
-All MailServices compose a `Zend\Expressive\Template\TemplateRendererInterface` instance, which is internally used to render defined template.
+All MailServices compose a `AcMailer\View\MailViewRendererInterface` instance, which is internally used to render templates (Prior to v7.2, it used to compose a `Zend\Expressive\Template\TemplateRendererInterface` instance instead).
 
-In Expressive applications the `Zend\Expressive\Template\TemplateRendererInterface` service will be used, and in MVC, a very simple wrapper is included that composes the zend/view renderer.
+In Expressive applications the `Zend\Expressive\Template\TemplateRendererInterface` service will be used, and in MVC, the standard `ViewRenderer` service will be used. Both will be wrapped in an instance implementing `AcMailer\View\MailViewRendererInterface`.
 
 The rendered template can use a layout. When using twig or plates renderers, you can use their own way to extend from layouts. When using zend/view, you can provide a "layout" param, with the name of the layout.
 
@@ -36,7 +36,7 @@ return [
 ];
 ```
 
-If you need different view renderers to be used by each mail service, you can define the renderer service name in the **renderer** configuration property of that service. It has to be a service name that resolves to a `Zend\Expressive\Template\TemplateRendererInterface` instance.
+If you need different view renderers to be used by each mail service, you can define the renderer service name in the **renderer** configuration property of that service. It has to be a service name that resolves to a `Zend\Expressive\Template\TemplateRendererInterface` instance. From v7.2, it can also resolve to a `Zend\View\Renderer\RendererInterface` or `AcMailer\View\MailViewRendererInterface` instance.
 
 ```php
 <?php

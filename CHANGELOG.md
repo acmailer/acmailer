@@ -1,5 +1,15 @@
 ## CHANGELOG
 
+### 7.2.0
+
+**Enhancements:**
+
+* [197: Add support for Expressive 3 via zend expressive renderer v2](https://github.com/acelaya/ZF-AcMailer/issues/197)
+
+**Tasks:**
+
+* [198: Improve build matrix so that it passes build for lowest and latest supported dependencies](https://github.com/acelaya/ZF-AcMailer/issues/198)
+
 ### 7.1.0
 
 **Enhancements:**

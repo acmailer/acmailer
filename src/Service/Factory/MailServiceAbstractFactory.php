@@ -9,7 +9,9 @@ use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception;
 use AcMailer\Model\EmailBuilder;
 use AcMailer\Service\MailService;
-use AcMailer\View\MailViewRendererFactory;
+use AcMailer\View\ExpressiveMailViewRenderer;
+use AcMailer\View\MailViewRendererInterface;
+use AcMailer\View\MvcMailViewRenderer;
 use Interop\Container\ContainerInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -21,6 +23,7 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Mail\Transport;
 use Zend\ServiceManager\Factory\AbstractFactoryInterface;
 use Zend\Stdlib\ArrayUtils;
+use Zend\View\Renderer\RendererInterface;
 
 class MailServiceAbstractFactory implements AbstractFactoryInterface
 {
@@ -225,27 +228,40 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
     /**
      * @param ContainerInterface $container
      * @param array $mailOptions
-     * @return TemplateRendererInterface
+     * @return MailViewRendererInterface
      * @throws Exception\InvalidArgumentException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    private function createRenderer(ContainerInterface $container, array $mailOptions): TemplateRendererInterface
+    private function createRenderer(ContainerInterface $container, array $mailOptions): MailViewRendererInterface
     {
         if (! isset($mailOptions['renderer'])) {
-            return $container->get(MailViewRendererFactory::SERVICE_NAME);
+            return $container->get(MailViewRendererInterface::class);
         }
 
         // Resolve renderer service and ensure it has proper type
         $renderer = $container->get($mailOptions['renderer']);
-        if (! $renderer instanceof TemplateRendererInterface) {
-            throw new Exception\InvalidArgumentException(\sprintf(
-                'Defined renderer of type "%s" is not valid. The renderer must resolve to a "%s" instance',
-                \is_object($renderer) ? \get_class($renderer) : \gettype($renderer),
-                TemplateRendererInterface::class
-            ));
+
+        if ($renderer instanceof MailViewRendererInterface) {
+            return $renderer;
         }
-        return $renderer;
+
+        if ($renderer instanceof TemplateRendererInterface) {
+            return new ExpressiveMailViewRenderer($renderer);
+        }
+
+        if ($renderer instanceof RendererInterface) {
+            return new MvcMailViewRenderer($renderer);
+        }
+
+        throw new Exception\InvalidArgumentException(\sprintf(
+            'Defined renderer of type "%s" is not valid. The renderer must resolve to a instance of ["%s"] types',
+            \is_object($renderer) ? \get_class($renderer) : \gettype($renderer),
+            \implode(
+                '", "',
+                [MailViewRendererInterface::class, TemplateRendererInterface::class, RendererInterface::class]
+            )
+        ));
     }
 
     /**

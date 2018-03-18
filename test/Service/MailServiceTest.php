@@ -13,13 +13,13 @@ use AcMailer\Model\Attachment;
 use AcMailer\Model\Email;
 use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Service\MailService;
+use AcMailer\View\MailViewRendererInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ResponseCollection;
-use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mime\Part;
@@ -54,7 +54,7 @@ class MailServiceTest extends TestCase
     public function setUp()
     {
         $this->transport = $this->prophesize(TransportInterface::class);
-        $this->renderer = $this->prophesize(TemplateRendererInterface::class);
+        $this->renderer = $this->prophesize(MailViewRendererInterface::class);
         $this->emailBuilder = $this->prophesize(EmailBuilderInterface::class);
         $this->attachmentParsers = $this->prophesize(AttachmentParserManagerInterface::class);
         $this->eventManager = $this->prophesize(EventManagerInterface::class);

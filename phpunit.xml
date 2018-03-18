@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="./vendor/autoload.php" colors="true">
+    <php>
+        <ini name="error_reporting" value="6135" />
+    </php>
+
     <testsuites>
         <testsuite name="AcMailer test suite">
             <directory>./test</directory>

@@ -11,7 +11,9 @@ use AcMailer\Model\EmailBuilder;
 use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Service\Factory\MailServiceAbstractFactory;
 use AcMailer\Service\MailService;
-use AcMailer\View\MailViewRendererFactory;
+use AcMailer\View\ExpressiveMailViewRenderer;
+use AcMailer\View\MailViewRendererInterface;
+use AcMailer\View\MvcMailViewRenderer;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -103,11 +105,11 @@ class MailServiceAbstractFactoryTest extends TestCase
             ],
         ]);
         $this->container->has(Sendmail::class)->willReturn(false);
-        $this->container->get(MailViewRendererFactory::SERVICE_NAME)->willReturn(
-            $this->prophesize(TemplateRendererInterface::class)->reveal()
+        $this->container->get(MailViewRendererInterface::class)->willReturn(
+            $this->prophesize(MailViewRendererInterface::class)->reveal()
         );
         $this->container->get('my_renderer')->willReturn(
-            $this->prophesize(TemplateRendererInterface::class)->reveal()
+            $this->prophesize(MailViewRendererInterface::class)->reveal()
         );
         $this->container->get(EmailBuilder::class)->willReturn(
             $this->prophesize(EmailBuilderInterface::class)->reveal()
@@ -193,9 +195,12 @@ class MailServiceAbstractFactoryTest extends TestCase
 
         $this->expectException(Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage(\sprintf(
-            'Defined renderer of type "%s" is not valid. The renderer must resolve to a "%s" instance',
+            'Defined renderer of type "%s" is not valid. The renderer must resolve to a instance of ["%s"] types',
             \stdClass::class,
-            TemplateRendererInterface::class
+            \implode(
+                '", "',
+                [MailViewRendererInterface::class, TemplateRendererInterface::class, RendererInterface::class]
+            )
         ));
         $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
     }
@@ -222,7 +227,7 @@ class MailServiceAbstractFactoryTest extends TestCase
             ],
         ]);
         $this->container->has(Sendmail::class)->willReturn(false);
-        $this->container->get(MailViewRendererFactory::SERVICE_NAME)->willReturn(
+        $this->container->get(MailViewRendererInterface::class)->willReturn(
             $this->prophesize(RendererInterface::class)->reveal()
         );
         $this->container->get(EmailBuilder::class)->willReturn(
@@ -252,7 +257,7 @@ class MailServiceAbstractFactoryTest extends TestCase
             ],
         ]);
         $this->container->has(Sendmail::class)->willReturn(false);
-        $this->container->get(MailViewRendererFactory::SERVICE_NAME)->willReturn(
+        $this->container->get(MailViewRendererInterface::class)->willReturn(
             $this->prophesize(RendererInterface::class)->reveal()
         );
         $this->container->get(EmailBuilder::class)->willReturn(
@@ -292,7 +297,7 @@ class MailServiceAbstractFactoryTest extends TestCase
             $this->prophesize(TransportInterface::class)->reveal()
         )->shouldBeCalled();
         $this->container->get('my_renderer')->willReturn(
-            $this->prophesize(TemplateRendererInterface::class)->reveal()
+            $this->prophesize(MailViewRendererInterface::class)->reveal()
         )->shouldBeCalled();
         $this->container->get(EmailBuilder::class)->willReturn(
             $this->prophesize(EmailBuilderInterface::class)->reveal()
@@ -329,8 +334,8 @@ class MailServiceAbstractFactoryTest extends TestCase
             ],
         ]);
         $this->container->has(Sendmail::class)->willReturn(false);
-        $this->container->get(MailViewRendererFactory::SERVICE_NAME)->willReturn(
-            $this->prophesize(TemplateRendererInterface::class)->reveal()
+        $this->container->get(MailViewRendererInterface::class)->willReturn(
+            $this->prophesize(MailViewRendererInterface::class)->reveal()
         );
         $this->container->get(EmailBuilder::class)->willReturn(
             $this->prophesize(EmailBuilderInterface::class)->reveal()
@@ -352,5 +357,49 @@ class MailServiceAbstractFactoryTest extends TestCase
         foreach (MailEvent::getEventNames() as $method => $eventName) {
             $this->assertArrayHasKey($eventName, $listeners);
         }
+    }
+
+    /**
+     * @test
+     * @dataProvider provideRenderers
+     */
+    public function properRendererIsUsedDependingOnTheConfiguration(string $rendererClass, string $expectedRenderer)
+    {
+        $this->container->get('config')->willReturn([
+            'acmailer_options' => [
+                'mail_services' => [
+                    'default' => [
+                        'renderer' => $rendererClass,
+                    ],
+                ],
+            ],
+        ]);
+        $this->container->get(EmailBuilder::class)->willReturn(
+            $this->prophesize(EmailBuilderInterface::class)->reveal()
+        );
+        $this->container->get(AttachmentParserManager::class)->willReturn(
+            $this->prophesize(AttachmentParserManager::class)->reveal()
+        );
+
+        $getRenderer = $this->container->get($rendererClass)->willReturn($this->prophesize($rendererClass)->reveal());
+
+        $mailService = $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
+
+        $ref = new \ReflectionObject($mailService);
+        $prop = $ref->getProperty('renderer');
+        $prop->setAccessible(true);
+        $renderer = $prop->getValue($mailService);
+
+        $this->assertInstanceOf($expectedRenderer, $renderer);
+        $getRenderer->shouldHaveBeenCalled();
+    }
+
+    public function provideRenderers(): array
+    {
+        return [
+            [MailViewRendererInterface::class, MailViewRendererInterface::class],
+            [TemplateRendererInterface::class, ExpressiveMailViewRenderer::class],
+            [RendererInterface::class, MvcMailViewRenderer::class],
+        ];
     }
 }

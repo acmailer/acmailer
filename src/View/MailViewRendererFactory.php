@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace AcMailer\View;
 
+use Interop\Container\ContainerInterface;
 use Interop\Container\ContainerInterface as InteropContainer;
+use Interop\Container\Exception\ContainerException;
+use Interop\Container\Exception\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Mvc\Service\ViewHelperManagerFactory;
 use Zend\ServiceManager\Config;
-use Zend\View\Exception\InvalidArgumentException;
 use Zend\View\HelperPluginManager;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Renderer\RendererInterface;
@@ -21,21 +21,22 @@ use Zend\View\Resolver\TemplatePathStack;
 
 class MailViewRendererFactory
 {
-    public const SERVICE_NAME = 'AcMailer\MailViewRenderer';
+    /** @deprecated Use the MailViewRendererInterface FQCN instead */
+    public const SERVICE_NAME = MailViewRendererInterface::class;
 
     /**
      * @param ContainerInterface $container
-     * @return TemplateRendererInterface
-     * @throws NotFoundExceptionInterface
-     * @throws InvalidArgumentException
+     * @return MailViewRendererInterface
      * @throws ContainerExceptionInterface
+     * @throws ContainerException
+     * @throws NotFoundException
      */
-    public function __invoke(ContainerInterface $container): TemplateRendererInterface
+    public function __invoke(ContainerInterface $container): MailViewRendererInterface
     {
         // First, if the TemplateRendererInterface is registered as a service, use that service.
         // This should be true in expressive applications
         if ($container->has(TemplateRendererInterface::class)) {
-            return $container->get(TemplateRendererInterface::class);
+            return new ExpressiveMailViewRenderer($container->get(TemplateRendererInterface::class));
         }
 
         // If the mailviewrenderer is registered, wrap it into a ZendViewRenderer
@@ -73,16 +74,17 @@ class MailViewRendererFactory
         return $this->wrapZendView($renderer);
     }
 
-    private function wrapZendView(RendererInterface $renderer): TemplateRendererInterface
+    private function wrapZendView(RendererInterface $renderer): MailViewRendererInterface
     {
-        return new SimpleZendViewRenderer($renderer);
+        return new MvcMailViewRenderer($renderer);
     }
 
     /**
      * Creates a view helper manager
      * @param ContainerInterface|InteropContainer $container
      * @return HelperPluginManager
-     * @throws ContainerExceptionInterface
+     * @throws ContainerException
+     * @throws NotFoundException
      */
     private function createHelperPluginManager(ContainerInterface $container): HelperPluginManager
     {
@@ -99,7 +101,8 @@ class MailViewRendererFactory
      * @param ContainerInterface $container
      * @param string $configKey
      * @return array
-     * @throws ContainerExceptionInterface
+     * @throws ContainerException
+     * @throws NotFoundException
      */
     private function getSpecificConfig(ContainerInterface $container, string $configKey): array
     {
