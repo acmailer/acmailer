@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### 7.2.0
+
+**Enhancements:**
+
+* [197: Add support for Expressive 3 via zend expressive renderer v2](https://github.com/acelaya/ZF-AcMailer/issues/197)
+
 ### 7.1.0
 
 **Enhancements:**
