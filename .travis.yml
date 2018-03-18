@@ -21,6 +21,7 @@ matrix:
 
 before_script:
   - composer self-update
+  - composer install --no-interaction
   - if [[ $DEPS == 'latest' ]]; then composer update --no-interaction ; fi
   - if [[ $DEPS == 'lowest' ]]; then composer update --no-interaction --prefer-lowest --prefer-stable ; fi
   - composer show
