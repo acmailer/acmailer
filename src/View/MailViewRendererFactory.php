@@ -21,7 +21,8 @@ use Zend\View\Resolver\TemplatePathStack;
 
 class MailViewRendererFactory
 {
-    public const SERVICE_NAME = 'AcMailer\MailViewRenderer';
+    /** @deprecated Use the MailViewRendererInterface FQCN instead */
+    public const SERVICE_NAME = MailViewRendererInterface::class;
 
     /**
      * @param ContainerInterface $container

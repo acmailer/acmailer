@@ -9,7 +9,7 @@ use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception;
 use AcMailer\Model\EmailBuilder;
 use AcMailer\Service\MailService;
-use AcMailer\View\MailViewRendererFactory;
+use AcMailer\View\MailViewRendererInterface;
 use Interop\Container\ContainerInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -233,7 +233,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
     private function createRenderer(ContainerInterface $container, array $mailOptions): TemplateRendererInterface
     {
         if (! isset($mailOptions['renderer'])) {
-            return $container->get(MailViewRendererFactory::SERVICE_NAME);
+            return $container->get(MailViewRendererInterface::class);
         }
 
         // Resolve renderer service and ensure it has proper type

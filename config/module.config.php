@@ -37,7 +37,7 @@ return [
             Attachment\AttachmentParserManager::class => Attachment\AttachmentParserManagerFactory::class,
             Model\EmailBuilder::class => Model\EmailBuilderFactory::class,
             'acmailer.mailservice.default' => Service\Factory\MailServiceAbstractFactory::class,
-            View\MailViewRendererFactory::SERVICE_NAME => View\MailViewRendererFactory::class,
+            View\MailViewRendererInterface::class => View\MailViewRendererFactory::class,
         ],
 
         'abstract_factories' => [

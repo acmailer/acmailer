@@ -11,7 +11,7 @@ use AcMailer\Model\EmailBuilder;
 use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Service\Factory\MailServiceAbstractFactory;
 use AcMailer\Service\MailService;
-use AcMailer\View\MailViewRendererFactory;
+use AcMailer\View\MailViewRendererInterface;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -103,7 +103,7 @@ class MailServiceAbstractFactoryTest extends TestCase
             ],
         ]);
         $this->container->has(Sendmail::class)->willReturn(false);
-        $this->container->get(MailViewRendererFactory::SERVICE_NAME)->willReturn(
+        $this->container->get(MailViewRendererInterface::class)->willReturn(
             $this->prophesize(TemplateRendererInterface::class)->reveal()
         );
         $this->container->get('my_renderer')->willReturn(
@@ -222,7 +222,7 @@ class MailServiceAbstractFactoryTest extends TestCase
             ],
         ]);
         $this->container->has(Sendmail::class)->willReturn(false);
-        $this->container->get(MailViewRendererFactory::SERVICE_NAME)->willReturn(
+        $this->container->get(MailViewRendererInterface::class)->willReturn(
             $this->prophesize(RendererInterface::class)->reveal()
         );
         $this->container->get(EmailBuilder::class)->willReturn(
@@ -252,7 +252,7 @@ class MailServiceAbstractFactoryTest extends TestCase
             ],
         ]);
         $this->container->has(Sendmail::class)->willReturn(false);
-        $this->container->get(MailViewRendererFactory::SERVICE_NAME)->willReturn(
+        $this->container->get(MailViewRendererInterface::class)->willReturn(
             $this->prophesize(RendererInterface::class)->reveal()
         );
         $this->container->get(EmailBuilder::class)->willReturn(
@@ -329,7 +329,7 @@ class MailServiceAbstractFactoryTest extends TestCase
             ],
         ]);
         $this->container->has(Sendmail::class)->willReturn(false);
-        $this->container->get(MailViewRendererFactory::SERVICE_NAME)->willReturn(
+        $this->container->get(MailViewRendererInterface::class)->willReturn(
             $this->prophesize(TemplateRendererInterface::class)->reveal()
         );
         $this->container->get(EmailBuilder::class)->willReturn(
