@@ -26,17 +26,17 @@ class MailViewRendererFactory
 
     /**
      * @param ContainerInterface $container
-     * @return TemplateRendererInterface
+     * @return MailViewRendererInterface
      * @throws NotFoundExceptionInterface
      * @throws InvalidArgumentException
      * @throws ContainerExceptionInterface
      */
-    public function __invoke(ContainerInterface $container): TemplateRendererInterface
+    public function __invoke(ContainerInterface $container): MailViewRendererInterface
     {
         // First, if the TemplateRendererInterface is registered as a service, use that service.
         // This should be true in expressive applications
         if ($container->has(TemplateRendererInterface::class)) {
-            return $container->get(TemplateRendererInterface::class);
+            return new ExpressiveMailViewRenderer($container->get(TemplateRendererInterface::class));
         }
 
         // If the mailviewrenderer is registered, wrap it into a ZendViewRenderer
@@ -74,9 +74,9 @@ class MailViewRendererFactory
         return $this->wrapZendView($renderer);
     }
 
-    private function wrapZendView(RendererInterface $renderer): TemplateRendererInterface
+    private function wrapZendView(RendererInterface $renderer): MailViewRendererInterface
     {
-        return new SimpleZendViewRenderer($renderer);
+        return new MvcMailViewRenderer($renderer);
     }
 
     /**
