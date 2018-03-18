@@ -33,7 +33,7 @@ script:
   - if [[ $DEPS == 'lowest' ]]; then composer ac:test ; fi
 
 after_script:
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover build/clover.xml
+  - if [[ $DEPS == 'latest' ]]; then wget https://scrutinizer-ci.com/ocular.phar ; fi
+  - if [[ $DEPS == 'latest' ]]; then php ocular.phar code-coverage:upload --format=php-clover build/clover.xml ; fi
 
 sudo: false
