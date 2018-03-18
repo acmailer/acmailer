@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace AcMailer\View;
 
+use Interop\Container\ContainerInterface;
 use Interop\Container\ContainerInterface as InteropContainer;
+use Interop\Container\Exception\ContainerException;
+use Interop\Container\Exception\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Mvc\Service\ViewHelperManagerFactory;
 use Zend\ServiceManager\Config;
-use Zend\View\Exception\InvalidArgumentException;
 use Zend\View\HelperPluginManager;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Renderer\RendererInterface;
@@ -27,9 +27,9 @@ class MailViewRendererFactory
     /**
      * @param ContainerInterface $container
      * @return MailViewRendererInterface
-     * @throws NotFoundExceptionInterface
-     * @throws InvalidArgumentException
      * @throws ContainerExceptionInterface
+     * @throws ContainerException
+     * @throws NotFoundException
      */
     public function __invoke(ContainerInterface $container): MailViewRendererInterface
     {
@@ -83,7 +83,8 @@ class MailViewRendererFactory
      * Creates a view helper manager
      * @param ContainerInterface|InteropContainer $container
      * @return HelperPluginManager
-     * @throws ContainerExceptionInterface
+     * @throws ContainerException
+     * @throws NotFoundException
      */
     private function createHelperPluginManager(ContainerInterface $container): HelperPluginManager
     {
@@ -100,7 +101,8 @@ class MailViewRendererFactory
      * @param ContainerInterface $container
      * @param string $configKey
      * @return array
-     * @throws ContainerExceptionInterface
+     * @throws ContainerException
+     * @throws NotFoundException
      */
     private function getSpecificConfig(ContainerInterface $container, string $configKey): array
     {

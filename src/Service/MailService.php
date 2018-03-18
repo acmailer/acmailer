@@ -218,7 +218,9 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         }
 
         $body->charset = $charset;
-        return (new Mime\Message())->setParts([$body]);
+        $message = new Mime\Message();
+        $message->setParts([$body]);
+        return $message;
     }
 
     /**
