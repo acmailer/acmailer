@@ -4,18 +4,32 @@ branches:
   only:
     - /.*/
 
-php:
-  - 7.1
-  - 7.2
+matrix:
+  include:
+    - php: 7.1
+      env:
+        - DEPS=lowest
+    - php: 7.1
+      env:
+        - DEPS=latest
+    - php: 7.2
+      env:
+        - DEPS=lowest
+    - php: 7.2
+      env:
+        - DEPS=latest
 
 before_script:
   - composer self-update
-  - composer install --no-interaction
+  - if [[ $DEPS == 'latest' ]]; then composer update --no-interaction ; fi
+  - if [[ $DEPS == 'lowest' ]]; then composer update --no-interaction --prefer-lowest --prefer-stable ; fi
+  - composer show
 
 script:
   - mkdir build
   - mkdir test/attachments/dir/dirdept
-  - composer ac:ci
+  - if [[ $DEPS == 'latest' ]]; then composer ac:ci ; fi
+  - if [[ $DEPS == 'lowest' ]]; then composer ac:test ; fi
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
