@@ -20,6 +20,7 @@ class MvcMailViewRenderer implements MailViewRendererInterface
 
     public function render(string $name, array $params = []): string
     {
+
         $layout = $params['layout'] ?? null;
         unset($params['layout']);
 
@@ -28,12 +29,25 @@ class MvcMailViewRenderer implements MailViewRendererInterface
 
         // If a layout was provided, add the original view model as a child
         if ($layout !== null) {
-            $layoutModel = new ViewModel([
-                'content' => $this->renderer->render($viewModel),
-            ]);
-            $layoutModel->setTemplate($layout);
+				            
+            $childTemplateName = $params['child_template_name'] ?? 'content';
+            $layoutModelParams = [
+                $childTemplateName => $this->renderer->render($viewModel)
+            ];
+				            
+            if ( isset($params['layout_params']) ) {
+                if ( is_bool($params['layout_params'] && $params['layout_params'] === true) ) {
+                   $layoutModelParams = array_merge($layoutModelParams, $params);
+                }
+                if ( is_array($params['layout_params']) ) {
+                    $layoutModelParams = array_merge($layoutModelParams, $params['layout_params']);
+	        }
+	    }
+	
+	    $layoutModel = new ViewModel($layoutModelParams);
+	    $layoutModel->setTemplate($layout);
             $viewModel = $layoutModel;
-        }
+	}
 
         return $this->renderer->render($viewModel);
     }
