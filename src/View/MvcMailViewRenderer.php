@@ -27,7 +27,7 @@ class MvcMailViewRenderer implements MailViewRendererInterface
         $viewModel->setTemplate($name);
 
         // If a layout was provided, add the original view model as a child
-        if ($layout !== null) {
+        if ($layout) {
             $childTemplateName = $params['child_template_name'] ?? 'content';
             $params[$childTemplateName] = $this->renderer->render($viewModel);
 
