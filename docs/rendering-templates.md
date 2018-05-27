@@ -36,6 +36,12 @@ return [
 ];
 ```
 
+Also when using Zend MVC, if you have defined a layout, the child template is captured to the `content` property, so you have to use `<?= $this->content ?>` in order to render the child template.
+
+However, this behavior can be overwritten by providing a `child_template_name` param with the name you want to use.
+
+### Define renderer by service
+
 If you need different view renderers to be used by each mail service, you can define the renderer service name in the **renderer** configuration property of that service. It has to be a service name that resolves to a `Zend\Expressive\Template\TemplateRendererInterface` instance. From v7.2, it can also resolve to a `Zend\View\Renderer\RendererInterface` or `AcMailer\View\MailViewRendererInterface` instance.
 
 ```php
