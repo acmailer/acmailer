@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### 7.2.1
+
+**Bugs**
+
+* [200: Fix layout not receiving template params when using zend/renderer with zend-mvc](https://github.com/acelaya/ZF-AcMailer/issues/200)
+
 ### 7.2.0
 
 **Enhancements:**
