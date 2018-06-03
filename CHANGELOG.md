@@ -93,9 +93,9 @@
 * *Nothing*
 
 
-## 7.1.0
+## 7.1.0 - 2018-03-04
 
-#### Added - 2018-03-04
+#### Added
 
 * [#186](https://github.com/acelaya/ZF-AcMailer/issues/186) Defined a MailListenerTrait that can be used when it is not possible to extend AbstractMailListener
 * [#185](https://github.com/acelaya/ZF-AcMailer/issues/185) Allowed to register custom file attachment parsers
