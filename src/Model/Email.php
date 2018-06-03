@@ -72,6 +72,10 @@ final class Email extends AbstractOptions
      * @var string
      */
     private $charset = self::DEFAULT_CHARSET;
+    /**
+     * @var array
+     */
+    private $customHeaders = [];
 
     public function __construct($options = null)
     {
@@ -411,7 +415,7 @@ final class Email extends AbstractOptions
     /**
      * @return string|null
      */
-    public function getTemplate()
+    public function getTemplate(): ?string
     {
         return $this->template;
     }
@@ -467,6 +471,36 @@ final class Email extends AbstractOptions
     public function setCharset(string $charset): self
     {
         $this->charset = $charset;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCustomHeaders(): array
+    {
+        return $this->customHeaders;
+    }
+
+    /**
+     * @param array $customHeaders
+     * @return $this|self
+     */
+    public function setCustomHeaders(array $customHeaders): self
+    {
+        $this->customHeaders = $customHeaders;
+        return $this;
+    }
+
+    public function addCustomHeader(string $headerName, string $value): self
+    {
+        $this->customHeaders[$headerName] = $value;
+        return $this;
+    }
+
+    public function removeCustomHeader(string $headerName): self
+    {
+        unset($this->customHeaders[$headerName]);
         return $this;
     }
 }

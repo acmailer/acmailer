@@ -129,6 +129,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
                 $this->buildBody($email->getBody(), $email->getCharset())
             );
             $this->attachFiles($message, $email);
+            $this->addCustomHeaders($message, $email);
 
             // Try to send the message
             $this->transport->send($message);
@@ -318,5 +319,14 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
     public function detachMailListener(MailListenerInterface $mailListener)
     {
         $mailListener->detach($this->events);
+    }
+
+    private function addCustomHeaders(Message $message, Email $email): void
+    {
+        $headers = $message->getHeaders();
+        foreach ($email->getCustomHeaders() as $headerName => $value) {
+            $headers->addHeaderLine($headerName, $value);
+        }
+        $message->setHeaders($headers);
     }
 }
