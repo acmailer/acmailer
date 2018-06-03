@@ -1,6 +1,7 @@
-## CHANGELOG
+# CHANGELOG
 
-### 7.3.0 - 2018-06-03
+
+## 7.3.0 - 2018-06-03
 
 #### Added
 
@@ -26,9 +27,11 @@
     ]));
     ```
 
+* [#204](https://github.com/acelaya/ZF-AcMailer/issues/204) Updated some of the changelog entries to use the [keepachangelog.com](https://keepachangelog.com) recommendation.
+
 #### Changed
 
-* [#204](https://github.com/acelaya/ZF-AcMailer/issues/204) Updated some of the changelog entries to use the [keepachangelog.com](https://keepachangelog.com) recommendation.
+* *Nothing*
 
 #### Deprecated
 
@@ -42,107 +45,242 @@
 
 * *Nothing*
 
-### 7.2.1
 
-**Bugs**
+## 7.2.1 - 2018-05-27
 
-* [200: Fix layout not receiving template params when using zend/renderer with zend-mvc](https://github.com/acelaya/ZF-AcMailer/issues/200)
+#### Added
 
-### 7.2.0
+* *Nothing*
 
-**Enhancements:**
+#### Changed
 
-* [197: Add support for Expressive 3 via zend expressive renderer v2](https://github.com/acelaya/ZF-AcMailer/issues/197)
+* *Nothing*
 
-**Tasks:**
+#### Deprecated
 
-* [198: Improve build matrix so that it passes build for lowest and latest supported dependencies](https://github.com/acelaya/ZF-AcMailer/issues/198)
+* *Nothing*
 
-### 7.1.0
+#### Removed
 
-**Enhancements:**
+* *Nothing*
 
-* [186: Define a MailListenerTrait that can be used when it is not possible to extend AbstractMailListener](https://github.com/acelaya/ZF-AcMailer/issues/186)
-* [185: Allow to register custom file attachment parsers](https://github.com/acelaya/ZF-AcMailer/issues/185)
-* [194: Improve InvalidArgumentException::fromValidTypes message](https://github.com/acelaya/ZF-AcMailer/issues/194)
-* [184: Include infection in the build process to improve tests](https://github.com/acelaya/ZF-AcMailer/issues/184)
+#### Fixed
 
-**Tasks**
+* [#200](https://github.com/acelaya/ZF-AcMailer/issues/200) Fixed rendered layouts not receiving template params when using zend/renderer with zend-mvc
 
-* [195: Include a docs dir with a docsify-powered documentation](https://github.com/acelaya/ZF-AcMailer/issues/195)
-* [183: Drop support for PHP <7.1](https://github.com/acelaya/ZF-AcMailer/issues/183)
 
-### 7.0.5
+## 7.2.0 - 2018-03-18
 
-**Bugs**
+#### Added
 
-* [192: Pre-render event is not properly registered when listeners are defined as services](https://github.com/acelaya/ZF-AcMailer/issues/192)
+* [#197](https://github.com/acelaya/ZF-AcMailer/issues/197) Added support for Expressive 3 via zend expressive renderer v2
+* [#198](https://github.com/acelaya/ZF-AcMailer/issues/198) Improved build matrix so that it passes build for lowest and latest supported dependencies
 
-### 7.0.4
+#### Changed
 
-**Bugs**
+* *Nothing*
 
-* [190: It is no longer possible to preconfigure services before rendering the email since 7.0.3 was released](https://github.com/acelaya/ZF-AcMailer/issues/190)
+#### Deprecated
 
-### 7.0.3
+* *Nothing*
 
-**Bugs**
+#### Removed
 
-* [187: Make sure email templates are rendered before the PRE_SEND event is triggered](https://github.com/acelaya/ZF-AcMailer/issues/187)
+* *Nothing*
 
-### 7.0.2
+#### Fixed
 
-**Bugs**
+* *Nothing*
 
-* [182: When an Email has a template, the result of rendering it should be set as the body](https://github.com/acelaya/ZF-AcMailer/issues/182)
 
-### 7.0.1
+## 7.1.0
 
-**Tasks**
+#### Added - 2018-03-04
 
-* [180: Increase phpstan level used in build matrix from 5 to 6](https://github.com/acelaya/ZF-AcMailer/issues/180)
+* [#186](https://github.com/acelaya/ZF-AcMailer/issues/186) Defined a MailListenerTrait that can be used when it is not possible to extend AbstractMailListener
+* [#185](https://github.com/acelaya/ZF-AcMailer/issues/185) Allowed to register custom file attachment parsers
+* [#194](https://github.com/acelaya/ZF-AcMailer/issues/194) Improved InvalidArgumentException::fromValidTypes message to provide more meaningful information
+* [#184](https://github.com/acelaya/ZF-AcMailer/issues/184) Included infection in the build process to improve tests
+* [#195](https://github.com/acelaya/ZF-AcMailer/issues/195) Included a docsify-powered documentation inside the repository in the docs folder
 
-**Bugs**
+#### Changed
 
-* [179: Make ExceptionInterface extend Throwable](https://github.com/acelaya/ZF-AcMailer/issues/179)
-* [174: When using expressive and zend/view, a layout is configured for all templates. Make it not be used for emails](https://github.com/acelaya/ZF-AcMailer/issues/174)
+* *Nothing*
 
-### 7.0.0
+#### Deprecated
 
-**Enhancements:**
+* *Nothing*
 
-* [172: Improve quality on attachments business logic](https://github.com/acelaya/ZF-AcMailer/issues/172)
-* [153: Add real compatibility with Zend expressive](https://github.com/acelaya/ZF-AcMailer/issues/153)
-* [166: Allow preconfigured emails to extend among themeselves](https://github.com/acelaya/ZF-AcMailer/issues/166)
-* [168: Drop controller plugin, forcing the MailService to be injected](https://github.com/acelaya/ZF-AcMailer/issues/168)
-* [167: Allow listeners cancel email sending on preSend, by returning boolean false](https://github.com/acelaya/ZF-AcMailer/issues/167)
-* [159: Completely rewrite the module, changing the focus, and making services truly stateless](https://github.com/acelaya/ZF-AcMailer/issues/159)
-* [165: Create console migration tool, to migrate config from v5/v6 to v7](https://github.com/acelaya/ZF-AcMailer/issues/165)
+#### Removed
 
-**Tasks**
+* [#183](https://github.com/acelaya/ZF-AcMailer/issues/183) Dropped support for PHP <7.1
 
-* [162: Add migration guide, explaining how to migrate form version 6 to 7](https://github.com/acelaya/ZF-AcMailer/issues/162)
-* [169: Update documentation to explain new features and configuration structure](https://github.com/acelaya/ZF-AcMailer/issues/169)
-* [163: Create gitattributes defining elements to exclude when installing package from dist](https://github.com/acelaya/ZF-AcMailer/issues/163)
-* [157: Improve coding standards strictness by using slevomat/coding-standard](https://github.com/acelaya/ZF-AcMailer/issues/157)
-* [170: Extract mailviewrenderer creation to a specific factory](https://github.com/acelaya/ZF-AcMailer/issues/170)
-* [155: Use ::class magic constant whenever possible](https://github.com/acelaya/ZF-AcMailer/issues/155)
-* [154: Drop PHP 5 support](https://github.com/acelaya/ZF-AcMailer/issues/154)
-* [160: Remove everything which was deprecated](https://github.com/acelaya/ZF-AcMailer/issues/160)
-* [161: Remove config migration from AcMailer 4.5 and earlier to AcMailer 5.0](https://github.com/acelaya/ZF-AcMailer/issues/161)
+#### Fixed
 
-**Bugs:**
+* *Nothing*
 
-* [173: Make sure the charset is applied to all parts of the email body](https://github.com/acelaya/ZF-AcMailer/issues/173)
-* [171: Ensure proper filename is discovered when adding an attachment without providing a name](https://github.com/acelaya/ZF-AcMailer/issues/171)
 
-### 6.4.0
+## 7.0.5 - 2018-03-02
+
+#### Added
+
+* *Nothing*
+
+#### Changed
+
+* *Nothing*
+
+#### Deprecated
+
+* *Nothing*
+
+#### Removed
+
+* *Nothing*
+
+#### Fixed
+
+* [#192](https://github.com/acelaya/ZF-AcMailer/issues/192) Fixed pre-render event so that it is properly registered when listeners are defined as services
+
+
+## 7.0.4 - 2018-02-28
+
+#### Added
+
+* *Nothing*
+
+#### Changed
+
+* *Nothing*
+
+#### Deprecated
+
+* *Nothing*
+
+#### Removed
+
+* *Nothing*
+
+#### Fixed
+
+* [#190](https://github.com/acelaya/ZF-AcMailer/issues/190) Fixed regression introduced in 7.0.3 preventing external services to be configured before rendering the email template
+
+
+## 7.0.3 - 2018-02-21
+
+#### Added
+
+* *Nothing*
+
+#### Changed
+
+* *Nothing*
+
+#### Deprecated
+
+* *Nothing*
+
+#### Removed
+
+* *Nothing*
+
+#### Fixed
+
+* [#187](https://github.com/acelaya/ZF-AcMailer/issues/187) Ensured email templates are rendered before the PRE_SEND event is triggered
+
+
+## 7.0.2 - 2018-01-03
+
+#### Added
+
+* *Nothing*
+
+#### Changed
+
+* *Nothing*
+
+#### Deprecated
+
+* *Nothing*
+
+#### Removed
+
+* *Nothing*
+
+#### Fixed
+
+* [#182](https://github.com/acelaya/ZF-AcMailer/issues/182) Fixed emails not containing the result of rendering a template as their body property
+
+
+## 7.0.1 - 2018-01-03
+
+#### Added
+
+* *Nothing*
+
+#### Changed
+
+* [#180](https://github.com/acelaya/ZF-AcMailer/issues/180) Increased phpstan level required in build matrix from 5 to 6
+
+#### Deprecated
+
+* *Nothing*
+
+#### Removed
+
+* *Nothing*
+
+#### Fixed
+
+* [#179](https://github.com/acelaya/ZF-AcMailer/issues/179) Fixed ExceptionInterface so that it extends `Throwable`
+* [#174](https://github.com/acelaya/ZF-AcMailer/issues/174) Removed the `layout` param which is automatically set when using expressive and zend/view, for emails only
+
+
+## 7.0.0 - 2017-12-09
+
+#### Added
+
+* [#153](https://github.com/acelaya/ZF-AcMailer/issues/153) Added real compatibility with Zend expressive
+* [#166](https://github.com/acelaya/ZF-AcMailer/issues/166) Allowed preconfigured emails to extend among themeselves
+* [#167](https://github.com/acelaya/ZF-AcMailer/issues/167) Allowed listeners cancel email sending on `PRE_SEND` when returning `false`
+* [#165](https://github.com/acelaya/ZF-AcMailer/issues/165) Created console migration tool, to migrate config from v5/v6 to v7: [zf-acmailer-tooling](https://github.com/acelaya/zf-acmailer-tooling)
+* [#162](https://github.com/acelaya/ZF-AcMailer/issues/162) Added migration guide, explaining how to migrate form version 6 to 7
+* [#169](https://github.com/acelaya/ZF-AcMailer/issues/169) Update documentation to explain new features and configuration structure
+* [#163](https://github.com/acelaya/ZF-AcMailer/issues/163) Created `.gitattributes` dile defining elements to exclude when installing package from dist
+
+#### Changed
+
+* [#159](https://github.com/acelaya/ZF-AcMailer/issues/159) Module completely rewritten, changing the focus, and making services truly stateless
+* [#172](https://github.com/acelaya/ZF-AcMailer/issues/172) Improved quality on attachments business logic
+* [#170](https://github.com/acelaya/ZF-AcMailer/issues/170) Extracted `mailviewrenderer` creation to a specific factory
+* [#155](https://github.com/acelaya/ZF-AcMailer/issues/155) Used `::class` magic constant whenever possible
+* [#157](https://github.com/acelaya/ZF-AcMailer/issues/157) Improved coding standards strictness by using slevomat/coding-standard
+
+#### Deprecated
+
+* *Nothing*
+
+#### Removed
+
+* [#168](https://github.com/acelaya/ZF-AcMailer/issues/168) Dropped controller plugin, forcing the MailService to be injected in controllers
+* [#154](https://github.com/acelaya/ZF-AcMailer/issues/154) Dropped PHP 5 support
+* [#160](https://github.com/acelaya/ZF-AcMailer/issues/160) Removed everything which was deprecated in v6
+* [#161](https://github.com/acelaya/ZF-AcMailer/issues/161) Removed config migration from AcMailer 4.5 and earlier to AcMailer 5.0
+
+#### Fixed
+
+* [#173](https://github.com/acelaya/ZF-AcMailer/issues/173) Ensured the charset is applied to all parts of the email body
+* [#171](https://github.com/acelaya/ZF-AcMailer/issues/171) Ensured proper filename is discovered when adding an attachment without providing a name
+
+
+## 6.4.0
 
 **Enhancements:**
 
 * [144: Improve file attachment strategies](https://github.com/acelaya/ZF-AcMailer/issues/144)
 
-### 6.3.1
+
+## 6.3.1
 
 **Tasks**
 
@@ -152,26 +290,30 @@
 
 * [142: Events with ZF3 doesn't work](https://github.com/acelaya/ZF-AcMailer/issues/142)
 
-### 6.3.0
+
+## 6.3.0
 
 **Enhancements:**
 
 * [135: Added header encoding option](https://github.com/acelaya/ZF-AcMailer/pull/135)
 
-### 6.2.0
+
+## 6.2.0
 
 **Enhancements:**
 
 * [130: Added ConfigProvider support](https://github.com/acelaya/ZF-AcMailer/pull/130)
 * [133: Added replyTo support in controller plugin](https://github.com/acelaya/ZF-AcMailer/pull/133)
 
-### 6.1.0
+
+## 6.1.0
 
 **Enhancements:**
 
 * [129: Make module installable via zend-component-installer](https://github.com/acelaya/ZF-AcMailer/pull/129)
 
-### 6.0.0
+
+## 6.0.0
 
 **Enhancements:**
 
@@ -182,13 +324,15 @@
 
 * [126: Drop Support for PHP 5.5](https://github.com/acelaya/ZF-AcMailer/issues/126)
 
-### 5.2.1
+
+## 5.2.1
 
 **Bugs:**
 
 * [125: False is unsupported SSL type](https://github.com/acelaya/ZF-AcMailer/issues/125)
 
-### 5.2.0
+
+## 5.2.0
 
 **Enhancements:**
 
@@ -198,13 +342,15 @@
 
 * [114: Drop Support for PHP 5.4](https://github.com/acelaya/ZF-AcMailer/issues/114)
 
-### 5.1.1
+
+## 5.1.1
 
 **Bugs:**
 
 * [113: The extends property is mapped when its value is null, making the MailOptions to throw an exception](https://github.com/acelaya/ZF-AcMailer/issues/113)
 
-### 5.1.0
+
+## 5.1.0
 
 **Enhancements:**
 
@@ -215,13 +361,15 @@
 
 * [108: Remove the whole framework as a dev dependency](https://github.com/acelaya/ZF-AcMailer/issues/108)
 
-### 5.0.1
+
+## 5.0.1
 
 **Bugs:**
 
 * [105: The EVENT_MAIL_PRE_SEND event should be triggered before the files are attached to the email](https://github.com/acelaya/ZF-AcMailer/issues/105)
 
-### 5.0.0
+
+## 5.0.0
 
 **Enhancements:**
 
@@ -248,13 +396,15 @@
 * [68: Create a changelog file and list changes in github releases too](https://github.com/acelaya/ZF-AcMailer/issues/68)
 * [90: Create CLI entry point to migrate old config to new config](https://github.com/acelaya/ZF-AcMailer/issues/90)
 
-### 4.5.1
+
+## 4.5.1
 
 **Bugs**:
 
 * [96. Fix errors introduced with ZF 2.3.9 and 2.4.2](https://github.com/acelaya/ZF-AcMailer/issues/97)
 
-### 4.5.0
+
+## 4.5.0
 
 **Enhancements:**
 
