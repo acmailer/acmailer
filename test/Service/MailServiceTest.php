@@ -305,4 +305,37 @@ class MailServiceTest extends TestCase
         $trigger->shouldHaveBeenCalledTimes(2);
         $render->shouldHaveBeenCalledTimes(1);
     }
+
+    /**
+     * @test
+     */
+    public function customHeadersAreProperlyAddedToMessage()
+    {
+        $email = new Email();
+        $email->setCustomHeaders([
+            'foo' => 'bar',
+            'baz' => 'foo',
+        ]);
+        $email->addCustomHeader('something', 'else');
+
+        $buildEmail = $this->emailBuilder->build(Argument::cetera())->willReturn(new Email());
+        $send = $this->transport->send(Argument::that(function (Message $message) {
+            $headers = $message->getHeaders()->toArray();
+            Assert::assertArrayHasKey('Foo', $headers);
+            Assert::assertEquals('bar', $headers['Foo']);
+            Assert::assertArrayHasKey('Baz', $headers);
+            Assert::assertEquals('foo', $headers['Baz']);
+            Assert::assertArrayHasKey('Something', $headers);
+            Assert::assertEquals('else', $headers['Something']);
+
+            return $message;
+        }))->willReturn(null);
+        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn(new ResponseCollection());
+
+        $this->mailService->send($email);
+
+        $buildEmail->shouldHaveBeenCalledTimes(\is_object($email) ? 0 : 1);
+        $send->shouldHaveBeenCalled();
+        $trigger->shouldHaveBeenCalledTimes(3);
+    }
 }

@@ -24,6 +24,7 @@ An example configuration file is provided in `vendor/acelaya/zf2-acmailer/config
     - *path*: The path of the directory to iterate looking for files. This files will be attached with their real names.
     - *recursive*: True or false. Tells if nested directories should be recursively iterated too.
 - **charset**: The charset used on every part of the email. Defaults to 'utf-8'.
+- **custom_headers**: A key/value list with the custom headers you want to add to the email.
 
 ## Mail services
 
