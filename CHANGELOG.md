@@ -1,5 +1,47 @@
 ## CHANGELOG
 
+### 7.3.0 - 2018-06-03
+
+#### Added
+
+* [#201](https://github.com/acelaya/ZF-AcMailer/issues/201) Added the ability to define custom email headers.
+
+    Now you can easily add custom headers to pre-configured and inline emails.
+
+    ```php
+    // config
+    [
+        'custom_headers' => [
+            'X-Company' => 'My company',
+        ],
+    ],
+
+
+    // inline
+    $mailService->send('my_email', ['custom_headers' => [
+        'X-Company' => 'My company',
+    ]]);
+    $mailService->send((new Email())->setCustomHeaders([
+        'X-Company' => 'My company',
+    ]));
+    ```
+
+#### Changed
+
+* [#204](https://github.com/acelaya/ZF-AcMailer/issues/204) Updated some of the changelog entries to use the [keepachangelog.com](https://keepachangelog.com) recommendation.
+
+#### Deprecated
+
+* *Nothing*
+
+#### Removed
+
+* *Nothing*
+
+#### Fixed
+
+* *Nothing*
+
 ### 7.2.1
 
 **Bugs**
