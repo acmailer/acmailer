@@ -28,8 +28,8 @@
         "zendframework/zend-stdlib": "^3.0"
     },
     "require-dev": {
-        "infection/infection": "^0.7.1",
-        "phpstan/phpstan": "^0.9.2",
+        "infection/infection": "^0.9.0",
+        "phpstan/phpstan": "^0.10.0",
         "phpunit/phpunit": "^7.0",
         "slevomat/coding-standard": "^4.0",
         "squizlabs/php_codesniffer": "^3.1",
@@ -73,8 +73,8 @@
         "ac:cs-fix": "phpcbf",
         "ac:stan": "phpstan analyse src/ --level=6",
         "ac:test": "phpunit --coverage-clover build/clover.xml",
-        "ac:infection": "infection --threads=4 --min-msi=85 --log-verbosity=2 --only-covered",
-        "ac:infection-show": "infection --threads=4 --min-msi=85 --only-covered --log-verbosity=2 --show-mutations"
+        "ac:infection": "infection --threads=4 --min-msi=80 --log-verbosity=2 --only-covered",
+        "ac:infection-show": "infection --threads=4 --min-msi=80 --only-covered --log-verbosity=2 --show-mutations"
     },
     "scripts-descriptions": {
         "ac:cs": "Check coding styles with PHP_CodeSniffer",

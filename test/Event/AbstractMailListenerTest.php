@@ -45,6 +45,26 @@ class AbstractMailListenerTest extends TestCase
     /**
      * @test
      */
+    public function defaultPriorityIsRespected()
+    {
+        $em = $this->prophesize(EventManagerInterface::class);
+
+        $attachPre = $em->attach(MailEvent::EVENT_MAIL_PRE_RENDER, [$this->mailListener, 'onPreRender'], 1);
+        $attachPreSend = $em->attach(MailEvent::EVENT_MAIL_PRE_SEND, [$this->mailListener, 'onPreSend'], 1);
+        $attachPost = $em->attach(MailEvent::EVENT_MAIL_POST_SEND, [$this->mailListener, 'onPostSend'], 1);
+        $attachError = $em->attach(MailEvent::EVENT_MAIL_SEND_ERROR, [$this->mailListener, 'onSendError'], 1);
+
+        $this->mailListener->attach($em->reveal());
+
+        $attachPre->shouldHaveBeenCalled();
+        $attachPreSend->shouldHaveBeenCalled();
+        $attachPost->shouldHaveBeenCalled();
+        $attachError->shouldHaveBeenCalled();
+    }
+
+    /**
+     * @test
+     */
     public function allMethodsAreEmptyByDefault()
     {
         $event = $this->prophesize(MailEvent::class);
