@@ -392,7 +392,7 @@ final class Email extends AbstractOptions
         // Process the attachments dir if any, and include the files in that folder
         $dir = $this->getAttachmentsDir();
         $path = $dir['path'] ?? null;
-        $recursive = (bool) ($dir['recursive'] ?? false);
+        $recursive = $dir['recursive'] ?? false;
 
         if (\is_string($path) && \is_dir($path)) {
             $files = $recursive ? new \RecursiveIteratorIterator(
