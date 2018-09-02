@@ -1,6 +1,29 @@
 # CHANGELOG
 
 
+## 7.3.1 - 2018-09-02
+
+#### Added
+
+* [#207](https://github.com/acelaya/ZF-AcMailer/issues/207) Improved badges in readme file
+
+#### Changed
+
+* [#208](https://github.com/acelaya/ZF-AcMailer/issues/208) Updated to Infection 0.10
+
+#### Deprecated
+
+* *Nothing*
+
+#### Removed
+
+* *Nothing*
+
+#### Fixed
+
+* *Nothing*
+
+
 ## 7.3.0 - 2018-06-03
 
 #### Added
