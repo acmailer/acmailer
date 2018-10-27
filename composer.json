@@ -65,22 +65,24 @@
         "ac:ci": [
             "@ac:cs",
             "@ac:stan",
-            "@ac:test",
+            "@ac:test:ci",
             "@ac:infection"
         ],
 
         "ac:cs": "phpcs",
-        "ac:cs-fix": "phpcbf",
+        "ac:cs:fix": "phpcbf",
         "ac:stan": "phpstan analyse src/ --level=6",
         "ac:test": "phpunit --coverage-clover build/clover.xml",
+        "ac:test:ci": "phpdbg -qrr @ac:test",
         "ac:infection": "infection --threads=4 --min-msi=80 --log-verbosity=2 --only-covered",
         "ac:infection:show": "infection --threads=4 --min-msi=80 --only-covered --log-verbosity=2 --show-mutations"
     },
     "scripts-descriptions": {
         "ac:cs": "Check coding styles with PHP_CodeSniffer",
-        "ac:cs-fix": "Fix coding styles with PHP Code beautifier",
+        "ac:cs:fix": "Fix coding styles with PHP Code beautifier",
         "ac:stan": "Check code quality with phpstan",
         "ac:test": "Run unit tests with phpunit",
+        "ac:test:ci": "Run unit tests with phpunit in the CI context",
         "ac:infection": "Check tests quality using mutation testing with infection",
         "ac:infection:show": "Check tests quality using mutation testing with infection, and displays the applied mutations",
         "ac:ci": "Alias for \"cs\", \"stan\", \"test\" and \"infection\""
