@@ -18,6 +18,7 @@ use AcMailer\Result\ResultInterface;
 use AcMailer\View\MailViewRendererInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Throwable;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\EventsCapableInterface;
@@ -26,6 +27,15 @@ use Zend\Mail\Exception\InvalidArgumentException;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mime;
+use function array_key_exists;
+use function array_merge;
+use function get_class;
+use function gettype;
+use function is_array;
+use function is_object;
+use function is_string;
+use function sprintf;
+use function strip_tags;
 
 /**
  * Wraps Zend\Mail functionality
@@ -101,9 +111,9 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
     public function send($email, array $options = []): ResultInterface
     {
         // Try to resolve the email to be sent
-        if (\is_string($email)) {
+        if (is_string($email)) {
             $email = $this->emailBuilder->build($email, $options);
-        } elseif (\is_array($email)) {
+        } elseif (is_array($email)) {
             $email = $this->emailBuilder->build(Email::class, $email);
         } elseif (! $email instanceof Email) {
             throw Exception\InvalidArgumentException::fromValidTypes(
@@ -138,7 +148,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
             $result = new MailResult($email);
             $this->events->triggerEvent($this->createMailEvent($email, MailEvent::EVENT_MAIL_POST_SEND, $result));
             return $result;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Trigger error event, notifying listeners of the error
             $this->events->triggerEvent($this->createMailEvent($email, MailEvent::EVENT_MAIL_SEND_ERROR, new MailResult(
                 $email,
@@ -191,7 +201,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
     {
         // When using Zend/View in expressive, a layout could have been globally configured.
         // We have to override it unless explicitly provided. It won't affect other renderer implementations.
-        if (! \array_key_exists('layout', $original)) {
+        if (! array_key_exists('layout', $original)) {
             $original['layout'] = false;
         }
 
@@ -212,9 +222,9 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         }
 
         // If the body is a string, wrap it into a Mime\Part
-        if (\is_string($body)) {
+        if (is_string($body)) {
             $mimePart = new Mime\Part($body);
-            $mimePart->type = $body !== \strip_tags($body) ? Mime\Mime::TYPE_HTML : Mime\Mime::TYPE_TEXT;
+            $mimePart->type = $body !== strip_tags($body) ? Mime\Mime::TYPE_HTML : Mime\Mime::TYPE_TEXT;
             $body = $mimePart;
         }
 
@@ -251,21 +261,21 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         $info = null;
         foreach ($attachments as $key => $attachment) {
             // If the attachment is an array with "parser_name" and "value" keys, cast it into an Attachment object
-            if (\is_array($attachment) && isset($attachment['parser_name'], $attachment['value'])) {
+            if (is_array($attachment) && isset($attachment['parser_name'], $attachment['value'])) {
                 $attachment = Attachment::fromArray($attachment);
             }
 
             $parserName = $this->resolveParserNameFromAttachment($attachment);
             if (! $this->attachmentParserManager->has($parserName)) {
                 throw new Exception\ServiceNotCreatedException(
-                    \sprintf('The attachment parser "%s" could not be found', $parserName)
+                    sprintf('The attachment parser "%s" could not be found', $parserName)
                 );
             }
 
             /** @var AttachmentParserInterface $parser */
             $parser = $this->attachmentParserManager->get($parserName);
             $attachmentValue = $attachment instanceof Attachment ? $attachment->getValue() : $attachment;
-            $part = $parser->parse($attachmentValue, \is_string($key) ? $key : null);
+            $part = $parser->parse($attachmentValue, is_string($key) ? $key : null);
 
             $part->charset = $email->getCharset();
             $attachmentParts[] = $part;
@@ -273,7 +283,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
 
         // Create a new body for the message, merging the attachment parts and all the old parts
         $body = new Mime\Message();
-        $body->setParts(\array_merge($oldParts, $attachmentParts));
+        $body->setParts(array_merge($oldParts, $attachmentParts));
         $message->setBody($body);
     }
 
@@ -287,7 +297,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
             return $attachment->getParserName();
         }
 
-        return \is_object($attachment) ? \get_class($attachment) : \gettype($attachment);
+        return is_object($attachment) ? get_class($attachment) : gettype($attachment);
     }
 
     /**

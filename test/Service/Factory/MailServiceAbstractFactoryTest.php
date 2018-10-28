@@ -17,11 +17,15 @@ use AcMailer\View\MvcMailViewRenderer;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use ReflectionObject;
+use stdClass;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Mail\Transport\Sendmail;
 use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\View\Renderer\RendererInterface;
+use function implode;
+use function sprintf;
 
 class MailServiceAbstractFactoryTest extends TestCase
 {
@@ -158,7 +162,7 @@ class MailServiceAbstractFactoryTest extends TestCase
         ]);
         $this->container->has($transport)->willReturn($inContainer);
         if ($inContainer) {
-            $this->container->get($transport)->willReturn(new \stdClass());
+            $this->container->get($transport)->willReturn(new stdClass());
         }
 
         $this->expectException(Exception\InvalidArgumentException::class);
@@ -168,7 +172,7 @@ class MailServiceAbstractFactoryTest extends TestCase
     public function provideInvalidTransports(): array
     {
         return [
-            [new \stdClass(), false],
+            [new stdClass(), false],
             [800, false],
             ['my_transport', true],
             ['my_transport', false],
@@ -191,13 +195,13 @@ class MailServiceAbstractFactoryTest extends TestCase
             ],
         ]);
         $this->container->has(Sendmail::class)->willReturn(false);
-        $this->container->get('foo_renderer')->willReturn(new \stdClass());
+        $this->container->get('foo_renderer')->willReturn(new stdClass());
 
         $this->expectException(Exception\InvalidArgumentException::class);
-        $this->expectExceptionMessage(\sprintf(
+        $this->expectExceptionMessage(sprintf(
             'Defined renderer of type "%s" is not valid. The renderer must resolve to a instance of ["%s"] types',
-            \stdClass::class,
-            \implode(
+            stdClass::class,
+            implode(
                 '", "',
                 [MailViewRendererInterface::class, TemplateRendererInterface::class, RendererInterface::class]
             )
@@ -348,7 +352,7 @@ class MailServiceAbstractFactoryTest extends TestCase
 
         $this->assertInstanceOf(MailService::class, $result);
 
-        $ref = new \ReflectionObject($result->getEventManager());
+        $ref = new ReflectionObject($result->getEventManager());
         $prop = $ref->getProperty('events');
         $prop->setAccessible(true);
         $listeners = $prop->getValue($result->getEventManager());
@@ -385,7 +389,7 @@ class MailServiceAbstractFactoryTest extends TestCase
 
         $mailService = $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
 
-        $ref = new \ReflectionObject($mailService);
+        $ref = new ReflectionObject($mailService);
         $prop = $ref->getProperty('renderer');
         $prop->setAccessible(true);
         $renderer = $prop->getValue($mailService);

@@ -3,20 +3,27 @@ declare(strict_types=1);
 
 namespace AcMailer\Exception;
 
+use InvalidArgumentException as SplInvalidArgumentException;
+use function get_class;
+use function gettype;
+use function implode;
+use function is_object;
+use function sprintf;
+
 /**
  * Exception produced when an argument provided for an AcMailer method is not valid
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
+class InvalidArgumentException extends SplInvalidArgumentException implements ExceptionInterface
 {
     public static function fromValidTypes(array $types, $value, string $fieldName = 'value'): self
     {
-        return new self(\sprintf(
+        return new self(sprintf(
             'Provided %s is not valid. Expected one of ["%s"], but "%s" was provided',
             $fieldName,
-            \implode('", "', $types),
-            \is_object($value) ? \get_class($value) : \gettype($value)
+            implode('", "', $types),
+            is_object($value) ? get_class($value) : gettype($value)
         ));
     }
 }

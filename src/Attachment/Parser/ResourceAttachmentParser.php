@@ -7,6 +7,9 @@ use AcMailer\Attachment\Helper\AttachmentHelperTrait;
 use AcMailer\Exception\InvalidAttachmentException;
 use Zend\Mime;
 use Zend\Mime\Exception\InvalidArgumentException;
+use function basename;
+use function is_resource;
+use function stream_get_meta_data;
 
 class ResourceAttachmentParser implements AttachmentParserInterface
 {
@@ -21,12 +24,12 @@ class ResourceAttachmentParser implements AttachmentParserInterface
      */
     public function parse($attachment, string $attachmentName = null): Mime\Part
     {
-        if (! \is_resource($attachment)) {
+        if (! is_resource($attachment)) {
             throw InvalidAttachmentException::fromExpectedType('resource');
         }
 
-        $resourceData = \stream_get_meta_data($attachment);
-        $name = $attachmentName ?? (isset($resourceData['uri']) ? \basename($resourceData['uri']) : null);
+        $resourceData = stream_get_meta_data($attachment);
+        $name = $attachmentName ?? (isset($resourceData['uri']) ? basename($resourceData['uri']) : null);
         $part = new Mime\Part($attachment);
 
         // Make sure encoding and disposition have a default value

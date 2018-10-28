@@ -3,7 +3,10 @@ declare(strict_types=1);
 
 namespace AcMailer\Exception;
 
-class EmailNotFoundException extends \RuntimeException implements ExceptionInterface
+use RuntimeException;
+use function sprintf;
+
+class EmailNotFoundException extends RuntimeException implements ExceptionInterface
 {
     public static function fromName(string $name): self
     {

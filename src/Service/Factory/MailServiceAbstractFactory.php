@@ -24,6 +24,19 @@ use Zend\Mail\Transport;
 use Zend\ServiceManager\Factory\AbstractFactoryInterface;
 use Zend\Stdlib\ArrayUtils;
 use Zend\View\Renderer\RendererInterface;
+use function array_key_exists;
+use function array_keys;
+use function count;
+use function explode;
+use function get_class;
+use function gettype;
+use function implode;
+use function in_array;
+use function is_array;
+use function is_object;
+use function is_string;
+use function is_subclass_of;
+use function sprintf;
 
 class MailServiceAbstractFactory implements AbstractFactoryInterface
 {
@@ -47,8 +60,8 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
      */
     public function canCreate(ContainerInterface $container, $requestedName): bool
     {
-        $parts = \explode('.', $requestedName);
-        if (\count($parts) !== 3) {
+        $parts = explode('.', $requestedName);
+        if (count($parts) !== 3) {
             return false;
         }
 
@@ -58,7 +71,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
 
         $specificServiceName = $parts[2];
         $config = $container->get('config')['acmailer_options']['mail_services'] ?? [];
-        return \array_key_exists($specificServiceName, $config);
+        return array_key_exists($specificServiceName, $config);
     }
 
     /**
@@ -76,12 +89,12 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null): MailService
     {
-        $specificServiceName = \explode('.', $requestedName)[2] ?? null;
+        $specificServiceName = explode('.', $requestedName)[2] ?? null;
         $mailOptions = $container->get('config')['acmailer_options'] ?? [];
         $specificMailServiceOptions = $mailOptions['mail_services'][$specificServiceName] ?? null;
 
         if ($specificMailServiceOptions === null) {
-            throw new Exception\ServiceNotCreatedException(\sprintf(
+            throw new Exception\ServiceNotCreatedException(sprintf(
                 'Requested MailService with name "%s" could not be found. Make sure you have registered it with name'
                 . ' "%s" under the acmailer_options.mail_services config entry',
                 $requestedName,
@@ -129,7 +142,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             unset($specificOptions['extends']);
 
             // Prevent an infinite loop by self inheritance
-            if (\in_array($serviceToExtend, $processedExtends, true)) {
+            if (in_array($serviceToExtend, $processedExtends, true)) {
                 throw new Exception\ServiceNotCreatedException(
                     'It wasn\'t possible to create a mail service due to circular inheritance. Review "extends".'
                 );
@@ -138,7 +151,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
 
             // Ensure the service from which we have to extend has been configured
             if (! isset($mailServices[$serviceToExtend])) {
-                throw new Exception\InvalidArgumentException(\sprintf(
+                throw new Exception\InvalidArgumentException(sprintf(
                     'Provided service "%s" to extend from is not configured inside acmailer_options.mail_services',
                     $serviceToExtend
                 ));
@@ -161,7 +174,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
     private function createTransport(ContainerInterface $container, array $mailOptions): Transport\TransportInterface
     {
         $transport = $mailOptions['transport'] ?? Transport\Sendmail::class;
-        if (! \is_string($transport) && ! $transport instanceof Transport\TransportInterface) {
+        if (! is_string($transport) && ! $transport instanceof Transport\TransportInterface) {
             // The adapter is not valid. Throw an exception
             throw Exception\InvalidArgumentException::fromValidTypes(
                 ['string', Transport\TransportInterface::class],
@@ -177,7 +190,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
 
         // Check if the adapter is one of Zend's default adapters
         $transport = self::TRANSPORT_MAP[$transport] ?? $transport;
-        if (\is_subclass_of($transport, Transport\TransportInterface::class)) {
+        if (is_subclass_of($transport, Transport\TransportInterface::class)) {
             return $this->setupTransportConfig(new $transport(), $mailOptions);
         }
 
@@ -189,7 +202,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
                 return $this->setupTransportConfig($transportInstance, $mailOptions);
             }
 
-            throw new Exception\InvalidArgumentException(\sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 'Provided transport service with name "%s" does not return a "%s" instance',
                 $transport,
                 Transport\TransportInterface::class
@@ -197,10 +210,10 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
         }
 
         // The adapter is not valid. Throw an exception
-        throw new Exception\InvalidArgumentException(\sprintf(
+        throw new Exception\InvalidArgumentException(sprintf(
             'Registered transport "%s" is not either one of ["%s"], a "%s" subclass or a registered service.',
             $transport,
-            \implode('", "', \array_keys(self::TRANSPORT_MAP)),
+            implode('", "', array_keys(self::TRANSPORT_MAP)),
             Transport\TransportInterface::class
         ));
     }
@@ -254,10 +267,10 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             return new MvcMailViewRenderer($renderer);
         }
 
-        throw new Exception\InvalidArgumentException(\sprintf(
+        throw new Exception\InvalidArgumentException(sprintf(
             'Defined renderer of type "%s" is not valid. The renderer must resolve to a instance of ["%s"] types',
-            \is_object($renderer) ? \get_class($renderer) : \gettype($renderer),
-            \implode(
+            is_object($renderer) ? get_class($renderer) : gettype($renderer),
+            implode(
                 '", "',
                 [MailViewRendererInterface::class, TemplateRendererInterface::class, RendererInterface::class]
             )
@@ -305,7 +318,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
     private function addDefinitions(array &$definitions, $listener, EventManagerInterface $events): void
     {
         $priority = 1;
-        if (\is_array($listener) && \array_key_exists('listener', $listener)) {
+        if (is_array($listener) && array_key_exists('listener', $listener)) {
             $listener = $listener['listener'];
             $priority = $listener['priority'] ?? 1;
         }
@@ -317,7 +330,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
         }
 
         // Ensure the listener is a string
-        if (! \is_string($listener)) {
+        if (! is_string($listener)) {
             throw Exception\InvalidArgumentException::fromValidTypes(
                 ['string', 'array', MailListenerInterface::class],
                 $listener,

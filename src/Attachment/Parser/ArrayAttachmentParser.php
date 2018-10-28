@@ -8,6 +8,9 @@ use AcMailer\Exception\InvalidAttachmentException;
 use Zend\Mime;
 use Zend\Mime\Exception\InvalidArgumentException;
 use Zend\Stdlib\ArrayUtils;
+use function is_array;
+use function method_exists;
+use function str_replace;
 
 class ArrayAttachmentParser implements AttachmentParserInterface
 {
@@ -22,7 +25,7 @@ class ArrayAttachmentParser implements AttachmentParserInterface
      */
     public function parse($attachment, string $attachmentName = null): Mime\Part
     {
-        if (! \is_array($attachment)) {
+        if (! is_array($attachment)) {
             throw InvalidAttachmentException::fromExpectedType('array');
         }
 
@@ -36,7 +39,7 @@ class ArrayAttachmentParser implements AttachmentParserInterface
         $part = new Mime\Part();
         foreach ($attachment as $property => $value) {
             $method = $this->buildSetter($property);
-            if (\method_exists($part, $method)) {
+            if (method_exists($part, $method)) {
                 $part->{$method}($value);
             }
         }

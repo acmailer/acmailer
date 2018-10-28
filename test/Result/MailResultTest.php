@@ -6,7 +6,9 @@ namespace AcMailerTest\Result;
 use AcMailer\Model\Email;
 use AcMailer\Result\MailResult;
 use AcMailer\Result\ResultInterface;
+use Exception;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 /**
  * Mail result test case
@@ -42,7 +44,7 @@ class MailResultTest extends TestCase
      * @param bool $isValid
      * @param \Throwable|null $e
      */
-    public function customValuesAreApplied(bool $isValid, \Throwable $e = null)
+    public function customValuesAreApplied(bool $isValid, Throwable $e = null)
     {
         $this->mailResult = new MailResult(new Email(), $isValid, $e);
 
@@ -57,7 +59,7 @@ class MailResultTest extends TestCase
         return [
             [true, null],
             [false, null],
-            [false, new \Exception()],
+            [false, new Exception()],
         ];
     }
 
@@ -67,7 +69,7 @@ class MailResultTest extends TestCase
      * @param bool $hasException
      * @param \Throwable|null $e
      */
-    public function exceptionReturnsExpectedValue(bool $hasException, \Throwable $e = null)
+    public function exceptionReturnsExpectedValue(bool $hasException, Throwable $e = null)
     {
         $this->mailResult = new MailResult(new Email(), false, $e);
 
@@ -78,7 +80,7 @@ class MailResultTest extends TestCase
     public function provideExceptions(): array
     {
         return [
-            [true, new \Exception()],
+            [true, new Exception()],
             [false, null],
         ];
     }

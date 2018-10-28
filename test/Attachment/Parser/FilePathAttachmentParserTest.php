@@ -5,9 +5,11 @@ namespace AcMailerTest\Attachment\Parser;
 
 use AcMailer\Attachment\Parser\FilePathAttachmentParser;
 use AcMailer\Exception\InvalidAttachmentException;
+use finfo;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Zend\Mime\Mime;
+use function basename;
 
 class FilePathAttachmentParserTest extends TestCase
 {
@@ -22,7 +24,7 @@ class FilePathAttachmentParserTest extends TestCase
 
     public function setUp()
     {
-        $this->finfo = $this->prophesize(\finfo::class);
+        $this->finfo = $this->prophesize(finfo::class);
         $this->parser = new FilePathAttachmentParser($this->finfo->reveal());
     }
 
@@ -50,8 +52,8 @@ class FilePathAttachmentParserTest extends TestCase
         $part = $this->parser->parse($attachment, $attachmentName);
 
         $this->assertEquals($part->type, 'text/plain');
-        $this->assertEquals($part->id, $attachmentName ?? \basename($attachment));
-        $this->assertEquals($part->filename, $attachmentName ?? \basename($attachment));
+        $this->assertEquals($part->id, $attachmentName ?? basename($attachment));
+        $this->assertEquals($part->filename, $attachmentName ?? basename($attachment));
         $this->assertEquals($part->encoding, Mime::ENCODING_BASE64);
         $this->assertEquals($part->disposition, Mime::DISPOSITION_ATTACHMENT);
         $getMimeType->shouldHaveBeenCalled();

@@ -5,6 +5,7 @@ namespace AcMailer\Model;
 
 use AcMailer\Exception;
 use Zend\Stdlib\ArrayUtils;
+use function in_array;
 
 class EmailBuilder implements EmailBuilderInterface
 {
@@ -46,7 +47,7 @@ class EmailBuilder implements EmailBuilderInterface
 
         // Get the email from which to extend, and ensure it has not been processed yet, to prevent an infinite loop
         $emailToExtend = $options['extends'];
-        if (\in_array($emailToExtend, $alreadyExtendedEmails, true)) {
+        if (in_array($emailToExtend, $alreadyExtendedEmails, true)) {
             throw new Exception\InvalidArgumentException(
                 'It wasn\'t possible to create an email due to circular inheritance. Review "extends".'
             );
