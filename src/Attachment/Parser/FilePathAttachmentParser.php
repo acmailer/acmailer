@@ -5,8 +5,14 @@ namespace AcMailer\Attachment\Parser;
 
 use AcMailer\Attachment\Helper\AttachmentHelperTrait;
 use AcMailer\Exception\InvalidAttachmentException;
+use finfo;
 use Zend\Mime;
 use Zend\Mime\Exception\InvalidArgumentException;
+use const FILEINFO_MIME_TYPE;
+use function basename;
+use function fopen;
+use function is_file;
+use function is_string;
 
 class FilePathAttachmentParser implements AttachmentParserInterface
 {
@@ -17,9 +23,9 @@ class FilePathAttachmentParser implements AttachmentParserInterface
      */
     private $finfo;
 
-    public function __construct(\finfo $finfo = null)
+    public function __construct(finfo $finfo = null)
     {
-        $this->finfo = $finfo ?: new \finfo(\FILEINFO_MIME_TYPE);
+        $this->finfo = $finfo ?: new finfo(FILEINFO_MIME_TYPE);
     }
 
     /**
@@ -31,11 +37,11 @@ class FilePathAttachmentParser implements AttachmentParserInterface
      */
     public function parse($attachment, string $attachmentName = null): Mime\Part
     {
-        if (! \is_string($attachment) || ! \is_file($attachment)) {
+        if (! is_string($attachment) || ! is_file($attachment)) {
             throw InvalidAttachmentException::fromExpectedType('file path');
         }
 
-        $part = new Mime\Part(\fopen($attachment, 'r+b'));
+        $part = new Mime\Part(fopen($attachment, 'r+b'));
         $part->type = $this->finfo->file($attachment);
 
         // Make sure encoding and disposition have a default value
@@ -43,7 +49,7 @@ class FilePathAttachmentParser implements AttachmentParserInterface
         $part->disposition = Mime\Mime::DISPOSITION_ATTACHMENT;
 
         // If the attachment name is not defined, use the attachment's \basename
-        $name = $attachmentName ?? \basename($attachment);
+        $name = $attachmentName ?? basename($attachment);
         return $this->applyNameToPart($part, $name);
     }
 }

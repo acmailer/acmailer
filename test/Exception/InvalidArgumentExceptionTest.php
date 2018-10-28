@@ -5,6 +5,7 @@ namespace AcMailerTest\Exception;
 
 use AcMailer\Exception\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class InvalidArgumentExceptionTest extends TestCase
 {
@@ -29,7 +30,7 @@ class InvalidArgumentExceptionTest extends TestCase
         return [
             [
                 ['foo', 'bar'],
-                new \stdClass(),
+                new stdClass(),
                 'the_field',
                 'Provided the_field is not valid. Expected one of ["foo", "bar"], but "stdClass" was provided',
             ],

@@ -7,6 +7,7 @@ use AcMailer\Attachment\Parser\MimePartAttachmentParser;
 use AcMailer\Exception\InvalidAttachmentException;
 use PHPUnit\Framework\TestCase;
 use Zend\Mime\Part;
+use function sprintf;
 
 class MimePartAttachmentParserTest extends TestCase
 {
@@ -27,7 +28,7 @@ class MimePartAttachmentParserTest extends TestCase
     {
         $this->expectException(InvalidAttachmentException::class);
         $this->expectExceptionMessage(
-            \sprintf('Provided attachment is not valid. Expected "%s"', Part::class)
+            sprintf('Provided attachment is not valid. Expected "%s"', Part::class)
         );
         $this->parser->parse('');
     }

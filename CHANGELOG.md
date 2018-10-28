@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## [Unreleased]
+
+#### Added
+
+* [#211](https://github.com/acelaya/ZF-AcMailer/issues/211) Added PHP 7.3 to the build matrix.
+
+#### Changed
+
+* [#212](https://github.com/acelaya/ZF-AcMailer/issues/212) Performance and maintainability slightly improved by enforcing via code sniffer that all global namespace classes, functions and constants are explicitly imported.
+
+#### Deprecated
+
+* *Nothing*
+
+#### Removed
+
+* *Nothing*
+
+#### Fixed
+
+* *Nothing*
+
 
 ## 7.3.1 - 2018-09-02
 

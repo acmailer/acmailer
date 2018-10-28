@@ -8,6 +8,7 @@ use AcMailer\View\MailViewRendererFactory;
 use AcMailer\View\MvcMailViewRenderer;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use ReflectionObject;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver;
@@ -106,7 +107,7 @@ class MailViewRendererFactoryTest extends TestCase
         ]);
 
         $result = $this->factory->__invoke($container->reveal());
-        $ref = new \ReflectionObject($result);
+        $ref = new ReflectionObject($result);
         $wrappedRenderer = $ref->getProperty('renderer');
         $wrappedRenderer->setAccessible(true);
         /** @var PhpRenderer $wrappedRenderer */

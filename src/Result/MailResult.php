@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace AcMailer\Result;
 
 use AcMailer\Model\Email;
+use Throwable;
 
 /**
  * Object returned by send method in MailService
@@ -26,7 +27,7 @@ class MailResult implements ResultInterface
      */
     private $exception;
 
-    public function __construct(Email $email, bool $valid = true, \Throwable $exception = null)
+    public function __construct(Email $email, bool $valid = true, Throwable $exception = null)
     {
         $this->email = $email;
         $this->valid = $valid;

@@ -5,7 +5,9 @@ namespace AcMailerTest\Model;
 
 use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Model\Email;
+use Exception;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 use Zend\Mime\Part;
 
 class EmailTest extends TestCase
@@ -35,8 +37,8 @@ class EmailTest extends TestCase
     {
         return [
             [null],
-            [new \stdClass()],
-            [new \Exception()],
+            [new stdClass()],
+            [new Exception()],
         ];
     }
 
@@ -55,7 +57,7 @@ class EmailTest extends TestCase
     {
         return [
             [['foo', null]],
-            [[new \stdClass()]],
+            [[new stdClass()]],
             [[new Part(), 5]],
         ];
     }

@@ -4,9 +4,16 @@ declare(strict_types=1);
 namespace AcMailer\Model;
 
 use AcMailer\Exception\InvalidArgumentException;
+use DirectoryIterator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use Zend\Mime\Message;
 use Zend\Mime\Part;
 use Zend\Stdlib\AbstractOptions;
+use function is_array;
+use function is_dir;
+use function is_resource;
+use function is_string;
 
 final class Email extends AbstractOptions
 {
@@ -278,7 +285,7 @@ final class Email extends AbstractOptions
      */
     public function setBody($body): self
     {
-        if (! \is_string($body) && ! $body instanceof Part && ! $body instanceof Message) {
+        if (! is_string($body) && ! $body instanceof Part && ! $body instanceof Message) {
             throw InvalidArgumentException::fromValidTypes(['string', Part::class, Message::class], $body, 'body');
         }
 
@@ -294,9 +301,9 @@ final class Email extends AbstractOptions
      */
     public function addAttachment($file, string $filename = null): self
     {
-        if (! \is_string($file)
-            && ! \is_array($file)
-            && ! \is_resource($file)
+        if (! is_string($file)
+            && ! is_array($file)
+            && ! is_resource($file)
             && ! $file instanceof Part
             && ! $file instanceof Attachment
         ) {
@@ -323,7 +330,7 @@ final class Email extends AbstractOptions
     public function addAttachments(array $files): self
     {
         foreach ($files as $key => $file) {
-            $this->addAttachment($file, \is_string($key) ? $key : null);
+            $this->addAttachment($file, is_string($key) ? $key : null);
         }
 
         return $this;
@@ -394,11 +401,11 @@ final class Email extends AbstractOptions
         $path = $dir['path'] ?? null;
         $recursive = $dir['recursive'] ?? false;
 
-        if (\is_string($path) && \is_dir($path)) {
-            $files = $recursive ? new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS),
-                \RecursiveIteratorIterator::CHILD_FIRST
-            ) : new \DirectoryIterator($path);
+        if (is_string($path) && is_dir($path)) {
+            $files = $recursive ? new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS),
+                RecursiveIteratorIterator::CHILD_FIRST
+            ) : new DirectoryIterator($path);
 
             /* @var \SplFileInfo $fileInfo */
             foreach ($files as $fileInfo) {

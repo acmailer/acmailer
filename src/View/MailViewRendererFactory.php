@@ -18,6 +18,8 @@ use Zend\View\Resolver\AggregateResolver;
 use Zend\View\Resolver\ResolverInterface;
 use Zend\View\Resolver\TemplateMapResolver;
 use Zend\View\Resolver\TemplatePathStack;
+use function array_shift;
+use function count;
 
 class MailViewRendererFactory
 {
@@ -115,8 +117,8 @@ class MailViewRendererFactory
      */
     private function buildTemplateResolverFromStack(array $resolversStack): ?ResolverInterface
     {
-        if (\count($resolversStack) <= 1) {
-            return \array_shift($resolversStack);
+        if (count($resolversStack) <= 1) {
+            return array_shift($resolversStack);
         }
 
         // Attach all resolvers to the aggregate, if there's more than one

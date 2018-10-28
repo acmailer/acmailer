@@ -14,15 +14,19 @@ use AcMailer\Model\Email;
 use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Service\MailService;
 use AcMailer\View\MailViewRendererInterface;
+use Exception;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use stdClass;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ResponseCollection;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mime\Part;
+use function count;
+use function is_object;
 
 class MailServiceTest extends TestCase
 {
@@ -85,7 +89,7 @@ class MailServiceTest extends TestCase
     {
         return [
             [null],
-            [new \stdClass()],
+            [new stdClass()],
             [50],
         ];
     }
@@ -103,7 +107,7 @@ class MailServiceTest extends TestCase
 
         $this->mailService->send($email);
 
-        $buildEmail->shouldHaveBeenCalledTimes(\is_object($email) ? 0 : 1);
+        $buildEmail->shouldHaveBeenCalledTimes(is_object($email) ? 0 : 1);
         $send->shouldHaveBeenCalled();
         $trigger->shouldHaveBeenCalledTimes(3);
     }
@@ -122,7 +126,7 @@ class MailServiceTest extends TestCase
      */
     public function exceptionIsThrownInCaseOfError()
     {
-        $this->transport->send(Argument::type(Message::class))->willThrow(\Exception::class)
+        $this->transport->send(Argument::type(Message::class))->willThrow(Exception::class)
                                                               ->shouldBeCalled();
         $this->eventManager->triggerEvent(Argument::cetera())->willReturn(new ResponseCollection())
                                                              ->shouldBeCalled();
@@ -211,7 +215,7 @@ class MailServiceTest extends TestCase
         $getStringParser->shouldHaveBeenCalled();
         $getArrayParser->shouldHaveBeenCalled();
         $getFooParser->shouldHaveBeenCalled();
-        $parse->shouldHaveBeenCalledTimes(\count($attachments));
+        $parse->shouldHaveBeenCalledTimes(count($attachments));
     }
 
     /**
@@ -264,7 +268,7 @@ class MailServiceTest extends TestCase
         $trigger->shouldHaveBeenCalled();
         $hasFooParser->shouldHaveBeenCalled();
         $getFooParser->shouldHaveBeenCalled();
-        $parse->shouldHaveBeenCalledTimes(\count($attachments));
+        $parse->shouldHaveBeenCalledTimes(count($attachments));
     }
 
     /**
@@ -334,7 +338,7 @@ class MailServiceTest extends TestCase
 
         $this->mailService->send($email);
 
-        $buildEmail->shouldHaveBeenCalledTimes(\is_object($email) ? 0 : 1);
+        $buildEmail->shouldHaveBeenCalledTimes(is_object($email) ? 0 : 1);
         $send->shouldHaveBeenCalled();
         $trigger->shouldHaveBeenCalledTimes(3);
     }
