@@ -9,6 +9,7 @@
 #### Changed
 
 * [#212](https://github.com/acelaya/ZF-AcMailer/issues/212) Performance and maintainability slightly improved by enforcing via code sniffer that all global namespace classes, functions and constants are explicitly imported.
+* [#215](https://github.com/acelaya/ZF-AcMailer/issues/215) Updated infection to v0.11.
 
 #### Deprecated
 
