@@ -9,9 +9,7 @@ use function in_array;
 
 class EmailBuilder implements EmailBuilderInterface
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     private $emailsConfig;
 
     public function __construct(array $emailsConfig)

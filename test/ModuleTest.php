@@ -13,9 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ModuleTest extends TestCase
 {
-    /**
-     * @var Module
-     */
+    /** @var Module */
     private $module;
 
     public function setUp()

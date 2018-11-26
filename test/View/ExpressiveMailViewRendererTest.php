@@ -10,13 +10,9 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 
 class ExpressiveMailViewRendererTest extends TestCase
 {
-    /**
-     * @var ExpressiveMailViewRenderer
-     */
+    /** @var ExpressiveMailViewRenderer */
     private $expressiveRenderer;
-    /**
-     * @var ObjectProphecy
-     */
+    /** @var ObjectProphecy */
     private $innerRenderer;
 
     public function setUp()

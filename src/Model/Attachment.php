@@ -5,13 +5,9 @@ namespace AcMailer\Model;
 
 final class Attachment
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $parserName;
-    /**
-     * @var mixed
-     */
+    /** @var mixed */
     private $value;
 
     public function __construct(string $parserName, $value)

@@ -11,9 +11,7 @@ use function fopen;
 
 class ResourceAttachmentParserTest extends TestCase
 {
-    /**
-     * @var ResourceAttachmentParser
-     */
+    /** @var ResourceAttachmentParser */
     private $parser;
 
     public function setUp()

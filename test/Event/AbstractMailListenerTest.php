@@ -10,9 +10,7 @@ use Zend\EventManager\EventManagerInterface;
 
 class AbstractMailListenerTest extends TestCase
 {
-    /**
-     * @var AbstractMailListener
-     */
+    /** @var AbstractMailListener */
     private $mailListener;
 
     public function setUp()

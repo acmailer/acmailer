@@ -15,9 +15,7 @@ use Zend\View\Resolver;
 
 class MailViewRendererFactoryTest extends TestCase
 {
-    /**
-     * @var MailViewRendererFactory
-     */
+    /** @var MailViewRendererFactory */
     private $factory;
 
     public function setUp()

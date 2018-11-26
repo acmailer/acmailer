@@ -11,9 +11,7 @@ use Psr\Container\ContainerInterface;
 
 class EmailBuilderFactoryTest extends TestCase
 {
-    /**
-     * @var EmailBuilderFactory
-     */
+    /** @var EmailBuilderFactory */
     private $factory;
 
     public function setUp()

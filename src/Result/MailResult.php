@@ -14,17 +14,11 @@ use Throwable;
  */
 class MailResult implements ResultInterface
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $valid;
-    /**
-     * @var Email
-     */
+    /** @var Email */
     private $email;
-    /**
-     * @var \Throwable
-     */
+    /** @var \Throwable */
     private $exception;
 
     public function __construct(Email $email, bool $valid = true, Throwable $exception = null)

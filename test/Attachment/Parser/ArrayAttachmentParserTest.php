@@ -10,9 +10,7 @@ use Zend\Mime\Mime;
 
 class ArrayAttachmentParserTest extends TestCase
 {
-    /**
-     * @var ArrayAttachmentParser
-     */
+    /** @var ArrayAttachmentParser */
     private $parser;
 
     public function setUp()
