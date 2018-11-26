@@ -8,9 +8,7 @@ use Zend\View\Renderer\RendererInterface;
 
 class MvcMailViewRenderer implements MailViewRendererInterface
 {
-    /**
-     * @var RendererInterface
-     */
+    /** @var RendererInterface */
     private $renderer;
 
     public function __construct(RendererInterface $renderer)

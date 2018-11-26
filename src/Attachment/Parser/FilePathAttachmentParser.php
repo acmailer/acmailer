@@ -18,9 +18,7 @@ class FilePathAttachmentParser implements AttachmentParserInterface
 {
     use AttachmentHelperTrait;
 
-    /**
-     * @var \finfo
-     */
+    /** @var \finfo */
     private $finfo;
 
     public function __construct(finfo $finfo = null)

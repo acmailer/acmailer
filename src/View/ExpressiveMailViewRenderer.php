@@ -7,9 +7,7 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 
 class ExpressiveMailViewRenderer implements MailViewRendererInterface
 {
-    /**
-     * @var TemplateRendererInterface
-     */
+    /** @var TemplateRendererInterface */
     private $renderer;
 
     public function __construct(TemplateRendererInterface $renderer)

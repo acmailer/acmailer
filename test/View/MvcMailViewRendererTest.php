@@ -13,13 +13,9 @@ use Zend\View\Renderer\RendererInterface;
 
 class MvcMailViewRendererTest extends TestCase
 {
-    /**
-     * @var MvcMailViewRenderer
-     */
+    /** @var MvcMailViewRenderer */
     private $mvcRenderer;
-    /**
-     * @var ObjectProphecy
-     */
+    /** @var ObjectProphecy */
     private $innerRenderer;
 
     public function setUp()

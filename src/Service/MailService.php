@@ -44,25 +44,15 @@ use function strip_tags;
  */
 class MailService implements MailServiceInterface, EventsCapableInterface, MailListenerAwareInterface
 {
-    /**
-     * @var TransportInterface
-     */
+    /** @var TransportInterface */
     private $transport;
-    /**
-     * @var MailViewRendererInterface
-     */
+    /** @var MailViewRendererInterface */
     private $renderer;
-    /**
-     * @var EventManagerInterface
-     */
+    /** @var EventManagerInterface */
     private $events;
-    /**
-     * @var EmailBuilderInterface
-     */
+    /** @var EmailBuilderInterface */
     private $emailBuilder;
-    /**
-     * @var AttachmentParserManagerInterface
-     */
+    /** @var AttachmentParserManagerInterface */
     private $attachmentParserManager;
 
     /**

@@ -30,29 +30,17 @@ use function is_object;
 
 class MailServiceTest extends TestCase
 {
-    /**
-     * @var MailService
-     */
+    /** @var MailService */
     private $mailService;
-    /**
-     * @var ObjectProphecy
-     */
+    /** @var ObjectProphecy */
     private $transport;
-    /**
-     * @var ObjectProphecy
-     */
+    /** @var ObjectProphecy */
     private $renderer;
-    /**
-     * @var ObjectProphecy
-     */
+    /** @var ObjectProphecy */
     private $emailBuilder;
-    /**
-     * @var ObjectProphecy
-     */
+    /** @var ObjectProphecy */
     private $eventManager;
-    /**
-     * @var ObjectProphecy
-     */
+    /** @var ObjectProphecy */
     private $attachmentParsers;
 
     public function setUp()

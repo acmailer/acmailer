@@ -29,13 +29,9 @@ use function sprintf;
 
 class MailServiceAbstractFactoryTest extends TestCase
 {
-    /**
-     * @var MailServiceAbstractFactory
-     */
+    /** @var MailServiceAbstractFactory */
     private $factory;
-    /**
-     * @var ObjectProphecy
-     */
+    /** @var ObjectProphecy */
     private $container;
 
     public function setUp()

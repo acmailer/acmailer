@@ -12,9 +12,7 @@ use Zend\Mime\Part;
 
 class EmailTest extends TestCase
 {
-    /**
-     * @var Email
-     */
+    /** @var Email */
     private $email;
 
     public function setUp()
