@@ -36,7 +36,7 @@ class ResourceAttachmentParserTest extends TestCase
      */
     public function providedAttachmentIsParsedIntoPart(string $attachmentName = null)
     {
-        $attachment = fopen(__DIR__ . '/../../attachments/file2', 'r+b');
+        $attachment = fopen(__DIR__ . '/../../../test-resources/attachments/file2', 'rb');
 
         $part = $this->parser->parse($attachment, $attachmentName);
 

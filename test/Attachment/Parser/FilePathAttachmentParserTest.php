@@ -41,7 +41,7 @@ class FilePathAttachmentParserTest extends TestCase
      */
     public function providedAttachmentIsParsedIntoPart(string $attachmentName = null)
     {
-        $attachment = __DIR__ . '/../../attachments/file1';
+        $attachment = __DIR__ . '/../../../test-resources/attachments/file1';
 
         $getMimeType = $this->finfo->file($attachment)->willReturn('text/plain');
 
