@@ -34,7 +34,7 @@ install:
 
 script:
   - mkdir build
-  - mkdir test/attachments/dir/dirdept
+  - mkdir test-resources/attachments/dir/dirdept
   - if [[ $DEPS == 'latest' ]]; then composer ac:ci ; fi
   - if [[ $DEPS == 'lowest' ]]; then composer ac:test ; fi
 

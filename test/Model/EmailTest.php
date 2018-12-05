@@ -77,10 +77,10 @@ class EmailTest extends TestCase
      */
     public function attachmentsAreProperlyComputed()
     {
-        $this->email->addAttachment(__DIR__ . '/../attachments/file1');
-        $this->email->addAttachment(__DIR__ . '/../attachments/file2');
+        $this->email->addAttachment(__DIR__ . '/../../test-resources/attachments/file1');
+        $this->email->addAttachment(__DIR__ . '/../../test-resources/attachments/file2');
         $this->email->setAttachmentsDir([
-            'path' => __DIR__ . '/../attachments/dir',
+            'path' => __DIR__ . '/../../test-resources/attachments/dir',
             'recursive' => true,
         ]);
 
