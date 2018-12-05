@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [Unreleased]
+## 7.3.2 - 2018-12-05
 
 #### Added
 
@@ -22,7 +22,7 @@
 
 #### Fixed
 
-* *Nothing*
+* [#218](https://github.com/acelaya/ZF-AcMailer/issues/218) Fixed `FilePathAttachmentParser` trying to acquire write permissions on provided attachment when it does not really need that permission, which could result in filesystem errors.
 
 
 ## 7.3.1 - 2018-09-02
