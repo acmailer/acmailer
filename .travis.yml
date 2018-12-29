@@ -41,5 +41,3 @@ script:
 after_success:
   - if [[ $DEPS == 'latest' ]]; then wget https://scrutinizer-ci.com/ocular.phar ; fi
   - if [[ $DEPS == 'latest' ]]; then php ocular.phar code-coverage:upload --format=php-clover build/clover.xml ; fi
-
-sudo: false
