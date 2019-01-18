@@ -1,5 +1,32 @@
 # CHANGELOG
 
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
+
+## 7.3.3 - 2019-01-18
+
+#### Added
+
+* *Nothing*
+
+#### Changed
+
+* *Nothing*
+
+#### Deprecated
+
+* *Nothing*
+
+#### Removed
+
+* *Nothing*
+
+#### Fixed
+
+* [#222](https://github.com/acelaya/ZF-AcMailer/issues/222) Fixed transport options being set on transports that have been configured as a plain instance or a service name. Now those transports are returned as they are in those two cases.
+
+
 ## 7.3.2 - 2018-12-05
 
 #### Added
