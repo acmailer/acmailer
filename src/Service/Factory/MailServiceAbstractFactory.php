@@ -185,13 +185,13 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
 
         // A transport instance can be returned as is
         if ($transport instanceof Transport\TransportInterface) {
-            return $this->setupTransportConfig($transport, $mailOptions);
+            return $transport;
         }
 
         // Check if the adapter is one of Zend's default adapters
         $transport = self::TRANSPORT_MAP[$transport] ?? $transport;
         if (is_subclass_of($transport, Transport\TransportInterface::class)) {
-            return $this->setupTransportConfig(new $transport(), $mailOptions);
+            return $this->setupStandardTransportFromConfig(new $transport(), $mailOptions);
         }
 
         // Check if the transport is a service
@@ -199,7 +199,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             /** @var Transport\TransportInterface $transport */
             $transportInstance = $container->get($transport);
             if ($transportInstance instanceof Transport\TransportInterface) {
-                return $this->setupTransportConfig($transportInstance, $mailOptions);
+                return $transportInstance;
             }
 
             throw new Exception\InvalidArgumentException(sprintf(
@@ -223,7 +223,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
      * @param array $mailOptions
      * @return Transport\TransportInterface
      */
-    private function setupTransportConfig(
+    private function setupStandardTransportFromConfig(
         Transport\TransportInterface $transport,
         array $mailOptions
     ): Transport\TransportInterface {

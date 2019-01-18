@@ -16,6 +16,7 @@ use AcMailer\View\MailViewRendererInterface;
 use AcMailer\View\MvcMailViewRenderer;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionObject;
 use stdClass;
@@ -137,6 +138,43 @@ class MailServiceAbstractFactoryTest extends TestCase
                 'renderer' => 'my_renderer',
             ]],
         ];
+    }
+
+    /**
+     * @test
+     */
+    public function standardTransportAsServiceIsKeptAsIs()
+    {
+        $this->container->get(MailViewRendererInterface::class)->willReturn(
+            $this->prophesize(MailViewRendererInterface::class)->reveal()
+        );
+        $this->container->get(EmailBuilder::class)->willReturn(
+            $this->prophesize(EmailBuilderInterface::class)->reveal()
+        );
+        $this->container->get(AttachmentParserManager::class)->willReturn(
+            $this->prophesize(AttachmentParserManager::class)->reveal()
+        );
+
+        $transportServiceName = 'custom.mail.transport';
+        $this->container->get('config')->willReturn([
+            'acmailer_options' => [
+                'mail_services' => [
+                    'default' => [
+                        'transport' => $transportServiceName,
+                    ],
+                ],
+            ],
+        ]);
+
+        $transport = $this->prophesize(Smtp::class);
+        $setTransportOptions = $transport->setOptions(Argument::any())->willReturn($transport->reveal());
+        $this->container->has($transportServiceName)->willReturn(true);
+        $this->container->get($transportServiceName)->willReturn($transport->reveal());
+
+        $result = $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
+
+        $this->assertInstanceOf(MailService::class, $result);
+        $setTransportOptions->shouldNotHaveBeenCalled();
     }
 
     /**
