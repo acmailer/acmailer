@@ -29,7 +29,7 @@
     },
     "require-dev": {
         "infection/infection": "^0.11.0",
-        "phpstan/phpstan": "^0.10.0",
+        "phpstan/phpstan": "^0.11.0",
         "phpunit/phpunit": "^7.0",
         "shlinkio/php-coding-standard": "1.0.0",
         "zendframework/zend-expressive-template": "^1.0 || ^2.0",
@@ -74,8 +74,8 @@
         "ac:test": "phpunit --colors=always --coverage-clover build/clover.xml",
         "ac:test:pretty": "phpunit --colors=always --coverage-html build/html",
         "ac:test:ci": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-clover=build/clover.xml --coverage-xml=build/coverage-xml --log-junit=build/phpunit.junit.xml",
-        "ac:infection": "infection --threads=4 --min-msi=80 --log-verbosity=2 --only-covered --coverage=build",
-        "ac:infection:show": "infection --threads=4 --min-msi=80 --only-covered --log-verbosity=2 --show-mutations"
+        "ac:infection": "infection --threads=4 --min-msi=80 --log-verbosity=default --only-covered --coverage=build",
+        "ac:infection:show": "infection --threads=4 --min-msi=80 --only-covered --log-verbosity=default --show-mutations"
     },
     "scripts-descriptions": {
         "ac:cs": "Check coding styles with PHP_CodeSniffer",
