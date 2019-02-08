@@ -38,8 +38,8 @@ install:
 script:
   - mkdir build
   - mkdir test-resources/attachments/dir/dirdept
-  - if [[ $DEPS == 'latest' ]]; then composer ac:ci ; fi
-  - if [[ $DEPS == 'lowest' ]]; then composer ac:test ; fi
+  - if [[ $DEPS == 'latest' ]]; then composer ci ; fi
+  - if [[ $DEPS == 'lowest' ]]; then composer test ; fi
 
 after_success:
   - if [[ $DEPS == 'latest' ]]; then wget https://scrutinizer-ci.com/ocular.phar ; fi

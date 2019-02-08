@@ -61,30 +61,30 @@
         }
     },
     "scripts": {
-        "ac:ci": [
-            "@ac:cs",
-            "@ac:stan",
-            "@ac:test:ci",
-            "@ac:infection"
+        "ci": [
+            "@cs",
+            "@stan",
+            "@test:ci",
+            "@infection"
         ],
 
-        "ac:cs": "phpcs",
-        "ac:cs:fix": "phpcbf",
-        "ac:stan": "phpstan analyse src/ --level=6",
-        "ac:test": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-clover build/clover.xml",
-        "ac:test:pretty": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-html build/html",
-        "ac:test:ci": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-clover=build/clover.xml --coverage-xml=build/coverage-xml --log-junit=build/phpunit.junit.xml",
-        "ac:infection": "infection --threads=4 --min-msi=80 --log-verbosity=default --only-covered --coverage=build",
-        "ac:infection:show": "infection --threads=4 --min-msi=80 --only-covered --log-verbosity=default --show-mutations"
+        "cs": "phpcs",
+        "cs:fix": "phpcbf",
+        "stan": "phpstan analyse src/ --level=6",
+        "test": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-clover build/clover.xml",
+        "test:pretty": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-html build/html",
+        "test:ci": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-clover=build/clover.xml --coverage-xml=build/coverage-xml --log-junit=build/phpunit.junit.xml",
+        "infection": "infection --threads=4 --min-msi=80 --log-verbosity=default --only-covered --coverage=build",
+        "infection:show": "infection --threads=4 --min-msi=80 --only-covered --log-verbosity=default --show-mutations"
     },
     "scripts-descriptions": {
-        "ac:cs": "Check coding styles with PHP_CodeSniffer",
-        "ac:cs:fix": "Fix coding styles with PHP Code beautifier",
-        "ac:stan": "Check code quality with phpstan",
-        "ac:test": "Run unit tests with phpunit",
-        "ac:test:ci": "Run unit tests with phpunit in the CI context",
-        "ac:infection": "Check tests quality using mutation testing with infection",
-        "ac:infection:show": "Check tests quality using mutation testing with infection, and displays the applied mutations",
-        "ac:ci": "Alias for \"cs\", \"stan\", \"test\" and \"infection\""
+        "cs": "Check coding styles with PHP_CodeSniffer",
+        "cs:fix": "Fix coding styles with PHP Code beautifier",
+        "stan": "Check code quality with phpstan",
+        "test": "Run unit tests with phpunit",
+        "test:ci": "Run unit tests with phpunit in the CI context",
+        "infection": "Check tests quality using mutation testing with infection",
+        "infection:show": "Check tests quality using mutation testing with infection, and displays the applied mutations",
+        "ci": "Alias for \"cs\", \"stan\", \"test\" and \"infection\""
     }
 }
