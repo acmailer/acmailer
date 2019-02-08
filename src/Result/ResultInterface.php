@@ -5,11 +5,6 @@ namespace AcMailer\Result;
 
 use AcMailer\Model\Email;
 
-/**
- *
- * @author Alejandro Celaya Alastrué
- * @link http://www.alejandrocelaya.com
- */
 interface ResultInterface
 {
     /**

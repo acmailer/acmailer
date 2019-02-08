@@ -37,11 +37,6 @@ use function is_string;
 use function sprintf;
 use function strip_tags;
 
-/**
- * Wraps Zend\Mail functionality
- * @author Alejandro Celaya Alastrué
- * @link http://www.alejandrocelaya.com
- */
 class MailService implements MailServiceInterface, EventsCapableInterface, MailListenerAwareInterface
 {
     /** @var TransportInterface */

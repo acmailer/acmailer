@@ -3,11 +3,6 @@ declare(strict_types=1);
 
 namespace AcMailer\Event;
 
-/**
- * Class AbstractMailListener
- * @author Alejandro Celaya Alastrué
- * @link http://www.alejandrocelaya.com
- */
 abstract class AbstractMailListener implements MailListenerInterface
 {
     use MailListenerTrait;

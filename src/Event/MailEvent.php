@@ -8,11 +8,6 @@ use AcMailer\Result\ResultAwareInterface;
 use AcMailer\Result\ResultInterface;
 use Zend\EventManager\Event;
 
-/**
- * Encapsulation of a Mail event
- * @author Alejandro Celaya Alastrué
- * @link http://www.alejandrocelaya.com
- */
 class MailEvent extends Event implements ResultAwareInterface
 {
     public const EVENT_MAIL_PRE_RENDER = 'event.mail.pre.render';

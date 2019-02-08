@@ -10,11 +10,6 @@ use function implode;
 use function is_object;
 use function sprintf;
 
-/**
- * Exception produced when an argument provided for an AcMailer method is not valid
- * @author Alejandro Celaya Alastrué
- * @link http://www.alejandrocelaya.com
- */
 class InvalidArgumentException extends SplInvalidArgumentException implements ExceptionInterface
 {
     public static function fromValidTypes(array $types, $value, string $fieldName = 'value'): self

@@ -6,12 +6,6 @@ namespace AcMailer\Result;
 use AcMailer\Model\Email;
 use Throwable;
 
-/**
- * Object returned by send method in MailService
- * @see \AcMailer\Service\MailServiceInterface
- * @author Alejandro Celaya Alastrué
- * @link http://www.alejandrocelaya.com
- */
 class MailResult implements ResultInterface
 {
     /** @var bool */

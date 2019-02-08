@@ -13,7 +13,7 @@ class ArrayAttachmentParserTest extends TestCase
     /** @var ArrayAttachmentParser */
     private $parser;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->parser = new ArrayAttachmentParser();
     }
@@ -21,7 +21,7 @@ class ArrayAttachmentParserTest extends TestCase
     /**
      * @test
      */
-    public function exceptionIsThrownIfAttachmentHasInvalidType()
+    public function exceptionIsThrownIfAttachmentHasInvalidType(): void
     {
         $this->expectException(InvalidAttachmentException::class);
         $this->expectExceptionMessage('Provided attachment is not valid. Expected "array"');
@@ -31,7 +31,7 @@ class ArrayAttachmentParserTest extends TestCase
     /**
      * @test
      */
-    public function providedAttachmentIsParsedIntoPart()
+    public function providedAttachmentIsParsedIntoPart(): void
     {
         $attachment = [
             'id' => 'something',
@@ -52,7 +52,7 @@ class ArrayAttachmentParserTest extends TestCase
     /**
      * @test
      */
-    public function idAndNameAreOverriddenIfNameIsProvided()
+    public function idAndNameAreOverriddenIfNameIsProvided(): void
     {
         $attachment = [
             'id' => 'something',

@@ -15,7 +15,7 @@ class EmailTest extends TestCase
     /** @var Email */
     private $email;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->email = new Email();
     }
@@ -25,19 +25,17 @@ class EmailTest extends TestCase
      * @test
      * @dataProvider provideInvalidBodies
      */
-    public function setBodyThrowsExceptionIfValueIsNotValid($invalidBody)
+    public function setBodyThrowsExceptionIfValueIsNotValid($invalidBody): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->email->setBody($invalidBody);
     }
 
-    public function provideInvalidBodies(): array
+    public function provideInvalidBodies(): iterable
     {
-        return [
-            [null],
-            [new stdClass()],
-            [new Exception()],
-        ];
+        yield [null];
+        yield [new stdClass()];
+        yield [new Exception()];
     }
 
     /**
@@ -45,25 +43,23 @@ class EmailTest extends TestCase
      * @test
      * @dataProvider provideInvalidAttachments
      */
-    public function setInvalidAttachmentsThrowsException(array $invalidAttachments)
+    public function setInvalidAttachmentsThrowsException(array $invalidAttachments): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->email->setAttachments($invalidAttachments);
     }
 
-    public function provideInvalidAttachments(): array
+    public function provideInvalidAttachments(): iterable
     {
-        return [
-            [['foo', null]],
-            [[new stdClass()]],
-            [[new Part(), 5]],
-        ];
+        yield [['foo', null]];
+        yield [[new stdClass()]];
+        yield [[new Part(), 5]];
     }
 
     /**
      * @test
      */
-    public function providedNamesAreSavedForAttachments()
+    public function providedNamesAreSavedForAttachments(): void
     {
         $this->email->addAttachments([
             'foo' => __FILE__,
@@ -75,7 +71,7 @@ class EmailTest extends TestCase
     /**
      * @test
      */
-    public function attachmentsAreProperlyComputed()
+    public function attachmentsAreProperlyComputed(): void
     {
         $this->email->addAttachment(__DIR__ . '/../../test-resources/attachments/file1');
         $this->email->addAttachment(__DIR__ . '/../../test-resources/attachments/file2');

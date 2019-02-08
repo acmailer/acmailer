@@ -3,11 +3,6 @@ declare(strict_types=1);
 
 namespace AcMailer\Result;
 
-/**
- * Interface ResultAwareInterface
- * @author Alejandro Celaya Alastrué
- * @link http://www.alejandrocelaya.com
- */
 interface ResultAwareInterface
 {
     /**

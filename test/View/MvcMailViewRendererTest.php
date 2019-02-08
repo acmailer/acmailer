@@ -18,7 +18,7 @@ class MvcMailViewRendererTest extends TestCase
     /** @var ObjectProphecy */
     private $innerRenderer;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->innerRenderer = $this->prophesize(RendererInterface::class);
         $this->mvcRenderer = new MvcMailViewRenderer($this->innerRenderer->reveal());
@@ -27,7 +27,7 @@ class MvcMailViewRendererTest extends TestCase
     /**
      * @test
      */
-    public function renderDelegatesIntoZendRendererWhenNoLayoutIsProvided()
+    public function renderDelegatesIntoZendRendererWhenNoLayoutIsProvided(): void
     {
         $innerRender = $this->innerRenderer->render(Argument::type(ViewModel::class))->willReturn('');
 
@@ -39,7 +39,7 @@ class MvcMailViewRendererTest extends TestCase
     /**
      * @test
      */
-    public function renderDelegatesIntoZendRendererWhenLayoutIsProvided()
+    public function renderDelegatesIntoZendRendererWhenLayoutIsProvided(): void
     {
         $innerRender = $this->innerRenderer->render(Argument::type(ViewModel::class))->willReturn('');
 
@@ -51,7 +51,7 @@ class MvcMailViewRendererTest extends TestCase
     /**
      * @test
      */
-    public function parametersArePassedBothToLayoutAndChildTemplate()
+    public function parametersArePassedBothToLayoutAndChildTemplate(): void
     {
         $innerRender = $this->innerRenderer->render(Argument::that(function (ViewModel $viewModel) {
             $variables = $viewModel->getVariables();
@@ -68,10 +68,8 @@ class MvcMailViewRendererTest extends TestCase
     /**
      * @test
      * @dataProvider provideChildTemplateNames
-     * @param string $expectedName
-     * @param array $params
      */
-    public function childTemplateNameIsProperlySet(string $expectedName, array $params)
+    public function childTemplateNameIsProperlySet(string $expectedName, array $params): void
     {
         $invocationCount = 0;
         $innerRender = $this->innerRenderer->render(Argument::that(function (ViewModel $viewModel) use (
@@ -90,11 +88,9 @@ class MvcMailViewRendererTest extends TestCase
         $innerRender->shouldHaveBeenCalledTimes(2);
     }
 
-    public function provideChildTemplateNames(): array
+    public function provideChildTemplateNames(): iterable
     {
-        return [
-            ['content', ['layout' => 'bar']],
-            ['foobar', ['child_template_name' => 'foobar', 'layout' => 'bar']],
-        ];
+        yield ['content', ['layout' => 'bar']];
+        yield ['foobar', ['child_template_name' => 'foobar', 'layout' => 'bar']];
     }
 }

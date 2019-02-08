@@ -18,7 +18,7 @@ class FilePathAttachmentParserTest extends TestCase
     /** @var ObjectProphecy */
     private $finfo;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->finfo = $this->prophesize(finfo::class);
         $this->parser = new FilePathAttachmentParser($this->finfo->reveal());
@@ -27,7 +27,7 @@ class FilePathAttachmentParserTest extends TestCase
     /**
      * @test
      */
-    public function exceptionIsThrownIfAttachmentHasInvalidType()
+    public function exceptionIsThrownIfAttachmentHasInvalidType(): void
     {
         $this->expectException(InvalidAttachmentException::class);
         $this->expectExceptionMessage('Provided attachment is not valid. Expected "file path"');
@@ -39,7 +39,7 @@ class FilePathAttachmentParserTest extends TestCase
      * @test
      * @dataProvider provideAttachmentNames
      */
-    public function providedAttachmentIsParsedIntoPart(string $attachmentName = null)
+    public function providedAttachmentIsParsedIntoPart(string $attachmentName = null): void
     {
         $attachment = __DIR__ . '/../../../test-resources/attachments/file1';
 
@@ -55,11 +55,9 @@ class FilePathAttachmentParserTest extends TestCase
         $getMimeType->shouldHaveBeenCalled();
     }
 
-    public function provideAttachmentNames(): array
+    public function provideAttachmentNames(): iterable
     {
-        return [
-            [null],
-            ['the_name'],
-        ];
+        yield [null];
+        yield ['the_name'];
     }
 }

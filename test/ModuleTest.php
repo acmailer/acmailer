@@ -6,17 +6,12 @@ namespace AcMailerTest;
 use AcMailer\Module;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class ModuleTest
- * @author Alejandro Celaya Alastrué
- * @link http://www.alejandrocelaya.com
- */
 class ModuleTest extends TestCase
 {
     /** @var Module */
     private $module;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->module = new Module();
     }
@@ -24,7 +19,7 @@ class ModuleTest extends TestCase
     /**
      * @test
      */
-    public function getConfigReturnsContentsFromModuleConfigFile()
+    public function getConfigReturnsContentsFromModuleConfigFile(): void
     {
         $expectedConfig = include __DIR__ . '/../config/module.config.php';
         $returnedConfig = $this->module->getConfig();
@@ -35,7 +30,7 @@ class ModuleTest extends TestCase
     /**
      * @test
      */
-    public function invokeReturnsContentsFromModuleConfigFile()
+    public function invokeReturnsContentsFromModuleConfigFile(): void
     {
         $expectedConfig = include __DIR__ . '/../config/module.config.php';
         $expectedConfig['dependencies'] = $expectedConfig['service_manager'];

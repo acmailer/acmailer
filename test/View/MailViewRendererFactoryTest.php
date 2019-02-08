@@ -18,7 +18,7 @@ class MailViewRendererFactoryTest extends TestCase
     /** @var MailViewRendererFactory */
     private $factory;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->factory = new MailViewRendererFactory();
     }
@@ -26,7 +26,7 @@ class MailViewRendererFactoryTest extends TestCase
     /**
      * @test
      */
-    public function ifStandardServiceIsFoundItIsReturned()
+    public function ifStandardServiceIsFoundItIsReturned(): void
     {
         $theRenderer = $this->prophesize(TemplateRendererInterface::class)->reveal();
 
@@ -44,7 +44,7 @@ class MailViewRendererFactoryTest extends TestCase
     /**
      * @test
      */
-    public function ifOldStandardServiceIsFoundItIsReturned()
+    public function ifOldStandardServiceIsFoundItIsReturned(): void
     {
         $theRenderer = new PhpRenderer();
 
@@ -64,7 +64,7 @@ class MailViewRendererFactoryTest extends TestCase
     /**
      * @test
      */
-    public function ifStandardServicesAreNotFoundOneIsCreatedOnTheFly()
+    public function ifStandardServicesAreNotFoundOneIsCreatedOnTheFly(): void
     {
         $container = $this->prophesize(ContainerInterface::class);
 
@@ -89,13 +89,11 @@ class MailViewRendererFactoryTest extends TestCase
     /**
      * @test
      * @dataProvider provideViewManagerConfigs
-     * @param array $viewManagerConfig
-     * @param string $expectedResolver
      */
     public function oneResolverIsUsedWhenOnlyOneTemplateConfigExists(
         array $viewManagerConfig,
         string $expectedResolver
-    ) {
+    ): void {
         $container = $this->prophesize(ContainerInterface::class);
 
         $hasViewRenderer = $container->has(TemplateRendererInterface::class)->willReturn(false);
@@ -117,12 +115,10 @@ class MailViewRendererFactoryTest extends TestCase
         $getConfig->shouldHaveBeenCalledTimes(2);
     }
 
-    public function provideViewManagerConfigs(): array
+    public function provideViewManagerConfigs(): iterable
     {
-        return [
-            [[], Resolver\TemplatePathStack::class],
-            [['template_map' => []], Resolver\TemplateMapResolver::class],
-            [['template_path_stack' => []], Resolver\TemplatePathStack::class],
-        ];
+        yield [[], Resolver\TemplatePathStack::class];
+        yield [['template_map' => []], Resolver\TemplateMapResolver::class];
+        yield [['template_path_stack' => []], Resolver\TemplatePathStack::class];
     }
 }

@@ -14,7 +14,7 @@ class EmailBuilderTest extends TestCase
     /** @var EmailBuilder */
     private $builder;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->builder = new EmailBuilder([
             'an_email' => [
@@ -45,34 +45,29 @@ class EmailBuilderTest extends TestCase
     /**
      * @test
      * @dataProvider provideEmails
-     * @param string $emailName
-     * @param string $expectedFromName
-     * @param array $options
      */
     public function requestedEmailIsProperlyBuildWhenFound(
         string $emailName,
         string $expectedFromName,
         array $options = []
-    ) {
+    ): void {
         $email = $this->builder->build($emailName, $options);
         $this->assertEquals($expectedFromName, $email->getFromName());
     }
 
-    public function provideEmails(): array
+    public function provideEmails(): iterable
     {
-        return [
-            'an_email' => ['an_email', 'foobar'],
-            'another_email' => ['another_email', 'something'],
-            'another_email with option overridden' => ['another_email', 'overridden', ['fromName' => 'overridden']],
-            'default email' => [Email::class, ''],
-            'default email with overridden value' => [Email::class, 'me', ['fromName' => 'me']],
-        ];
+        yield 'an_email' => ['an_email', 'foobar'];
+        yield 'another_email' => ['another_email', 'something'];
+        yield 'another_email with option overridden' => ['another_email', 'overridden', ['fromName' => 'overridden']];
+        yield 'default email' => [Email::class, ''];
+        yield 'default email with overridden value' => [Email::class, 'me', ['fromName' => 'me']];
     }
 
     /**
      * @test
      */
-    public function exceptionIsThrownWhenInvalidEmailIsRequested()
+    public function exceptionIsThrownWhenInvalidEmailIsRequested(): void
     {
         $this->expectException(EmailNotFoundException::class);
         $this->expectExceptionMessage('An email with name "invalid" could not be found in registered emails list');
@@ -82,7 +77,7 @@ class EmailBuilderTest extends TestCase
     /**
      * @test
      */
-    public function emailCanBeExtended()
+    public function emailCanBeExtended(): void
     {
         $email = $this->builder->build('an_email', ['extends' => 'another_email']);
 
@@ -106,7 +101,7 @@ class EmailBuilderTest extends TestCase
     /**
      * @test
      */
-    public function circularExtendsThrowException()
+    public function circularExtendsThrowException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->builder->build('invalid_extends');

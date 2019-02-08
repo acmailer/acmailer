@@ -15,7 +15,7 @@ class ExpressiveMailViewRendererTest extends TestCase
     /** @var ObjectProphecy */
     private $innerRenderer;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->innerRenderer = $this->prophesize(TemplateRendererInterface::class);
         $this->expressiveRenderer = new ExpressiveMailViewRenderer($this->innerRenderer->reveal());
@@ -24,7 +24,7 @@ class ExpressiveMailViewRendererTest extends TestCase
     /**
      * @test
      */
-    public function renderDelegatesIntoInnerRenderer()
+    public function renderDelegatesIntoInnerRenderer(): void
     {
         $params = ['foo' => 'bar'];
         $innerRender = $this->innerRenderer->render('foo', $params)->willReturn('');

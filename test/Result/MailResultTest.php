@@ -10,11 +10,6 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 
-/**
- * Mail result test case
- * @author Alejandro Celaya Alastrué
- * @link http://www.alejandrocelaya.com
- */
 class MailResultTest extends TestCase
 {
     /** @var ResultInterface */
@@ -23,7 +18,7 @@ class MailResultTest extends TestCase
     /**
      * @test
      */
-    public function defaultValuesAreApplied()
+    public function defaultValuesAreApplied(): void
     {
         $email = new Email();
 
@@ -39,10 +34,8 @@ class MailResultTest extends TestCase
     /**
      * @test
      * @dataProvider provideResultData
-     * @param bool $isValid
-     * @param \Throwable|null $e
      */
-    public function customValuesAreApplied(bool $isValid, Throwable $e = null)
+    public function customValuesAreApplied(bool $isValid, Throwable $e = null): void
     {
         $this->mailResult = new MailResult(new Email(), $isValid, $e);
 
@@ -52,22 +45,18 @@ class MailResultTest extends TestCase
         $this->assertEquals(! $isValid && $e === null, $this->mailResult->isCancelled());
     }
 
-    public function provideResultData(): array
+    public function provideResultData(): iterable
     {
-        return [
-            [true, null],
-            [false, null],
-            [false, new Exception()],
-        ];
+        yield [true, null];
+        yield [false, null];
+        yield [false, new Exception()];
     }
 
     /**
      * @test
      * @dataProvider provideExceptions
-     * @param bool $hasException
-     * @param \Throwable|null $e
      */
-    public function exceptionReturnsExpectedValue(bool $hasException, Throwable $e = null)
+    public function exceptionReturnsExpectedValue(bool $hasException, Throwable $e = null): void
     {
         $this->mailResult = new MailResult(new Email(), false, $e);
 
@@ -75,11 +64,9 @@ class MailResultTest extends TestCase
         $this->assertEquals($e, $this->mailResult->getException());
     }
 
-    public function provideExceptions(): array
+    public function provideExceptions(): iterable
     {
-        return [
-            [true, new Exception()],
-            [false, null],
-        ];
+        yield [true, new Exception()];
+        yield [false, null];
     }
 }
