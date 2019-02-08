@@ -13,7 +13,7 @@ class AbstractMailListenerTest extends TestCase
     /** @var AbstractMailListener */
     private $mailListener;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mailListener = new class extends AbstractMailListener {
         };
@@ -22,7 +22,7 @@ class AbstractMailListenerTest extends TestCase
     /**
      * @test
      */
-    public function listenersAreRegisteredWhenAttached()
+    public function listenersAreRegisteredWhenAttached(): void
     {
         $em = $this->prophesize(EventManagerInterface::class);
         $priority = 3;
@@ -43,7 +43,7 @@ class AbstractMailListenerTest extends TestCase
     /**
      * @test
      */
-    public function defaultPriorityIsRespected()
+    public function defaultPriorityIsRespected(): void
     {
         $em = $this->prophesize(EventManagerInterface::class);
 
@@ -63,7 +63,7 @@ class AbstractMailListenerTest extends TestCase
     /**
      * @test
      */
-    public function allMethodsAreEmptyByDefault()
+    public function allMethodsAreEmptyByDefault(): void
     {
         $event = $this->prophesize(MailEvent::class);
 

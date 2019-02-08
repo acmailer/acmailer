@@ -14,7 +14,7 @@ class MimePartAttachmentParserTest extends TestCase
     /** @var MimePartAttachmentParser */
     private $parser;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->parser = new MimePartAttachmentParser();
     }
@@ -22,7 +22,7 @@ class MimePartAttachmentParserTest extends TestCase
     /**
      * @test
      */
-    public function exceptionIsThrownIfAttachmentHasInvalidType()
+    public function exceptionIsThrownIfAttachmentHasInvalidType(): void
     {
         $this->expectException(InvalidAttachmentException::class);
         $this->expectExceptionMessage(
@@ -36,7 +36,7 @@ class MimePartAttachmentParserTest extends TestCase
      * @test
      * @dataProvider provideAttachmentNames
      */
-    public function providedPartIsReturned(string $attachmentName = null)
+    public function providedPartIsReturned(string $attachmentName = null): void
     {
         $part = new Part();
 

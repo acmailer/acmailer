@@ -12,7 +12,7 @@ class MessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function messageCreatedFromEmailHasSameProperties()
+    public function messageCreatedFromEmailHasSameProperties(): void
     {
         $email = (new Email())->setFrom('me@domain.com')
                               ->setFromName('me')

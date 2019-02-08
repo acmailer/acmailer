@@ -25,6 +25,9 @@ matrix:
       env:
         - DEPS=latest
 
+before_install:
+  - phpenv config-rm xdebug.ini || return 0
+
 install:
   - composer self-update
   - composer install --no-interaction

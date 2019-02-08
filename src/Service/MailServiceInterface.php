@@ -7,11 +7,6 @@ use AcMailer\Exception;
 use AcMailer\Model\Email;
 use AcMailer\Result\ResultInterface;
 
-/**
- * Provides methods to be implemented by a valid MailService
- * @author Alejandro Celaya Alastrué
- * @link http://www.alejandrocelaya.com
- */
 interface MailServiceInterface
 {
     /** @deprecated Use Email::DEFAULT_CHARSET instead */

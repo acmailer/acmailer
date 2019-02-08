@@ -5,11 +5,6 @@ namespace AcMailer\Event;
 
 use Zend\EventManager\ListenerAggregateInterface;
 
-/**
- * Interface MailListenerInterface
- * @author Alejandro Celaya Alastrué
- * @link http://www.alejandrocelaya.com
- */
 interface MailListenerInterface extends ListenerAggregateInterface
 {
     /**

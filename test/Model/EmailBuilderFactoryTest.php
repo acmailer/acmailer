@@ -14,7 +14,7 @@ class EmailBuilderFactoryTest extends TestCase
     /** @var EmailBuilderFactory */
     private $factory;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->factory = new EmailBuilderFactory();
     }
@@ -22,7 +22,7 @@ class EmailBuilderFactoryTest extends TestCase
     /**
      * @test
      */
-    public function serviceIsCreated()
+    public function serviceIsCreated(): void
     {
         $container = $this->prophesize(ContainerInterface::class);
         $container->has('config')->willReturn(true);
@@ -35,7 +35,7 @@ class EmailBuilderFactoryTest extends TestCase
     /**
      * @test
      */
-    public function exceptionIsThrownIfConfigIsNotFound()
+    public function exceptionIsThrownIfConfigIsNotFound(): void
     {
         $container = $this->prophesize(ContainerInterface::class);
         $container->has('config')->willReturn(false);

@@ -35,7 +35,7 @@ class MailServiceAbstractFactoryTest extends TestCase
     /** @var ObjectProphecy */
     private $container;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->factory = new MailServiceAbstractFactory();
         $this->container = $this->prophesize(ContainerInterface::class);
@@ -47,7 +47,7 @@ class MailServiceAbstractFactoryTest extends TestCase
      * @param string $requestedName
      * @param bool $expected
      */
-    public function canCreateReturnsProperResult(string $requestedName, bool $expected)
+    public function canCreateReturnsProperResult(string $requestedName, bool $expected): void
     {
         $this->container->get('config')->willReturn([
             'acmailer_options' => [
@@ -77,7 +77,7 @@ class MailServiceAbstractFactoryTest extends TestCase
     /**
      * @test
      */
-    public function exceptionIsThrownIfRequestedConfigIsNotFound()
+    public function exceptionIsThrownIfRequestedConfigIsNotFound(): void
     {
         $this->container->get('config')->willReturn([
             'acmailer_options' => [
@@ -96,7 +96,7 @@ class MailServiceAbstractFactoryTest extends TestCase
      * @dataProvider provideValidServiceConfig
      * @param array $config
      */
-    public function serviceIsCreatedIfConfigIsCorrect(array $config)
+    public function serviceIsCreatedIfConfigIsCorrect(array $config): void
     {
         $this->container->get('config')->willReturn([
             'acmailer_options' => [
@@ -124,7 +124,7 @@ class MailServiceAbstractFactoryTest extends TestCase
         $this->assertInstanceOf(MailService::class, $result);
     }
 
-    public function provideValidServiceConfig()
+    public function provideValidServiceConfig(): array
     {
         return [
             [[
@@ -143,7 +143,7 @@ class MailServiceAbstractFactoryTest extends TestCase
     /**
      * @test
      */
-    public function standardTransportAsServiceIsKeptAsIs()
+    public function standardTransportAsServiceIsKeptAsIs(): void
     {
         $this->container->get(MailViewRendererInterface::class)->willReturn(
             $this->prophesize(MailViewRendererInterface::class)->reveal()
@@ -183,7 +183,7 @@ class MailServiceAbstractFactoryTest extends TestCase
      * @param $transport
      * @param bool $inContainer
      */
-    public function exceptionIsThrownIfConfiguredTransportHasAnInvalidValue($transport, bool $inContainer)
+    public function exceptionIsThrownIfConfiguredTransportHasAnInvalidValue($transport, bool $inContainer): void
     {
         $this->container->get('config')->willReturn([
             'acmailer_options' => [
@@ -216,7 +216,7 @@ class MailServiceAbstractFactoryTest extends TestCase
     /**
      * @test
      */
-    public function wrongCustomRendererThrowsException()
+    public function wrongCustomRendererThrowsException(): void
     {
         $this->container->get('config')->willReturn([
             'acmailer_options' => [
@@ -246,7 +246,7 @@ class MailServiceAbstractFactoryTest extends TestCase
     /**
      * @test
      */
-    public function recursiveLoopOnExtendsThrowsException()
+    public function recursiveLoopOnExtendsThrowsException(): void
     {
         $this->container->get('config')->willReturn([
             'acmailer_options' => [
@@ -282,7 +282,7 @@ class MailServiceAbstractFactoryTest extends TestCase
     /**
      * @test
      */
-    public function extendFromInvalidServiceThrowsException()
+    public function extendFromInvalidServiceThrowsException(): void
     {
         $this->container->get('config')->willReturn([
             'acmailer_options' => [
@@ -312,7 +312,7 @@ class MailServiceAbstractFactoryTest extends TestCase
     /**
      * @test
      */
-    public function extendedConfigIsProperlyApplied()
+    public function extendedConfigIsProperlyApplied(): void
     {
         $this->container->get('config')->willReturn([
             'acmailer_options' => [
@@ -352,7 +352,7 @@ class MailServiceAbstractFactoryTest extends TestCase
     /**
      * @test
      */
-    public function listenersAreAttached()
+    public function listenersAreAttached(): void
     {
         $this->container->get('config')->willReturn([
             'acmailer_options' => [
@@ -401,8 +401,10 @@ class MailServiceAbstractFactoryTest extends TestCase
      * @test
      * @dataProvider provideRenderers
      */
-    public function properRendererIsUsedDependingOnTheConfiguration(string $rendererClass, string $expectedRenderer)
-    {
+    public function properRendererIsUsedDependingOnTheConfiguration(
+        string $rendererClass,
+        string $expectedRenderer
+    ): void {
         $this->container->get('config')->willReturn([
             'acmailer_options' => [
                 'mail_services' => [

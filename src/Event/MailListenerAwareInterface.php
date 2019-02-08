@@ -3,11 +3,6 @@ declare(strict_types=1);
 
 namespace AcMailer\Event;
 
-/**
- * Interface MailListenerAwareInterface
- * @author Alejandro Celaya Alastrué
- * @link http://www.alejandrocelaya.com
- */
 interface MailListenerAwareInterface
 {
     /**

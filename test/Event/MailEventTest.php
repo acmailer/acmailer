@@ -8,11 +8,6 @@ use AcMailer\Model\Email;
 use AcMailer\Result\MailResult;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class MailEventTest
- * @author Alejandro Celaya Alastrué
- * @link http://www.alejandrocelaya.com
- */
 class MailEventTest extends TestCase
 {
     /** @var MailEvent */
@@ -21,7 +16,7 @@ class MailEventTest extends TestCase
     /**
      * @test
      */
-    public function emailIsProperlyInjected()
+    public function emailIsProperlyInjected(): void
     {
         $email = new Email();
         $this->mailEvent = new MailEvent($email);
@@ -31,7 +26,7 @@ class MailEventTest extends TestCase
     /**
      * @test
      */
-    public function resultIsProperlyInjection()
+    public function resultIsProperlyInjection(): void
     {
         $email = new Email();
         $this->mailEvent = new MailEvent($email);

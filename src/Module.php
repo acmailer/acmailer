@@ -3,11 +3,6 @@ declare(strict_types=1);
 
 namespace AcMailer;
 
-/**
- * Module class
- * @author Alejandro Celaya Alastrué
- * @link http://www.alejandrocelaya.com
- */
 class Module
 {
     public function getConfig()

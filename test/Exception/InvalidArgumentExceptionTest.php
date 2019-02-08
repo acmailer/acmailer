@@ -17,8 +17,12 @@ class InvalidArgumentExceptionTest extends TestCase
      * @test
      * @dataProvider provideExceptionData
      */
-    public function exceptionMessageIsProperlyBuilt(array $types, $value, string $fieldName, string $expectedMessage)
-    {
+    public function exceptionMessageIsProperlyBuilt(
+        array $types,
+        $value,
+        string $fieldName,
+        string $expectedMessage
+    ): void {
         $e = InvalidArgumentException::fromValidTypes($types, $value, $fieldName);
 
         $this->assertInstanceOf(InvalidArgumentException::class, $e);

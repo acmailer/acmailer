@@ -43,7 +43,7 @@ class MailServiceTest extends TestCase
     /** @var ObjectProphecy */
     private $attachmentParsers;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->transport = $this->prophesize(TransportInterface::class);
         $this->renderer = $this->prophesize(MailViewRendererInterface::class);
@@ -67,7 +67,7 @@ class MailServiceTest extends TestCase
      * @dataProvider provideInvalidEmails
      * @param $email
      */
-    public function sendInvalidEmailThrowsException($email)
+    public function sendInvalidEmailThrowsException($email): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->mailService->send($email);
@@ -87,7 +87,7 @@ class MailServiceTest extends TestCase
      * @dataProvider provideValidEmails
      * @param $email
      */
-    public function validEmailIsProperlySent($email)
+    public function validEmailIsProperlySent($email): void
     {
         $buildEmail = $this->emailBuilder->build(Argument::cetera())->willReturn(new Email());
         $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
@@ -112,7 +112,7 @@ class MailServiceTest extends TestCase
     /**
      * @test
      */
-    public function exceptionIsThrownInCaseOfError()
+    public function exceptionIsThrownInCaseOfError(): void
     {
         $this->transport->send(Argument::type(Message::class))->willThrow(Exception::class)
                                                               ->shouldBeCalled();
@@ -126,7 +126,7 @@ class MailServiceTest extends TestCase
     /**
      * @test
      */
-    public function whenPreSendReturnsFalseEmailsSendingIsCancelled()
+    public function whenPreSendReturnsFalseEmailsSendingIsCancelled(): void
     {
         $collections = new ResponseCollection();
         $collections->add(0, false);
@@ -143,7 +143,7 @@ class MailServiceTest extends TestCase
     /**
      * @test
      */
-    public function attachListeners()
+    public function attachListeners(): void
     {
         $listener = $this->prophesize(MailListenerInterface::class);
 
@@ -157,7 +157,7 @@ class MailServiceTest extends TestCase
     /**
      * @test
      */
-    public function templateIsRendererIfProvided()
+    public function templateIsRendererIfProvided(): void
     {
         $expectedBody = '<p>rendering result</p>';
 
@@ -176,7 +176,7 @@ class MailServiceTest extends TestCase
     /**
      * @test
      */
-    public function attachmentsAreProperlyAddedToMessage()
+    public function attachmentsAreProperlyAddedToMessage(): void
     {
         $attachments = ['', '', '', [], new Attachment('foo', 'value')];
 
@@ -209,7 +209,7 @@ class MailServiceTest extends TestCase
     /**
      * @test
      */
-    public function attachmentsThrowExceptionWhenParserCannotBeFound()
+    public function attachmentsThrowExceptionWhenParserCannotBeFound(): void
     {
         $attachmentParser = $this->prophesize(AttachmentParserInterface::class);
         $parse = $attachmentParser->parse(Argument::cetera())->willReturn(new Part());
@@ -234,7 +234,7 @@ class MailServiceTest extends TestCase
     /**
      * @test
      */
-    public function arrayAttachmentsWithSpecificKeysAreProperlyCast()
+    public function arrayAttachmentsWithSpecificKeysAreProperlyCast(): void
     {
         $attachments = [[
             'parser_name' => 'foo',
@@ -262,7 +262,7 @@ class MailServiceTest extends TestCase
     /**
      * @test
      */
-    public function templateIsRenderedBeforeEmailIsSent()
+    public function templateIsRenderedBeforeEmailIsSent(): void
     {
         $expectedBody = '<p>rendering result</p>';
         $resp = new ResponseCollection();
@@ -301,7 +301,7 @@ class MailServiceTest extends TestCase
     /**
      * @test
      */
-    public function customHeadersAreProperlyAddedToMessage()
+    public function customHeadersAreProperlyAddedToMessage(): void
     {
         $email = new Email();
         $email->setCustomHeaders([

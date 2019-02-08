@@ -10,11 +10,6 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 
-/**
- * Mail result test case
- * @author Alejandro Celaya Alastrué
- * @link http://www.alejandrocelaya.com
- */
 class MailResultTest extends TestCase
 {
     /** @var ResultInterface */
@@ -23,7 +18,7 @@ class MailResultTest extends TestCase
     /**
      * @test
      */
-    public function defaultValuesAreApplied()
+    public function defaultValuesAreApplied(): void
     {
         $email = new Email();
 
@@ -42,7 +37,7 @@ class MailResultTest extends TestCase
      * @param bool $isValid
      * @param \Throwable|null $e
      */
-    public function customValuesAreApplied(bool $isValid, Throwable $e = null)
+    public function customValuesAreApplied(bool $isValid, Throwable $e = null): void
     {
         $this->mailResult = new MailResult(new Email(), $isValid, $e);
 
@@ -67,7 +62,7 @@ class MailResultTest extends TestCase
      * @param bool $hasException
      * @param \Throwable|null $e
      */
-    public function exceptionReturnsExpectedValue(bool $hasException, Throwable $e = null)
+    public function exceptionReturnsExpectedValue(bool $hasException, Throwable $e = null): void
     {
         $this->mailResult = new MailResult(new Email(), false, $e);
 

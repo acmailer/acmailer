@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace AcMailerTest\Attachment;
 
-use AcMailer\Attachment\AttachmentParserManager;
 use AcMailer\Attachment\AttachmentParserManagerFactory;
 use AcMailer\Attachment\Parser\AttachmentParserInterface;
 use Interop\Container\ContainerInterface;
@@ -14,7 +13,7 @@ class AttachmentParserManagerFactoryTest extends TestCase
     /** @var AttachmentParserManagerFactory */
     private $factory;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->factory = new AttachmentParserManagerFactory();
     }
@@ -22,7 +21,7 @@ class AttachmentParserManagerFactoryTest extends TestCase
     /**
      * @test
      */
-    public function serviceIsProperlyCreated()
+    public function serviceIsProperlyCreated(): void
     {
         $container = $this->prophesize(ContainerInterface::class);
         $container->get('config')->willReturn([
@@ -43,7 +42,6 @@ class AttachmentParserManagerFactoryTest extends TestCase
 
         $instance = $this->factory->__invoke($container->reveal());
 
-        $this->assertInstanceOf(AttachmentParserManager::class, $instance);
         $this->assertTrue($instance->has('foo'));
         $this->assertTrue($instance->has('bar'));
         $this->assertFalse($instance->has('other'));
