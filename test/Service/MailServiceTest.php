@@ -73,13 +73,11 @@ class MailServiceTest extends TestCase
         $this->mailService->send($email);
     }
 
-    public function provideInvalidEmails(): array
+    public function provideInvalidEmails(): iterable
     {
-        return [
-            [null],
-            [new stdClass()],
-            [50],
-        ];
+        yield [null];
+        yield [new stdClass()];
+        yield [50];
     }
 
     /**
@@ -100,13 +98,11 @@ class MailServiceTest extends TestCase
         $trigger->shouldHaveBeenCalledTimes(3);
     }
 
-    public function provideValidEmails(): array
+    public function provideValidEmails(): iterable
     {
-        return [
-            ['the_email'],
-            [[]],
-            [new Email()],
-        ];
+        yield ['the_email'];
+        yield [[]];
+        yield [new Email()];
     }
 
     /**

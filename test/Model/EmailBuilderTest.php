@@ -45,9 +45,6 @@ class EmailBuilderTest extends TestCase
     /**
      * @test
      * @dataProvider provideEmails
-     * @param string $emailName
-     * @param string $expectedFromName
-     * @param array $options
      */
     public function requestedEmailIsProperlyBuildWhenFound(
         string $emailName,
@@ -58,15 +55,13 @@ class EmailBuilderTest extends TestCase
         $this->assertEquals($expectedFromName, $email->getFromName());
     }
 
-    public function provideEmails(): array
+    public function provideEmails(): iterable
     {
-        return [
-            'an_email' => ['an_email', 'foobar'],
-            'another_email' => ['another_email', 'something'],
-            'another_email with option overridden' => ['another_email', 'overridden', ['fromName' => 'overridden']],
-            'default email' => [Email::class, ''],
-            'default email with overridden value' => [Email::class, 'me', ['fromName' => 'me']],
-        ];
+        yield 'an_email' => ['an_email', 'foobar'];
+        yield 'another_email' => ['another_email', 'something'];
+        yield 'another_email with option overridden' => ['another_email', 'overridden', ['fromName' => 'overridden']];
+        yield 'default email' => [Email::class, ''];
+        yield 'default email with overridden value' => [Email::class, 'me', ['fromName' => 'me']];
     }
 
     /**

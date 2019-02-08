@@ -31,13 +31,11 @@ class EmailTest extends TestCase
         $this->email->setBody($invalidBody);
     }
 
-    public function provideInvalidBodies(): array
+    public function provideInvalidBodies(): iterable
     {
-        return [
-            [null],
-            [new stdClass()],
-            [new Exception()],
-        ];
+        yield [null];
+        yield [new stdClass()];
+        yield [new Exception()];
     }
 
     /**
@@ -51,13 +49,11 @@ class EmailTest extends TestCase
         $this->email->setAttachments($invalidAttachments);
     }
 
-    public function provideInvalidAttachments(): array
+    public function provideInvalidAttachments(): iterable
     {
-        return [
-            [['foo', null]],
-            [[new stdClass()]],
-            [[new Part(), 5]],
-        ];
+        yield [['foo', null]];
+        yield [[new stdClass()]];
+        yield [[new Part(), 5]];
     }
 
     /**

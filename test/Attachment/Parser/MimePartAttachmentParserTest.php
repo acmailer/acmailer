@@ -47,11 +47,9 @@ class MimePartAttachmentParserTest extends TestCase
         $this->assertEquals($part->filename, $attachmentName);
     }
 
-    public function provideAttachmentNames(): array
+    public function provideAttachmentNames(): iterable
     {
-        return [
-            [null],
-            ['the_name'],
-        ];
+        yield [null];
+        yield ['the_name'];
     }
 }

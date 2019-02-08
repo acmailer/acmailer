@@ -115,12 +115,10 @@ class MailViewRendererFactoryTest extends TestCase
         $getConfig->shouldHaveBeenCalledTimes(2);
     }
 
-    public function provideViewManagerConfigs(): array
+    public function provideViewManagerConfigs(): iterable
     {
-        return [
-            [[], Resolver\TemplatePathStack::class],
-            [['template_map' => []], Resolver\TemplateMapResolver::class],
-            [['template_path_stack' => []], Resolver\TemplatePathStack::class],
-        ];
+        yield [[], Resolver\TemplatePathStack::class];
+        yield [['template_map' => []], Resolver\TemplateMapResolver::class];
+        yield [['template_path_stack' => []], Resolver\TemplatePathStack::class];
     }
 }

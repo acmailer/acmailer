@@ -44,8 +44,6 @@ class MailServiceAbstractFactoryTest extends TestCase
     /**
      * @test
      * @dataProvider provideServiceNames
-     * @param string $requestedName
-     * @param bool $expected
      */
     public function canCreateReturnsProperResult(string $requestedName, bool $expected): void
     {
@@ -61,17 +59,15 @@ class MailServiceAbstractFactoryTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
-    public function provideServiceNames(): array
+    public function provideServiceNames(): iterable
     {
-        return [
-            ['invalid', false],
-            ['acmailer.mailservice', false],
-            ['foo.mailservice.invalid', false],
-            ['acmailer.foo.bar', false],
-            ['foo.bar.baz', false],
-            ['acmailer.mailservice.invalid', false],
-            ['acmailer.mailservice.default', true],
-        ];
+        yield ['invalid', false];
+        yield ['acmailer.mailservice', false];
+        yield ['foo.mailservice.invalid', false];
+        yield ['acmailer.foo.bar', false];
+        yield ['foo.bar.baz', false];
+        yield ['acmailer.mailservice.invalid', false];
+        yield ['acmailer.mailservice.default', true];
     }
 
     /**
@@ -94,7 +90,6 @@ class MailServiceAbstractFactoryTest extends TestCase
     /**
      * @test
      * @dataProvider provideValidServiceConfig
-     * @param array $config
      */
     public function serviceIsCreatedIfConfigIsCorrect(array $config): void
     {
@@ -124,20 +119,18 @@ class MailServiceAbstractFactoryTest extends TestCase
         $this->assertInstanceOf(MailService::class, $result);
     }
 
-    public function provideValidServiceConfig(): array
+    public function provideValidServiceConfig(): iterable
     {
-        return [
-            [[
-                'transport' => 'sendmail',
-            ]],
-            [[
-                'transport' => new Smtp(),
-            ]],
-            [[
-                'transport' => new Smtp(),
-                'renderer' => 'my_renderer',
-            ]],
-        ];
+        yield [[
+            'transport' => 'sendmail',
+        ]];
+        yield [[
+            'transport' => new Smtp(),
+        ]];
+        yield [[
+            'transport' => new Smtp(),
+            'renderer' => 'my_renderer',
+        ]];
     }
 
     /**
@@ -181,7 +174,6 @@ class MailServiceAbstractFactoryTest extends TestCase
      * @test
      * @dataProvider provideInvalidTransports
      * @param $transport
-     * @param bool $inContainer
      */
     public function exceptionIsThrownIfConfiguredTransportHasAnInvalidValue($transport, bool $inContainer): void
     {
@@ -203,14 +195,12 @@ class MailServiceAbstractFactoryTest extends TestCase
         $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
     }
 
-    public function provideInvalidTransports(): array
+    public function provideInvalidTransports(): iterable
     {
-        return [
-            [new stdClass(), false],
-            [800, false],
-            ['my_transport', true],
-            ['my_transport', false],
-        ];
+        yield [new stdClass(), false];
+        yield [800, false];
+        yield ['my_transport', true];
+        yield ['my_transport', false];
     }
 
     /**
@@ -434,12 +424,10 @@ class MailServiceAbstractFactoryTest extends TestCase
         $getRenderer->shouldHaveBeenCalled();
     }
 
-    public function provideRenderers(): array
+    public function provideRenderers(): iterable
     {
-        return [
-            [MailViewRendererInterface::class, MailViewRendererInterface::class],
-            [TemplateRendererInterface::class, ExpressiveMailViewRenderer::class],
-            [RendererInterface::class, MvcMailViewRenderer::class],
-        ];
+        yield [MailViewRendererInterface::class, MailViewRendererInterface::class];
+        yield [TemplateRendererInterface::class, ExpressiveMailViewRenderer::class];
+        yield [RendererInterface::class, MvcMailViewRenderer::class];
     }
 }

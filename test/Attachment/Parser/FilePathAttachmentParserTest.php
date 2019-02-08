@@ -55,11 +55,9 @@ class FilePathAttachmentParserTest extends TestCase
         $getMimeType->shouldHaveBeenCalled();
     }
 
-    public function provideAttachmentNames(): array
+    public function provideAttachmentNames(): iterable
     {
-        return [
-            [null],
-            ['the_name'],
-        ];
+        yield [null];
+        yield ['the_name'];
     }
 }

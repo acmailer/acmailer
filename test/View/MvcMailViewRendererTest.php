@@ -88,11 +88,9 @@ class MvcMailViewRendererTest extends TestCase
         $innerRender->shouldHaveBeenCalledTimes(2);
     }
 
-    public function provideChildTemplateNames(): array
+    public function provideChildTemplateNames(): iterable
     {
-        return [
-            ['content', ['layout' => 'bar']],
-            ['foobar', ['child_template_name' => 'foobar', 'layout' => 'bar']],
-        ];
+        yield ['content', ['layout' => 'bar']];
+        yield ['foobar', ['child_template_name' => 'foobar', 'layout' => 'bar']];
     }
 }
