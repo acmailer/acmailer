@@ -4,15 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
-## [Unreleased]
+## 7.4.0 - 2019-05-26
 
 #### Added
 
-* *Nothing*
+* [229](https://github.com/acelaya/ZF-AcMailer/issues/229) Added support for mail services [dynamically configured at runtime](http://acelaya.github.io/ZF-AcMailer/#/configuring-services?id=dynamic-runtime-configuration).
 
 #### Changed
 
-* [#224](https://github.com/acelaya/ZF-AcMailer/issues/224) Updated dev dependencies.
+* [#224](https://github.com/acelaya/ZF-AcMailer/issues/224) and [228](https://github.com/acelaya/ZF-AcMailer/issues/228) Updated dev dependencies.
 
 #### Deprecated
 
