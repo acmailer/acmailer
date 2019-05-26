@@ -28,10 +28,10 @@
         "zendframework/zend-stdlib": "^3.0"
     },
     "require-dev": {
-        "infection/infection": "^0.12.0",
+        "infection/infection": "^0.13.0",
         "phpstan/phpstan": "^0.11.0",
         "phpunit/phpunit": "^8.0 || ^7.5",
-        "shlinkio/php-coding-standard": "1.0.0",
+        "shlinkio/php-coding-standard": "~1.1.0",
         "zendframework/zend-expressive-template": "^1.0 || ^2.0",
         "zendframework/zend-mvc": "^3.1",
         "zendframework/zend-view": "^2.9"
@@ -74,9 +74,9 @@
         "test": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-clover build/clover.xml",
         "test:pretty": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-html build/html",
         "test:ci": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-clover=build/clover.xml --coverage-xml=build/coverage-xml --log-junit=build/phpunit.junit.xml",
-        "infection": "infection --threads=4 --min-msi=80 --log-verbosity=default --only-covered",
-        "infection:ci": "infection --threads=4 --min-msi=80 --log-verbosity=default --only-covered --coverage=build",
-        "infection:show": "infection --threads=4 --min-msi=80 --only-covered --log-verbosity=default --show-mutations"
+        "infection": "phpdbg -qrr vendor/bin/infection --threads=4 --min-msi=80 --log-verbosity=default --only-covered",
+        "infection:ci": "phpdbg -qrr vendor/bin/infection --threads=4 --min-msi=80 --log-verbosity=default --only-covered --coverage=build",
+        "infection:show": "phpdbg -qrr vendor/bin/infection --threads=4 --min-msi=80 --only-covered --log-verbosity=default --show-mutations"
     },
     "scripts-descriptions": {
         "cs": "Check coding styles with PHP_CodeSniffer",

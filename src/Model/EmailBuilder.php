@@ -5,6 +5,7 @@ namespace AcMailer\Model;
 
 use AcMailer\Exception;
 use Zend\Stdlib\ArrayUtils;
+
 use function in_array;
 
 class EmailBuilder implements EmailBuilderInterface

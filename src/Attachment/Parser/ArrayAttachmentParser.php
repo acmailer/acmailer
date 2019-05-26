@@ -8,6 +8,7 @@ use AcMailer\Exception\InvalidAttachmentException;
 use Zend\Mime;
 use Zend\Mime\Exception\InvalidArgumentException;
 use Zend\Stdlib\ArrayUtils;
+
 use function is_array;
 use function method_exists;
 use function str_replace;

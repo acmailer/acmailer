@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace AcMailer\Exception;
 
 use InvalidArgumentException as SplInvalidArgumentException;
+
 use function get_class;
 use function gettype;
 use function implode;

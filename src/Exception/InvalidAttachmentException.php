@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace AcMailer\Exception;
 
 use RuntimeException;
+
 use function sprintf;
 
 class InvalidAttachmentException extends RuntimeException implements ExceptionInterface

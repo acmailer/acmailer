@@ -27,6 +27,7 @@ use Zend\Mail\Exception\InvalidArgumentException;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mime;
+
 use function array_key_exists;
 use function array_merge;
 use function get_class;

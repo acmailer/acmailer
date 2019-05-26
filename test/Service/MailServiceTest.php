@@ -25,6 +25,7 @@ use Zend\EventManager\ResponseCollection;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Mime\Part;
+
 use function count;
 use function is_object;
 

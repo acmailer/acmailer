@@ -7,6 +7,7 @@ use AcMailer\Attachment\Parser\ResourceAttachmentParser;
 use AcMailer\Exception\InvalidAttachmentException;
 use PHPUnit\Framework\TestCase;
 use Zend\Mime\Mime;
+
 use function fopen;
 
 class ResourceAttachmentParserTest extends TestCase
