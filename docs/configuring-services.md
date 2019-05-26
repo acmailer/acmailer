@@ -115,3 +115,6 @@ class IndexController
     }
 }
 ```
+
+> Notice that the service name you use needs to exist in the configuration, at least as an empty array. Using random names which don't exist there will result in an exception.
+> It is usually a good idea to use the `acmailer.mailservice.default` service name for runtime configured services.
