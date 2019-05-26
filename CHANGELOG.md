@@ -8,11 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 #### Added
 
-* [229](https://github.com/acelaya/ZF-AcMailer/issues/229) Added support for mail services [dynamically configured at runtime](http://acelaya.github.io/ZF-AcMailer/#/configuring-services?id=dynamic-runtime-configuration).
+* [#229](https://github.com/acelaya/ZF-AcMailer/issues/229) Added support for mail services [dynamically configured at runtime](http://acelaya.github.io/ZF-AcMailer/#/configuring-services?id=dynamic-runtime-configuration).
 
 #### Changed
 
-* [#224](https://github.com/acelaya/ZF-AcMailer/issues/224) and [228](https://github.com/acelaya/ZF-AcMailer/issues/228) Updated dev dependencies.
+* [#224](https://github.com/acelaya/ZF-AcMailer/issues/224) and [#228](https://github.com/acelaya/ZF-AcMailer/issues/228) Updated dev dependencies.
 
 #### Deprecated
 
