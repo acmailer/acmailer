@@ -18,6 +18,7 @@ use Zend\View\Resolver\AggregateResolver;
 use Zend\View\Resolver\ResolverInterface;
 use Zend\View\Resolver\TemplateMapResolver;
 use Zend\View\Resolver\TemplatePathStack;
+
 use function array_shift;
 use function count;
 

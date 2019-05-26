@@ -7,6 +7,7 @@ use AcMailer\Attachment\Helper\AttachmentHelperTrait;
 use AcMailer\Exception\InvalidAttachmentException;
 use Zend\Mime;
 use Zend\Mime\Exception\InvalidArgumentException;
+
 use function basename;
 use function is_resource;
 use function stream_get_meta_data;

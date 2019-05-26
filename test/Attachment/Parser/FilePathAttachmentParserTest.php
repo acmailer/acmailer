@@ -9,6 +9,7 @@ use finfo;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Zend\Mime\Mime;
+
 use function basename;
 
 class FilePathAttachmentParserTest extends TestCase

@@ -8,7 +8,9 @@ use AcMailer\Exception\InvalidAttachmentException;
 use finfo;
 use Zend\Mime;
 use Zend\Mime\Exception\InvalidArgumentException;
+
 use const FILEINFO_MIME_TYPE;
+
 use function basename;
 use function fopen;
 use function is_file;

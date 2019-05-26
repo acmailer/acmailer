@@ -10,6 +10,7 @@ use RecursiveIteratorIterator;
 use Zend\Mime\Message;
 use Zend\Mime\Part;
 use Zend\Stdlib\AbstractOptions;
+
 use function is_array;
 use function is_dir;
 use function is_resource;
