@@ -59,16 +59,15 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
      */
     public function canCreate(ContainerInterface $container, $requestedName): bool
     {
-        $parts = explode('.', $requestedName);
-        if (count($parts) !== 3) {
+        [$acmailer, $mailService, $specificServiceName] = explode('.', $requestedName);
+        if (!isset($acmailer, $mailService, $specificServiceName)) {
             return false;
         }
 
-        if ($parts[0] !== self::ACMAILER_PART || $parts[1] !== static::MAIL_SERVICE_PART) {
+        if ($acmailer !== self::ACMAILER_PART || $mailService !== static::MAIL_SERVICE_PART) {
             return false;
         }
 
-        $specificServiceName = $parts[2];
         $config = $container->get('config')['acmailer_options']['mail_services'] ?? [];
         return array_key_exists($specificServiceName, $config);
     }
