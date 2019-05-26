@@ -21,7 +21,7 @@ use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionObject;
 use stdClass;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Mail\Transport\Sendmail;
+use Zend\Mail\Transport\InMemory;
 use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\View\Renderer\RendererInterface;
@@ -71,9 +71,7 @@ class MailServiceAbstractFactoryTest extends TestCase
         yield ['acmailer.mailservice.default', true];
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function exceptionIsThrownIfRequestedConfigIsNotFound(): void
     {
         $this->container->get('config')->willReturn([
@@ -101,7 +99,6 @@ class MailServiceAbstractFactoryTest extends TestCase
                 ],
             ],
         ]);
-        $this->container->has(Sendmail::class)->willReturn(false);
         $this->container->get(MailViewRendererInterface::class)->willReturn(
             $this->prophesize(MailViewRendererInterface::class)->reveal()
         );
@@ -219,7 +216,6 @@ class MailServiceAbstractFactoryTest extends TestCase
                 ],
             ],
         ]);
-        $this->container->has(Sendmail::class)->willReturn(false);
         $this->container->get('foo_renderer')->willReturn(new stdClass());
 
         $this->expectException(Exception\InvalidArgumentException::class);
@@ -255,7 +251,6 @@ class MailServiceAbstractFactoryTest extends TestCase
                 ],
             ],
         ]);
-        $this->container->has(Sendmail::class)->willReturn(false);
         $this->container->get(MailViewRendererInterface::class)->willReturn(
             $this->prophesize(RendererInterface::class)->reveal()
         );
@@ -265,7 +260,7 @@ class MailServiceAbstractFactoryTest extends TestCase
 
         $this->expectException(Exception\ServiceNotCreatedException::class);
         $this->expectExceptionMessage(
-            'It wasn\'t possible to create a mail service due to circular inheritance. Review "extends".'
+            'It wasn\'t possible to create a mail service due to circular inheritance. Review "extends" option.'
         );
         $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
     }
@@ -285,7 +280,6 @@ class MailServiceAbstractFactoryTest extends TestCase
                 ],
             ],
         ]);
-        $this->container->has(Sendmail::class)->willReturn(false);
         $this->container->get(MailViewRendererInterface::class)->willReturn(
             $this->prophesize(RendererInterface::class)->reveal()
         );
@@ -362,7 +356,6 @@ class MailServiceAbstractFactoryTest extends TestCase
                 ],
             ],
         ]);
-        $this->container->has(Sendmail::class)->willReturn(false);
         $this->container->get(MailViewRendererInterface::class)->willReturn(
             $this->prophesize(MailViewRendererInterface::class)->reveal()
         );
@@ -374,13 +367,7 @@ class MailServiceAbstractFactoryTest extends TestCase
         );
 
         $result = $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
-
-        $this->assertInstanceOf(MailService::class, $result);
-
-        $ref = new ReflectionObject($result->getEventManager());
-        $prop = $ref->getProperty('events');
-        $prop->setAccessible(true);
-        $listeners = $prop->getValue($result->getEventManager());
+        $listeners = $this->getObjectProp($result->getEventManager(), 'events');
 
         $this->assertCount(4, $listeners);
         foreach (MailEvent::getEventNames() as $method => $eventName) {
@@ -415,11 +402,7 @@ class MailServiceAbstractFactoryTest extends TestCase
         $getRenderer = $this->container->get($rendererClass)->willReturn($this->prophesize($rendererClass)->reveal());
 
         $mailService = $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
-
-        $ref = new ReflectionObject($mailService);
-        $prop = $ref->getProperty('renderer');
-        $prop->setAccessible(true);
-        $renderer = $prop->getValue($mailService);
+        $renderer = $this->getObjectProp($mailService, 'renderer');
 
         $this->assertInstanceOf($expectedRenderer, $renderer);
         $getRenderer->shouldHaveBeenCalled();
@@ -430,5 +413,51 @@ class MailServiceAbstractFactoryTest extends TestCase
         yield [MailViewRendererInterface::class, MailViewRendererInterface::class];
         yield [TemplateRendererInterface::class, ExpressiveMailViewRenderer::class];
         yield [RendererInterface::class, MvcMailViewRenderer::class];
+    }
+
+    /** @test */
+    public function configurationIsOverwrittenByProvidedOptions(): void
+    {
+        $this->container->get('config')->willReturn([
+            'acmailer_options' => [
+                'mail_services' => [
+                    'default' => [
+                        'transport' => 'sendmail',
+                        'renderer' => 'foo_renderer',
+                    ],
+                ],
+            ],
+        ]);
+        $this->container->get(EmailBuilder::class)->willReturn(
+            $this->prophesize(EmailBuilderInterface::class)->reveal()
+        );
+        $this->container->get(AttachmentParserManager::class)->willReturn(
+            $this->prophesize(AttachmentParserManager::class)->reveal()
+        );
+
+        $getFooRenderer = $this->container->get('foo_renderer')->willReturn(
+            $this->prophesize(MailViewRendererInterface::class)->reveal()
+        );
+        $getBarRenderer = $this->container->get('bar_renderer')->willReturn(
+            $this->prophesize(MailViewRendererInterface::class)->reveal()
+        );
+
+        $mailService = $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default', [
+            'transport' => 'in_memory',
+            'renderer' => 'bar_renderer',
+        ]);
+        $transport = $this->getObjectProp($mailService, 'transport');
+
+        $this->assertInstanceOf(InMemory::class, $transport);
+        $getFooRenderer->shouldNotHaveBeenCalled();
+        $getBarRenderer->shouldHaveBeenCalled();
+    }
+
+    private function getObjectProp($mailService, string $propName)
+    {
+        $ref = new ReflectionObject($mailService);
+        $prop = $ref->getProperty($propName);
+        $prop->setAccessible(true);
+        return $prop->getValue($mailService);
     }
 }

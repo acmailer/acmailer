@@ -27,7 +27,6 @@ use Zend\View\Renderer\RendererInterface;
 
 use function array_key_exists;
 use function array_keys;
-use function count;
 use function explode;
 use function get_class;
 use function gettype;
@@ -54,23 +53,20 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
     /**
      * Can the factory create an instance for the service?
      *
-     * @param  ContainerInterface $container
      * @param  string $requestedName
-     * @return bool
      * @throws ContainerExceptionInterface
      */
     public function canCreate(ContainerInterface $container, $requestedName): bool
     {
-        $parts = explode('.', $requestedName);
-        if (count($parts) !== 3) {
+        [$acMailer, $mailService, $specificServiceName] = explode('.', $requestedName);
+        if (!isset($acMailer, $mailService, $specificServiceName)) {
             return false;
         }
 
-        if ($parts[0] !== self::ACMAILER_PART || $parts[1] !== static::MAIL_SERVICE_PART) {
+        if ($acMailer !== self::ACMAILER_PART || $mailService !== static::MAIL_SERVICE_PART) {
             return false;
         }
 
-        $specificServiceName = $parts[2];
         $config = $container->get('config')['acmailer_options']['mail_services'] ?? [];
         return array_key_exists($specificServiceName, $config);
     }
@@ -78,17 +74,14 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
     /**
      * Create an object
      *
-     * @param  ContainerInterface $container
      * @param  string $requestedName
-     * @param  null|array $options
-     * @return MailService
      * @throws InvalidArgumentException
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ServiceNotCreatedException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): MailService
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $factoryOptions = null): MailService
     {
         $specificServiceName = explode('.', $requestedName)[2] ?? null;
         $mailOptions = $container->get('config')['acmailer_options'] ?? [];
@@ -103,10 +96,12 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             ));
         }
 
-        // Recursively extend configuration
-        $specificMailServiceOptions = $this->buildConfig($mailOptions, $specificMailServiceOptions);
+        $specificMailServiceOptions = $this->resolveExtendedConfig($mailOptions, $specificMailServiceOptions);
+        $specificMailServiceOptions = $factoryOptions === null ? $specificMailServiceOptions : ArrayUtils::merge(
+            $specificMailServiceOptions,
+            $factoryOptions
+        );
 
-        // Create the service
         $transport = $this->createTransport($container, $specificMailServiceOptions);
         $renderer = $this->createRenderer($container, $specificMailServiceOptions);
         $mailService = new MailService(
@@ -122,19 +117,15 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
     }
 
     /**
-     * @param array $mailOptions
-     * @param array $specificOptions
-     * @return array
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ServiceNotCreatedException
      */
-    private function buildConfig(array $mailOptions, array $specificOptions): array
+    private function resolveExtendedConfig(array $mailOptions, array $specificOptions): array
     {
         if (! isset($specificOptions['extends'])) {
             return $specificOptions;
         }
 
-        // Recursively extend
         $mailServices = $mailOptions['mail_services'];
         $processedExtends = [];
         do {
@@ -145,7 +136,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             // Prevent an infinite loop by self inheritance
             if (in_array($serviceToExtend, $processedExtends, true)) {
                 throw new Exception\ServiceNotCreatedException(
-                    'It wasn\'t possible to create a mail service due to circular inheritance. Review "extends".'
+                    'It wasn\'t possible to create a mail service due to circular inheritance. Review "extends" option.'
                 );
             }
             $processedExtends[] = $serviceToExtend;
@@ -165,9 +156,6 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
     }
 
     /**
-     * @param ContainerInterface $container
-     * @param array $mailOptions
-     * @return Transport\TransportInterface
      * @throws Exception\InvalidArgumentException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -219,11 +207,6 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
         ));
     }
 
-    /**
-     * @param Transport\TransportInterface $transport
-     * @param array $mailOptions
-     * @return Transport\TransportInterface
-     */
     private function setupStandardTransportFromConfig(
         Transport\TransportInterface $transport,
         array $mailOptions
@@ -240,9 +223,6 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
     }
 
     /**
-     * @param ContainerInterface $container
-     * @param array $mailOptions
-     * @return MailViewRendererInterface
      * @throws Exception\InvalidArgumentException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -281,9 +261,6 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
     /**
      * Attaches the preconfigured mail listeners to the mail service
      *
-     * @param EventsCapableInterface $service
-     * @param ContainerInterface $container
-     * @param array $mailOptions
      * @throws InvalidArgumentException
      * @throws Exception\InvalidArgumentException
      * @throws NotFoundExceptionInterface
@@ -311,9 +288,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
     }
 
     /**
-     * @param array $definitions
      * @param array|string|MailListenerInterface $listener
-     * @param EventManagerInterface $events
      * @throws Exception\InvalidArgumentException
      */
     private function addDefinitions(array &$definitions, $listener, EventManagerInterface $events): void

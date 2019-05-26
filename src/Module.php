@@ -5,12 +5,12 @@ namespace AcMailer;
 
 class Module
 {
-    public function getConfig()
+    public function getConfig(): array
     {
         return include __DIR__ . '/../config/module.config.php';
     }
 
-    public function __invoke()
+    public function __invoke(): array
     {
         $moduleConfig = $this->getConfig();
         $moduleConfig['dependencies'] = $moduleConfig['service_manager'];

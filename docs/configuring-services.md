@@ -71,3 +71,50 @@ return [
     
 ];
 ```
+
+### Dynamic runtime configuration
+
+Sometimes it is not possible to know the configuration of a mail service, usually because it is dynamically generated at runtime (for example, because your users provide it and you persist it somewhere).
+
+For those cases, this module provides a `AcMailer\Service\MailServiceBuilder` service which can be used to build MailServices at runtime.
+
+It is capable of not only creating services from scratch, but also using pre-configured services where you just want to override some of the config options.
+
+```php
+<?php
+declare(strict_types=1);
+
+class IndexControllerFactory
+{
+    public function __invoke($container): IndexController
+    {
+        $mailServiceBuilder = $container->get(AcMailer\Service\MailServiceBuilder::class);
+        return new IndexController($mailServiceBuilder);
+    }
+}
+
+class IndexController
+{
+    public function __construct(AcMailer\Service\MailServiceBuilderInterface $mailServiceBuilder)
+    {
+        $this->mailServiceBuilder = $mailServiceBuilder;
+    }
+
+    public function sendContactAction(): Zend\View\Model\ViewModel
+    {
+        $mailService = $this->mailServiceBuilder->build('acmailer.mailservice.default', [
+            'transport_options' => [
+                'connection_config' => [
+                    'username' => $currentUser->getMailUser(),
+                    'password' => $currentUser->getMailPassword(),
+                ],
+            ],
+        ]);
+        $result = $mailService->send('notification');
+        return new Zend\View\Model\ViewModel(['result' => $result]);
+    }
+}
+```
+
+> Notice that the service name you use needs to exist in the configuration, at least as an empty array. Using random names which don't exist there will result in an exception.
+> It is usually a good idea to use the `acmailer.mailservice.default` service name for runtime configured services.
