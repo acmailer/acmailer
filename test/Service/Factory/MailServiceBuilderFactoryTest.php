@@ -38,7 +38,7 @@ class MailServiceBuilderFactoryTest extends TestCase
         $servicesProp->setAccessible(true);
 
         $this->assertEquals($expectedDependencies, $servicesProp->getValue($service));
-        $hasConfig->shouldHaveBeenCalledOnce();
+        $hasConfig->shouldHaveBeenCalledTimes(1);
         $getConfig->shouldHaveBeenCalledTimes($config === null ? 0 : 1);
     }
 

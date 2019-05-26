@@ -2,3 +2,4 @@ parameters:
 	ignoreErrors:
 		- '#is not subtype of Throwable#'
 		- '#Result of && is always false#'
+		- '#always exists and is not nullable#'
