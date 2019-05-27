@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## 7.4.1 - 2019-05-27
+
+#### Added
+
+* *Nothing*
+
+#### Changed
+
+* *Nothing*
+
+#### Deprecated
+
+* *Nothing*
+
+#### Removed
+
+* *Nothing*
+
+#### Fixed
+
+* [#232](https://github.com/acelaya/ZF-AcMailer/issues/232) Fixed notice threw when `MailServiceAbstractFactory::canCreate` method is called and the name cannot be split in 3 parts.
+
+
 ## 7.4.0 - 2019-05-26
 
 #### Added

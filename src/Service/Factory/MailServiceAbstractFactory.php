@@ -27,6 +27,7 @@ use Zend\View\Renderer\RendererInterface;
 
 use function array_key_exists;
 use function array_keys;
+use function count;
 use function explode;
 use function get_class;
 use function gettype;
@@ -58,11 +59,12 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
      */
     public function canCreate(ContainerInterface $container, $requestedName): bool
     {
-        [$acMailer, $mailService, $specificServiceName] = explode('.', $requestedName);
-        if (!isset($acMailer, $mailService, $specificServiceName)) {
+        $parts = explode('.', $requestedName);
+        if (count($parts) < 3) {
             return false;
         }
 
+        [$acMailer, $mailService, $specificServiceName] = $parts;
         if ($acMailer !== self::ACMAILER_PART || $mailService !== static::MAIL_SERVICE_PART) {
             return false;
         }
