@@ -10,7 +10,7 @@
 [![License](https://img.shields.io/github/license/acelaya/ZF-AcMailer.svg?style=flat-square)](https://github.com/acelaya/ZF-AcMailer/blob/master/LICENSE.txt)
 [![Paypal Donate](https://img.shields.io/badge/Donate-paypal-blue.svg?style=flat-square&logo=paypal&colorA=cccccc)](https://acel.me/donate)
 
-This module provides a way to easily send emails from **Zend Framework** and **Zend Expressive** applications. It allows you to preconfigure emails and transport configurations, and then send those emails at runtime.
+This module provides an easy and flexible way to send emails from **Zend Expressive** and **Zend Framework** applications. It allows you to preconfigure emails and transport configurations, and then send those emails at runtime.
 
 You will be able to compose emails from templates, and easily add attachments using different strategies.
 

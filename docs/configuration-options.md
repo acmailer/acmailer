@@ -29,7 +29,10 @@ An example configuration file is provided in `vendor/acelaya/zf2-acmailer/config
 ## Mail services
 
 - **extends**: Defines other service from which to extend configuration, so that you only need to define the configuration that is different. By default this is null, which means that no configuration is extended.
-- **transport**: Tells the mail service which type of transport adapter should be used. Any instance or class name implementing `Zend\Mail\Transport\TransportInterface` is valid. It is also possible to define a service and it will be automatically fetched.
+- **transport**: Tells the mail service which type of transport adapter should be used.<br>
+  You can either use standard `zendframework/zend-mail` transports (`sendmail`, `smtp`, `file`, `in_memory`), or any instance or class name implementing `Zend\Mail\Transport\TransportInterface`.<br>
+  It is also possible to define a service name and it will be automatically fetched from the container.<br>
+  This is a perfect combination with the [slm/mail](https://github.com/juriansluiman/SlmMail) module, if you want to use advanced transports with `AcMailer`.
 - **transport_options**: Wraps the SMTP or File configuration that is used when the mail adapter is a `Zend\Mail\Transport\Smtp` or `Zend\Mail\Transport\File` instance. This option is ignored when a plain transport instance or a service name were provided for the **transport** option.
     - *SMTP*
         - **host**: IP address or server name of the SMTP server. Default value is 'localhost'.
