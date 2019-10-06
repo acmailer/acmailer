@@ -4,26 +4,14 @@ branches:
   only:
     - /.*/
 
+php:
+  - '7.2'
+  - '7.3'
+  - '7.4snapshot'
+
 matrix:
-  include:
-    - php: 7.1
-      env:
-        - DEPS=lowest
-    - php: 7.1
-      env:
-        - DEPS=latest
-    - php: 7.2
-      env:
-        - DEPS=lowest
-    - php: 7.2
-      env:
-        - DEPS=latest
-    - php: 7.3
-      env:
-        - DEPS=lowest
-    - php: 7.3
-      env:
-        - DEPS=latest
+  allow_failures:
+    - php: '7.4snapshot'
 
 before_install:
   - phpenv config-rm xdebug.ini || return 0
@@ -31,16 +19,14 @@ before_install:
 install:
   - composer self-update
   - composer install --no-interaction
-  - if [[ $DEPS == 'latest' ]]; then composer update --no-interaction ; fi
-  - if [[ $DEPS == 'lowest' ]]; then composer update --no-interaction --prefer-lowest --prefer-stable ; fi
-  - composer show
 
-script:
+before_script:
   - mkdir build
   - mkdir test-resources/attachments/dir/dirdept
-  - if [[ $DEPS == 'latest' ]]; then composer ci ; fi
-  - if [[ $DEPS == 'lowest' ]]; then composer test ; fi
+
+script:
+  - composer ci
 
 after_success:
-  - if [[ $DEPS == 'latest' ]]; then wget https://scrutinizer-ci.com/ocular.phar ; fi
-  - if [[ $DEPS == 'latest' ]]; then php ocular.phar code-coverage:upload --format=php-clover build/clover.xml ; fi
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover build/clover.xml

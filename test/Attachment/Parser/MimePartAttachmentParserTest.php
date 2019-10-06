@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AcMailerTest\Attachment\Parser;
@@ -37,7 +38,7 @@ class MimePartAttachmentParserTest extends TestCase
      * @test
      * @dataProvider provideAttachmentNames
      */
-    public function providedPartIsReturned(string $attachmentName = null): void
+    public function providedPartIsReturned(?string $attachmentName = null): void
     {
         $part = new Part();
 

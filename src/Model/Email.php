@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AcMailer\Model;
@@ -268,9 +269,10 @@ final class Email extends AbstractOptions
      * @return $this
      * @throws InvalidArgumentException
      */
-    public function addAttachment($file, string $filename = null): self
+    public function addAttachment($file, ?string $filename = null): self
     {
-        if (! is_string($file)
+        if (
+            ! is_string($file)
             && ! is_array($file)
             && ! is_resource($file)
             && ! $file instanceof Part
@@ -400,7 +402,7 @@ final class Email extends AbstractOptions
      * @param string|null $template
      * @return $this|self
      */
-    public function setTemplate(string $template = null): self
+    public function setTemplate(?string $template = null): self
     {
         $this->template = $template;
         return $this;

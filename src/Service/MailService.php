@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AcMailer\Service;
@@ -64,7 +65,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         MailViewRendererInterface $renderer,
         EmailBuilderInterface $emailBuilder,
         AttachmentParserManagerInterface $attachmentParserManager,
-        EventManagerInterface $events = null
+        ?EventManagerInterface $events = null
     ) {
         $this->transport = $transport;
         $this->renderer = $renderer;
@@ -73,7 +74,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         $this->events = $this->initEventManager($events);
     }
 
-    private function initEventManager(EventManagerInterface $events = null): EventManagerInterface
+    private function initEventManager(?EventManagerInterface $events = null): EventManagerInterface
     {
         $events = $events ?: new EventManager(new SharedEventManager());
         $events->setIdentifiers([
@@ -156,7 +157,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
     private function createMailEvent(
         Email $email,
         string $name,
-        ResultInterface $result = null
+        ?ResultInterface $result = null
     ): MailEvent {
         $event = new MailEvent($email, $name);
         if ($result !== null) {

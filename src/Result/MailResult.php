@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AcMailer\Result;
@@ -15,7 +16,7 @@ class MailResult implements ResultInterface
     /** @var \Throwable */
     private $exception;
 
-    public function __construct(Email $email, bool $valid = true, Throwable $exception = null)
+    public function __construct(Email $email, bool $valid = true, ?Throwable $exception = null)
     {
         $this->email = $email;
         $this->valid = $valid;

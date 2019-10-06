@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AcMailer\Attachment\Parser;
@@ -17,7 +18,7 @@ class MimePartAttachmentParser implements AttachmentParserInterface
      * @return Mime\Part
      * @throws InvalidAttachmentException
      */
-    public function parse($attachment, string $attachmentName = null): Mime\Part
+    public function parse($attachment, ?string $attachmentName = null): Mime\Part
     {
         if (! $attachment instanceof Mime\Part) {
             throw InvalidAttachmentException::fromExpectedType(Mime\Part::class);
