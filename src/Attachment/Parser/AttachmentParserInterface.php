@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AcMailer\Attachment\Parser;
@@ -14,5 +15,5 @@ interface AttachmentParserInterface
      * @return Part
      * @throws InvalidAttachmentException
      */
-    public function parse($attachment, string $attachmentName = null): Part;
+    public function parse($attachment, ?string $attachmentName = null): Part;
 }

@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [Unreleased]
+
+#### Added
+
+* [#234](https://github.com/acelaya/ZF-AcMailer/issues/234) Added PHP 7.4 to build matrix.
+
+#### Changed
+
+* [#235](https://github.com/acelaya/ZF-AcMailer/issues/235) Updated to shlink coding standard v2.
+
+#### Deprecated
+
+* *Nothing*
+
+#### Removed
+
+* [#227](https://github.com/acelaya/ZF-AcMailer/issues/227) Dropped support for PHP 7.1
+* [#237](https://github.com/acelaya/ZF-AcMailer/issues/237) Dropped support for [zendframework/zend-expressive-template](https://github.com/zendframework/zend-expressive-template) v1.
+
+#### Fixed
+
+* *Nothing*
+
+
 ## 7.4.1 - 2019-05-27
 
 #### Added

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AcMailer\Attachment\Parser;
@@ -9,12 +10,12 @@ use finfo;
 use Zend\Mime;
 use Zend\Mime\Exception\InvalidArgumentException;
 
-use const FILEINFO_MIME_TYPE;
-
 use function basename;
 use function fopen;
 use function is_file;
 use function is_string;
+
+use const FILEINFO_MIME_TYPE;
 
 class FilePathAttachmentParser implements AttachmentParserInterface
 {
@@ -23,7 +24,7 @@ class FilePathAttachmentParser implements AttachmentParserInterface
     /** @var finfo */
     private $finfo;
 
-    public function __construct(finfo $finfo = null)
+    public function __construct(?finfo $finfo = null)
     {
         $this->finfo = $finfo ?: new finfo(FILEINFO_MIME_TYPE);
     }
@@ -35,7 +36,7 @@ class FilePathAttachmentParser implements AttachmentParserInterface
      * @throws InvalidArgumentException
      * @throws InvalidAttachmentException
      */
-    public function parse($attachment, string $attachmentName = null): Mime\Part
+    public function parse($attachment, ?string $attachmentName = null): Mime\Part
     {
         if (! is_string($attachment) || ! is_file($attachment)) {
             throw InvalidAttachmentException::fromExpectedType('file path');

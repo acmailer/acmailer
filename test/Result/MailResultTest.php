@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AcMailerTest\Result;
@@ -35,7 +36,7 @@ class MailResultTest extends TestCase
      * @test
      * @dataProvider provideResultData
      */
-    public function customValuesAreApplied(bool $isValid, Throwable $e = null): void
+    public function customValuesAreApplied(bool $isValid, ?Throwable $e = null): void
     {
         $this->mailResult = new MailResult(new Email(), $isValid, $e);
 
@@ -56,7 +57,7 @@ class MailResultTest extends TestCase
      * @test
      * @dataProvider provideExceptions
      */
-    public function exceptionReturnsExpectedValue(bool $hasException, Throwable $e = null): void
+    public function exceptionReturnsExpectedValue(bool $hasException, ?Throwable $e = null): void
     {
         $this->mailResult = new MailResult(new Email(), false, $e);
 

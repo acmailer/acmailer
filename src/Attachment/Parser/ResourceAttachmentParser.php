@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AcMailer\Attachment\Parser;
@@ -23,7 +24,7 @@ class ResourceAttachmentParser implements AttachmentParserInterface
      * @throws InvalidArgumentException
      * @throws InvalidAttachmentException
      */
-    public function parse($attachment, string $attachmentName = null): Mime\Part
+    public function parse($attachment, ?string $attachmentName = null): Mime\Part
     {
         if (! is_resource($attachment)) {
             throw InvalidAttachmentException::fromExpectedType('resource');

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AcMailerTest\Attachment\Parser;
@@ -35,7 +36,7 @@ class ResourceAttachmentParserTest extends TestCase
      * @test
      * @dataProvider provideAttachmentNames
      */
-    public function providedAttachmentIsParsedIntoPart(string $attachmentName = null): void
+    public function providedAttachmentIsParsedIntoPart(?string $attachmentName = null): void
     {
         $attachment = fopen(__DIR__ . '/../../../test-resources/attachments/file2', 'rb');
 
