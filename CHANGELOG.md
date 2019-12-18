@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 #### Added
 
-* [#234](https://github.com/acelaya/ZF-AcMailer/issues/234) Added PHP 7.4 to build matrix.
+* [#234](https://github.com/acelaya/ZF-AcMailer/issues/234) and [#240](https://github.com/acelaya/ZF-AcMailer/issues/240) Added support for PHP 7.4.
 
 #### Changed
 
