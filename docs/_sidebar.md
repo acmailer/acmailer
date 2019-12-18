@@ -11,4 +11,4 @@
 
 ---
 
-- [:octocat: Fork me on github](https://github.com/acelaya/ZF-AcMailer/)
+- [:octocat: Fork me on github](https://github.com/acmailer/acmailer/)

@@ -4,7 +4,7 @@
 
     The configuration structure has changed. Now emails and services are separated. Any service can send any email.
 
-    You can find the new configuration structure [here](https://github.com/acelaya/ZF-AcMailer#configuration-options), but you can also use this [CLI tool](https://github.com/acelaya/zf-acmailer-tooling) in order to migrate your old configuration to the new structure.
+    You can find the new configuration structure [here](https://github.com/acmailer/acmailer#configuration-options), but you can also use this [CLI tool](https://github.com/acmailer/acmailer-tooling) in order to migrate your old configuration to the new structure.
 
 - **Send method expects an argument**
 
@@ -12,7 +12,7 @@
 
     Now the `send` method expects an argument. When upgrading from a previous version, you will usually move the old **message_options** to a preconfigured email.
     
-    Then, anywhere you are calling `$mailService->send()`, you have to replace it by `$mailService->send('my_email_name')`. You can also send anonymous emails created on the fly as explained [here](https://github.com/acelaya/ZF-AcMailer#send-emails).
+    Then, anywhere you are calling `$mailService->send()`, you have to replace it by `$mailService->send('my_email_name')`. You can also send anonymous emails created on the fly as explained [here](https://github.com/acmailer/acmailer#send-emails).
 
 - **Controller plugin**
 

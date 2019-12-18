@@ -11,14 +11,16 @@
         }
     ],
     "keywords": [
-        "zf2",
-        "zf3",
-        "expressive",
+        "laminas",
+        "mezzio",
         "module",
         "mail",
+        "expressive",
+        "zf3",
+        "zf2",
         "zend"
     ],
-    "homepage": "https://github.com/acelaya/ZF-AcMailer",
+    "homepage": "https://github.com/acmailer/acmailer",
     "license": "MIT",
     "require": {
         "php": "^7.2",

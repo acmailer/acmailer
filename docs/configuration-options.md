@@ -1,6 +1,6 @@
 # Configuration options
 
-**Important!** The configuration has completely changed in v7.x and is not compatible with earlier versions. If you want to upgrade, please, read this section, the [upgrade guide](https://github.com/acelaya/ZF-AcMailer/blob/master/UPGRADE.md#upgrade-from-5x6x-to-7x), and take a look at [this tool](https://github.com/acelaya/zf-acmailer-tooling) that can automatically migrate from older configurations to the new one.
+**Important!** The configuration has completely changed in v7.x and is not compatible with earlier versions. If you want to upgrade, please, read this section, the [upgrade guide](https://github.com/acmailer/acmailer/blob/master/UPGRADE.md#upgrade-from-5x6x-to-7x), and take a look at [this tool](https://github.com/acmailer/acmailer-tooling) that can automatically migrate from older configurations to the new one.
 
 An example configuration file is provided in `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` that comes with one example email and service already defined.
 
