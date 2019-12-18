@@ -23,14 +23,14 @@
     "require": {
         "php": "^7.2",
         "zendframework/zend-eventmanager": "^3.0",
-        "zendframework/zend-mail": "^2.6",
+        "zendframework/zend-mail": "^2.10",
         "zendframework/zend-servicemanager": "^3.0",
         "zendframework/zend-stdlib": "^3.0"
     },
     "require-dev": {
-        "infection/infection": "^0.13.0",
-        "phpstan/phpstan": "^0.11.0",
-        "phpunit/phpunit": "^8.0",
+        "infection/infection": "^0.15.0",
+        "phpstan/phpstan": "^0.12.3",
+        "phpunit/phpunit": "^8.5",
         "shlinkio/php-coding-standard": "~2.0.0",
         "zendframework/zend-expressive-template": "^2.0",
         "zendframework/zend-mvc": "^3.1",
@@ -70,10 +70,10 @@
 
         "cs": "phpcs",
         "cs:fix": "phpcbf",
-        "stan": "phpstan analyse src/ --level=6",
+        "stan": "phpstan analyse src/ --level=5",
         "test": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-clover build/clover.xml",
         "test:pretty": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-html build/html",
-        "test:ci": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-clover=build/clover.xml --coverage-xml=build/coverage-xml --log-junit=build/phpunit.junit.xml",
+        "test:ci": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-clover=build/clover.xml --coverage-xml=build/coverage-xml --log-junit=build/junit.xml",
         "infection": "infection --threads=4 --min-msi=80 --log-verbosity=default --only-covered",
         "infection:ci": "infection --threads=4 --min-msi=80 --log-verbosity=default --only-covered --coverage=build",
         "infection:show": "infection --threads=4 --min-msi=80 --only-covered --log-verbosity=default --show-mutations"

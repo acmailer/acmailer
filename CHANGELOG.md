@@ -4,15 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
-## [Unreleased]
+## 7.5.0 - 2019-12-18
 
 #### Added
 
-* [#234](https://github.com/acelaya/ZF-AcMailer/issues/234) Added PHP 7.4 to build matrix.
+* [#234](https://github.com/acelaya/ZF-AcMailer/issues/234) and [#240](https://github.com/acelaya/ZF-AcMailer/issues/240) Added support for PHP 7.4.
 
 #### Changed
 
 * [#235](https://github.com/acelaya/ZF-AcMailer/issues/235) Updated to shlink coding standard v2.
+* [#242](https://github.com/acelaya/ZF-AcMailer/issues/242) Updated to [phpstan](https://github.com/phpstan/phpstan) 0.12 and [infection](https://github.com/infection/infection) 0.15.
 
 #### Deprecated
 

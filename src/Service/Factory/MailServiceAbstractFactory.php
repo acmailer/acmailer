@@ -188,7 +188,6 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
 
         // Check if the transport is a service
         if ($container->has($transport)) {
-            /** @var Transport\TransportInterface $transport */
             $transportInstance = $container->get($transport);
             if ($transportInstance instanceof Transport\TransportInterface) {
                 return $transportInstance;
