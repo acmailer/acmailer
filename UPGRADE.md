@@ -63,7 +63,7 @@
 
 - **Mail service message**
 
-    Mail services no longer expose a `Zend\Mail\Message` instance. Instead, if you want to override a previously defined config, you have to pass a second argument to the `send` method.
+    Mail services no longer expose a `Laminas\Mail\Message` instance. Instead, if you want to override a previously defined config, you have to pass a second argument to the `send` method.
     
     Change this:
     
@@ -95,7 +95,7 @@
     
 - **Render templates**
 
-    In order to make it compatible with Zend Expressive, it is no longer possible to pass a `Zend\View\Model\ModelInterface` object when defining email templates.
+    In order to make it compatible with Zend Expressive, it is no longer possible to pass a `Laminas\View\Model\ModelInterface` object when defining email templates.
     
     Instead you have to always provide the name of the template. However, you can pass a **layout** param with the name of the parent layout. It'll work in both Expressive and MVC when using zend/view.
     
@@ -103,10 +103,10 @@
     
     ```php
     <?php
-    $layout = new \Zend\View\Model\ViewModel();
+    $layout = new \Laminas\View\Model\ViewModel();
     $layout->setTemplate('application/emails/layout');
     
-    $view = new \Zend\View\Model\ViewModel([
+    $view = new \Laminas\View\Model\ViewModel([
         'name' => 'John Doe', 
         'date' => date('Y-m-d')
     ]);
@@ -139,7 +139,7 @@
 
     In previous versions, mail services used to have getters and setters to access the composed transport and renderer. They are no longer there.
     
-    The only one that keeps existing is the `getEventManager()` method, which exists because mail services implement `Zend\EventManager\EventsCapableInterface`.
+    The only one that keeps existing is the `getEventManager()` method, which exists because mail services implement `Laminas\EventManager\EventsCapableInterface`.
     
 - **Mail events**
 
@@ -205,7 +205,7 @@
     
 - **Exceptions while sending an email**
 
-    In previous versions, when the method `send` was called and an exception was thrown, the `EVENT_MAIL_SEND_ERROR` was triggered, and then, if the exception implemented `Zend\Mail\Exception\ExceptionInterface`, it was wrapped in a `AcMailer\Exception\MailException` and rethrown. In any other case, the exception was lost.
+    In previous versions, when the method `send` was called and an exception was thrown, the `EVENT_MAIL_SEND_ERROR` was triggered, and then, if the exception implemented `Laminas\Mail\Exception\ExceptionInterface`, it was wrapped in a `AcMailer\Exception\MailException` and rethrown. In any other case, the exception was lost.
     
     Since that's dangerous and can hide potential bugs, the service now always rethrows the exception, whichever the type.
     

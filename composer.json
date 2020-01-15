@@ -4,7 +4,7 @@
     "type": "library",
     "authors": [
         {
-            "name": "Alejandro Celaya Alastrué",
+            "name": "Alejandro Celaya Alastru\u00e9",
             "email": "alejandro@alejandrocelaya.com",
             "homepage": "https://www.alejandrocelaya.com",
             "role": "Developer"
@@ -24,24 +24,25 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
-        "zendframework/zend-eventmanager": "^3.0",
-        "zendframework/zend-mail": "^2.10",
-        "zendframework/zend-servicemanager": "^3.0",
-        "zendframework/zend-stdlib": "^3.0"
+        "laminas/laminas-eventmanager": "^3.0",
+        "laminas/laminas-mail": "^2.10",
+        "laminas/laminas-servicemanager": "^3.0",
+        "laminas/laminas-stdlib": "^3.0",
+        "laminas/laminas-dependency-plugin": "^1.0"
     },
     "require-dev": {
         "infection/infection": "^0.15.0",
         "phpstan/phpstan": "^0.12.3",
         "phpunit/phpunit": "^8.5",
         "shlinkio/php-coding-standard": "~2.0.0",
-        "zendframework/zend-expressive-template": "^2.0",
-        "zendframework/zend-mvc": "^3.1",
-        "zendframework/zend-view": "^2.9"
+        "mezzio/mezzio-template": "^2.0",
+        "laminas/laminas-mvc": "^3.1",
+        "laminas/laminas-view": "^2.9"
     },
     "suggest": {
-        "zendframework/zend-expressive-zendviewrenderer": "If you want to render email templates using zend/view in Expressive applications",
-        "zendframework/zend-expressive-twigrenderer": "If you want to render email templates using twig/twig in Expressive applications",
-        "zendframework/zend-expressive-platesrenderer": "If you want to render email templates using league/plates in Expressive applications"
+        "mezzio/mezzio-laminasviewrenderer": "If you want to render email templates using zend/view in Expressive applications",
+        "mezzio/mezzio-twigrenderer": "If you want to render email templates using twig/twig in Expressive applications",
+        "mezzio/mezzio-platesrenderer": "If you want to render email templates using league/plates in Expressive applications"
     },
     "autoload": {
         "psr-4": {
@@ -69,7 +70,6 @@
             "@test:ci",
             "@infection:ci"
         ],
-
         "cs": "phpcs",
         "cs:fix": "phpcbf",
         "stan": "phpstan analyse src/ --level=5",

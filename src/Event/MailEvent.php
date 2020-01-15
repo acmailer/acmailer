@@ -7,7 +7,7 @@ namespace AcMailer\Event;
 use AcMailer\Model\Email;
 use AcMailer\Result\ResultAwareInterface;
 use AcMailer\Result\ResultInterface;
-use Zend\EventManager\Event;
+use Laminas\EventManager\Event;
 
 class MailEvent extends Event implements ResultAwareInterface
 {

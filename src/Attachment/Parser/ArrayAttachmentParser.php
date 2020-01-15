@@ -6,9 +6,9 @@ namespace AcMailer\Attachment\Parser;
 
 use AcMailer\Attachment\Helper\AttachmentHelperTrait;
 use AcMailer\Exception\InvalidAttachmentException;
-use Zend\Mime;
-use Zend\Mime\Exception\InvalidArgumentException;
-use Zend\Stdlib\ArrayUtils;
+use Laminas\Mime;
+use Laminas\Mime\Exception\InvalidArgumentException;
+use Laminas\Stdlib\ArrayUtils;
 
 use function is_array;
 use function method_exists;

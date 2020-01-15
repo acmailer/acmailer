@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AcMailer\Model;
 
 use AcMailer\Exception;
-use Zend\Stdlib\ArrayUtils;
+use Laminas\Stdlib\ArrayUtils;
 
 use function in_array;
 

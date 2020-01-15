@@ -9,16 +9,16 @@ use Interop\Container\ContainerInterface as InteropContainer;
 use Interop\Container\Exception\ContainerException;
 use Interop\Container\Exception\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
-use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Mvc\Service\ViewHelperManagerFactory;
-use Zend\ServiceManager\Config;
-use Zend\View\HelperPluginManager;
-use Zend\View\Renderer\PhpRenderer;
-use Zend\View\Renderer\RendererInterface;
-use Zend\View\Resolver\AggregateResolver;
-use Zend\View\Resolver\ResolverInterface;
-use Zend\View\Resolver\TemplateMapResolver;
-use Zend\View\Resolver\TemplatePathStack;
+use Mezzio\Template\TemplateRendererInterface;
+use Laminas\Mvc\Service\ViewHelperManagerFactory;
+use Laminas\ServiceManager\Config;
+use Laminas\View\HelperPluginManager;
+use Laminas\View\Renderer\PhpRenderer;
+use Laminas\View\Renderer\RendererInterface;
+use Laminas\View\Resolver\AggregateResolver;
+use Laminas\View\Resolver\ResolverInterface;
+use Laminas\View\Resolver\TemplateMapResolver;
+use Laminas\View\Resolver\TemplatePathStack;
 
 use function array_shift;
 use function count;
@@ -43,13 +43,13 @@ class MailViewRendererFactory
             return new ExpressiveMailViewRenderer($container->get(TemplateRendererInterface::class));
         }
 
-        // If the mailviewrenderer is registered, wrap it into a ZendViewRenderer
+        // If the mailviewrenderer is registered, wrap it into a LaminasViewRenderer
         // This should be true in Zend/MVC apps, run in a HTTP context
         if ($container->has('mailviewrenderer')) {
-            return $this->wrapZendView($container->get('mailviewrenderer'));
+            return $this->wrapLaminasView($container->get('mailviewrenderer'));
         }
 
-        // Finally, create a zend/view PhpRenderer and wrap it into a ZendViewRenderer
+        // Finally, create a zend/view PhpRenderer and wrap it into a LaminasViewRenderer
         // This should be reached only in Zend/MVC apps run in a CLI context
         $vmConfig = $this->getSpecificConfig($container, 'view_manager');
         $renderer = new PhpRenderer();
@@ -75,10 +75,10 @@ class MailViewRendererFactory
 
         // Create a HelperPluginManager with default view helpers and user defined view helpers
         $renderer->setHelperPluginManager($this->createHelperPluginManager($container));
-        return $this->wrapZendView($renderer);
+        return $this->wrapLaminasView($renderer);
     }
 
-    private function wrapZendView(RendererInterface $renderer): MailViewRendererInterface
+    private function wrapLaminasView(RendererInterface $renderer): MailViewRendererInterface
     {
         return new MvcMailViewRenderer($renderer);
     }

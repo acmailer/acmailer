@@ -28,10 +28,10 @@ class IndexController
         $this->mailService = $mailService;
     }
     
-    public function sendContactAction(): Zend\View\Model\ViewModel
+    public function sendContactAction(): Laminas\View\Model\ViewModel
     {
         $result = $this->mailService->send('contact');
-        return new Zend\View\Model\ViewModel(['result' => $result]);
+        return new Laminas\View\Model\ViewModel(['result' => $result]);
     }
 }
 ```

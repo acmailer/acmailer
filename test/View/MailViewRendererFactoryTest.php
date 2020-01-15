@@ -10,9 +10,9 @@ use AcMailer\View\MvcMailViewRenderer;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
-use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\View\Renderer\PhpRenderer;
-use Zend\View\Resolver;
+use Mezzio\Template\TemplateRendererInterface;
+use Laminas\View\Renderer\PhpRenderer;
+use Laminas\View\Resolver;
 
 class MailViewRendererFactoryTest extends TestCase
 {

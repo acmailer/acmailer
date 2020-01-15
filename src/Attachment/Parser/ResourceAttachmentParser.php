@@ -6,8 +6,8 @@ namespace AcMailer\Attachment\Parser;
 
 use AcMailer\Attachment\Helper\AttachmentHelperTrait;
 use AcMailer\Exception\InvalidAttachmentException;
-use Zend\Mime;
-use Zend\Mime\Exception\InvalidArgumentException;
+use Laminas\Mime;
+use Laminas\Mime\Exception\InvalidArgumentException;
 
 use function basename;
 use function is_resource;

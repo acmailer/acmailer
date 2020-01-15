@@ -9,8 +9,8 @@ use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Zend\View\Model\ViewModel;
-use Zend\View\Renderer\RendererInterface;
+use Laminas\View\Model\ViewModel;
+use Laminas\View\Renderer\RendererInterface;
 
 class MvcMailViewRendererTest extends TestCase
 {

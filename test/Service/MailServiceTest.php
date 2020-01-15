@@ -21,11 +21,11 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use stdClass;
-use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\ResponseCollection;
-use Zend\Mail\Message;
-use Zend\Mail\Transport\TransportInterface;
-use Zend\Mime\Part;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\EventManager\ResponseCollection;
+use Laminas\Mail\Message;
+use Laminas\Mail\Transport\TransportInterface;
+use Laminas\Mime\Part;
 
 use function count;
 use function is_object;

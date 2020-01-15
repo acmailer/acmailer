@@ -7,7 +7,7 @@ namespace AcMailerTest\View;
 use AcMailer\View\ExpressiveMailViewRenderer;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
-use Zend\Expressive\Template\TemplateRendererInterface;
+use Mezzio\Template\TemplateRendererInterface;
 
 class ExpressiveMailViewRendererTest extends TestCase
 {

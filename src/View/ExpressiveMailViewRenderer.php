@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AcMailer\View;
 
-use Zend\Expressive\Template\TemplateRendererInterface;
+use Mezzio\Template\TemplateRendererInterface;
 
 class ExpressiveMailViewRenderer implements MailViewRendererInterface
 {

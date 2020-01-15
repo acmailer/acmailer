@@ -9,7 +9,7 @@ use AcMailer\Model\Email;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use Zend\Mime\Part;
+use Laminas\Mime\Part;
 
 class EmailTest extends TestCase
 {

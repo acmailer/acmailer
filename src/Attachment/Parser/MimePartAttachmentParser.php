@@ -6,7 +6,7 @@ namespace AcMailer\Attachment\Parser;
 
 use AcMailer\Attachment\Helper\AttachmentHelperTrait;
 use AcMailer\Exception\InvalidAttachmentException;
-use Zend\Mime;
+use Laminas\Mime;
 
 class MimePartAttachmentParser implements AttachmentParserInterface
 {

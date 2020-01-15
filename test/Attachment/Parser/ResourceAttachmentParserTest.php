@@ -7,7 +7,7 @@ namespace AcMailerTest\Attachment\Parser;
 use AcMailer\Attachment\Parser\ResourceAttachmentParser;
 use AcMailer\Exception\InvalidAttachmentException;
 use PHPUnit\Framework\TestCase;
-use Zend\Mime\Mime;
+use Laminas\Mime\Mime;
 
 use function fopen;
 

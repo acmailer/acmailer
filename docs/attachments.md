@@ -40,8 +40,8 @@ By default, 4 strategies are supported to attach files
 
 * Providing the path as string.
 * Providing a `resource`.
-* Providing a `Zend\Mime\Part` object.
-* Providing an array which defines the value of the fields in the `Zend\Mime\Part` object.
+* Providing a `Laminas\Mime\Part` object.
+* Providing an array which defines the value of the fields in the `Laminas\Mime\Part` object.
 
 ```php
 <?php
@@ -50,12 +50,12 @@ declare(strict_types=1);
 $mailService->send([
     'attachments' => [
         \fopen('data/mail/attachments/file1.pdf', 'r+b'),
-        new Zend\Mime\Part(\fopen('data/mail/attachments/file2.zip', 'r+b')),
+        new Laminas\Mime\Part(\fopen('data/mail/attachments/file2.zip', 'r+b')),
         [
             'id' => 'something',
             'filename' => 'something_else',
             'content' => \file_get_contents('data/mail/attachments/file2.pdf'), // A resource can be used here too
-            'encoding' => Zend\Mime\Mime::ENCODING_7BIT, // Defaults to Zend\Mime\Mime::ENCODING_BASE64
+            'encoding' => Laminas\Mime\Mime::ENCODING_7BIT, // Defaults to Laminas\Mime\Mime::ENCODING_BASE64
         ],
     ],
 ]);
@@ -81,7 +81,7 @@ use AcMailer\Attachment\Parser\AttachmentParserInterface;
 use AcMailer\Exception\InvalidAttachmentException;
 use League\Flysystem\FilesystemInterface;
 use League\Flysystem\FileNotFoundException;
-use Zend\Mime;
+use Laminas\Mime;
 
 class FlysystemAttachmentParser implements AttachmentParserInterface
 {

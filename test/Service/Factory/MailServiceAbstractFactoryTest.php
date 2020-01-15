@@ -21,11 +21,11 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionObject;
 use stdClass;
-use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Mail\Transport\InMemory;
-use Zend\Mail\Transport\Smtp;
-use Zend\Mail\Transport\TransportInterface;
-use Zend\View\Renderer\RendererInterface;
+use Mezzio\Template\TemplateRendererInterface;
+use Laminas\Mail\Transport\InMemory;
+use Laminas\Mail\Transport\Smtp;
+use Laminas\Mail\Transport\TransportInterface;
+use Laminas\View\Renderer\RendererInterface;
 
 use function implode;
 use function sprintf;

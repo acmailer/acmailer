@@ -9,7 +9,7 @@ use AcMailer\Exception\InvalidAttachmentException;
 use finfo;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
-use Zend\Mime\Mime;
+use Laminas\Mime\Mime;
 
 use function basename;
 
