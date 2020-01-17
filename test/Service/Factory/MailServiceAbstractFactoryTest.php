@@ -12,8 +12,8 @@ use AcMailer\Model\EmailBuilder;
 use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Service\Factory\MailServiceAbstractFactory;
 use AcMailer\Service\MailService;
-use AcMailer\View\ExpressiveMailViewRenderer;
 use AcMailer\View\MailViewRendererInterface;
+use AcMailer\View\MezzioMailViewRenderer;
 use AcMailer\View\MvcMailViewRenderer;
 use Interop\Container\ContainerInterface;
 use Laminas\Mail\Transport\InMemory;
@@ -412,7 +412,7 @@ class MailServiceAbstractFactoryTest extends TestCase
     public function provideRenderers(): iterable
     {
         yield [MailViewRendererInterface::class, MailViewRendererInterface::class];
-        yield [TemplateRendererInterface::class, ExpressiveMailViewRenderer::class];
+        yield [TemplateRendererInterface::class, MezzioMailViewRenderer::class];
         yield [RendererInterface::class, MvcMailViewRenderer::class];
     }
 

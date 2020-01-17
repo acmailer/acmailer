@@ -6,7 +6,7 @@ namespace AcMailer\View;
 
 use Mezzio\Template\TemplateRendererInterface;
 
-class ExpressiveMailViewRenderer implements MailViewRendererInterface
+class MezzioMailViewRenderer implements MailViewRendererInterface
 {
     /** @var TemplateRendererInterface */
     private $renderer;

@@ -40,7 +40,7 @@ class MailViewRendererFactory
         // First, if the TemplateRendererInterface is registered as a service, use that service.
         // This should be true in expressive applications
         if ($container->has(TemplateRendererInterface::class)) {
-            return new ExpressiveMailViewRenderer($container->get(TemplateRendererInterface::class));
+            return new MezzioMailViewRenderer($container->get(TemplateRendererInterface::class));
         }
 
         // If the mailviewrenderer is registered, wrap it into a LaminasViewRenderer

@@ -10,8 +10,8 @@ use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception;
 use AcMailer\Model\EmailBuilder;
 use AcMailer\Service\MailService;
-use AcMailer\View\ExpressiveMailViewRenderer;
 use AcMailer\View\MailViewRendererInterface;
+use AcMailer\View\MezzioMailViewRenderer;
 use AcMailer\View\MvcMailViewRenderer;
 use Interop\Container\ContainerInterface;
 use Laminas\EventManager\EventManagerInterface;
@@ -243,7 +243,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
         }
 
         if ($renderer instanceof TemplateRendererInterface) {
-            return new ExpressiveMailViewRenderer($renderer);
+            return new MezzioMailViewRenderer($renderer);
         }
 
         if ($renderer instanceof RendererInterface) {

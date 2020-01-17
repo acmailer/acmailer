@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace AcMailerTest\View;
 
-use AcMailer\View\ExpressiveMailViewRenderer;
+use AcMailer\View\MezzioMailViewRenderer;
 use Mezzio\Template\TemplateRendererInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 
-class ExpressiveMailViewRendererTest extends TestCase
+class MezzioMailViewRendererTest extends TestCase
 {
-    /** @var ExpressiveMailViewRenderer */
+    /** @var MezzioMailViewRenderer */
     private $expressiveRenderer;
     /** @var ObjectProphecy */
     private $innerRenderer;
@@ -19,7 +19,7 @@ class ExpressiveMailViewRendererTest extends TestCase
     public function setUp(): void
     {
         $this->innerRenderer = $this->prophesize(TemplateRendererInterface::class);
-        $this->expressiveRenderer = new ExpressiveMailViewRenderer($this->innerRenderer->reveal());
+        $this->expressiveRenderer = new MezzioMailViewRenderer($this->innerRenderer->reveal());
     }
 
     /**

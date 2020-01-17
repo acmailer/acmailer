@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace AcMailerTest\View;
 
-use AcMailer\View\ExpressiveMailViewRenderer;
 use AcMailer\View\MailViewRendererFactory;
+use AcMailer\View\MezzioMailViewRenderer;
 use AcMailer\View\MvcMailViewRenderer;
 use Interop\Container\ContainerInterface;
 use Laminas\View\Renderer\PhpRenderer;
@@ -37,7 +37,7 @@ class MailViewRendererFactoryTest extends TestCase
 
         $result = $this->factory->__invoke($container->reveal());
 
-        $this->assertInstanceOf(ExpressiveMailViewRenderer::class, $result);
+        $this->assertInstanceOf(MezzioMailViewRenderer::class, $result);
         $hasViewRenderer->shouldHaveBeenCalledTimes(1);
         $getViewRenderer->shouldHaveBeenCalledTimes(1);
     }
