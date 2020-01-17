@@ -21,11 +21,10 @@ class EmailTest extends TestCase
     }
 
     /**
-     * @param $invalidBody
      * @test
      * @dataProvider provideInvalidBodies
      */
-    public function setBodyThrowsExceptionIfValueIsNotValid($invalidBody): void
+    public function setBodyThrowsExceptionIfValueIsNotValid(?object $invalidBody): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->email->setBody($invalidBody);

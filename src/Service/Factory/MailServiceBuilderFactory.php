@@ -10,7 +10,10 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class MailServiceBuilderFactory implements FactoryInterface
 {
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    /**
+     * @param string $requestedName
+     */
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): MailServiceBuilder // phpcs:ignore
     {
         $config = $container->has('config') ? $container->get('config') : [];
         $dependencies = $config['dependencies'] ?? $config['service_manager'] ?? [];

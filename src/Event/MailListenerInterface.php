@@ -11,7 +11,6 @@ interface MailListenerInterface extends ListenerAggregateInterface
     /**
      * Called before rendering the email, in case it is composed by a template
      *
-     * @param MailEvent $e
      * @return mixed
      */
     public function onPreRender(MailEvent $e);
@@ -19,7 +18,6 @@ interface MailListenerInterface extends ListenerAggregateInterface
     /**
      * Called before sending the email, but after rendering it
      *
-     * @param MailEvent $e
      * @return mixed
      */
     public function onPreSend(MailEvent $e);
@@ -27,7 +25,6 @@ interface MailListenerInterface extends ListenerAggregateInterface
     /**
      * Called after sending the email
      *
-     * @param MailEvent $e
      * @return mixed
      */
     public function onPostSend(MailEvent $e);
@@ -35,7 +32,6 @@ interface MailListenerInterface extends ListenerAggregateInterface
     /**
      * Called if an error occurs while sending the email
      *
-     * @param MailEvent $e
      * @return mixed
      */
     public function onSendError(MailEvent $e);

@@ -14,8 +14,6 @@ class MimePartAttachmentParser implements AttachmentParserInterface
 
     /**
      * @param string|resource|array|Mime\Part $attachment
-     * @param string|null $attachmentName
-     * @return Mime\Part
      * @throws InvalidAttachmentException
      */
     public function parse($attachment, ?string $attachmentName = null): Mime\Part

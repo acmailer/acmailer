@@ -24,9 +24,6 @@ final class Attachment
         return new self($data['parser_name'], $data['value']);
     }
 
-    /**
-     * @return string
-     */
     public function getParserName(): string
     {
         return $this->parserName;

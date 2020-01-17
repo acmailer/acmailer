@@ -19,22 +19,18 @@ class MailEvent extends Event implements ResultAwareInterface
     protected ResultInterface $result;
     private Email $email;
 
-    public function __construct(Email $email, $name = self::EVENT_MAIL_PRE_SEND)
+    public function __construct(Email $email, string $name = self::EVENT_MAIL_PRE_SEND)
     {
         parent::__construct($name);
         $this->email = $email;
     }
 
-    /**
-     * @return Email
-     */
     public function getEmail(): Email
     {
         return $this->email;
     }
 
     /**
-     * @param ResultInterface $result
      * @return $this
      */
     public function setResult(ResultInterface $result): self
@@ -43,9 +39,6 @@ class MailEvent extends Event implements ResultAwareInterface
         return $this;
     }
 
-    /**
-     * @return ResultInterface|null
-     */
     public function getResult(): ?ResultInterface
     {
         return $this->result;

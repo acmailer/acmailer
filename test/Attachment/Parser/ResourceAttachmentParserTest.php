@@ -31,7 +31,6 @@ class ResourceAttachmentParserTest extends TestCase
     }
 
     /**
-     * @param string|null $attachmentName
      * @test
      * @dataProvider provideAttachmentNames
      */

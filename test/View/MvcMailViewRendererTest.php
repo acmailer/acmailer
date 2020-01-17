@@ -14,10 +14,8 @@ use Prophecy\Prophecy\ObjectProphecy;
 
 class MvcMailViewRendererTest extends TestCase
 {
-    /** @var MvcMailViewRenderer */
-    private $mvcRenderer;
-    /** @var ObjectProphecy */
-    private $innerRenderer;
+    private MvcMailViewRenderer $mvcRenderer;
+    private ObjectProphecy $innerRenderer;
 
     public function setUp(): void
     {

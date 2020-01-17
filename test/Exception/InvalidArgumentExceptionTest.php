@@ -11,10 +11,7 @@ use stdClass;
 class InvalidArgumentExceptionTest extends TestCase
 {
     /**
-     * @param array $types
-     * @param $value
-     * @param string $fieldName
-     * @param string $expectedMessage
+     * @param mixed $value
      * @test
      * @dataProvider provideExceptionData
      */

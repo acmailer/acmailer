@@ -36,7 +36,7 @@
         "mezzio/mezzio-template": "^2.0",
         "phpstan/phpstan": "^0.12.3",
         "phpunit/phpunit": "^8.5",
-        "shlinkio/php-coding-standard": "~2.0.0"
+        "shlinkio/php-coding-standard": "~2.1.0"
     },
     "suggest": {
         "mezzio/mezzio-laminasviewrenderer": "If you want to render email templates using laminas/view in mezzio applications",

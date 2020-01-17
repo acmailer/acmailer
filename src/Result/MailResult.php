@@ -22,7 +22,6 @@ class MailResult implements ResultInterface
 
     /**
      * Returns the email that was tried to be sent
-     * @return Email
      */
     public function getEmail(): Email
     {
@@ -31,7 +30,6 @@ class MailResult implements ResultInterface
 
     /**
      * Tells if the MailService that produced this result was properly sent
-     * @return bool
      */
     public function isValid(): bool
     {
@@ -40,7 +38,6 @@ class MailResult implements ResultInterface
 
     /**
      * Tells if this Result has an exception. Usually only non-valid result should wrap an exception
-     * @return bool
      */
     public function hasException(): bool
     {
@@ -49,16 +46,14 @@ class MailResult implements ResultInterface
 
     /**
      * Returns the exception wrapped by this Result if any, or null otherwise
-     * @return \Throwable|null
      */
-    public function getException()
+    public function getException(): ?Throwable
     {
         return $this->exception;
     }
 
     /**
      * Tells if the email sending was cancelled, usually by a preSend listener
-     * @return bool
      */
     public function isCancelled(): bool
     {

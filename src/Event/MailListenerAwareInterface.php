@@ -6,18 +6,7 @@ namespace AcMailer\Event;
 
 interface MailListenerAwareInterface
 {
-    /**
-     * Attaches a new MailListenerInterface
-     * @param MailListenerInterface $mailListener
-     * @param int $priority
-     * @return void
-     */
-    public function attachMailListener(MailListenerInterface $mailListener, $priority = 1);
+    public function attachMailListener(MailListenerInterface $mailListener, int $priority = 1): void;
 
-    /**
-     * Detaches provided MailListener
-     * @param MailListenerInterface $mailListener
-     * @return void
-     */
-    public function detachMailListener(MailListenerInterface $mailListener);
+    public function detachMailListener(MailListenerInterface $mailListener): void;
 }
