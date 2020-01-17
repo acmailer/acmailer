@@ -10,21 +10,21 @@ use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception;
 use AcMailer\Model\EmailBuilder;
 use AcMailer\Service\MailService;
-use AcMailer\View\ExpressiveMailViewRenderer;
 use AcMailer\View\MailViewRendererInterface;
+use AcMailer\View\MezzioMailViewRenderer;
 use AcMailer\View\MvcMailViewRenderer;
 use Interop\Container\ContainerInterface;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\EventManager\EventsCapableInterface;
+use Laminas\EventManager\Exception\InvalidArgumentException;
+use Laminas\EventManager\LazyListenerAggregate;
+use Laminas\Mail\Transport;
+use Laminas\ServiceManager\Factory\AbstractFactoryInterface;
+use Laminas\Stdlib\ArrayUtils;
+use Laminas\View\Renderer\RendererInterface;
+use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\EventsCapableInterface;
-use Zend\EventManager\Exception\InvalidArgumentException;
-use Zend\EventManager\LazyListenerAggregate;
-use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Mail\Transport;
-use Zend\ServiceManager\Factory\AbstractFactoryInterface;
-use Zend\Stdlib\ArrayUtils;
-use Zend\View\Renderer\RendererInterface;
 
 use function array_key_exists;
 use function array_keys;
@@ -180,7 +180,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             return $transport;
         }
 
-        // Check if the adapter is one of Zend's default adapters
+        // Check if the adapter is one of Laminas' default adapters
         $transport = self::TRANSPORT_MAP[$transport] ?? $transport;
         if (is_subclass_of($transport, Transport\TransportInterface::class)) {
             return $this->setupStandardTransportFromConfig(new $transport(), $mailOptions);
@@ -243,7 +243,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
         }
 
         if ($renderer instanceof TemplateRendererInterface) {
-            return new ExpressiveMailViewRenderer($renderer);
+            return new MezzioMailViewRenderer($renderer);
         }
 
         if ($renderer instanceof RendererInterface) {

@@ -17,17 +17,17 @@ use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Result\MailResult;
 use AcMailer\Result\ResultInterface;
 use AcMailer\View\MailViewRendererInterface;
+use Laminas\EventManager\EventManager;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\EventManager\EventsCapableInterface;
+use Laminas\EventManager\SharedEventManager;
+use Laminas\Mail\Exception\InvalidArgumentException;
+use Laminas\Mail\Message;
+use Laminas\Mail\Transport\TransportInterface;
+use Laminas\Mime;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
-use Zend\EventManager\EventManager;
-use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\EventsCapableInterface;
-use Zend\EventManager\SharedEventManager;
-use Zend\Mail\Exception\InvalidArgumentException;
-use Zend\Mail\Message;
-use Zend\Mail\Transport\TransportInterface;
-use Zend\Mime;
 
 use function array_key_exists;
 use function array_merge;
@@ -171,7 +171,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
      * @param Email $email
      * @throws Exception\InvalidArgumentException
      */
-    private function renderEmailBody(Email $email)
+    private function renderEmailBody(Email $email): void
     {
         if (! $email->hasTemplate()) {
             return;
@@ -186,7 +186,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
 
     private function injectLayoutParam(array $original): array
     {
-        // When using Zend/View in expressive, a layout could have been globally configured.
+        // When using Laminas/View in Mezzio, a layout could have been globally configured.
         // We have to override it unless explicitly provided. It won't affect other renderer implementations.
         if (! array_key_exists('layout', $original)) {
             $original['layout'] = false;
@@ -231,7 +231,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
      * @throws ContainerExceptionInterface
      * @throws InvalidArgumentException
      */
-    private function attachFiles(Message $message, Email $email)
+    private function attachFiles(Message $message, Email $email): void
     {
         if (! $email->hasAttachments()) {
             return;

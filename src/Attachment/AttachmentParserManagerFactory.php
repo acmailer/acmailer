@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace AcMailer\Attachment;
 
 use Interop\Container\ContainerInterface;
+use Laminas\Stdlib\ArrayUtils;
 use Psr\Container;
-use Zend\Stdlib\ArrayUtils;
 
 class AttachmentParserManagerFactory
 {

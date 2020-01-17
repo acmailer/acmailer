@@ -1,4 +1,5 @@
 parameters:
+	checkMissingIterableValueType: false
 	ignoreErrors:
 		- '#is not subtype of Throwable#'
 		- '#Result of && is always false#'

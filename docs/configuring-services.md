@@ -63,7 +63,7 @@ use AcMailer\Service\Factory\MailServiceAbstractFactory;
 
 return [
     
-    'services_manager' => [ // 'dependencies' in the case of Expressive
+    'services_manager' => [ // 'dependencies' in the case of Mezzio
         'factories' => [
             'acmailer.mailservice.mycompany' => MailServiceAbstractFactory::class,
         ],
@@ -100,7 +100,7 @@ class IndexController
         $this->mailServiceBuilder = $mailServiceBuilder;
     }
 
-    public function sendContactAction(): Zend\View\Model\ViewModel
+    public function sendContactAction(): Laminas\View\Model\ViewModel
     {
         $mailService = $this->mailServiceBuilder->build('acmailer.mailservice.default', [
             'transport_options' => [
@@ -111,7 +111,7 @@ class IndexController
             ],
         ]);
         $result = $mailService->send('notification');
-        return new Zend\View\Model\ViewModel(['result' => $result]);
+        return new Laminas\View\Model\ViewModel(['result' => $result]);
     }
 }
 ```

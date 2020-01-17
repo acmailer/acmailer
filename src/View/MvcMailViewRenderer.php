@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace AcMailer\View;
 
-use Zend\View\Model\ViewModel;
-use Zend\View\Renderer\RendererInterface;
+use Laminas\View\Model\ViewModel;
+use Laminas\View\Renderer\RendererInterface;
 
 class MvcMailViewRenderer implements MailViewRendererInterface
 {

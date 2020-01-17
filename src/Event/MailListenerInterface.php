@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AcMailer\Event;
 
-use Zend\EventManager\ListenerAggregateInterface;
+use Laminas\EventManager\ListenerAggregateInterface;
 
 interface MailListenerInterface extends ListenerAggregateInterface
 {

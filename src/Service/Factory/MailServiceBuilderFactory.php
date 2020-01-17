@@ -6,7 +6,7 @@ namespace AcMailer\Service\Factory;
 
 use AcMailer\Service\MailServiceBuilder;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class MailServiceBuilderFactory implements FactoryInterface
 {

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AcMailer\Attachment\Parser;
 
 use AcMailer\Exception\InvalidAttachmentException;
-use Zend\Mime\Part;
+use Laminas\Mime\Part;
 
 interface AttachmentParserInterface
 {

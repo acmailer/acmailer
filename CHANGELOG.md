@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [Unreleased]
+
+#### Added
+
+* *Nothing*
+
+#### Changed
+
+* *Nothing*
+
+#### Deprecated
+
+* *Nothing*
+
+#### Removed
+
+* [#243](https://github.com/acmailer/acmailer/issues/243) Dropped support for Zend Framework and Zend Expressive in favor of the new project brand, Laminas and Mezzio.
+
+#### Fixed
+
+* *Nothing*
+
+
 ## 7.5.0 - 2019-12-18
 
 #### Added

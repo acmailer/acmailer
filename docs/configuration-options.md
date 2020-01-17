@@ -18,7 +18,7 @@ An example configuration file is provided in `vendor/acelaya/zf2-acmailer/config
 - **subject**: Default email subject as string.
 - **body**: The body of the email as a plain-text string.
 - **template**: The name of the template to be used to render an html body. If this is defined, the body property will be ignored.
-- **template_params**: An array of params to send to the template. If you are using zend/view, you can provide a "layout" param here in order to define the layout in which the template should be wrapped.
+- **template_params**: An array of params to send to the template. If you are using laminas/view, you can provide a "layout" param here in order to define the layout in which the template should be wrapped.
 - **attachments**: An array of attachments to add to the email. If a string key is provided, it will be used as the name of the attachment, otherwise, the real filename will be used.
 - **attachments_dir**: Defines how to attach all files in a directory. It wraps two properties:
     - *path*: The path of the directory to iterate looking for files. This files will be attached with their real names.
@@ -30,10 +30,10 @@ An example configuration file is provided in `vendor/acelaya/zf2-acmailer/config
 
 - **extends**: Defines other service from which to extend configuration, so that you only need to define the configuration that is different. By default this is null, which means that no configuration is extended.
 - **transport**: Tells the mail service which type of transport adapter should be used.<br>
-  You can either use standard `zendframework/zend-mail` transports (`sendmail`, `smtp`, `file`, `in_memory`), or any instance or class name implementing `Zend\Mail\Transport\TransportInterface`.<br>
+  You can either use standard `laminas/laminas-mail` transports (`sendmail`, `smtp`, `file`, `in_memory`), or any instance or class name implementing `Laminas\Mail\Transport\TransportInterface`.<br>
   It is also possible to define a service name and it will be automatically fetched from the container.<br>
   This is a perfect combination with the [slm/mail](https://github.com/juriansluiman/SlmMail) module, if you want to use advanced transports with `AcMailer`.
-- **transport_options**: Wraps the SMTP or File configuration that is used when the mail adapter is a `Zend\Mail\Transport\Smtp` or `Zend\Mail\Transport\File` instance. This option is ignored when a plain transport instance or a service name were provided for the **transport** option.
+- **transport_options**: Wraps the SMTP or File configuration that is used when the mail adapter is a `Laminas\Mail\Transport\Smtp` or `Laminas\Mail\Transport\File` instance. This option is ignored when a plain transport instance or a service name were provided for the **transport** option.
     - *SMTP*
         - **host**: IP address or server name of the SMTP server. Default value is 'localhost'.
         - **port**: SMTP server port. Default value is 25.
@@ -45,5 +45,5 @@ An example configuration file is provided in `vendor/acelaya/zf2-acmailer/config
     - *File*
         - **path**: Directory where the email will be saved.
         - **callback**: Callback used to get the filename of the email.ª
-- **renderer**: It is the service name of the renderer to be used. By default, *mailviewrenderer* is used in Zend MVC apps (which is an alias to the default *ViewRenderer* service), and the `Zend\Expressive\Template\TemplateRendererInterface` is used in Expressive apps.
+- **renderer**: It is the service name of the renderer to be used. By default, *mailviewrenderer* is used in Laminas MVC apps (which is an alias to the default *ViewRenderer* service), and the `Mezzio\Template\TemplateRendererInterface` is used in Mezzio apps.
 - **mail_listeners**: An array of mail listeners that will be automatically attached to the service once created. They can be either `AcMailer\Event\MailListenerInterface` instances or strings that will be used to fetch a service if exists or lazily instantiate an object. This is an empty array by default.

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace AcMailer;
 
-use Zend\Mime\Part;
-use Zend\ServiceManager\Factory\InvokableFactory;
+use Laminas\Mime\Part;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
 

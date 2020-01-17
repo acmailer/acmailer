@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AcMailer\Service;
 
-use Zend\ServiceManager\AbstractPluginManager;
+use Laminas\ServiceManager\AbstractPluginManager;
 
 class MailServiceBuilder extends AbstractPluginManager implements MailServiceBuilderInterface
 {

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace AcMailer\Event;
 
-use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\ListenerAggregateTrait;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\EventManager\ListenerAggregateTrait;
 
 trait MailListenerTrait
 {

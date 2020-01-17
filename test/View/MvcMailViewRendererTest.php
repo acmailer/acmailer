@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace AcMailerTest\View;
 
 use AcMailer\View\MvcMailViewRenderer;
+use Laminas\View\Model\ViewModel;
+use Laminas\View\Renderer\RendererInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Zend\View\Model\ViewModel;
-use Zend\View\Renderer\RendererInterface;
 
 class MvcMailViewRendererTest extends TestCase
 {
@@ -28,7 +28,7 @@ class MvcMailViewRendererTest extends TestCase
     /**
      * @test
      */
-    public function renderDelegatesIntoZendRendererWhenNoLayoutIsProvided(): void
+    public function renderDelegatesIntoLaminasRendererWhenNoLayoutIsProvided(): void
     {
         $innerRender = $this->innerRenderer->render(Argument::type(ViewModel::class))->willReturn('');
 
@@ -40,7 +40,7 @@ class MvcMailViewRendererTest extends TestCase
     /**
      * @test
      */
-    public function renderDelegatesIntoZendRendererWhenLayoutIsProvided(): void
+    public function renderDelegatesIntoLaminasRendererWhenLayoutIsProvided(): void
     {
         $innerRender = $this->innerRenderer->render(Argument::type(ViewModel::class))->willReturn('');
 

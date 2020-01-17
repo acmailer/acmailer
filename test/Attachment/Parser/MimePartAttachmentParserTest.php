@@ -6,8 +6,8 @@ namespace AcMailerTest\Attachment\Parser;
 
 use AcMailer\Attachment\Parser\MimePartAttachmentParser;
 use AcMailer\Exception\InvalidAttachmentException;
+use Laminas\Mime\Part;
 use PHPUnit\Framework\TestCase;
-use Zend\Mime\Part;
 
 use function sprintf;
 

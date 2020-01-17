@@ -6,11 +6,11 @@ namespace AcMailer\Model;
 
 use AcMailer\Exception\InvalidArgumentException;
 use DirectoryIterator;
+use Laminas\Mime\Message;
+use Laminas\Mime\Part;
+use Laminas\Stdlib\AbstractOptions;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Zend\Mime\Message;
-use Zend\Mime\Part;
-use Zend\Stdlib\AbstractOptions;
 
 use function is_array;
 use function is_dir;

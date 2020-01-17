@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AcMailer\Attachment\Helper;
 
-use Zend\Mime\Part;
+use Laminas\Mime\Part;
 
 trait AttachmentHelperTrait
 {

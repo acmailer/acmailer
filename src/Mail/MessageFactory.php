@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AcMailer\Mail;
 
 use AcMailer\Model\Email;
-use Zend\Mail\Message;
+use Laminas\Mail\Message;
 
 final class MessageFactory
 {

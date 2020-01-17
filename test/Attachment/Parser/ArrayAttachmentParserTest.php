@@ -6,8 +6,8 @@ namespace AcMailerTest\Attachment\Parser;
 
 use AcMailer\Attachment\Parser\ArrayAttachmentParser;
 use AcMailer\Exception\InvalidAttachmentException;
+use Laminas\Mime\Mime;
 use PHPUnit\Framework\TestCase;
-use Zend\Mime\Mime;
 
 class ArrayAttachmentParserTest extends TestCase
 {

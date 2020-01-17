@@ -88,7 +88,7 @@ return [
 
                 /*
                  * The list of params to pass to the email.
-                 * When using zend/view, you can define one 'layout' param with the layout to be used if the email
+                 * When using laminas/view, you can define one 'layout' param with the layout to be used if the email
                  * Default value is an empty string
                  */
                 //'template_params' => [],
@@ -139,18 +139,18 @@ return [
 
                 /*
                  * The mail transport to be used.
-                 * You can define any class implementing Zend\Mail\Transport\TransportInterface,
+                 * You can define any class implementing Laminas\Mail\Transport\TransportInterface,
                  * either the fully qualified class name as string or the instance to be used.
                  *
                  * For standard mail transports, you can use any one of these aliases:
-                 *   - sendmail  => Zend\Mail\Transport\Sendmail
-                 *   - smtp      => Zend\Mail\Transport\Smtp
-                 *   - file      => Zend\Mail\Transport\File
-                 *   - null      => Zend\Mail\Transport\InMemory
-                 *   - in_memory => Zend\Mail\Transport\InMemory
+                 *   - sendmail  => Laminas\Mail\Transport\Sendmail
+                 *   - smtp      => Laminas\Mail\Transport\Smtp
+                 *   - file      => Laminas\Mail\Transport\File
+                 *   - null      => Laminas\Mail\Transport\InMemory
+                 *   - in_memory => Laminas\Mail\Transport\InMemory
                  *
                  * If for some reason you need to use a custom adapter which is complex to be created, you can also
-                 * define the name of a service that returns a Zend\Mail\Transport\TransportInterface instance.
+                 * define the name of a service that returns a Laminas\Mail\Transport\TransportInterface instance.
                  * When the MailService is created, it will automatically check if this is an existing service.
                  *
                  * Default value is 'sendmail'
@@ -217,7 +217,7 @@ return [
                     //'path' => 'data/mail/output',
 
                     /*
-                     * A callable that will get the Zend\Mail\Transport\File object as an argument and should return the
+                     * A callable that will get the Laminas\Mail\Transport\File object as an argument and should return the
                      * filename.
                      * Default value is null, in which case an empty callable will be used.
                      */
@@ -226,11 +226,11 @@ return [
 
                 /*
                  * The renderer service name to be used to render email templates.
-                 * When using zend/mvc, default value is 'mailviewrenderer', which is an alias to the standard
-                 * 'viewrenderer' registered by Zend\Mvc
-                 * When using zend/expressive, default value is Zend\Expressive\Template\TemplateRendererInterface
+                 * When using laminas/mvc, default value is 'mailviewrenderer', which is an alias to the standard
+                 * 'viewrenderer' registered by Laminas\Mvc
+                 * When using mezzio, default value is Mezzio\Template\TemplateRendererInterface
                  *
-                 * The service set here must return an instance of Zend\Expressive\Template\TemplateRendererInterface
+                 * The service set here must return an instance of Mezzio\Template\TemplateRendererInterface
                  */
                 //'renderer' => 'mailviewrenderer',
 
