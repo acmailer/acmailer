@@ -14,6 +14,14 @@ Before v8.x, there was a `AcMailer\View\ExpressiveMailViewRenderer` class that, 
 
 It's an internal class and it's not very likely that you were using it, but if you were, you need to change to the new one instead.
 
+### Renamed result object methods
+
+When an email is sent by calling the `send` method in the `MailService`, it returns an `AcMailer\Result\MailResult` object.
+
+This object (as well as the `AcMailer\Result\ResultInterface` it implements) used to have two methods called `getException` and `hasException`.
+
+These two methods have been renamed to `getThrowable` and `hasThrowable` to make it more consistent.
+
 ## From 5.x/6.x to 7.x
 
 ### Configuration

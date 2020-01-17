@@ -39,7 +39,7 @@ class MailResult implements ResultInterface
     /**
      * Tells if this Result has an exception. Usually only non-valid result should wrap an exception
      */
-    public function hasException(): bool
+    public function hasThrowable(): bool
     {
         return $this->exception !== null;
     }
@@ -47,7 +47,7 @@ class MailResult implements ResultInterface
     /**
      * Returns the exception wrapped by this Result if any, or null otherwise
      */
-    public function getException(): ?Throwable
+    public function getThrowable(): ?Throwable
     {
         return $this->exception;
     }
@@ -57,6 +57,6 @@ class MailResult implements ResultInterface
      */
     public function isCancelled(): bool
     {
-        return ! $this->isValid() && ! $this->hasException();
+        return ! $this->isValid() && ! $this->hasThrowable();
     }
 }

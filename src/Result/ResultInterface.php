@@ -25,12 +25,12 @@ interface ResultInterface
     public function isCancelled(): bool;
 
     /**
-     * Tells if this Result has an exception. Usually only non-valid result should wrap an exception
+     * Tells if this Result has a throwable. Usually only non-valid result should wrap an exception
      */
-    public function hasException(): bool;
+    public function hasThrowable(): bool;
 
     /**
-     * Returns the exception wrapped by this Result if any, or null otherwise
+     * Returns the throwable wrapped by this Result if any, or null otherwise
      */
-    public function getException(): ?Throwable;
+    public function getThrowable(): ?Throwable;
 }
