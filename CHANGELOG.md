@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 #### Changed
 
-* *Nothing*
+* [#248](https://github.com/acmailer/acmailer/issues/248) Updated to [shlinkio/php-coding-standard] v2.1
 
 #### Deprecated
 
