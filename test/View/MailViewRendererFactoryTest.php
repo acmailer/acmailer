@@ -8,11 +8,11 @@ use AcMailer\View\ExpressiveMailViewRenderer;
 use AcMailer\View\MailViewRendererFactory;
 use AcMailer\View\MvcMailViewRenderer;
 use Interop\Container\ContainerInterface;
-use PHPUnit\Framework\TestCase;
-use ReflectionObject;
-use Mezzio\Template\TemplateRendererInterface;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver;
+use Mezzio\Template\TemplateRendererInterface;
+use PHPUnit\Framework\TestCase;
+use ReflectionObject;
 
 class MailViewRendererFactoryTest extends TestCase
 {

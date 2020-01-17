@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace AcMailerTest\View;
 
 use AcMailer\View\ExpressiveMailViewRenderer;
+use Mezzio\Template\TemplateRendererInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
-use Mezzio\Template\TemplateRendererInterface;
 
 class ExpressiveMailViewRendererTest extends TestCase
 {

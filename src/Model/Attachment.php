@@ -11,6 +11,9 @@ final class Attachment
     /** @var mixed */
     private $value;
 
+    /**
+     * @param mixed $value
+     */
     public function __construct(string $parserName, $value)
     {
         $this->parserName = $parserName;

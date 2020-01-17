@@ -8,8 +8,6 @@ use Interop\Container\ContainerInterface;
 use Interop\Container\ContainerInterface as InteropContainer;
 use Interop\Container\Exception\ContainerException;
 use Interop\Container\Exception\NotFoundException;
-use Psr\Container\ContainerExceptionInterface;
-use Mezzio\Template\TemplateRendererInterface;
 use Laminas\Mvc\Service\ViewHelperManagerFactory;
 use Laminas\ServiceManager\Config;
 use Laminas\View\HelperPluginManager;
@@ -19,6 +17,8 @@ use Laminas\View\Resolver\AggregateResolver;
 use Laminas\View\Resolver\ResolverInterface;
 use Laminas\View\Resolver\TemplateMapResolver;
 use Laminas\View\Resolver\TemplatePathStack;
+use Mezzio\Template\TemplateRendererInterface;
+use Psr\Container\ContainerExceptionInterface;
 
 use function array_shift;
 use function count;

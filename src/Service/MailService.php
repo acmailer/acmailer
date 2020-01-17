@@ -17,9 +17,6 @@ use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Result\MailResult;
 use AcMailer\Result\ResultInterface;
 use AcMailer\View\MailViewRendererInterface;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use Throwable;
 use Laminas\EventManager\EventManager;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\EventManager\EventsCapableInterface;
@@ -28,6 +25,9 @@ use Laminas\Mail\Exception\InvalidArgumentException;
 use Laminas\Mail\Message;
 use Laminas\Mail\Transport\TransportInterface;
 use Laminas\Mime;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Throwable;
 
 use function array_key_exists;
 use function array_merge;
@@ -171,7 +171,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
      * @param Email $email
      * @throws Exception\InvalidArgumentException
      */
-    private function renderEmailBody(Email $email)
+    private function renderEmailBody(Email $email): void
     {
         if (! $email->hasTemplate()) {
             return;
@@ -231,7 +231,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
      * @throws ContainerExceptionInterface
      * @throws InvalidArgumentException
      */
-    private function attachFiles(Message $message, Email $email)
+    private function attachFiles(Message $message, Email $email): void
     {
         if (! $email->hasAttachments()) {
             return;

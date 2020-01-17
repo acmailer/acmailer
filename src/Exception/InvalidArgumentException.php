@@ -14,6 +14,9 @@ use function sprintf;
 
 class InvalidArgumentException extends SplInvalidArgumentException implements ExceptionInterface
 {
+    /**
+     * @param mixed $value
+     */
     public static function fromValidTypes(array $types, $value, string $fieldName = 'value'): self
     {
         return new self(sprintf(

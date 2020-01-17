@@ -7,9 +7,9 @@ namespace AcMailerTest\Model;
 use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Model\Email;
 use Exception;
+use Laminas\Mime\Part;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use Laminas\Mime\Part;
 
 class EmailTest extends TestCase
 {

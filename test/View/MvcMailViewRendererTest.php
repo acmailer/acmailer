@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace AcMailerTest\View;
 
 use AcMailer\View\MvcMailViewRenderer;
+use Laminas\View\Model\ViewModel;
+use Laminas\View\Renderer\RendererInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Laminas\View\Model\ViewModel;
-use Laminas\View\Renderer\RendererInterface;
 
 class MvcMailViewRendererTest extends TestCase
 {

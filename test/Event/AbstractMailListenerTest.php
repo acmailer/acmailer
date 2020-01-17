@@ -6,8 +6,8 @@ namespace AcMailerTest\Event;
 
 use AcMailer\Event\AbstractMailListener;
 use AcMailer\Event\MailEvent;
-use PHPUnit\Framework\TestCase;
 use Laminas\EventManager\EventManagerInterface;
+use PHPUnit\Framework\TestCase;
 
 class AbstractMailListenerTest extends TestCase
 {

@@ -6,11 +6,11 @@ namespace AcMailer\Model;
 
 use AcMailer\Exception\InvalidArgumentException;
 use DirectoryIterator;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 use Laminas\Mime\Message;
 use Laminas\Mime\Part;
 use Laminas\Stdlib\AbstractOptions;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 use function is_array;
 use function is_dir;

@@ -72,7 +72,7 @@
         ],
         "cs": "phpcs",
         "cs:fix": "phpcbf",
-        "stan": "phpstan analyse src/ --level=5",
+        "stan": "phpstan analyse src/ --level=6",
         "test": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-clover build/clover.xml",
         "test:pretty": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-html build/html",
         "test:ci": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-clover=build/clover.xml --coverage-xml=build/coverage-xml --log-junit=build/junit.xml",

@@ -7,9 +7,9 @@ namespace AcMailerTest\Attachment\Parser;
 use AcMailer\Attachment\Parser\FilePathAttachmentParser;
 use AcMailer\Exception\InvalidAttachmentException;
 use finfo;
+use Laminas\Mime\Mime;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
-use Laminas\Mime\Mime;
 
 use function basename;
 
