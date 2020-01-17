@@ -8,8 +8,7 @@ use Mezzio\Template\TemplateRendererInterface;
 
 class MezzioMailViewRenderer implements MailViewRendererInterface
 {
-    /** @var TemplateRendererInterface */
-    private $renderer;
+    private TemplateRendererInterface $renderer;
 
     public function __construct(TemplateRendererInterface $renderer)
     {

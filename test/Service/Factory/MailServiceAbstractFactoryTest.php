@@ -32,10 +32,8 @@ use function sprintf;
 
 class MailServiceAbstractFactoryTest extends TestCase
 {
-    /** @var MailServiceAbstractFactory */
-    private $factory;
-    /** @var ObjectProphecy */
-    private $container;
+    private MailServiceAbstractFactory $factory;
+    private ObjectProphecy $container;
 
     public function setUp(): void
     {

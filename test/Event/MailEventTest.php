@@ -11,8 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class MailEventTest extends TestCase
 {
-    /** @var MailEvent */
-    private $mailEvent;
+    private MailEvent $mailEvent;
 
     /**
      * @test

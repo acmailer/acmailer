@@ -15,10 +15,8 @@ use function basename;
 
 class FilePathAttachmentParserTest extends TestCase
 {
-    /** @var FilePathAttachmentParser */
-    private $parser;
-    /** @var ObjectProphecy */
-    private $finfo;
+    private FilePathAttachmentParser $parser;
+    private ObjectProphecy $finfo;
 
     public function setUp(): void
     {

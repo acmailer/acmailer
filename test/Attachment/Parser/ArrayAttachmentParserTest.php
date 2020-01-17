@@ -11,8 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class ArrayAttachmentParserTest extends TestCase
 {
-    /** @var ArrayAttachmentParser */
-    private $parser;
+    private ArrayAttachmentParser $parser;
 
     public function setUp(): void
     {

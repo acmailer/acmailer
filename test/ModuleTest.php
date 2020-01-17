@@ -9,8 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class ModuleTest extends TestCase
 {
-    /** @var Module */
-    private $module;
+    private Module $module;
 
     public function setUp(): void
     {

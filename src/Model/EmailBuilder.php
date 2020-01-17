@@ -11,8 +11,7 @@ use function in_array;
 
 class EmailBuilder implements EmailBuilderInterface
 {
-    /** @var array */
-    private $emailsConfig;
+    private array $emailsConfig;
 
     public function __construct(array $emailsConfig)
     {

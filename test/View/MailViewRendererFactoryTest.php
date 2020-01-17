@@ -16,8 +16,7 @@ use ReflectionObject;
 
 class MailViewRendererFactoryTest extends TestCase
 {
-    /** @var MailViewRendererFactory */
-    private $factory;
+    private MailViewRendererFactory $factory;
 
     public function setUp(): void
     {

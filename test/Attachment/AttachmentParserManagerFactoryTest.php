@@ -11,8 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class AttachmentParserManagerFactoryTest extends TestCase
 {
-    /** @var AttachmentParserManagerFactory */
-    private $factory;
+    private AttachmentParserManagerFactory $factory;
 
     public function setUp(): void
     {
