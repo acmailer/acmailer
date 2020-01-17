@@ -21,38 +21,23 @@ final class Email extends AbstractOptions
 {
     public const DEFAULT_CHARSET = 'utf-8';
 
-    /** @var string */
-    private $from = '';
-    /** @var string */
-    private $fromName = '';
-    /** @var string */
-    private $replyTo = '';
-    /** @var string */
-    private $replyToName = '';
-    /** @var array */
-    private $to = [];
-    /** @var array */
-    private $cc = [];
-    /** @var array */
-    private $bcc = [];
-    /** @var string */
-    private $encoding = '';
-    /** @var string */
-    private $subject = '';
+    private string $from = '';
+    private string $fromName = '';
+    private string $replyTo = '';
+    private string $replyToName = '';
+    private array $to = [];
+    private array $cc = [];
+    private array $bcc = [];
+    private string $encoding = '';
+    private string $subject = '';
     /** @var string|Part|Message */
     private $body = '';
-    /** @var string|null */
-    private $template;
-    /** @var array */
-    private $templateParams = [];
-    /** @var array */
-    private $attachments = [];
-    /** @var array */
-    private $attachmentsDir = [];
-    /** @var string */
-    private $charset = self::DEFAULT_CHARSET;
-    /** @var array */
-    private $customHeaders = [];
+    private ?string $template = null;
+    private array $templateParams = [];
+    private array $attachments = [];
+    private array $attachmentsDir = [];
+    private string $charset = self::DEFAULT_CHARSET;
+    private array $customHeaders = [];
 
     public function __construct($options = null)
     {

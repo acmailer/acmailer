@@ -12,8 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class EmailBuilderTest extends TestCase
 {
-    /** @var EmailBuilder */
-    private $builder;
+    private EmailBuilder $builder;
 
     public function setUp(): void
     {

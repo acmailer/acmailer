@@ -13,8 +13,7 @@ use function sprintf;
 
 class MimePartAttachmentParserTest extends TestCase
 {
-    /** @var MimePartAttachmentParser */
-    private $parser;
+    private MimePartAttachmentParser $parser;
 
     public function setUp(): void
     {

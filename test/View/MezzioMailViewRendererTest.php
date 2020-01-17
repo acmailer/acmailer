@@ -11,15 +11,13 @@ use Prophecy\Prophecy\ObjectProphecy;
 
 class MezzioMailViewRendererTest extends TestCase
 {
-    /** @var MezzioMailViewRenderer */
-    private $expressiveRenderer;
-    /** @var ObjectProphecy */
-    private $innerRenderer;
+    private MezzioMailViewRenderer $mezzioRenderer;
+    private ObjectProphecy $innerRenderer;
 
     public function setUp(): void
     {
         $this->innerRenderer = $this->prophesize(TemplateRendererInterface::class);
-        $this->expressiveRenderer = new MezzioMailViewRenderer($this->innerRenderer->reveal());
+        $this->mezzioRenderer = new MezzioMailViewRenderer($this->innerRenderer->reveal());
     }
 
     /**
@@ -30,7 +28,7 @@ class MezzioMailViewRendererTest extends TestCase
         $params = ['foo' => 'bar'];
         $innerRender = $this->innerRenderer->render('foo', $params)->willReturn('');
 
-        $this->expressiveRenderer->render('foo', $params);
+        $this->mezzioRenderer->render('foo', $params);
 
         $innerRender->shouldHaveBeenCalledTimes(1);
     }

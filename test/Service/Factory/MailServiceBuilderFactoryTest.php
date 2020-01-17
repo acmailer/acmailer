@@ -13,10 +13,8 @@ use ReflectionObject;
 
 class MailServiceBuilderFactoryTest extends TestCase
 {
-    /** @var MailServiceBuilderFactory */
-    private $factory;
-    /** @var ObjectProphecy */
-    private $container;
+    private MailServiceBuilderFactory $factory;
+    private ObjectProphecy $container;
 
     public function setUp(): void
     {

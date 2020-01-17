@@ -9,8 +9,7 @@ use Laminas\View\Renderer\RendererInterface;
 
 class MvcMailViewRenderer implements MailViewRendererInterface
 {
-    /** @var RendererInterface */
-    private $renderer;
+    private RendererInterface $renderer;
 
     public function __construct(RendererInterface $renderer)
     {

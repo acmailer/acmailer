@@ -13,8 +13,7 @@ use function fopen;
 
 class ResourceAttachmentParserTest extends TestCase
 {
-    /** @var ResourceAttachmentParser */
-    private $parser;
+    private ResourceAttachmentParser $parser;
 
     public function setUp(): void
     {

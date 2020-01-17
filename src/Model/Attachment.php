@@ -6,8 +6,7 @@ namespace AcMailer\Model;
 
 final class Attachment
 {
-    /** @var string */
-    private $parserName;
+    private string $parserName;
     /** @var mixed */
     private $value;
 

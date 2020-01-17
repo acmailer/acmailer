@@ -16,10 +16,8 @@ class MailEvent extends Event implements ResultAwareInterface
     public const EVENT_MAIL_POST_SEND = 'event.mail.post.send';
     public const EVENT_MAIL_SEND_ERROR = 'event.mail.send.error';
 
-    /** @var ResultInterface */
-    protected $result;
-    /** @var Email */
-    private $email;
+    protected ResultInterface $result;
+    private Email $email;
 
     public function __construct(Email $email, $name = self::EVENT_MAIL_PRE_SEND)
     {

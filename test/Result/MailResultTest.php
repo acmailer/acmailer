@@ -13,8 +13,7 @@ use Throwable;
 
 class MailResultTest extends TestCase
 {
-    /** @var ResultInterface */
-    private $mailResult;
+    private ResultInterface $mailResult;
 
     /**
      * @test

@@ -11,8 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class AbstractMailListenerTest extends TestCase
 {
-    /** @var AbstractMailListener */
-    private $mailListener;
+    private AbstractMailListener $mailListener;
 
     public function setUp(): void
     {

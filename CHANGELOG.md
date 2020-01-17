@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 #### Removed
 
 * [#243](https://github.com/acmailer/acmailer/issues/243) Dropped support for Zend Framework and Zend Expressive in favor of the new project brand, Laminas and Mezzio.
+* [#245](https://github.com/acmailer/acmailer/issues/245) Dropped support for PHP < 7.4.
 
 #### Fixed
 

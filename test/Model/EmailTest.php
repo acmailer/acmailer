@@ -13,8 +13,7 @@ use stdClass;
 
 class EmailTest extends TestCase
 {
-    /** @var Email */
-    private $email;
+    private Email $email;
 
     public function setUp(): void
     {
