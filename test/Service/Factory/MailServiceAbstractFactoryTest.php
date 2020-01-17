@@ -99,16 +99,16 @@ class MailServiceAbstractFactoryTest extends TestCase
             ],
         ]);
         $this->container->get(MailViewRendererInterface::class)->willReturn(
-            $this->prophesize(MailViewRendererInterface::class)->reveal()
+            $this->prophesize(MailViewRendererInterface::class)->reveal(),
         );
         $this->container->get('my_renderer')->willReturn(
-            $this->prophesize(MailViewRendererInterface::class)->reveal()
+            $this->prophesize(MailViewRendererInterface::class)->reveal(),
         );
         $this->container->get(EmailBuilder::class)->willReturn(
-            $this->prophesize(EmailBuilderInterface::class)->reveal()
+            $this->prophesize(EmailBuilderInterface::class)->reveal(),
         );
         $this->container->get(AttachmentParserManager::class)->willReturn(
-            $this->prophesize(AttachmentParserManager::class)->reveal()
+            $this->prophesize(AttachmentParserManager::class)->reveal(),
         );
 
         $result = $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
@@ -136,13 +136,13 @@ class MailServiceAbstractFactoryTest extends TestCase
     public function standardTransportAsServiceIsKeptAsIs(): void
     {
         $this->container->get(MailViewRendererInterface::class)->willReturn(
-            $this->prophesize(MailViewRendererInterface::class)->reveal()
+            $this->prophesize(MailViewRendererInterface::class)->reveal(),
         );
         $this->container->get(EmailBuilder::class)->willReturn(
-            $this->prophesize(EmailBuilderInterface::class)->reveal()
+            $this->prophesize(EmailBuilderInterface::class)->reveal(),
         );
         $this->container->get(AttachmentParserManager::class)->willReturn(
-            $this->prophesize(AttachmentParserManager::class)->reveal()
+            $this->prophesize(AttachmentParserManager::class)->reveal(),
         );
 
         $transportServiceName = 'custom.mail.transport';
@@ -170,7 +170,7 @@ class MailServiceAbstractFactoryTest extends TestCase
     /**
      * @test
      * @dataProvider provideInvalidTransports
-     * @param $transport
+     * @param mixed $transport
      */
     public function exceptionIsThrownIfConfiguredTransportHasAnInvalidValue($transport, bool $inContainer): void
     {
@@ -223,8 +223,8 @@ class MailServiceAbstractFactoryTest extends TestCase
             stdClass::class,
             implode(
                 '", "',
-                [MailViewRendererInterface::class, TemplateRendererInterface::class, RendererInterface::class]
-            )
+                [MailViewRendererInterface::class, TemplateRendererInterface::class, RendererInterface::class],
+            ),
         ));
         $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
     }
@@ -251,15 +251,15 @@ class MailServiceAbstractFactoryTest extends TestCase
             ],
         ]);
         $this->container->get(MailViewRendererInterface::class)->willReturn(
-            $this->prophesize(RendererInterface::class)->reveal()
+            $this->prophesize(RendererInterface::class)->reveal(),
         );
         $this->container->get(EmailBuilder::class)->willReturn(
-            $this->prophesize(EmailBuilderInterface::class)->reveal()
+            $this->prophesize(EmailBuilderInterface::class)->reveal(),
         );
 
         $this->expectException(Exception\ServiceNotCreatedException::class);
         $this->expectExceptionMessage(
-            'It wasn\'t possible to create a mail service due to circular inheritance. Review "extends" option.'
+            "It wasn't possible to create a mail service due to circular inheritance. Review 'extends' option.",
         );
         $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
     }
@@ -280,15 +280,15 @@ class MailServiceAbstractFactoryTest extends TestCase
             ],
         ]);
         $this->container->get(MailViewRendererInterface::class)->willReturn(
-            $this->prophesize(RendererInterface::class)->reveal()
+            $this->prophesize(RendererInterface::class)->reveal(),
         );
         $this->container->get(EmailBuilder::class)->willReturn(
-            $this->prophesize(EmailBuilderInterface::class)->reveal()
+            $this->prophesize(EmailBuilderInterface::class)->reveal(),
         );
 
         $this->expectException(Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Provided service "invalid" to extend from is not configured inside acmailer_options.mail_services'
+            'Provided service "invalid" to extend from is not configured inside acmailer_options.mail_services',
         );
         $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
     }
@@ -316,16 +316,16 @@ class MailServiceAbstractFactoryTest extends TestCase
         ]);
         $this->container->has('my_transport')->willReturn(true)->shouldBeCalled();
         $this->container->get('my_transport')->willReturn(
-            $this->prophesize(TransportInterface::class)->reveal()
+            $this->prophesize(TransportInterface::class)->reveal(),
         )->shouldBeCalled();
         $this->container->get('my_renderer')->willReturn(
-            $this->prophesize(MailViewRendererInterface::class)->reveal()
+            $this->prophesize(MailViewRendererInterface::class)->reveal(),
         )->shouldBeCalled();
         $this->container->get(EmailBuilder::class)->willReturn(
-            $this->prophesize(EmailBuilderInterface::class)->reveal()
+            $this->prophesize(EmailBuilderInterface::class)->reveal(),
         );
         $this->container->get(AttachmentParserManager::class)->willReturn(
-            $this->prophesize(AttachmentParserManager::class)->reveal()
+            $this->prophesize(AttachmentParserManager::class)->reveal(),
         );
 
         $result = $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
@@ -356,13 +356,13 @@ class MailServiceAbstractFactoryTest extends TestCase
             ],
         ]);
         $this->container->get(MailViewRendererInterface::class)->willReturn(
-            $this->prophesize(MailViewRendererInterface::class)->reveal()
+            $this->prophesize(MailViewRendererInterface::class)->reveal(),
         );
         $this->container->get(EmailBuilder::class)->willReturn(
-            $this->prophesize(EmailBuilderInterface::class)->reveal()
+            $this->prophesize(EmailBuilderInterface::class)->reveal(),
         );
         $this->container->get(AttachmentParserManager::class)->willReturn(
-            $this->prophesize(AttachmentParserManager::class)->reveal()
+            $this->prophesize(AttachmentParserManager::class)->reveal(),
         );
 
         $result = $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
@@ -392,10 +392,10 @@ class MailServiceAbstractFactoryTest extends TestCase
             ],
         ]);
         $this->container->get(EmailBuilder::class)->willReturn(
-            $this->prophesize(EmailBuilderInterface::class)->reveal()
+            $this->prophesize(EmailBuilderInterface::class)->reveal(),
         );
         $this->container->get(AttachmentParserManager::class)->willReturn(
-            $this->prophesize(AttachmentParserManager::class)->reveal()
+            $this->prophesize(AttachmentParserManager::class)->reveal(),
         );
 
         $getRenderer = $this->container->get($rendererClass)->willReturn($this->prophesize($rendererClass)->reveal());
@@ -428,17 +428,17 @@ class MailServiceAbstractFactoryTest extends TestCase
             ],
         ]);
         $this->container->get(EmailBuilder::class)->willReturn(
-            $this->prophesize(EmailBuilderInterface::class)->reveal()
+            $this->prophesize(EmailBuilderInterface::class)->reveal(),
         );
         $this->container->get(AttachmentParserManager::class)->willReturn(
-            $this->prophesize(AttachmentParserManager::class)->reveal()
+            $this->prophesize(AttachmentParserManager::class)->reveal(),
         );
 
         $getFooRenderer = $this->container->get('foo_renderer')->willReturn(
-            $this->prophesize(MailViewRendererInterface::class)->reveal()
+            $this->prophesize(MailViewRendererInterface::class)->reveal(),
         );
         $getBarRenderer = $this->container->get('bar_renderer')->willReturn(
-            $this->prophesize(MailViewRendererInterface::class)->reveal()
+            $this->prophesize(MailViewRendererInterface::class)->reveal(),
         );
 
         $mailService = $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default', [
@@ -452,11 +452,14 @@ class MailServiceAbstractFactoryTest extends TestCase
         $getBarRenderer->shouldHaveBeenCalled();
     }
 
-    private function getObjectProp($mailService, string $propName)
+    /**
+     * @return mixed
+     */
+    private function getObjectProp(object $obj, string $propName)
     {
-        $ref = new ReflectionObject($mailService);
+        $ref = new ReflectionObject($obj);
         $prop = $ref->getProperty($propName);
         $prop->setAccessible(true);
-        return $prop->getValue($mailService);
+        return $prop->getValue($obj);
     }
 }

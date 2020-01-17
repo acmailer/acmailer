@@ -9,5 +9,5 @@ use Laminas\ServiceManager\AbstractPluginManager;
 
 class AttachmentParserManager extends AbstractPluginManager implements AttachmentParserManagerInterface
 {
-    protected $instanceOf = AttachmentParserInterface::class;
+    protected $instanceOf = AttachmentParserInterface::class; // phpcs:ignore
 }

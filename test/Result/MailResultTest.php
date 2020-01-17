@@ -27,8 +27,8 @@ class MailResultTest extends TestCase
         $this->assertTrue($this->mailResult->isValid());
         $this->assertFalse($this->mailResult->isCancelled());
         $this->assertSame($email, $this->mailResult->getEmail());
-        $this->assertFalse($this->mailResult->hasException());
-        $this->assertNull($this->mailResult->getException());
+        $this->assertFalse($this->mailResult->hasThrowable());
+        $this->assertNull($this->mailResult->getThrowable());
     }
 
     /**
@@ -40,8 +40,8 @@ class MailResultTest extends TestCase
         $this->mailResult = new MailResult(new Email(), $isValid, $e);
 
         $this->assertEquals($isValid, $this->mailResult->isValid());
-        $this->assertEquals($e !== null, $this->mailResult->hasException());
-        $this->assertEquals($e, $this->mailResult->getException());
+        $this->assertEquals($e !== null, $this->mailResult->hasThrowable());
+        $this->assertEquals($e, $this->mailResult->getThrowable());
         $this->assertEquals(! $isValid && $e === null, $this->mailResult->isCancelled());
     }
 
@@ -56,12 +56,12 @@ class MailResultTest extends TestCase
      * @test
      * @dataProvider provideExceptions
      */
-    public function exceptionReturnsExpectedValue(bool $hasException, ?Throwable $e = null): void
+    public function exceptionReturnsExpectedValue(bool $hasThrowable, ?Throwable $e = null): void
     {
         $this->mailResult = new MailResult(new Email(), false, $e);
 
-        $this->assertEquals($hasException, $this->mailResult->hasException());
-        $this->assertEquals($e, $this->mailResult->getException());
+        $this->assertEquals($hasThrowable, $this->mailResult->hasThrowable());
+        $this->assertEquals($e, $this->mailResult->getThrowable());
     }
 
     public function provideExceptions(): iterable

@@ -35,7 +35,6 @@ class FilePathAttachmentParserTest extends TestCase
     }
 
     /**
-     * @param string|null $attachmentName
      * @test
      * @dataProvider provideAttachmentNames
      */

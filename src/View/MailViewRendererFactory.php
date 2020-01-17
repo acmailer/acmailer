@@ -29,8 +29,6 @@ class MailViewRendererFactory
     public const SERVICE_NAME = MailViewRendererInterface::class;
 
     /**
-     * @param ContainerInterface $container
-     * @return MailViewRendererInterface
      * @throws ContainerExceptionInterface
      * @throws ContainerException
      * @throws NotFoundException
@@ -86,7 +84,6 @@ class MailViewRendererFactory
     /**
      * Creates a view helper manager
      * @param ContainerInterface|InteropContainer $container
-     * @return HelperPluginManager
      * @throws ContainerException
      * @throws NotFoundException
      */
@@ -102,8 +99,6 @@ class MailViewRendererFactory
 
     /**
      * Returns a specific configuration defined by provided key
-     * @param ContainerInterface $container
-     * @param string $configKey
      * @return array
      * @throws ContainerException
      * @throws NotFoundException
@@ -115,7 +110,6 @@ class MailViewRendererFactory
 
     /**
      * @param array $resolversStack
-     * @return ResolverInterface|null
      */
     private function buildTemplateResolverFromStack(array $resolversStack): ?ResolverInterface
     {

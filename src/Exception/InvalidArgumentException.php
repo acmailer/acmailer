@@ -23,7 +23,7 @@ class InvalidArgumentException extends SplInvalidArgumentException implements Ex
             'Provided %s is not valid. Expected one of ["%s"], but "%s" was provided',
             $fieldName,
             implode('", "', $types),
-            is_object($value) ? get_class($value) : gettype($value)
+            is_object($value) ? get_class($value) : gettype($value),
         ));
     }
 }

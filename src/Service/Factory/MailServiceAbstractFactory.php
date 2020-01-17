@@ -55,10 +55,10 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
     /**
      * Can the factory create an instance for the service?
      *
-     * @param  string $requestedName
+     * @param string $requestedName
      * @throws ContainerExceptionInterface
      */
-    public function canCreate(ContainerInterface $container, $requestedName): bool
+    public function canCreate(ContainerInterface $container, $requestedName): bool // phpcs:ignore
     {
         $parts = explode('.', $requestedName);
         if (count($parts) < 3) {
@@ -77,14 +77,14 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
     /**
      * Create an object
      *
-     * @param  string $requestedName
+     * @param string $requestedName
      * @throws InvalidArgumentException
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ServiceNotCreatedException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $factoryOptions = null): MailService
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $factoryOptions = null): MailService // phpcs:ignore
     {
         $specificServiceName = explode('.', $requestedName)[2] ?? null;
         $mailOptions = $container->get('config')['acmailer_options'] ?? [];
@@ -95,14 +95,14 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
                 'Requested MailService with name "%s" could not be found. Make sure you have registered it with name'
                 . ' "%s" under the acmailer_options.mail_services config entry',
                 $requestedName,
-                $specificServiceName
+                $specificServiceName,
             ));
         }
 
         $specificMailServiceOptions = $this->resolveExtendedConfig($mailOptions, $specificMailServiceOptions);
         $specificMailServiceOptions = $factoryOptions === null ? $specificMailServiceOptions : ArrayUtils::merge(
             $specificMailServiceOptions,
-            $factoryOptions
+            $factoryOptions,
         );
 
         $transport = $this->createTransport($container, $specificMailServiceOptions);
@@ -111,7 +111,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             $transport,
             $renderer,
             $container->get(EmailBuilder::class),
-            $container->get(AttachmentParserManager::class)
+            $container->get(AttachmentParserManager::class),
         );
 
         // Attach mail listeners
@@ -139,7 +139,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             // Prevent an infinite loop by self inheritance
             if (in_array($serviceToExtend, $processedExtends, true)) {
                 throw new Exception\ServiceNotCreatedException(
-                    'It wasn\'t possible to create a mail service due to circular inheritance. Review "extends" option.'
+                    "It wasn't possible to create a mail service due to circular inheritance. Review 'extends' option.",
                 );
             }
             $processedExtends[] = $serviceToExtend;
@@ -148,7 +148,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             if (! isset($mailServices[$serviceToExtend])) {
                 throw new Exception\InvalidArgumentException(sprintf(
                     'Provided service "%s" to extend from is not configured inside acmailer_options.mail_services',
-                    $serviceToExtend
+                    $serviceToExtend,
                 ));
             }
 
@@ -171,7 +171,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             throw Exception\InvalidArgumentException::fromValidTypes(
                 ['string', Transport\TransportInterface::class],
                 $transport,
-                'transport'
+                'transport',
             );
         }
 
@@ -196,7 +196,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             throw new Exception\InvalidArgumentException(sprintf(
                 'Provided transport service with name "%s" does not return a "%s" instance',
                 $transport,
-                Transport\TransportInterface::class
+                Transport\TransportInterface::class,
             ));
         }
 
@@ -205,7 +205,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             'Registered transport "%s" is not either one of ["%s"], a "%s" subclass or a registered service.',
             $transport,
             implode('", "', array_keys(self::TRANSPORT_MAP)),
-            Transport\TransportInterface::class
+            Transport\TransportInterface::class,
         ));
     }
 
@@ -255,8 +255,8 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             is_object($renderer) ? get_class($renderer) : gettype($renderer),
             implode(
                 '", "',
-                [MailViewRendererInterface::class, TemplateRendererInterface::class, RendererInterface::class]
-            )
+                [MailViewRendererInterface::class, TemplateRendererInterface::class, RendererInterface::class],
+            ),
         ));
     }
 
@@ -312,7 +312,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             throw Exception\InvalidArgumentException::fromValidTypes(
                 ['string', 'array', MailListenerInterface::class],
                 $listener,
-                'listener'
+                'listener',
             );
         }
 

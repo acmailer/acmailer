@@ -11,8 +11,6 @@ interface AttachmentParserInterface
 {
     /**
      * @param string|resource|array|Part $attachment
-     * @param string|null $attachmentName
-     * @return Part
      * @throws InvalidAttachmentException
      */
     public function parse($attachment, ?string $attachmentName = null): Part;

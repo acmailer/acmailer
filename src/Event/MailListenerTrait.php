@@ -12,10 +12,9 @@ trait MailListenerTrait
     use ListenerAggregateTrait;
 
     /**
-     * @param EventManagerInterface $events
      * @param int $priority
      */
-    public function attach(EventManagerInterface $events, $priority = 1): void
+    public function attach(EventManagerInterface $events, $priority = 1): void // phpcs:ignore
     {
         $this->listeners[] = $events->attach(MailEvent::EVENT_MAIL_PRE_RENDER, [$this, 'onPreRender'], $priority);
         $this->listeners[] = $events->attach(MailEvent::EVENT_MAIL_PRE_SEND, [$this, 'onPreSend'], $priority);

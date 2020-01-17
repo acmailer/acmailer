@@ -11,8 +11,6 @@ use Psr\Container;
 class AttachmentParserManagerFactory
 {
     /**
-     * @param ContainerInterface $container
-     * @return AttachmentParserManager
      * @throws Container\ContainerExceptionInterface
      * @throws Container\NotFoundExceptionInterface
      */

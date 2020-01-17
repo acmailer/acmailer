@@ -27,13 +27,12 @@ class MimePartAttachmentParserTest extends TestCase
     {
         $this->expectException(InvalidAttachmentException::class);
         $this->expectExceptionMessage(
-            sprintf('Provided attachment is not valid. Expected "%s"', Part::class)
+            sprintf('Provided attachment is not valid. Expected "%s"', Part::class),
         );
         $this->parser->parse('');
     }
 
     /**
-     * @param string|null $attachmentName
      * @test
      * @dataProvider provideAttachmentNames
      */

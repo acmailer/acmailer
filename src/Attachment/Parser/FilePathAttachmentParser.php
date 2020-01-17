@@ -30,8 +30,6 @@ class FilePathAttachmentParser implements AttachmentParserInterface
 
     /**
      * @param string|resource|array|Mime\Part $attachment
-     * @param string|null $attachmentName
-     * @return Mime\Part
      * @throws InvalidArgumentException
      * @throws InvalidAttachmentException
      */

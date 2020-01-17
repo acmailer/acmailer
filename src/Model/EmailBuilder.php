@@ -21,9 +21,7 @@ class EmailBuilder implements EmailBuilderInterface
     }
 
     /**
-     * @param string $name
      * @param array $options
-     * @return Email
      * @throws Exception\EmailNotFoundException
      * @throws Exception\InvalidArgumentException
      */
@@ -48,7 +46,7 @@ class EmailBuilder implements EmailBuilderInterface
         $emailToExtend = $options['extends'];
         if (in_array($emailToExtend, $alreadyExtendedEmails, true)) {
             throw new Exception\InvalidArgumentException(
-                'It wasn\'t possible to create an email due to circular inheritance. Review "extends".'
+                'It wasn\'t possible to create an email due to circular inheritance. Review "extends".',
             );
         }
         $alreadyExtendedEmails[] = $emailToExtend;

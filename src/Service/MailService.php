@@ -75,7 +75,6 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
      * Tries to send the message, returning a MailResult object
      * @param string|array|Email $email
      * @param array $options
-     * @return ResultInterface
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      * @throws Exception\InvalidArgumentException
@@ -93,7 +92,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
             throw Exception\InvalidArgumentException::fromValidTypes(
                 ['string', 'array', Email::class],
                 $email,
-                'email'
+                'email',
             );
         }
 
@@ -110,7 +109,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         try {
             // Build the message object to send
             $message = MessageFactory::createMessageFromEmail($email)->setBody(
-                $this->buildBody($email->getBody(), $email->getCharset())
+                $this->buildBody($email->getBody(), $email->getCharset()),
             );
             $this->attachFiles($message, $email);
             $this->addCustomHeaders($message, $email);
@@ -127,7 +126,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
             $this->events->triggerEvent($this->createMailEvent($email, MailEvent::EVENT_MAIL_SEND_ERROR, new MailResult(
                 $email,
                 false,
-                $e
+                $e,
             )));
 
             throw new Exception\MailException('An error occurred while trying to send the email', $e->getCode(), $e);
@@ -136,10 +135,6 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
 
     /**
      * Creates a new MailEvent object
-     * @param Email $email
-     * @param string $name
-     * @param ResultInterface $result
-     * @return MailEvent
      */
     private function createMailEvent(
         Email $email,
@@ -155,7 +150,6 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
     }
 
     /**
-     * @param Email $email
      * @throws Exception\InvalidArgumentException
      */
     private function renderEmailBody(Email $email): void
@@ -166,7 +160,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
 
         $rawBody = $this->renderer->render(
             $email->getTemplate(),
-            $this->injectLayoutParam($email->getTemplateParams())
+            $this->injectLayoutParam($email->getTemplateParams()),
         );
         $email->setBody($rawBody);
     }
@@ -185,8 +179,6 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
     /**
      * Sets the message body
      * @param string|Mime\Part|Mime\Message $body
-     * @param string $charset
-     * @return Mime\Message
      * @throws Mime\Exception\InvalidArgumentException
      */
     private function buildBody($body, string $charset): Mime\Message
@@ -210,8 +202,6 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
 
     /**
      * Attaches files to the message if any
-     * @param Message $message
-     * @param Email $email
      * @throws Exception\InvalidAttachmentException
      * @throws Exception\ServiceNotCreatedException
      * @throws NotFoundExceptionInterface
@@ -242,7 +232,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
             $parserName = $this->resolveParserNameFromAttachment($attachment);
             if (! $this->attachmentParserManager->has($parserName)) {
                 throw new Exception\ServiceNotCreatedException(
-                    sprintf('The attachment parser "%s" could not be found', $parserName)
+                    sprintf('The attachment parser "%s" could not be found', $parserName),
                 );
             }
 
@@ -263,7 +253,6 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
 
     /**
      * @param string|resource|array|Mime\Part|Attachment $attachment
-     * @return string
      */
     private function resolveParserNameFromAttachment($attachment): string
     {
@@ -277,30 +266,18 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
     /**
      * Retrieve the event manager
      * Lazy-loads an EventManager instance if none registered.
-     * @return EventManagerInterface
      */
     public function getEventManager(): EventManagerInterface
     {
         return $this->events;
     }
 
-    /**
-     * Attaches a new MailListenerInterface
-     * @param MailListenerInterface $mailListener
-     * @param int $priority
-     * @return void
-     */
-    public function attachMailListener(MailListenerInterface $mailListener, $priority = 1)
+    public function attachMailListener(MailListenerInterface $mailListener, int $priority = 1): void
     {
         $mailListener->attach($this->events, $priority);
     }
 
-    /**
-     * Detaches provided MailListener
-     * @param MailListenerInterface $mailListener
-     * @return void
-     */
-    public function detachMailListener(MailListenerInterface $mailListener)
+    public function detachMailListener(MailListenerInterface $mailListener): void
     {
         $mailListener->detach($this->events);
     }

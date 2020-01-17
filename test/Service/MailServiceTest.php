@@ -54,14 +54,14 @@ class MailServiceTest extends TestCase
             $this->renderer->reveal(),
             $this->emailBuilder->reveal(),
             $this->attachmentParsers->reveal(),
-            $this->eventManager->reveal()
+            $this->eventManager->reveal(),
         );
     }
 
     /**
      * @test
      * @dataProvider provideInvalidEmails
-     * @param $email
+     * @param mixed $email
      */
     public function sendInvalidEmailThrowsException($email): void
     {
@@ -79,7 +79,7 @@ class MailServiceTest extends TestCase
     /**
      * @test
      * @dataProvider provideValidEmails
-     * @param $email
+     * @param mixed $email
      */
     public function validEmailIsProperlySent($email): void
     {

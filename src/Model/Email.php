@@ -39,22 +39,18 @@ final class Email extends AbstractOptions
     private string $charset = self::DEFAULT_CHARSET;
     private array $customHeaders = [];
 
-    public function __construct($options = null)
+    public function __construct($options = null) // phpcs:ignore
     {
         $this->__strictMode__ = false;
         parent::__construct($options);
     }
 
-    /**
-     * @return string
-     */
     public function getFrom(): string
     {
         return $this->from;
     }
 
     /**
-     * @param string $from
      * @return $this|self
      */
     public function setFrom(string $from): self
@@ -63,16 +59,12 @@ final class Email extends AbstractOptions
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getFromName(): string
     {
         return $this->fromName;
     }
 
     /**
-     * @param string $fromName
      * @return $this|self
      */
     public function setFromName(string $fromName): self
@@ -81,16 +73,12 @@ final class Email extends AbstractOptions
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getReplyTo(): string
     {
         return $this->replyTo;
     }
 
     /**
-     * @param string $replyTo
      * @return $this|self
      */
     public function setReplyTo(string $replyTo): self
@@ -99,16 +87,12 @@ final class Email extends AbstractOptions
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getReplyToName(): string
     {
         return $this->replyToName;
     }
 
     /**
-     * @param string $replyToName
      * @return $this|self
      */
     public function setReplyToName(string $replyToName): self
@@ -189,16 +173,12 @@ final class Email extends AbstractOptions
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getEncoding(): string
     {
         return $this->encoding;
     }
 
     /**
-     * @param string $encoding
      * @return $this|self
      */
     public function setEncoding(string $encoding): self
@@ -207,16 +187,12 @@ final class Email extends AbstractOptions
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSubject(): string
     {
         return $this->subject;
     }
 
     /**
-     * @param string $subject
      * @return $this|self
      */
     public function setSubject(string $subject): self
@@ -250,7 +226,6 @@ final class Email extends AbstractOptions
 
     /**
      * @param string|resource|array|Part|Attachment $file
-     * @param string|null $filename
      * @return $this
      * @throws InvalidArgumentException
      */
@@ -266,7 +241,7 @@ final class Email extends AbstractOptions
             throw InvalidArgumentException::fromValidTypes(
                 ['string', 'array', 'resource', Part::class, Attachment::class],
                 $file,
-                'attachment'
+                'attachment',
             );
         }
 
@@ -332,9 +307,6 @@ final class Email extends AbstractOptions
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function hasAttachments(): bool
     {
         return ! empty($this->attachments) || ! empty($this->attachmentsDir);
@@ -360,7 +332,7 @@ final class Email extends AbstractOptions
         if (is_string($path) && is_dir($path)) {
             $files = $recursive ? new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS),
-                RecursiveIteratorIterator::CHILD_FIRST
+                RecursiveIteratorIterator::CHILD_FIRST,
             ) : new DirectoryIterator($path);
 
             /* @var \SplFileInfo $fileInfo */
@@ -375,16 +347,12 @@ final class Email extends AbstractOptions
         return $attachments;
     }
 
-    /**
-     * @return string|null
-     */
     public function getTemplate(): ?string
     {
         return $this->template;
     }
 
     /**
-     * @param string|null $template
      * @return $this|self
      */
     public function setTemplate(?string $template = null): self
@@ -393,9 +361,6 @@ final class Email extends AbstractOptions
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function hasTemplate(): bool
     {
         return $this->template !== null;
@@ -419,16 +384,12 @@ final class Email extends AbstractOptions
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getCharset(): string
     {
         return $this->charset;
     }
 
     /**
-     * @param string $charset
      * @return $this|self
      */
     public function setCharset(string $charset): self

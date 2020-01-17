@@ -12,13 +12,11 @@ use Psr\Container\NotFoundExceptionInterface;
 class EmailBuilderFactory
 {
     /**
-     * @param ContainerInterface $container
-     * @return EmailBuilder
      * @throws ServiceNotCreatedException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container): EmailBuilder
     {
         if (! $container->has('config')) {
             throw new ServiceNotCreatedException('Cannot find a config array in the container');

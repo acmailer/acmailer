@@ -9,9 +9,7 @@ use AcMailer\Exception;
 interface EmailBuilderInterface
 {
     /**
-     * @param string $name
      * @param array $options
-     * @return Email
      * @throws Exception\EmailNotFoundException
      * @throws Exception\InvalidArgumentException
      */
