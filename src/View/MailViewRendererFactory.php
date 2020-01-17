@@ -44,13 +44,13 @@ class MailViewRendererFactory
         }
 
         // If the mailviewrenderer is registered, wrap it into a LaminasViewRenderer
-        // This should be true in Zend/MVC apps, run in a HTTP context
+        // This should be true in Laminas/MVC apps, run in a HTTP context
         if ($container->has('mailviewrenderer')) {
             return $this->wrapLaminasView($container->get('mailviewrenderer'));
         }
 
-        // Finally, create a zend/view PhpRenderer and wrap it into a LaminasViewRenderer
-        // This should be reached only in Zend/MVC apps run in a CLI context
+        // Finally, create a laminas/view PhpRenderer and wrap it into a LaminasViewRenderer
+        // This should be reached only in Laminas/MVC apps run in a CLI context
         $vmConfig = $this->getSpecificConfig($container, 'view_manager');
         $renderer = new PhpRenderer();
 

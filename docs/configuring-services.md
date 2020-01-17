@@ -63,7 +63,7 @@ use AcMailer\Service\Factory\MailServiceAbstractFactory;
 
 return [
     
-    'services_manager' => [ // 'dependencies' in the case of Expressive
+    'services_manager' => [ // 'dependencies' in the case of Mezzio
         'factories' => [
             'acmailer.mailservice.mycompany' => MailServiceAbstractFactory::class,
         ],

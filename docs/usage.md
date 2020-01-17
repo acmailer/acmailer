@@ -2,7 +2,7 @@
 
 After installation, copy `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` to `config/autoload/mail.global.php` and customize any of the params.
 
-As with any other MVC or Expressive configuration, you can choose to put any of the settings into a local configuration file so you can make environment-specific mail settings, and avoid sending credentials to version control systems.
+As with any other MVC or Mezzio configuration, you can choose to put any of the settings into a local configuration file so you can make environment-specific mail settings, and avoid sending credentials to version control systems.
 
 By default, a service with name `acmailer.mailservice.default` will be registered for you, which is also aliased by the service names `AcMailer\Service\MailService`, `AcMailer\Service\MailServiceInterface` and `mailservice`.
 

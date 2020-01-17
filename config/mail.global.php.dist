@@ -88,7 +88,7 @@ return [
 
                 /*
                  * The list of params to pass to the email.
-                 * When using zend/view, you can define one 'layout' param with the layout to be used if the email
+                 * When using laminas/view, you can define one 'layout' param with the layout to be used if the email
                  * Default value is an empty string
                  */
                 //'template_params' => [],
@@ -226,9 +226,9 @@ return [
 
                 /*
                  * The renderer service name to be used to render email templates.
-                 * When using zend/mvc, default value is 'mailviewrenderer', which is an alias to the standard
+                 * When using laminas/mvc, default value is 'mailviewrenderer', which is an alias to the standard
                  * 'viewrenderer' registered by Laminas\Mvc
-                 * When using zend/expressive, default value is Mezzio\Template\TemplateRendererInterface
+                 * When using mezzio, default value is Mezzio\Template\TemplateRendererInterface
                  *
                  * The service set here must return an instance of Mezzio\Template\TemplateRendererInterface
                  */

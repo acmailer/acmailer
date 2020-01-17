@@ -180,7 +180,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             return $transport;
         }
 
-        // Check if the adapter is one of Zend's default adapters
+        // Check if the adapter is one of Laminas' default adapters
         $transport = self::TRANSPORT_MAP[$transport] ?? $transport;
         if (is_subclass_of($transport, Transport\TransportInterface::class)) {
             return $this->setupStandardTransportFromConfig(new $transport(), $mailOptions);

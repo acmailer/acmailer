@@ -186,7 +186,7 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
 
     private function injectLayoutParam(array $original): array
     {
-        // When using Zend/View in expressive, a layout could have been globally configured.
+        // When using Laminas/View in Mezzio, a layout could have been globally configured.
         // We have to override it unless explicitly provided. It won't affect other renderer implementations.
         if (! array_key_exists('layout', $original)) {
             $original['layout'] = false;

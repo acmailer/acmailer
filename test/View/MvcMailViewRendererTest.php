@@ -28,7 +28,7 @@ class MvcMailViewRendererTest extends TestCase
     /**
      * @test
      */
-    public function renderDelegatesIntoZendRendererWhenNoLayoutIsProvided(): void
+    public function renderDelegatesIntoLaminasRendererWhenNoLayoutIsProvided(): void
     {
         $innerRender = $this->innerRenderer->render(Argument::type(ViewModel::class))->willReturn('');
 
@@ -40,7 +40,7 @@ class MvcMailViewRendererTest extends TestCase
     /**
      * @test
      */
-    public function renderDelegatesIntoZendRendererWhenLayoutIsProvided(): void
+    public function renderDelegatesIntoLaminasRendererWhenLayoutIsProvided(): void
     {
         $innerRender = $this->innerRenderer->render(Argument::type(ViewModel::class))->willReturn('');
 

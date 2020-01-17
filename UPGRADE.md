@@ -95,9 +95,9 @@
     
 - **Render templates**
 
-    In order to make it compatible with Zend Expressive, it is no longer possible to pass a `Laminas\View\Model\ModelInterface` object when defining email templates.
+    In order to make it compatible with Mezzio, it is no longer possible to pass a `Laminas\View\Model\ModelInterface` object when defining email templates.
     
-    Instead you have to always provide the name of the template. However, you can pass a **layout** param with the name of the parent layout. It'll work in both Expressive and MVC when using zend/view.
+    Instead you have to always provide the name of the template. However, you can pass a **layout** param with the name of the parent layout. It'll work both in Mezzio and MVC when using laminas/view.
     
     Change this:
     
@@ -133,7 +133,7 @@
     ]);
     ```
     
-    You can't used the layout param when using other renderers in Expressive, since they have their own way to inherit templates.
+    You can't used the layout param when using other renderers in Mezzio, since they have their own way to inherit templates.
     
 - **Exposed services**
 
