@@ -4,15 +4,24 @@ branches:
   only:
     - /.*/
 
-php:
-  - '7.4'
+jobs:
+  fast_finish: true
+  include:
+    - php: '7.4'
+      env:
+        - COMPOSER_FLAGS=''
+    - php: 'nightly'
+      env:
+        - COMPOSER_FLAGS='--ignore-platform-reqs'
+  allow_failures:
+    - php: 'nightly'
 
 before_install:
   - phpenv config-rm xdebug.ini || return 0
 
 install:
   - composer self-update
-  - composer install --no-interaction
+  - composer install --no-interaction $COMPOSER_FLAGS
 
 before_script:
   - mkdir build
