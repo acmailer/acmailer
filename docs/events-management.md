@@ -51,7 +51,7 @@ The value returned by any of the listeners methods is ignored, except on the cas
 declare(strict_types=1);
 
 $mailService->attachMailListener(new class extends AcMailer\Event\AbstractMailListener {
-    public function onPreSend(AcMailer\Event\MailEvent $e)
+    public function onPreSend(AcMailer\Event\PreSendEvent $e)
     {
         // Do not allow emails to be sent to gmail
         foreach ($e->getEmail()->getTo() as $address) {
@@ -77,7 +77,7 @@ declare(strict_types=1);
 $mailService->attachMailListener(new class extends AcMailer\Event\AbstractMailListener {
     private $translator;
 
-    public function onPreRender(AcMailer\Event\MailEvent $e)
+    public function onPreRender(AcMailer\Event\PreRenderEvent $e)
     {
         $this->translator->setLocale(/* Get locale somehow */);
     }
