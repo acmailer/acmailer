@@ -9,12 +9,15 @@ use AcMailer\Exception\InvalidAttachmentException;
 use finfo;
 use Laminas\Mime\Mime;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 
 use function basename;
 
 class FilePathAttachmentParserTest extends TestCase
 {
+    use ProphecyTrait;
+
     private FilePathAttachmentParser $parser;
     private ObjectProphecy $finfo;
 

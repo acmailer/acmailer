@@ -24,6 +24,7 @@ use Laminas\Mime\Part;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use stdClass;
 
@@ -32,6 +33,8 @@ use function is_object;
 
 class MailServiceTest extends TestCase
 {
+    use ProphecyTrait;
+
     private MailService $mailService;
     private ObjectProphecy $transport;
     private ObjectProphecy $renderer;

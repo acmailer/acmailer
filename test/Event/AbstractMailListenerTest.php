@@ -8,9 +8,12 @@ use AcMailer\Event\AbstractMailListener;
 use AcMailer\Event\MailEvent;
 use Laminas\EventManager\EventManagerInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class AbstractMailListenerTest extends TestCase
 {
+    use ProphecyTrait;
+
     private AbstractMailListener $mailListener;
 
     public function setUp(): void

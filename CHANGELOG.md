@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 #### Changed
 
 * [#248](https://github.com/acmailer/acmailer/issues/248) Updated to [shlinkio/php-coding-standard] v2.1
+* [#253](https://github.com/acmailer/acmailer/issues/253) Updated phpstan, infection and phpunti to latest versions.
 
 #### Deprecated
 

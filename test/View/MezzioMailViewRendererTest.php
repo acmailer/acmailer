@@ -7,10 +7,13 @@ namespace AcMailerTest\View;
 use AcMailer\View\MezzioMailViewRenderer;
 use Mezzio\Template\TemplateRendererInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 
 class MezzioMailViewRendererTest extends TestCase
 {
+    use ProphecyTrait;
+
     private MezzioMailViewRenderer $mezzioRenderer;
     private ObjectProphecy $innerRenderer;
 

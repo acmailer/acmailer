@@ -4,7 +4,7 @@
     "type": "library",
     "authors": [
         {
-            "name": "Alejandro Celaya Alastru\u00e9",
+            "name": "Alejandro Celaya Alastrué",
             "email": "alejandro@alejandrocelaya.com",
             "homepage": "https://www.alejandrocelaya.com",
             "role": "Developer"
@@ -30,12 +30,13 @@
         "laminas/laminas-stdlib": "^3.0"
     },
     "require-dev": {
-        "infection/infection": "^0.15.0",
+        "infection/infection": "^0.16.4",
         "laminas/laminas-mvc": "^3.1",
         "laminas/laminas-view": "^2.9",
         "mezzio/mezzio-template": "^2.0",
-        "phpstan/phpstan": "^0.12.3",
-        "phpunit/phpunit": "^8.5",
+        "phpspec/prophecy-phpunit": "^2.0",
+        "phpstan/phpstan": "^0.12.32",
+        "phpunit/phpunit": "^9.2",
         "shlinkio/php-coding-standard": "~2.1.0"
     },
     "suggest": {
@@ -71,13 +72,13 @@
         ],
         "cs": "phpcs",
         "cs:fix": "phpcbf",
-        "stan": "phpstan analyse src/ --level=6",
-        "test": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-clover build/clover.xml",
-        "test:pretty": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-html build/html",
-        "test:ci": "phpdbg -qrr vendor/bin/phpunit --colors=always --coverage-clover=build/clover.xml --coverage-xml=build/coverage-xml --log-junit=build/junit.xml",
+        "stan": "phpstan analyse src/ config/ --level=7",
+        "test": "phpdbg -qrr vendor/bin/phpunit --colors=always --testdox",
+        "test:pretty": "@test --coverage-html=build/html",
+        "test:ci": "@test --coverage-clover=build/clover.xml --coverage-xml=build/coverage-xml --log-junit=build/junit.xml",
         "infection": "infection --threads=4 --min-msi=80 --log-verbosity=default --only-covered",
-        "infection:ci": "infection --threads=4 --min-msi=80 --log-verbosity=default --only-covered --coverage=build",
-        "infection:show": "infection --threads=4 --min-msi=80 --only-covered --log-verbosity=default --show-mutations"
+        "infection:ci": "@infection --coverage=build",
+        "infection:show": "@infection --show-mutations"
     },
     "scripts-descriptions": {
         "cs": "Check coding styles with PHP_CodeSniffer",
