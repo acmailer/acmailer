@@ -22,6 +22,22 @@ This object (as well as the `AcMailer\Result\ResultInterface` it implements) use
 
 These two methods have been renamed to `getThrowable` and `hasThrowable` to make it more consistent.
 
+### MailEvent split into separated classes
+
+Until v7, the `AcMailer\Event\MailEvent` class was used to represent any event triggered by this module.
+
+In v8, it has been removed, and replaced by separated event classes that represent every individual event.
+
+* `AcMailer\Event\MailEvent::EVENT_MAIL_PRE_RENDER` is now handled by `AcMailer\Event\PreRenderEvent`.
+* `AcMailer\Event\MailEvent::EVENT_MAIL_PRE_SEND` is now handled by `AcMailer\Event\PreSendEvent`.
+* `AcMailer\Event\MailEvent::EVENT_MAIL_POST_SEND` is now handled by `AcMailer\Event\PostSendEvent`.
+* `AcMailer\Event\MailEvent::EVENT_MAIL_SEND_ERROR` is now handled by `AcMailer\Event\SendErrorEvent`.
+
+This also affects the typehints in the public methods defined in `AcMailer\Event\MailListenerInterface` and `AcMailer\Event\AbstractMailListener`, so if you were extending form any of those, you will have to upgrade the signatures.
+
+The public methods exposed by the new event objects are mostly the same as in the old `MailEvent`, so you will probably don't need to change anything else.
+
+
 ## From 5.x/6.x to 7.x
 
 ### Configuration

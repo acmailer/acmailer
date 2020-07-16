@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace AcMailerTest\Service\Factory;
 
 use AcMailer\Attachment\AttachmentParserManager;
-use AcMailer\Event\MailEvent;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception;
 use AcMailer\Model\EmailBuilder;
@@ -372,7 +371,7 @@ class MailServiceAbstractFactoryTest extends TestCase
         $listeners = $this->getObjectProp($result->getEventManager(), 'events');
 
         $this->assertCount(4, $listeners);
-        foreach (MailEvent::getEventNames() as $method => $eventName) {
+        foreach (MailListenerInterface::EVENT_METHOD_MAP as $eventName => $method) {
             $this->assertArrayHasKey($eventName, $listeners);
         }
     }

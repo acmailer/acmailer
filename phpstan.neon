@@ -3,3 +3,4 @@ parameters:
 	ignoreErrors:
 		- '#is not subtype of Throwable#'
 		- '#Result of && is always false#'
+		- '#mixed, array\(\$this\(AcMailer\\Event\\AbstractMailListener\)#'

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace AcMailer\Service\Factory;
 
 use AcMailer\Attachment\AttachmentParserManager;
-use AcMailer\Event\MailEvent;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception;
 use AcMailer\Model\EmailBuilder;
@@ -316,11 +315,11 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             );
         }
 
-        foreach (MailEvent::getEventNames() as $method => $eventName) {
+        foreach (MailListenerInterface::EVENT_METHOD_MAP as $event => $method) {
             $definitions[] = [
                 'listener' => $listener,
                 'method' => $method,
-                'event' => $eventName,
+                'event' => $event,
                 'priority' => $priority,
             ];
         }

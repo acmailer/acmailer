@@ -13,7 +13,7 @@ abstract class AbstractMailListener implements MailListenerInterface
      *
      * @return mixed
      */
-    public function onPreRender(MailEvent $e)
+    public function onPreRender(PreRenderEvent $e)
     {
         // TODO: Implement onPreRender() method.
     }
@@ -23,7 +23,7 @@ abstract class AbstractMailListener implements MailListenerInterface
      *
      * @return mixed
      */
-    public function onPreSend(MailEvent $e)
+    public function onPreSend(PreSendEvent $e)
     {
         // TODO: Implement onPreSend() method.
     }
@@ -33,7 +33,7 @@ abstract class AbstractMailListener implements MailListenerInterface
      *
      * @return mixed
      */
-    public function onPostSend(MailEvent $e)
+    public function onPostSend(PostSendEvent $e)
     {
         // TODO: Implement onPostSend() method.
     }
@@ -43,7 +43,7 @@ abstract class AbstractMailListener implements MailListenerInterface
      *
      * @return mixed
      */
-    public function onSendError(MailEvent $e)
+    public function onSendError(SendErrorEvent $e)
     {
         // TODO: Implement onSendError() method.
     }

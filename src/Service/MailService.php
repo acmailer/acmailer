@@ -6,9 +6,12 @@ namespace AcMailer\Service;
 
 use AcMailer\Attachment\AttachmentParserManagerInterface;
 use AcMailer\Attachment\Parser\AttachmentParserInterface;
-use AcMailer\Event\MailEvent;
 use AcMailer\Event\MailListenerAwareInterface;
 use AcMailer\Event\MailListenerInterface;
+use AcMailer\Event\PostSendEvent;
+use AcMailer\Event\PreRenderEvent;
+use AcMailer\Event\PreSendEvent;
+use AcMailer\Event\SendErrorEvent;
 use AcMailer\Exception;
 use AcMailer\Mail\MessageFactory;
 use AcMailer\Model\Attachment;
@@ -72,7 +75,6 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
     }
 
     /**
-     * Tries to send the message, returning a MailResult object
      * @param string|array|Email $email
      * @param array $options
      * @throws NotFoundExceptionInterface
@@ -97,11 +99,11 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         }
 
         // Trigger the pre render event and then render the email's body in case it has to be composed from a template
-        $this->events->triggerEvent($this->createMailEvent($email, MailEvent::EVENT_MAIL_PRE_RENDER));
+        $this->events->triggerEvent(new PreRenderEvent($email));
         $this->renderEmailBody($email);
 
         // Trigger pre send event, and cancel email sending if any listener returned false
-        $eventResp = $this->events->triggerEvent($this->createMailEvent($email, MailEvent::EVENT_MAIL_PRE_SEND));
+        $eventResp = $this->events->triggerEvent(new PreSendEvent($email));
         if ($eventResp->contains(false)) {
             return new MailResult($email, false);
         }
@@ -119,34 +121,14 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
 
             // Trigger post send event
             $result = new MailResult($email);
-            $this->events->triggerEvent($this->createMailEvent($email, MailEvent::EVENT_MAIL_POST_SEND, $result));
+            $this->events->triggerEvent(new PostSendEvent($email, $result));
             return $result;
         } catch (Throwable $e) {
             // Trigger error event, notifying listeners of the error
-            $this->events->triggerEvent($this->createMailEvent($email, MailEvent::EVENT_MAIL_SEND_ERROR, new MailResult(
-                $email,
-                false,
-                $e,
-            )));
+            $this->events->triggerEvent(new SendErrorEvent($email, new MailResult($email, false, $e)));
 
             throw new Exception\MailException('An error occurred while trying to send the email', $e->getCode(), $e);
         }
-    }
-
-    /**
-     * Creates a new MailEvent object
-     */
-    private function createMailEvent(
-        Email $email,
-        string $name,
-        ?ResultInterface $result = null
-    ): MailEvent {
-        $event = new MailEvent($email, $name);
-        if ($result !== null) {
-            $event->setResult($result);
-        }
-
-        return $event;
     }
 
     /**
@@ -201,7 +183,6 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
     }
 
     /**
-     * Attaches files to the message if any
      * @throws Exception\InvalidAttachmentException
      * @throws Exception\ServiceNotCreatedException
      * @throws NotFoundExceptionInterface
@@ -263,10 +244,6 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         return is_object($attachment) ? get_class($attachment) : gettype($attachment);
     }
 
-    /**
-     * Retrieve the event manager
-     * Lazy-loads an EventManager instance if none registered.
-     */
     public function getEventManager(): EventManagerInterface
     {
         return $this->events;
