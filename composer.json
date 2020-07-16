@@ -23,7 +23,7 @@
     "homepage": "https://github.com/acmailer/acmailer",
     "license": "MIT",
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^7.4",
         "laminas/laminas-eventmanager": "^3.0",
         "laminas/laminas-mail": "^2.10",
         "laminas/laminas-servicemanager": "^3.0",
