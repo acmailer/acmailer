@@ -23,6 +23,7 @@ use Laminas\View\Renderer\RendererInterface;
 use Mezzio\Template\TemplateRendererInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionObject;
 use stdClass;
@@ -32,6 +33,8 @@ use function sprintf;
 
 class MailServiceAbstractFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     private MailServiceAbstractFactory $factory;
     private ObjectProphecy $container;
 

@@ -8,11 +8,14 @@ use AcMailer\Service\Factory\MailServiceBuilderFactory;
 use AcMailer\Service\MailServiceInterface;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionObject;
 
 class MailServiceBuilderFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     private MailServiceBuilderFactory $factory;
     private ObjectProphecy $container;
 

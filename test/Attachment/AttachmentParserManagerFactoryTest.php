@@ -8,9 +8,12 @@ use AcMailer\Attachment\AttachmentParserManagerFactory;
 use AcMailer\Attachment\Parser\AttachmentParserInterface;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class AttachmentParserManagerFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     private AttachmentParserManagerFactory $factory;
 
     public function setUp(): void

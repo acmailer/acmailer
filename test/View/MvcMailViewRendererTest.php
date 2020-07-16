@@ -10,10 +10,13 @@ use Laminas\View\Renderer\RendererInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 
 class MvcMailViewRendererTest extends TestCase
 {
+    use ProphecyTrait;
+
     private MvcMailViewRenderer $mvcRenderer;
     private ObjectProphecy $innerRenderer;
 

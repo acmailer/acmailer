@@ -12,10 +12,13 @@ use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver;
 use Mezzio\Template\TemplateRendererInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use ReflectionObject;
 
 class MailViewRendererFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     private MailViewRendererFactory $factory;
 
     public function setUp(): void

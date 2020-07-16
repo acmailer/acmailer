@@ -8,10 +8,13 @@ use AcMailer\Exception\ServiceNotCreatedException;
 use AcMailer\Model\EmailBuilder;
 use AcMailer\Model\EmailBuilderFactory;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Container\ContainerInterface;
 
 class EmailBuilderFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     private EmailBuilderFactory $factory;
 
     public function setUp(): void
