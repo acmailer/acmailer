@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AcMailerTest\Service\Factory;
 
 use AcMailer\Attachment\AttachmentParserManager;
+use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception;
 use AcMailer\Model\EmailBuilder;
 use AcMailer\Model\EmailBuilderInterface;
@@ -334,48 +335,50 @@ class MailServiceAbstractFactoryTest extends TestCase
         $this->assertInstanceOf(MailService::class, $result);
     }
 
-    /**
-     * @test
-     */
-//    public function listenersAreAttached(): void
-//    {
-//        $this->container->get('config')->willReturn([
-//            'acmailer_options' => [
-//                'mail_services' => [
-//                    'default' => [
-//                        'transport' => 'sendmail',
-//                        'mail_listeners' => [
-//                            $this->prophesize(MailListenerInterface::class)->reveal(),
-//                            'my_lazy_listener',
-//                            [
-//                                'listener' => 'another_lazy_listener',
-//                                'priority' => 3,
-//                            ],
-//                            [
-//                                'listener' => $this->prophesize(MailListenerInterface::class)->reveal(),
-//                                'priority' => 4,
-//                            ],
-//                        ],
-//                    ],
-//                ],
-//            ],
-//        ]);
-//        $this->container->get(MailViewRendererInterface::class)->willReturn(
-//            $this->prophesize(MailViewRendererInterface::class)->reveal(),
-//        );
-//        $this->container->get(EmailBuilder::class)->willReturn(
-//            $this->prophesize(EmailBuilderInterface::class)->reveal(),
-//        );
-//        $this->container->get(AttachmentParserManager::class)->willReturn(
-//            $this->prophesize(AttachmentParserManager::class)->reveal(),
-//        );
-//
-//        $result = $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
-//
-//        $listeners = $this->getObjectProp($result, 'eventDispatcher');
-//
-//        $this->assertCount(4, $listeners);
-//    }
+    /** @test */
+    public function listenersAreAttached(): void
+    {
+        $this->container->get('config')->willReturn([
+            'acmailer_options' => [
+                'mail_services' => [
+                    'default' => [
+                        'transport' => 'sendmail',
+                        'mail_listeners' => [
+                            $this->prophesize(MailListenerInterface::class)->reveal(),
+                            'my_lazy_listener',
+                            [
+                                'listener' => 'another_lazy_listener',
+                                'priority' => 3,
+                            ],
+                            [
+                                'listener' => $this->prophesize(MailListenerInterface::class)->reveal(),
+                                'priority' => 4,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+        $this->container->get(MailViewRendererInterface::class)->willReturn(
+            $this->prophesize(MailViewRendererInterface::class)->reveal(),
+        );
+        $this->container->get(EmailBuilder::class)->willReturn(
+            $this->prophesize(EmailBuilderInterface::class)->reveal(),
+        );
+        $this->container->get(AttachmentParserManager::class)->willReturn(
+            $this->prophesize(AttachmentParserManager::class)->reveal(),
+        );
+
+        $mailService = ($this->factory)($this->container->reveal(), 'acmailer.mailservice.default');
+
+        $dispatcher = $this->getObjectProp($mailService, 'dispatcher');
+        $listenersQueue = $this->getObjectProp($dispatcher, 'listenersQueue');
+
+        $this->assertCount(3, $listenersQueue);
+        $this->assertCount(2, $listenersQueue[1]); // Two listeners have default priority, which is 1
+        $this->assertCount(1, $listenersQueue[3]); // One listener has priority 3
+        $this->assertCount(1, $listenersQueue[4]); // One listener has priority 4
+    }
 
     /**
      * @test

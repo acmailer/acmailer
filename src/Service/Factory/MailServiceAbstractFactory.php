@@ -279,8 +279,8 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
     {
         $priority = 1;
         if (is_array($listener) && array_key_exists('listener', $listener)) {
-            $listener = $listener['listener'];
             $priority = $listener['priority'] ?? 1;
+            $listener = $listener['listener'];
         }
 
         if (is_string($listener)) {
