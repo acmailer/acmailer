@@ -41,11 +41,12 @@ The public methods exposed by the new event objects are mostly the same as in th
 
 Since the event system used by this module never exposed implementation details, the project no longer requires laminas-eventmanager, and instead, it implements a basic event handling system with support to lazy-load event listeners (which was the main reason to use the event manager in the first place).
 
-However, this has a few BC breaks:
+However, this has a few minor BC breaks:
 
 * The `AcMailer\Event\MailListenerTrait` has been removed: Its purpose was just to provide the boilerplate code to integrate with laminas-eventmanager, so you can just remove any reference from your own listeners, and that's it.
 * Event objects no longer extend `Laminas\EventManager\Event`: It should not affect your code, unless you were relying on some kind of type check somewhere.
 * The `AcMailer\Event\MailListenerInterface` no longer extends `Laminas\EventManager\ListenerAggregateInterface`: Same as previous point.
+* The class `AcMailer\Event\MailListenerAwareInterface` has been renamed to `AcMailer\Event\MailListenerHandlerInterface`: This is an internal interface, so it's not very likely that you were using it.
 
 
 ## From 5.x/6.x to 7.x
