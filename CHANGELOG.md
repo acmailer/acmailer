@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 * [#248](https://github.com/acmailer/acmailer/issues/248) Updated to [shlinkio/php-coding-standard] v2.1
 * [#253](https://github.com/acmailer/acmailer/issues/253) Updated phpstan, infection and phpunti to latest versions.
 * [#220](https://github.com/acmailer/acmailer/issues/220) Removed `MailEvent` class in favor of individual `PreRenderEvent`, `PreSendEvent`, `PostSendEvent` and `SendErrorEvent` classes.
+* [#241](https://github.com/acmailer/acmailer/issues/241) Replaced dependency on [laminas/laminas-eventmanager] by own basic implementation.
 
 #### Deprecated
 
