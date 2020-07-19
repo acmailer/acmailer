@@ -14,13 +14,17 @@ Before v8.x, there was a `AcMailer\View\ExpressiveMailViewRenderer` class that, 
 
 It's an internal class and it's not very likely that you were using it, but if you were, you need to change to the new one instead.
 
+### Dropped support for PHP <7.4
+
+Starting with v8.0.0, this module no longer supports PHP 7.2 and 7.3
+
 ### Renamed result object methods
 
 When an email is sent by calling the `send` method in the `MailService`, it returns an `AcMailer\Result\MailResult` object.
 
 This object (as well as the `AcMailer\Result\ResultInterface` it implements) used to have two methods called `getException` and `hasException`.
 
-These two methods have been renamed to `getThrowable` and `hasThrowable` to make it more consistent.
+These two methods have been renamed to `getThrowable` and `hasThrowable` to make it more consistent with the fact that they actually handle a throwable instance.
 
 ### `MailEvent` split into separated classes
 
@@ -33,9 +37,9 @@ In v8, it has been removed, and replaced by separated event classes that represe
 * `AcMailer\Event\MailEvent::EVENT_MAIL_POST_SEND` is now handled by `AcMailer\Event\PostSendEvent`.
 * `AcMailer\Event\MailEvent::EVENT_MAIL_SEND_ERROR` is now handled by `AcMailer\Event\SendErrorEvent`.
 
-This also affects the typehints in the public methods defined in `AcMailer\Event\MailListenerInterface` and `AcMailer\Event\AbstractMailListener`, so if you were extending from any of those, you will have to upgrade the signatures.
+This also affects the typehints in the public methods defined in `AcMailer\Event\MailListenerInterface` and `AcMailer\Event\AbstractMailListener`, so if you were extending from any of them, you will have to upgrade the signatures.
 
-The public methods exposed by the new event objects are mostly the same as in the old `MailEvent`, so you will probably don't need to change anything else.
+The public methods exposed by the new event objects are mostly the same as in the old `MailEvent`, so you won't probably need to change anything else.
 
 ### Removed dependency on [laminas/laminas-eventmanager]
 
