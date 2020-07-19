@@ -16,9 +16,7 @@ class ModuleTest extends TestCase
         $this->module = new Module();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function getConfigReturnsContentsFromModuleConfigFile(): void
     {
         $expectedConfig = include __DIR__ . '/../config/module.config.php';
@@ -27,9 +25,7 @@ class ModuleTest extends TestCase
         $this->assertEquals($expectedConfig, $returnedConfig);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function invokeReturnsContentsFromModuleConfigFile(): void
     {
         $expectedConfig = include __DIR__ . '/../config/module.config.php';

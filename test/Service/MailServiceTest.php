@@ -102,9 +102,7 @@ class MailServiceTest extends TestCase
         yield [new Email()];
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function exceptionIsThrownInCaseOfError(): void
     {
         $this->transport->send(Argument::type(Message::class))->willThrow(Exception::class)
@@ -116,9 +114,7 @@ class MailServiceTest extends TestCase
         $this->mailService->send(new Email());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function whenPreSendReturnsFalseEmailsSendingIsCancelled(): void
     {
         $collections = new DispatchResult();
@@ -133,9 +129,7 @@ class MailServiceTest extends TestCase
         $trigger->shouldHaveBeenCalledTimes(2);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function attachListeners(): void
     {
         $listener = $this->prophesize(MailListenerInterface::class)->reveal();
@@ -150,9 +144,7 @@ class MailServiceTest extends TestCase
         $detachMailListener->shouldHaveBeenCalledOnce();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function templateIsRendererIfProvided(): void
     {
         $expectedBody = '<p>rendering result</p>';
@@ -169,9 +161,7 @@ class MailServiceTest extends TestCase
         $render->shouldHaveBeenCalledTimes(1);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function attachmentsAreProperlyAddedToMessage(): void
     {
         $attachments = ['', '', '', [], new Attachment('foo', 'value')];
@@ -202,9 +192,7 @@ class MailServiceTest extends TestCase
         $parse->shouldHaveBeenCalledTimes(count($attachments));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function attachmentsThrowExceptionWhenParserCannotBeFound(): void
     {
         $attachmentParser = $this->prophesize(AttachmentParserInterface::class);
@@ -227,9 +215,7 @@ class MailServiceTest extends TestCase
         $parse->shouldNotHaveBeenCalled();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function arrayAttachmentsWithSpecificKeysAreProperlyCast(): void
     {
         $attachments = [[
@@ -255,9 +241,7 @@ class MailServiceTest extends TestCase
         $parse->shouldHaveBeenCalledTimes(count($attachments));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function templateIsRenderedBeforeEmailIsSent(): void
     {
         $expectedBody = '<p>rendering result</p>';
@@ -294,9 +278,7 @@ class MailServiceTest extends TestCase
         $render->shouldHaveBeenCalledTimes(1);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function customHeadersAreProperlyAddedToMessage(): void
     {
         $email = new Email();

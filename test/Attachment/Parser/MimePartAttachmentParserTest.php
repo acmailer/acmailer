@@ -20,9 +20,7 @@ class MimePartAttachmentParserTest extends TestCase
         $this->parser = new MimePartAttachmentParser();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function exceptionIsThrownIfAttachmentHasInvalidType(): void
     {
         $this->expectException(InvalidAttachmentException::class);

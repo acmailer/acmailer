@@ -26,9 +26,7 @@ class MailViewRendererFactoryTest extends TestCase
         $this->factory = new MailViewRendererFactory();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function ifStandardServiceIsFoundItIsReturned(): void
     {
         $theRenderer = $this->prophesize(TemplateRendererInterface::class)->reveal();
@@ -44,9 +42,7 @@ class MailViewRendererFactoryTest extends TestCase
         $getViewRenderer->shouldHaveBeenCalledTimes(1);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function ifOldStandardServiceIsFoundItIsReturned(): void
     {
         $theRenderer = new PhpRenderer();
@@ -64,9 +60,7 @@ class MailViewRendererFactoryTest extends TestCase
         $getViewRenderer->shouldHaveBeenCalledTimes(1);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function ifStandardServicesAreNotFoundOneIsCreatedOnTheFly(): void
     {
         $container = $this->prophesize(ContainerInterface::class);

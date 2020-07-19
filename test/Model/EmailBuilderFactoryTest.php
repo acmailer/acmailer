@@ -22,9 +22,7 @@ class EmailBuilderFactoryTest extends TestCase
         $this->factory = new EmailBuilderFactory();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function serviceIsCreated(): void
     {
         $container = $this->prophesize(ContainerInterface::class);
@@ -35,9 +33,7 @@ class EmailBuilderFactoryTest extends TestCase
         $this->assertInstanceOf(EmailBuilder::class, $instance);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function exceptionIsThrownIfConfigIsNotFound(): void
     {
         $container = $this->prophesize(ContainerInterface::class);

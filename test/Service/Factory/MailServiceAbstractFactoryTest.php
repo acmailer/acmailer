@@ -132,9 +132,7 @@ class MailServiceAbstractFactoryTest extends TestCase
         ]];
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function standardTransportAsServiceIsKeptAsIs(): void
     {
         $this->container->get(MailViewRendererInterface::class)->willReturn(
@@ -202,9 +200,7 @@ class MailServiceAbstractFactoryTest extends TestCase
         yield ['my_transport', false];
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function wrongCustomRendererThrowsException(): void
     {
         $this->container->get('config')->willReturn([
@@ -231,9 +227,7 @@ class MailServiceAbstractFactoryTest extends TestCase
         $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function recursiveLoopOnExtendsThrowsException(): void
     {
         $this->container->get('config')->willReturn([
@@ -266,9 +260,7 @@ class MailServiceAbstractFactoryTest extends TestCase
         $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function extendFromInvalidServiceThrowsException(): void
     {
         $this->container->get('config')->willReturn([
@@ -295,9 +287,7 @@ class MailServiceAbstractFactoryTest extends TestCase
         $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function extendedConfigIsProperlyApplied(): void
     {
         $this->container->get('config')->willReturn([

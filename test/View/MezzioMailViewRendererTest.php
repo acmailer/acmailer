@@ -23,9 +23,7 @@ class MezzioMailViewRendererTest extends TestCase
         $this->mezzioRenderer = new MezzioMailViewRenderer($this->innerRenderer->reveal());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function renderDelegatesIntoInnerRenderer(): void
     {
         $params = ['foo' => 'bar'];

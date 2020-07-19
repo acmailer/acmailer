@@ -18,9 +18,7 @@ class ArrayAttachmentParserTest extends TestCase
         $this->parser = new ArrayAttachmentParser();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function exceptionIsThrownIfAttachmentHasInvalidType(): void
     {
         $this->expectException(InvalidAttachmentException::class);
@@ -28,9 +26,7 @@ class ArrayAttachmentParserTest extends TestCase
         $this->parser->parse('');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function providedAttachmentIsParsedIntoPart(): void
     {
         $attachment = [
@@ -49,9 +45,7 @@ class ArrayAttachmentParserTest extends TestCase
         $this->assertEquals($part->disposition, Mime::DISPOSITION_ATTACHMENT);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function idAndNameAreOverriddenIfNameIsProvided(): void
     {
         $attachment = [

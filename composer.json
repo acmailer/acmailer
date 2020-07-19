@@ -74,6 +74,10 @@
         "test": "phpdbg -qrr vendor/bin/phpunit --colors=always --testdox",
         "test:pretty": "@test --coverage-html=build/html",
         "test:ci": "@test --coverage-clover=build/clover.xml --coverage-xml=build/coverage-xml --log-junit=build/junit.xml",
+        "test:infection": [
+            "@test:ci",
+            "@infection:ci"
+        ],
         "infection": "infection --threads=4 --min-msi=80 --log-verbosity=default --only-covered",
         "infection:ci": "@infection --coverage=build",
         "infection:show": "@infection --show-mutations"
