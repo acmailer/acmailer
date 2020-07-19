@@ -6,8 +6,7 @@
         {
             "name": "Alejandro Celaya Alastrué",
             "email": "alejandro@alejandrocelaya.com",
-            "homepage": "https://www.alejandrocelaya.com",
-            "role": "Developer"
+            "homepage": "https://www.alejandrocelaya.com"
         }
     ],
     "keywords": [
@@ -24,7 +23,6 @@
     "license": "MIT",
     "require": {
         "php": "^7.4",
-        "laminas/laminas-eventmanager": "^3.0",
         "laminas/laminas-mail": "^2.10",
         "laminas/laminas-servicemanager": "^3.0",
         "laminas/laminas-stdlib": "^3.0"
@@ -40,7 +38,7 @@
         "shlinkio/php-coding-standard": "~2.1.0"
     },
     "suggest": {
-        "mezzio/mezzio-laminasviewrenderer": "If you want to render email templates using laminas/view in mezzio applications",
+        "mezzio/mezzio-laminasviewrenderer": "If you want to render email templates using laminas/laminas-view in mezzio applications",
         "mezzio/mezzio-twigrenderer": "If you want to render email templates using twig/twig in mezzio applications",
         "mezzio/mezzio-platesrenderer": "If you want to render email templates using league/plates in mezzio applications"
     },

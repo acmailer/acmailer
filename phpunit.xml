@@ -9,10 +9,14 @@
             <directory>./test</directory>
         </testsuite>
     </testsuites>
-    
+
     <filter>
-        <whitelist>
-            <directory>./src</directory>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
+
+            <exclude>
+                <file>./src/Event/AbstractMailListener.php</file>
+            </exclude>
         </whitelist>
     </filter>
 </phpunit>

@@ -335,9 +335,7 @@ class MailServiceAbstractFactoryTest extends TestCase
         $this->assertInstanceOf(MailService::class, $result);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function listenersAreAttached(): void
     {
         $this->container->get('config')->willReturn([
@@ -351,6 +349,10 @@ class MailServiceAbstractFactoryTest extends TestCase
                             [
                                 'listener' => 'another_lazy_listener',
                                 'priority' => 3,
+                            ],
+                            [
+                                'listener' => $this->prophesize(MailListenerInterface::class)->reveal(),
+                                'priority' => 4,
                             ],
                         ],
                     ],
@@ -367,13 +369,15 @@ class MailServiceAbstractFactoryTest extends TestCase
             $this->prophesize(AttachmentParserManager::class)->reveal(),
         );
 
-        $result = $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
-        $listeners = $this->getObjectProp($result->getEventManager(), 'events');
+        $mailService = ($this->factory)($this->container->reveal(), 'acmailer.mailservice.default');
 
-        $this->assertCount(4, $listeners);
-        foreach (MailListenerInterface::EVENT_METHOD_MAP as $eventName => $method) {
-            $this->assertArrayHasKey($eventName, $listeners);
-        }
+        $dispatcher = $this->getObjectProp($mailService, 'dispatcher');
+        $listenersQueue = $this->getObjectProp($dispatcher, 'listenersQueue');
+
+        $this->assertCount(3, $listenersQueue);
+        $this->assertCount(2, $listenersQueue[1]); // Two listeners have default priority, which is 1
+        $this->assertCount(1, $listenersQueue[3]); // One listener has priority 3
+        $this->assertCount(1, $listenersQueue[4]); // One listener has priority 4
     }
 
     /**
