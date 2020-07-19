@@ -104,7 +104,7 @@ class EmailBuilderTest extends TestCase
         $this->expectExceptionMessage(
             'It wasn\'t possible to create an email due to circular inheritance. Review "extends".',
         );
-        
+
         $this->builder->build($name);
     }
 

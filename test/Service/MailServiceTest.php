@@ -18,7 +18,6 @@ use AcMailer\Model\Email;
 use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Service\MailService;
 use AcMailer\View\MailViewRendererInterface;
-use Exception;
 use Laminas\Mail\Message;
 use Laminas\Mail\Transport\TransportInterface;
 use Laminas\Mime\Part;
@@ -32,6 +31,7 @@ use stdClass;
 
 use function count;
 use function is_object;
+use function sprintf;
 
 class MailServiceTest extends TestCase
 {
@@ -69,6 +69,10 @@ class MailServiceTest extends TestCase
     public function sendInvalidEmailThrowsException($email): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            sprintf('Provided email is not valid. Expected one of ["string", "array", "%s"]', Email::class),
+        );
+
         $this->mailService->send($email);
     }
 
@@ -129,7 +133,7 @@ class MailServiceTest extends TestCase
     public function whenPreSendReturnsFalseEmailsSendingIsCancelled(): void
     {
         $dispatchResult = new DispatchResult();
-        $dispatchResult->add(0, false);
+        $dispatchResult->push(false);
 
         $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
         $trigger = $this->eventDispatcher->dispatch(Argument::cetera())->willReturn($dispatchResult);
