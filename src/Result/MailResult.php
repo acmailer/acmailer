@@ -11,13 +11,13 @@ class MailResult implements ResultInterface
 {
     private bool $valid;
     private Email $email;
-    private ?Throwable $exception;
+    private ?Throwable $throwable;
 
-    public function __construct(Email $email, bool $valid = true, ?Throwable $exception = null)
+    public function __construct(Email $email, bool $valid = true, ?Throwable $throwable = null)
     {
         $this->email = $email;
         $this->valid = $valid;
-        $this->exception = $exception;
+        $this->throwable = $throwable;
     }
 
     /**
@@ -41,7 +41,7 @@ class MailResult implements ResultInterface
      */
     public function hasThrowable(): bool
     {
-        return $this->exception !== null;
+        return $this->throwable !== null;
     }
 
     /**
@@ -49,7 +49,7 @@ class MailResult implements ResultInterface
      */
     public function getThrowable(): ?Throwable
     {
-        return $this->exception;
+        return $this->throwable;
     }
 
     /**

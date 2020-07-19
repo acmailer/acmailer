@@ -94,10 +94,23 @@ class EmailBuilderTest extends TestCase
         $this->assertEquals('foobar', $email->getFromName());
     }
 
-    /** @test */
-    public function circularExtendsThrowException(): void
+    /**
+     * @test
+     * @dataProvider provideCircularEmails
+     */
+    public function circularExtendsThrowException(string $name): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->builder->build('invalid_extends');
+        $this->expectExceptionMessage(
+            'It wasn\'t possible to create an email due to circular inheritance. Review "extends".',
+        );
+        
+        $this->builder->build($name);
+    }
+
+    public function provideCircularEmails(): iterable
+    {
+        yield ['another'];
+        yield ['invalid_extends'];
     }
 }

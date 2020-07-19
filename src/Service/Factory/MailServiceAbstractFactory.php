@@ -252,7 +252,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
     private function createDispatcher(ContainerInterface $container, array $mailOptions): EventDispatcher
     {
         $dispatcher = new EventDispatcher();
-        $listeners = (array) ($mailOptions['mail_listeners'] ?? []);
+        $listeners = $mailOptions['mail_listeners'] ?? [];
 
         foreach ($listeners as $listener) {
             $dispatcher->attachMailListener(...$this->resolveListener($listener, $container));

@@ -357,6 +357,9 @@ class MailServiceAbstractFactoryTest extends TestCase
                             'my_lazy_listener',
                             [
                                 'listener' => 'another_lazy_listener',
+                            ],
+                            [
+                                'listener' => 'yet_another_lazy_listener',
                                 'priority' => 3,
                             ],
                             [
@@ -384,7 +387,7 @@ class MailServiceAbstractFactoryTest extends TestCase
         $listenersQueue = $this->getObjectProp($dispatcher, 'listenersQueue');
 
         $this->assertCount(3, $listenersQueue);
-        $this->assertCount(2, $listenersQueue[1]); // Two listeners have default priority, which is 1
+        $this->assertCount(3, $listenersQueue[1]); // Three listeners have default priority, which is 1
         $this->assertCount(1, $listenersQueue[3]); // One listener has priority 3
         $this->assertCount(1, $listenersQueue[4]); // One listener has priority 4
     }
