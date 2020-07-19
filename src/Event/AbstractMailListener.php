@@ -6,8 +6,6 @@ namespace AcMailer\Event;
 
 abstract class AbstractMailListener implements MailListenerInterface
 {
-    use MailListenerTrait;
-
     /**
      * Called before rendering the email, in case it is composed by a template
      *

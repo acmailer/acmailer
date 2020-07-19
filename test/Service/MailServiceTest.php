@@ -6,6 +6,8 @@ namespace AcMailerTest\Service;
 
 use AcMailer\Attachment\AttachmentParserManagerInterface;
 use AcMailer\Attachment\Parser\AttachmentParserInterface;
+use AcMailer\Event\DispatchResult;
+use AcMailer\Event\EventDispatcherInterface;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Exception\MailException;
@@ -16,8 +18,6 @@ use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Service\MailService;
 use AcMailer\View\MailViewRendererInterface;
 use Exception;
-use Laminas\EventManager\EventManagerInterface;
-use Laminas\EventManager\ResponseCollection;
 use Laminas\Mail\Message;
 use Laminas\Mail\Transport\TransportInterface;
 use Laminas\Mime\Part;
@@ -39,7 +39,7 @@ class MailServiceTest extends TestCase
     private ObjectProphecy $transport;
     private ObjectProphecy $renderer;
     private ObjectProphecy $emailBuilder;
-    private ObjectProphecy $eventManager;
+    private ObjectProphecy $eventDispatcher;
     private ObjectProphecy $attachmentParsers;
 
     public function setUp(): void
@@ -48,16 +48,14 @@ class MailServiceTest extends TestCase
         $this->renderer = $this->prophesize(MailViewRendererInterface::class);
         $this->emailBuilder = $this->prophesize(EmailBuilderInterface::class);
         $this->attachmentParsers = $this->prophesize(AttachmentParserManagerInterface::class);
-        $this->eventManager = $this->prophesize(EventManagerInterface::class);
-
-        $this->eventManager->setIdentifiers(Argument::cetera())->willReturn(null);
+        $this->eventDispatcher = $this->prophesize(EventDispatcherInterface::class);
 
         $this->mailService = new MailService(
             $this->transport->reveal(),
             $this->renderer->reveal(),
             $this->emailBuilder->reveal(),
             $this->attachmentParsers->reveal(),
-            $this->eventManager->reveal(),
+            $this->eventDispatcher->reveal(),
         );
     }
 
@@ -88,7 +86,7 @@ class MailServiceTest extends TestCase
     {
         $buildEmail = $this->emailBuilder->build(Argument::cetera())->willReturn(new Email());
         $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
-        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn(new ResponseCollection());
+        $trigger = $this->eventDispatcher->dispatch(Argument::cetera())->willReturn(new DispatchResult());
 
         $this->mailService->send($email);
 
@@ -111,7 +109,7 @@ class MailServiceTest extends TestCase
     {
         $this->transport->send(Argument::type(Message::class))->willThrow(Exception::class)
                                                               ->shouldBeCalled();
-        $this->eventManager->triggerEvent(Argument::cetera())->willReturn(new ResponseCollection())
+        $this->eventDispatcher->dispatch(Argument::cetera())->willReturn(new DispatchResult())
                                                              ->shouldBeCalled();
 
         $this->expectException(MailException::class);
@@ -123,11 +121,11 @@ class MailServiceTest extends TestCase
      */
     public function whenPreSendReturnsFalseEmailsSendingIsCancelled(): void
     {
-        $collections = new ResponseCollection();
+        $collections = new DispatchResult();
         $collections->add(0, false);
 
         $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
-        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn($collections);
+        $trigger = $this->eventDispatcher->dispatch(Argument::cetera())->willReturn($collections);
 
         $this->mailService->send(new Email());
 
@@ -140,13 +138,16 @@ class MailServiceTest extends TestCase
      */
     public function attachListeners(): void
     {
-        $listener = $this->prophesize(MailListenerInterface::class);
+        $listener = $this->prophesize(MailListenerInterface::class)->reveal();
 
-        $listener->attach(Argument::cetera())->shouldBeCalled();
-        $listener->detach(Argument::cetera())->shouldBeCalled();
+        $attachOnDispatcher = $this->eventDispatcher->attachMailListener($listener, 1);
+        $detachMailListener = $this->eventDispatcher->detachMailListener($listener);
 
-        $this->mailService->attachMailListener($listener->reveal());
-        $this->mailService->detachMailListener($listener->reveal());
+        $this->mailService->attachMailListener($listener);
+        $this->mailService->detachMailListener($listener);
+
+        $attachOnDispatcher->shouldHaveBeenCalledOnce();
+        $detachMailListener->shouldHaveBeenCalledOnce();
     }
 
     /**
@@ -157,7 +158,7 @@ class MailServiceTest extends TestCase
         $expectedBody = '<p>rendering result</p>';
 
         $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
-        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn(new ResponseCollection());
+        $trigger = $this->eventDispatcher->dispatch(Argument::cetera())->willReturn(new DispatchResult());
         $render = $this->renderer->render(Argument::cetera())->willReturn($expectedBody);
 
         $result = $this->mailService->send((new Email())->setTemplate('some/template'));
@@ -186,7 +187,7 @@ class MailServiceTest extends TestCase
         $getFooParser = $this->attachmentParsers->get('foo')->willReturn($attachmentParser->reveal());
 
         $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
-        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn(new ResponseCollection());
+        $trigger = $this->eventDispatcher->dispatch(Argument::cetera())->willReturn(new DispatchResult());
 
         $this->mailService->send((new Email())->setAttachments($attachments));
 
@@ -211,7 +212,7 @@ class MailServiceTest extends TestCase
 
         $hasStringParser = $this->attachmentParsers->has('string')->willReturn(false);
         $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
-        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn(new ResponseCollection());
+        $trigger = $this->eventDispatcher->dispatch(Argument::cetera())->willReturn(new DispatchResult());
 
         try {
             $this->mailService->send((new Email())->setAttachments(['']));
@@ -243,7 +244,7 @@ class MailServiceTest extends TestCase
         $getFooParser = $this->attachmentParsers->get('foo')->willReturn($attachmentParser->reveal());
 
         $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
-        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn(new ResponseCollection());
+        $trigger = $this->eventDispatcher->dispatch(Argument::cetera())->willReturn(new DispatchResult());
 
         $this->mailService->send((new Email())->setAttachments($attachments));
 
@@ -260,13 +261,13 @@ class MailServiceTest extends TestCase
     public function templateIsRenderedBeforeEmailIsSent(): void
     {
         $expectedBody = '<p>rendering result</p>';
-        $resp = new ResponseCollection();
+        $resp = new DispatchResult();
         $resp->push(false);
         $email = (new Email())->setTemplate('some/template');
         $count = 0;
 
         $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
-        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->will(function () use (
+        $trigger = $this->eventDispatcher->dispatch(Argument::cetera())->will(function () use (
             $email,
             $resp,
             &$count
@@ -317,7 +318,7 @@ class MailServiceTest extends TestCase
 
             return $message;
         }))->willReturn(null);
-        $trigger = $this->eventManager->triggerEvent(Argument::cetera())->willReturn(new ResponseCollection());
+        $trigger = $this->eventDispatcher->dispatch(Argument::cetera())->willReturn(new DispatchResult());
 
         $this->mailService->send($email);
 

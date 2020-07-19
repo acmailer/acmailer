@@ -6,7 +6,8 @@ namespace AcMailer\Service;
 
 use AcMailer\Attachment\AttachmentParserManagerInterface;
 use AcMailer\Attachment\Parser\AttachmentParserInterface;
-use AcMailer\Event\MailListenerAwareInterface;
+use AcMailer\Event\EventDispatcherInterface;
+use AcMailer\Event\MailListenerHandlerInterface;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Event\PostSendEvent;
 use AcMailer\Event\PreRenderEvent;
@@ -20,10 +21,6 @@ use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Result\MailResult;
 use AcMailer\Result\ResultInterface;
 use AcMailer\View\MailViewRendererInterface;
-use Laminas\EventManager\EventManager;
-use Laminas\EventManager\EventManagerInterface;
-use Laminas\EventManager\EventsCapableInterface;
-use Laminas\EventManager\SharedEventManager;
 use Laminas\Mail\Exception\InvalidArgumentException;
 use Laminas\Mail\Message;
 use Laminas\Mail\Transport\TransportInterface;
@@ -42,36 +39,26 @@ use function is_string;
 use function sprintf;
 use function strip_tags;
 
-class MailService implements MailServiceInterface, EventsCapableInterface, MailListenerAwareInterface
+class MailService implements MailServiceInterface, MailListenerHandlerInterface
 {
     private TransportInterface $transport;
     private MailViewRendererInterface $renderer;
-    private EventManagerInterface $events;
     private EmailBuilderInterface $emailBuilder;
     private AttachmentParserManagerInterface $attachmentParserManager;
+    private EventDispatcherInterface $dispatcher;
 
     public function __construct(
         TransportInterface $transport,
         MailViewRendererInterface $renderer,
         EmailBuilderInterface $emailBuilder,
         AttachmentParserManagerInterface $attachmentParserManager,
-        ?EventManagerInterface $events = null
+        EventDispatcherInterface $dispatcher
     ) {
         $this->transport = $transport;
         $this->renderer = $renderer;
         $this->emailBuilder = $emailBuilder;
         $this->attachmentParserManager = $attachmentParserManager;
-        $this->events = $this->initEventManager($events);
-    }
-
-    private function initEventManager(?EventManagerInterface $events = null): EventManagerInterface
-    {
-        $events = $events ?: new EventManager(new SharedEventManager());
-        $events->setIdentifiers([
-            __CLASS__,
-            static::class,
-        ]);
-        return $events;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -99,11 +86,11 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         }
 
         // Trigger the pre render event and then render the email's body in case it has to be composed from a template
-        $this->events->triggerEvent(new PreRenderEvent($email));
+        $this->dispatcher->dispatch(new PreRenderEvent($email));
         $this->renderEmailBody($email);
 
         // Trigger pre send event, and cancel email sending if any listener returned false
-        $eventResp = $this->events->triggerEvent(new PreSendEvent($email));
+        $eventResp = $this->dispatcher->dispatch(new PreSendEvent($email));
         if ($eventResp->contains(false)) {
             return new MailResult($email, false);
         }
@@ -121,13 +108,13 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
 
             // Trigger post send event
             $result = new MailResult($email);
-            $this->events->triggerEvent(new PostSendEvent($email, $result));
+            $this->dispatcher->dispatch(new PostSendEvent($email, $result));
             return $result;
         } catch (Throwable $e) {
             // Trigger error event, notifying listeners of the error
-            $this->events->triggerEvent(new SendErrorEvent($email, new MailResult($email, false, $e)));
+            $this->dispatcher->dispatch(new SendErrorEvent($email, new MailResult($email, false, $e)));
 
-            throw new Exception\MailException('An error occurred while trying to send the email', $e->getCode(), $e);
+            throw Exception\MailException::fromThrowable($e);
         }
     }
 
@@ -244,21 +231,6 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
         return is_object($attachment) ? get_class($attachment) : gettype($attachment);
     }
 
-    public function getEventManager(): EventManagerInterface
-    {
-        return $this->events;
-    }
-
-    public function attachMailListener(MailListenerInterface $mailListener, int $priority = 1): void
-    {
-        $mailListener->attach($this->events, $priority);
-    }
-
-    public function detachMailListener(MailListenerInterface $mailListener): void
-    {
-        $mailListener->detach($this->events);
-    }
-
     private function addCustomHeaders(Message $message, Email $email): void
     {
         $headers = $message->getHeaders();
@@ -266,5 +238,15 @@ class MailService implements MailServiceInterface, EventsCapableInterface, MailL
             $headers->addHeaderLine($headerName, $value);
         }
         $message->setHeaders($headers);
+    }
+
+    public function attachMailListener(MailListenerInterface $mailListener, int $priority = 1): void
+    {
+        $this->dispatcher->attachMailListener($mailListener, $priority);
+    }
+
+    public function detachMailListener(MailListenerInterface $mailListener): void
+    {
+        $this->dispatcher->detachMailListener($mailListener);
     }
 }
