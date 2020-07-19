@@ -14,6 +14,7 @@ This module provides an easy and flexible way to send emails from **Mezzio** and
 
 You will be able to compose emails from templates, and easily add attachments using different strategies.
 
-> You are reading the documentation for this component's **v7**. Access [here](https://github.com/acelaya/ZF-AcMailer/blob/master/UPGRADE.md#upgrade-from-5x6x-to-7x) to see how to upgrade from previous versions.
+> You are reading the documentation for this component's **v8**. Access [here](https://github.com/acelaya/ZF-AcMailer/blob/master/UPGRADE.md) to see how to upgrade from previous versions.
+> * Access **v7** documentation [here](https://github.com/acmailer/acmailer/blob/7.x/docs).
 > * Access **v6** documentation [here](https://github.com/acmailer/acmailer/blob/6.x/README.md).
 > * Access **v5** documentation [here](https://github.com/acmailer/acmailer/blob/5.x/README.md).
