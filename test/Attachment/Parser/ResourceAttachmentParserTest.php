@@ -20,9 +20,7 @@ class ResourceAttachmentParserTest extends TestCase
         $this->parser = new ResourceAttachmentParser();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function exceptionIsThrownIfAttachmentHasInvalidType(): void
     {
         $this->expectException(InvalidAttachmentException::class);

@@ -26,9 +26,7 @@ class MvcMailViewRendererTest extends TestCase
         $this->mvcRenderer = new MvcMailViewRenderer($this->innerRenderer->reveal());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function renderDelegatesIntoLaminasRendererWhenNoLayoutIsProvided(): void
     {
         $innerRender = $this->innerRenderer->render(Argument::type(ViewModel::class))->willReturn('');
@@ -38,9 +36,7 @@ class MvcMailViewRendererTest extends TestCase
         $innerRender->shouldHaveBeenCalledTimes(1);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function renderDelegatesIntoLaminasRendererWhenLayoutIsProvided(): void
     {
         $innerRender = $this->innerRenderer->render(Argument::type(ViewModel::class))->willReturn('');
@@ -50,9 +46,7 @@ class MvcMailViewRendererTest extends TestCase
         $innerRender->shouldHaveBeenCalledTimes(2);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function parametersArePassedBothToLayoutAndChildTemplate(): void
     {
         $innerRender = $this->innerRenderer->render(Argument::that(function (ViewModel $viewModel) {

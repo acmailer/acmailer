@@ -15,9 +15,7 @@ class MailResultTest extends TestCase
 {
     private ResultInterface $mailResult;
 
-    /**
-     * @test
-     */
+    /** @test */
     public function defaultValuesAreApplied(): void
     {
         $email = new Email();

@@ -55,9 +55,7 @@ class EmailTest extends TestCase
         yield [[new Part(), 5]];
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function providedNamesAreSavedForAttachments(): void
     {
         $this->email->addAttachments([
@@ -67,9 +65,7 @@ class EmailTest extends TestCase
         $this->assertArrayHasKey('foo', $this->email->getAttachments());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function attachmentsAreProperlyComputed(): void
     {
         $this->email->addAttachment(__DIR__ . '/../../test-resources/attachments/file1');

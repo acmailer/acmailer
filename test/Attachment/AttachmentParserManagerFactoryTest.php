@@ -21,9 +21,7 @@ class AttachmentParserManagerFactoryTest extends TestCase
         $this->factory = new AttachmentParserManagerFactory();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function serviceIsProperlyCreated(): void
     {
         $container = $this->prophesize(ContainerInterface::class);

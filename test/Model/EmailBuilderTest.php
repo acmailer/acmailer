@@ -64,9 +64,7 @@ class EmailBuilderTest extends TestCase
         yield 'default email with overridden value' => [Email::class, 'me', ['fromName' => 'me']];
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function exceptionIsThrownWhenInvalidEmailIsRequested(): void
     {
         $this->expectException(EmailNotFoundException::class);
@@ -74,9 +72,7 @@ class EmailBuilderTest extends TestCase
         $this->builder->build('invalid');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function emailCanBeExtended(): void
     {
         $email = $this->builder->build('an_email', ['extends' => 'another_email']);
@@ -100,10 +96,21 @@ class EmailBuilderTest extends TestCase
 
     /**
      * @test
+     * @dataProvider provideCircularEmails
      */
-    public function circularExtendsThrowException(): void
+    public function circularExtendsThrowException(string $name): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->builder->build('invalid_extends');
+        $this->expectExceptionMessage(
+            'It wasn\'t possible to create an email due to circular inheritance. Review "extends".',
+        );
+
+        $this->builder->build($name);
+    }
+
+    public function provideCircularEmails(): iterable
+    {
+        yield ['another'];
+        yield ['invalid_extends'];
     }
 }

@@ -9,6 +9,7 @@ use AcMailer\Attachment\Parser\AttachmentParserInterface;
 use AcMailer\Event\DispatchResult;
 use AcMailer\Event\EventDispatcherInterface;
 use AcMailer\Event\MailListenerInterface;
+use AcMailer\Event\SendErrorEvent;
 use AcMailer\Exception\InvalidArgumentException;
 use AcMailer\Exception\MailException;
 use AcMailer\Exception\ServiceNotCreatedException;
@@ -17,7 +18,6 @@ use AcMailer\Model\Email;
 use AcMailer\Model\EmailBuilderInterface;
 use AcMailer\Service\MailService;
 use AcMailer\View\MailViewRendererInterface;
-use Exception;
 use Laminas\Mail\Message;
 use Laminas\Mail\Transport\TransportInterface;
 use Laminas\Mime\Part;
@@ -26,10 +26,12 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use RuntimeException;
 use stdClass;
 
 use function count;
 use function is_object;
+use function sprintf;
 
 class MailServiceTest extends TestCase
 {
@@ -67,6 +69,10 @@ class MailServiceTest extends TestCase
     public function sendInvalidEmailThrowsException($email): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            sprintf('Provided email is not valid. Expected one of ["string", "array", "%s"]', Email::class),
+        );
+
         $this->mailService->send($email);
     }
 
@@ -102,40 +108,44 @@ class MailServiceTest extends TestCase
         yield [new Email()];
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function exceptionIsThrownInCaseOfError(): void
     {
-        $this->transport->send(Argument::type(Message::class))->willThrow(Exception::class)
-                                                              ->shouldBeCalled();
-        $this->eventDispatcher->dispatch(Argument::cetera())->willReturn(new DispatchResult())
-                                                             ->shouldBeCalled();
+        $throwable = new RuntimeException('An error occured');
+
+        $this->transport->send(Argument::type(Message::class))->willThrow($throwable)
+                                                              ->shouldBeCalledOnce();
+        $this->eventDispatcher->dispatch(Argument::that(function ($e) use ($throwable) {
+            if ($e instanceof SendErrorEvent) {
+                Assert::assertFalse($e->getResult()->isValid());
+                Assert::assertEquals($throwable, $e->getResult()->getThrowable());
+            }
+
+            return $e;
+        }))->willReturn(new DispatchResult())->shouldBeCalledTimes(3);
 
         $this->expectException(MailException::class);
+
         $this->mailService->send(new Email());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function whenPreSendReturnsFalseEmailsSendingIsCancelled(): void
     {
-        $collections = new DispatchResult();
-        $collections->add(0, false);
+        $dispatchResult = new DispatchResult();
+        $dispatchResult->push(false);
 
         $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
-        $trigger = $this->eventDispatcher->dispatch(Argument::cetera())->willReturn($collections);
+        $trigger = $this->eventDispatcher->dispatch(Argument::cetera())->willReturn($dispatchResult);
 
-        $this->mailService->send(new Email());
+        $result = $this->mailService->send(new Email());
 
+        $this->assertFalse($result->isValid());
         $send->shouldNotHaveBeenCalled();
         $trigger->shouldHaveBeenCalledTimes(2);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function attachListeners(): void
     {
         $listener = $this->prophesize(MailListenerInterface::class)->reveal();
@@ -150,10 +160,8 @@ class MailServiceTest extends TestCase
         $detachMailListener->shouldHaveBeenCalledOnce();
     }
 
-    /**
-     * @test
-     */
-    public function templateIsRendererIfProvided(): void
+    /** @test */
+    public function templateIsRenderedIfProvided(): void
     {
         $expectedBody = '<p>rendering result</p>';
 
@@ -169,9 +177,7 @@ class MailServiceTest extends TestCase
         $render->shouldHaveBeenCalledTimes(1);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function attachmentsAreProperlyAddedToMessage(): void
     {
         $attachments = ['', '', '', [], new Attachment('foo', 'value')];
@@ -202,9 +208,7 @@ class MailServiceTest extends TestCase
         $parse->shouldHaveBeenCalledTimes(count($attachments));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function attachmentsThrowExceptionWhenParserCannotBeFound(): void
     {
         $attachmentParser = $this->prophesize(AttachmentParserInterface::class);
@@ -227,9 +231,7 @@ class MailServiceTest extends TestCase
         $parse->shouldNotHaveBeenCalled();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function arrayAttachmentsWithSpecificKeysAreProperlyCast(): void
     {
         $attachments = [[
@@ -255,9 +257,7 @@ class MailServiceTest extends TestCase
         $parse->shouldHaveBeenCalledTimes(count($attachments));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function templateIsRenderedBeforeEmailIsSent(): void
     {
         $expectedBody = '<p>rendering result</p>';
@@ -294,9 +294,7 @@ class MailServiceTest extends TestCase
         $render->shouldHaveBeenCalledTimes(1);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function customHeadersAreProperlyAddedToMessage(): void
     {
         $email = new Email();
