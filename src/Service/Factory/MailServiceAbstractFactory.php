@@ -162,7 +162,6 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
     {
         $transport = $mailOptions['transport'] ?? Transport\Sendmail::class;
         if (! is_string($transport) && ! $transport instanceof Transport\TransportInterface) {
-            // The adapter is not valid. Throw an exception
             throw Exception\InvalidArgumentException::fromValidTypes(
                 ['string', Transport\TransportInterface::class],
                 $transport,
@@ -183,16 +182,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
 
         // Check if the transport is a service
         if ($container->has($transport)) {
-            $transportInstance = $container->get($transport);
-            if ($transportInstance instanceof Transport\TransportInterface) {
-                return $transportInstance;
-            }
-
-            throw new Exception\InvalidArgumentException(sprintf(
-                'Provided transport service with name "%s" does not return a "%s" instance',
-                $transport,
-                Transport\TransportInterface::class,
-            ));
+            return $container->get($transport);
         }
 
         // The adapter is not valid. Throw an exception

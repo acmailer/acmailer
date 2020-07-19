@@ -172,8 +172,11 @@ class MailServiceAbstractFactoryTest extends TestCase
      * @dataProvider provideInvalidTransports
      * @param mixed $transport
      */
-    public function exceptionIsThrownIfConfiguredTransportHasAnInvalidValue($transport, bool $inContainer): void
-    {
+    public function exceptionIsThrownIfConfiguredTransportHasAnInvalidValue(
+        $transport,
+        bool $inContainer,
+        string $expectedMessage
+    ): void {
         $this->container->get('config')->willReturn([
             'acmailer_options' => [
                 'mail_services' => [
@@ -189,15 +192,31 @@ class MailServiceAbstractFactoryTest extends TestCase
         }
 
         $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage($expectedMessage);
+
         $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
     }
 
     public function provideInvalidTransports(): iterable
     {
-        yield [new stdClass(), false];
-        yield [800, false];
-        yield ['my_transport', true];
-        yield ['my_transport', false];
+        yield [
+            new stdClass(),
+            false,
+            sprintf(
+                'Provided transport is not valid. Expected one of ["string", "%s"], but "%s" was provided',
+                TransportInterface::class,
+                stdClass::class,
+            ),
+        ];
+        yield [800, false, sprintf(
+            'Provided transport is not valid. Expected one of ["string", "%s"], but "integer" was provided',
+            TransportInterface::class,
+        )];
+        yield ['my_transport', false, sprintf(
+            'Registered transport "my_transport" is not either one of ["sendmail", "smtp", "file", "in_memory", "null"]'
+            . ', a "%s" subclass or a registered service.',
+            TransportInterface::class,
+        )];
     }
 
     /** @test */
