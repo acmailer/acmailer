@@ -1,11 +1,12 @@
 # Pre-configuring emails
 
-It is very likely that some of the emails of your system have always the same structure. It is possible to preconfigure those emails, so that you can then reference to them by their name.
+It is very likely that some of the emails of your system have always the same structure. AcMailer allows you to pre-configure those emails, so that you can then reference to them by their name.
 
 Pre-configured emails have to be defined under the `acmailer_options.emails` configuration entry.
 
 ```php
 <?php
+
 declare(strict_types=1);
 
 return [
@@ -42,6 +43,7 @@ Once you have defined pre-configured emails, you can send any of them just by re
 
 ```php
 <?php
+
 declare(strict_types=1);
 
 try {

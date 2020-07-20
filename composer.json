@@ -80,7 +80,11 @@
         ],
         "infection": "infection --threads=4 --min-msi=85 --log-verbosity=default --only-covered",
         "infection:ci": "@infection --coverage=build",
-        "infection:show": "@infection --show-mutations"
+        "infection:show": "@infection --show-mutations",
+        "docs:serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "php -S 127.0.0.1:8000 -t docs"
+        ]
     },
     "scripts-descriptions": {
         "cs": "Check coding styles with PHP_CodeSniffer",

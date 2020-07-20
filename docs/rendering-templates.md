@@ -12,6 +12,7 @@ The rendered template can use a layout. When using twig or plates renderers, you
 
 ```php
 <?php
+
 declare(strict_types=1);
 
 $mailService->send('contact', ['template_params' => [
@@ -21,10 +22,11 @@ $mailService->send('contact', ['template_params' => [
 
 In Laminas MVC, the renderer that is internally used can be changed to another one (like Twig or Blade). It just needs to implement `Laminas\View\Renderer\RendererInterface`.
 
-By default AcMailer uses the default `ViewRenderer` service via an alias, `mailviewrenderer`. You can override that alias in your `service_manager` configuration in order to change the renderer service to be used (thanks to [kusmierz](https://github.com/kusmierz)):
+By default AcMailer uses the default `ViewRenderer` service via an alias, `mailviewrenderer`. You can override that alias in your `service_manager` configuration in order to change the renderer service to be used:
 
 ```php
 <?php
+
 declare(strict_types=1);
 
 return [
@@ -46,6 +48,7 @@ If you need different view renderers to be used by each mail service, you can de
 
 ```php
 <?php
+
 declare(strict_types=1);
 
 return [

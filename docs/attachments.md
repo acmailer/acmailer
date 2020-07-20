@@ -4,6 +4,7 @@ Files can be attached to the email before sending it, using different approaches
 
 ```php
 <?php
+
 declare(strict_types=1);
 
 $mailService->send(
@@ -28,7 +29,7 @@ $mailService->send([
 
 The files will be attached with their real name unless you provide an alternative name as the key of the array element in `addAttachments` and `setAttachments` or as the second argument in `addAttachment`.
 
-Attached images can be displayed inline by setting the `cid` to the image filename in the image tag like this (thanks to [omarev](https://github.com/acelaya/ZF2-AcMailer/pull/32)). The alternative name should be used if provided.
+Attached images can be displayed inline by setting the `cid` to the image filename in the image tag like this. The alternative name should be used if provided.
 
 ```html
 <img alt="This is an attached image" src="cid:image-filename.jpg">
@@ -45,6 +46,7 @@ By default, 4 strategies are supported to attach files
 
 ```php
 <?php
+
 declare(strict_types=1);
 
 $mailService->send([
@@ -73,6 +75,7 @@ You could define your own attachment parser, like this:
 
 ```php
 <?php
+
 declare(strict_types=1);
 
 namespace App\Mail\Attachment;
@@ -128,6 +131,7 @@ Now you have to register the attachment parser, like this.
 
 ```php
 <?php
+
 declare(strict_types=1);
 
 use App\Mail\Attachment\FlysystemAttachmentParser;
@@ -153,12 +157,13 @@ return [
 ];
 ```
 
-> The `attachment_parsers` configuration entry has a service manager-like structure, where you can define factories, aliases and such.
+> The `attachment_parsers` configuration entry has a dependencies-like structure, where you can define factories, aliases, etc.
 
 Finally, you just need to remember to attach files using the `AcMailer\Model\Attachment` wrapper, which allows you to define not only the attachment value but the parser which has to process it.
 
 ```php
 <?php
+
 declare(strict_types=1);
 
 use AcMailer\Model;
@@ -178,6 +183,7 @@ If you want to pre-configure attachments which use a custom parser, you need to 
 
 ```php
 <?php
+
 declare(strict_types=1);
 
 use App\Mail\Attachment\FlysystemAttachmentParser;

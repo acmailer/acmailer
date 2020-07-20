@@ -6,6 +6,7 @@ The configuration for all mail services has to be defined under the `acmailer_op
 
 ```php
 <?php
+
 declare(strict_types=1);
 
 return [
@@ -49,7 +50,7 @@ return [
 
 > See the full configuration documentation [here](/configuration-options?id=mail-services).
 
-Then, every service can be fetched using the same formula to compose the service name. Three parts, separated by dots. The first one is **acmailer**, the second one is **mailservice**, and the third one is the specific service name, for example **default** or **mycompany**.
+Then, every service can be fetched using the same pattern to compose the service name. Three parts, separated by dots. The first one is **acmailer**, the second one is **mailservice**, and the third one is the specific service name, for example **default** or **mycompany**.
 
 In the example, service names would be **acmailer.mailservice.default** and **acmailer.mailservice.mycompany**.
 
@@ -57,13 +58,14 @@ All services will work from scratch, since this module registers an abstract fac
 
 ```php
 <?php
+
 declare(strict_types=1);
 
 use AcMailer\Service\Factory\MailServiceAbstractFactory;
 
 return [
     
-    'services_manager' => [ // 'dependencies' in the case of Mezzio
+    'dependencies' => [ // 'services_manager' in the case of Laminas MVC
         'factories' => [
             'acmailer.mailservice.mycompany' => MailServiceAbstractFactory::class,
         ],
@@ -82,6 +84,7 @@ It is capable of not only creating services from scratch, but also using pre-con
 
 ```php
 <?php
+
 declare(strict_types=1);
 
 class IndexControllerFactory

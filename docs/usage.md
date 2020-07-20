@@ -1,15 +1,16 @@
 # Usage
 
-After installation, copy `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` to `config/autoload/mail.global.php` and customize any of the params.
+After installation, copy the file `vendor/acelaya/zf2-acmailer/config/mail.global.php.dist` to `config/autoload/mail.global.php` and customize any of the params.
 
-As with any other MVC or Mezzio configuration, you can choose to put any of the settings into a local configuration file so you can make environment-specific mail settings, and avoid sending credentials to version control systems.
+As with any other MVC or Mezzio configuration, you can choose to put any of the settings into a local configuration file, so you can make environment-specific mail settings, and avoid sending credentials to version control systems.
 
 By default, a service with name `acmailer.mailservice.default` will be registered for you, which is also aliased by the service names `AcMailer\Service\MailService`, `AcMailer\Service\MailServiceInterface` and `mailservice`.
 
-All the services in the `acmailer.mailservice` namespace will return `AcMailer\Service\MailService` instances. The last part is the specific name, so that you can configure multiple mail services, each one with its own transport configuration.
+All the services in the `acmailer.mailservice` namespace will return `AcMailer\Service\MailService` instances. The last part is the specific name, so that you can configure multiple mail services, each one with its own configuration.
 
 ```php
 <?php
+
 declare(strict_types=1);
 
 class IndexControllerFactory
@@ -36,45 +37,48 @@ class IndexController
 }
 ```
 
-## Send emails
+## Sending emails
 
 There are different ways to send emails:
 
-* By using the name of a preconfigured email (as in previous example). In this case you can even provide configuration options which will override the preconfigured one.
+* By using the name of a pre-configured email (as in previous example). In this case you can even provide configuration options which will override the pre-configured one.
 
-```php
-<?php
-declare(strict_types=1);
-
-$result = $mailService->send('contact', [
-    'to' => ['your@address.com'],
-]);
-```
+    ```php
+    <?php
+    
+    declare(strict_types=1);
+    
+    $result = $mailService->send('contact', [
+        'to' => ['your@address.com'],
+    ]);
+    ```
 
 * By passing the configuration of an email as array.
 
-```php
-<?php
-declare(strict_types=1);
-
-$result = $mailService->send([
-    'from' => 'my@address.com',
-    'to' => ['your@address.com'],
-    'subject' => 'Greetings!',
-    'body' => 'Hello!',
-]);
-```
+    ```php
+    <?php
+    
+    declare(strict_types=1);
+    
+    $result = $mailService->send([
+        'from' => 'my@address.com',
+        'to' => ['your@address.com'],
+        'subject' => 'Greetings!',
+        'body' => 'Hello!',
+    ]);
+    ```
 
 * By passing an `AcMailer\Model\Email` instance.
 
-```php
-<?php
-declare(strict_types=1);
-
-$result = $mailService->send(
-    (new AcMailer\Model\Email())->setFrom('my@address.com')
-                                ->setTo(['your@address.com'])
-                                ->setSubject('Greetings!')
-                                ->setBody('Hello!')
-);
-```
+    ```php
+    <?php
+    
+    declare(strict_types=1);
+    
+    $result = $mailService->send(
+        (new AcMailer\Model\Email())->setFrom('my@address.com')
+                                    ->setTo(['your@address.com'])
+                                    ->setSubject('Greetings!')
+                                    ->setBody('Hello!')
+    );
+    ```
