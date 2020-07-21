@@ -4,7 +4,7 @@ services:
   ac_mailer_php:
     container_name: ac_mailer_php
     image: composer:1.10
+    ports:
+      - "8888:8888"
     volumes:
       - ./:/app
-    ports:
-      - "8000:8000"

@@ -24,3 +24,7 @@ strong {
     border: 0;
     border-bottom: 1px solid #eee;
 }
+
+.docsify-select-group {
+    margin-bottom: 25px;
+}

@@ -1,47 +1,12 @@
-# Installation
+<!-- select:start -->
+<!-- select-menu-labels: Version -->
 
-The recommended way to install this module is by using composer.
+### --AcMailer v8.x--
 
-    composer require acelaya/acmailer
+[filename](embedded/v8/installation.md ':include')
 
-If this gives you any problem, try using the old package name.
+### --AcMailer v7.x--
 
-    composer require acelaya/zf2-acmailer
+[remoteMarkdownUrl](https://raw.githubusercontent.com/acmailer/acmailer/7.x/docs/installation.md)
 
-If you have the [laminas/laminas-component-installer](https://github.com/laminas/laminas-component-installer) package installed, it will ask you to enable the module, both in Mezzio and Laminas MVC. Otherwise, add the module to the list.
-
-In Mezzio:
-
-```php
-<?php
-
-declare(strict_types=1);
-
-$aggregator = new ConfigAggregator([
-    // ...
-
-    App\ConfigProvider::class,
-    AcMailer\ConfigProvider::class,
-
-    // ...
-], '...');
-```
-
-In Laminas MVC:
-
-```php
-<?php
-
-declare(strict_types=1);
-
-return [
-    'modules' => [
-        // ...
-
-        'Application',
-        'AcMailer',
-
-        // ...
-    ],
-];
-```
+<!-- select:end -->

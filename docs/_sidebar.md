@@ -1,5 +1,5 @@
 
-- [AcMailer](/)
+- [Getting started](/)
 - [Installation](/installation)
 - [Usage](/usage)
 - [Pre-configuring emails](/pre-configuring-emails)
@@ -11,4 +11,5 @@
 
 ---
 
+- [Changelog](/changelog)
 - [:octocat: Fork me on github](https://github.com/acmailer/acmailer/)
