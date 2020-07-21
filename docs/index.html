@@ -14,13 +14,18 @@
         <script>
             window.$docsify = {
                 loadSidebar: true,
-                subMaxLevel: 2,
+                subMaxLevel: 0,
                 auto2top: true,
+                alias: {
+                    "/changelog": "https://raw.githubusercontent.com/acmailer/acmailer/master/CHANGELOG.md"
+                },
                 select: {
-                    sync: true,
                     detectOperatingSystem: {
                         enabled: true // Workaround for sections to get selected after first load
                     }
+                },
+                search: {
+                    placeholder: 'Search...'
                 }
             }
         </script>
@@ -30,6 +35,5 @@
         <script src="https://unpkg.com/docsify-pagination@2.6.0/dist/docsify-pagination.min.js"></script>
         <script src="https://unpkg.com/docsify-remote-markdown@1.0.1/dist/docsify-remote-markdown.min.js"></script>
         <script src="https://unpkg.com/docsify-select@1.0.0/dist/docsify-select.min.js"></script>
-
     </body>
 </html>
