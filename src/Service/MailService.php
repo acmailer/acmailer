@@ -46,19 +46,22 @@ class MailService implements MailServiceInterface, MailListenerHandlerInterface
     private EmailBuilderInterface $emailBuilder;
     private AttachmentParserManagerInterface $attachmentParserManager;
     private EventDispatcherInterface $dispatcher;
+    private bool $throwOnCancel;
 
     public function __construct(
         TransportInterface $transport,
         MailViewRendererInterface $renderer,
         EmailBuilderInterface $emailBuilder,
         AttachmentParserManagerInterface $attachmentParserManager,
-        EventDispatcherInterface $dispatcher
+        EventDispatcherInterface $dispatcher,
+        bool $throwOnCancel
     ) {
         $this->transport = $transport;
         $this->renderer = $renderer;
         $this->emailBuilder = $emailBuilder;
         $this->attachmentParserManager = $attachmentParserManager;
         $this->dispatcher = $dispatcher;
+        $this->throwOnCancel = $throwOnCancel;
     }
 
     /**
@@ -69,6 +72,7 @@ class MailService implements MailServiceInterface, MailListenerHandlerInterface
      * @throws Exception\InvalidArgumentException
      * @throws Exception\EmailNotFoundException
      * @throws Exception\MailException
+     * @throws Exception\MailCancelledException
      */
     public function send($email, array $options = []): ResultInterface
     {
@@ -92,6 +96,9 @@ class MailService implements MailServiceInterface, MailListenerHandlerInterface
         // Trigger pre send event, and cancel email sending if any listener returned false
         $eventResp = $this->dispatcher->dispatch(new PreSendEvent($email));
         if ($eventResp->contains(false)) {
+            if ($this->throwOnCancel) {
+                throw new Exception\MailCancelledException('Email cancelled from pre send event listener');
+            }
             return new MailResult($email, false);
         }
 

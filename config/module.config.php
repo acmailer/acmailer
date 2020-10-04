@@ -13,6 +13,7 @@ return [
         'emails' => [],
 
         'mail_services' => [
+            'throw_on_cancel' => false,
             'default' => [],
         ],
 

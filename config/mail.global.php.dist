@@ -128,6 +128,7 @@ return [
          * All of them will be capable of sending any of the previously configured emails.
          */
         'mail_services' => [
+            'throw_on_cancel' => false,
             'default' => [
                 /*
                  * Tells which other mail service configuration to extend.

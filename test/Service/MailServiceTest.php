@@ -11,6 +11,7 @@ use AcMailer\Event\EventDispatcherInterface;
 use AcMailer\Event\MailListenerInterface;
 use AcMailer\Event\SendErrorEvent;
 use AcMailer\Exception\InvalidArgumentException;
+use AcMailer\Exception\MailCancelledException;
 use AcMailer\Exception\MailException;
 use AcMailer\Exception\ServiceNotCreatedException;
 use AcMailer\Model\Attachment;
@@ -58,6 +59,7 @@ class MailServiceTest extends TestCase
             $this->emailBuilder->reveal(),
             $this->attachmentParsers->reveal(),
             $this->eventDispatcher->reveal(),
+            false,
         );
     }
 
@@ -141,6 +143,33 @@ class MailServiceTest extends TestCase
         $result = $this->mailService->send(new Email());
 
         $this->assertFalse($result->isValid());
+        $send->shouldNotHaveBeenCalled();
+        $trigger->shouldHaveBeenCalledTimes(2);
+    }
+
+    /** @test */
+    public function whenPreSendReturnsFalseEmailsSendingIsCancelledAndExceptionIsThrown(): void
+    {
+        $mailService = new MailService(
+            $this->transport->reveal(),
+            $this->renderer->reveal(),
+            $this->emailBuilder->reveal(),
+            $this->attachmentParsers->reveal(),
+            $this->eventDispatcher->reveal(),
+            true,
+        );
+
+        $this->expectException(MailCancelledException::class);
+        $this->expectExceptionMessage('Email cancelled from pre send event listener');
+
+        $dispatchResult = new DispatchResult();
+        $dispatchResult->push(false);
+
+        $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
+        $trigger = $this->eventDispatcher->dispatch(Argument::cetera())->willReturn($dispatchResult);
+
+        $mailService->send(new Email());
+
         $send->shouldNotHaveBeenCalled();
         $trigger->shouldHaveBeenCalledTimes(2);
     }
