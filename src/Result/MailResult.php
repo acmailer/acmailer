@@ -30,6 +30,8 @@ class MailResult implements ResultInterface
 
     /**
      * Tells if the MailService that produced this result was properly sent
+     *
+     * @deprecated
      */
     public function isValid(): bool
     {
@@ -54,6 +56,8 @@ class MailResult implements ResultInterface
 
     /**
      * Tells if the email sending was cancelled, usually by a preSend listener
+     *
+     * @deprecated
      */
     public function isCancelled(): bool
     {
