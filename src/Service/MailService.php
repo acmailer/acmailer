@@ -97,7 +97,7 @@ class MailService implements MailServiceInterface, MailListenerHandlerInterface
         $eventResp = $this->dispatcher->dispatch(new PreSendEvent($email));
         if ($eventResp->contains(false)) {
             if ($this->throwOnCancel) {
-                throw new Exception\MailCancelledException('Email cancelled from pre send event listener');
+                throw Exception\MailCancelledException::fromEvent(PreSendEvent::class);
             }
             return new MailResult($email, false);
         }
