@@ -53,14 +53,7 @@ class MailServiceTest extends TestCase
         $this->attachmentParsers = $this->prophesize(AttachmentParserManagerInterface::class);
         $this->eventDispatcher = $this->prophesize(EventDispatcherInterface::class);
 
-        $this->mailService = new MailService(
-            $this->transport->reveal(),
-            $this->renderer->reveal(),
-            $this->emailBuilder->reveal(),
-            $this->attachmentParsers->reveal(),
-            $this->eventDispatcher->reveal(),
-            false,
-        );
+        $this->mailService = $this->createMailService(false);
     }
 
     /**
@@ -150,17 +143,10 @@ class MailServiceTest extends TestCase
     /** @test */
     public function whenPreSendReturnsFalseEmailsSendingIsCancelledAndExceptionIsThrown(): void
     {
-        $mailService = new MailService(
-            $this->transport->reveal(),
-            $this->renderer->reveal(),
-            $this->emailBuilder->reveal(),
-            $this->attachmentParsers->reveal(),
-            $this->eventDispatcher->reveal(),
-            true,
-        );
+        $mailService = $this->createMailService(true);
 
         $this->expectException(MailCancelledException::class);
-        $this->expectExceptionMessage('Email cancelled from pre send event listener');
+        $this->expectExceptionMessage('Email cancelled from "AcMailer\Event\PreSendEvent" event listener');
 
         $dispatchResult = new DispatchResult();
         $dispatchResult->push(false);
@@ -352,5 +338,17 @@ class MailServiceTest extends TestCase
         $buildEmail->shouldHaveBeenCalledTimes(is_object($email) ? 0 : 1);
         $send->shouldHaveBeenCalled();
         $trigger->shouldHaveBeenCalledTimes(3);
+    }
+
+    private function createMailService(bool $throwOnCancel): MailService
+    {
+        return new MailService(
+            $this->transport->reveal(),
+            $this->renderer->reveal(),
+            $this->emailBuilder->reveal(),
+            $this->attachmentParsers->reveal(),
+            $this->eventDispatcher->reveal(),
+            $throwOnCancel,
+        );
     }
 }
