@@ -59,4 +59,24 @@ try {
 }
 ```
 
+When using `throw_on_cancel` all errors resulting in not sending an email throw an exception:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+try {
+    $result = $mailService->send('welcome', [
+        'to' => ['new-user@gmail.com'
+    ]]);
+
+    // Email properly sent
+} catch (AcMailer\Exception\MailCancelledException $e) {
+    // Email was cancelled
+} catch (AcMailer\Exception\MailException $e) {
+    // Error sending email
+}
+```
+
 > See the full configuration documentation [here](/configuration-options).

@@ -16,11 +16,15 @@ interface ResultInterface
 
     /**
      * Tells if the email was properly sent
+     *
+     * @deprecated
      */
     public function isValid(): bool;
 
     /**
      * Tells if the email sending was cancelled, usually by a preSend listener
+     *
+     * @deprecated
      */
     public function isCancelled(): bool;
 
