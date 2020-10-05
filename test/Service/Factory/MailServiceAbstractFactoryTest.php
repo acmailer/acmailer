@@ -95,7 +95,6 @@ class MailServiceAbstractFactoryTest extends TestCase
     {
         $this->container->get('config')->willReturn([
             'acmailer_options' => [
-                'throw_on_cancel' => false,
                 'mail_services' => [
                     'default' => $config,
                 ],

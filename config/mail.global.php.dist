@@ -128,7 +128,6 @@ return [
          * All of them will be capable of sending any of the previously configured emails.
          */
         'mail_services' => [
-            'throw_on_cancel' => false,
             'default' => [
                 /*
                  * Tells which other mail service configuration to extend.
@@ -245,6 +244,13 @@ return [
                  * By default, the list of listeners is empty
                  */
                 //'mail_listeners' => [],
+
+                /* A boolean defining if `MailService::send()` should throw an
+                 * `AcMailer\Exception\MailCancelledException` if sending has been cancelled by a listener. By default
+                 * this is false, which means no exception is thrown, a `AcMailer\Result\MailResult` is returned
+                 * instead.
+                 */
+                //'throw_on_cancel' => false,
             ],
 
             // You can define as much mail services as you want
