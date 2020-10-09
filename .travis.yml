@@ -20,7 +20,8 @@ before_install:
   - phpenv config-rm xdebug.ini || return 0
 
 install:
-  - composer self-update
+  - composer self-update --2
+  - composer -V
   - composer install --no-interaction $COMPOSER_FLAGS
 
 before_script:
