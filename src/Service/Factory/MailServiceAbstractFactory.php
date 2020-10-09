@@ -85,7 +85,6 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
         $specificServiceName = explode('.', $requestedName)[2] ?? null;
         $mailOptions = $container->get('config')['acmailer_options'] ?? [];
         $specificMailServiceOptions = $mailOptions['mail_services'][$specificServiceName] ?? null;
-        $throwOnCancel = $specificMailServiceOptions['throw_on_cancel'] ?? false;
 
         if ($specificMailServiceOptions === null) {
             throw new Exception\ServiceNotCreatedException(sprintf(
@@ -112,7 +111,7 @@ class MailServiceAbstractFactory implements AbstractFactoryInterface
             $container->get(EmailBuilder::class),
             $container->get(AttachmentParserManager::class),
             $dispatcher,
-            $throwOnCancel,
+            $specificMailServiceOptions['throw_on_cancel'] ?? false,
         );
     }
 
