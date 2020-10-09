@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [Unreleased]
+
+#### Added
+
+* [#266](https://github.com/acmailer/acmailer/issues/266) Now it is possible to make emails which are cancelled to throw an exception instead of just return a MailResult with `isCancelled() === true`.
+
+    In order to do it, set `throw_on_cancel` option with value `true` to the mail service config.
+
+    When this is done and any of the event listener for `PreSendEvent` returns false, an `AcMailer\Exception\MailCancelledException` will be thrown.
+
+#### Changed
+
+* [#270](https://github.com/acmailer/acmailer/issues/270) Improved docs, so that error handling is explained in "Usage" section.
+
+#### Deprecated
+
+* *Nothing*
+
+#### Removed
+
+* *Nothing*
+
+#### Fixed
+
+* *Nothing*
+
+
 ## 8.0.0 - 2020-07-19
 
 #### Added

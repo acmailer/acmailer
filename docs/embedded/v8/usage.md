@@ -82,3 +82,47 @@ There are different ways to send emails:
                                     ->setBody('Hello!')
     );
     ```
+
+## Error handling
+
+While sending an email, if an error occurs, the service will throw a `AcMailer\Exception\MailException`. It's usually a good idea to catch it.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+try {
+    $result = $mailService->send('welcome', [
+        'to' => ['new-user@gmail.com'],
+    ]);
+
+    if ($result->isCancelled()) {
+        // Email was cancelled by a PreSendEvent listener
+    }
+} catch (AcMailer\Exception\MailException $e) {
+    // Error sending email
+}
+```
+
+In order to simplify handling errors and make it more consistent, after v8.1.0, it is also possible to make cancelled events throw an exception, by setting the `throw_on_cancel` service config option with value `true`.
+
+This option is `false` by default, but will be the default behavior once v9.0.0 is released, effectively deprecating previous behavior. 
+
+```php
+<?php
+
+declare(strict_types=1);
+
+try {
+    $mailService->send('welcome', [
+        'to' => ['new-user@gmail.com'],
+    ]);
+
+    // Email was properly sent
+} catch (AcMailer\Exception\MailCancelledException $e) {
+    // Email was cancelled by a PreSendEvent listener
+} catch (AcMailer\Exception\MailException $e) {
+    // Error sending email
+}
+```

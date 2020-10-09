@@ -54,7 +54,7 @@ return [
 
 All event listeners registered as services will be lazily created when used. If no emails are sent, the listeners won't even be created.
 
-The value returned by any of the listeners methods is ignored, except on the case of `onPreSend`. If that method returns a boolean `false`, the email sending will be cancelled, and the returned `AcMailer\Result\MailResult` object will indicate it.
+The value returned by any of the listeners methods is ignored, except on the case of `onPreSend`. If that method returns a boolean `false`, the email sending will be cancelled.
 
 ```php
 <?php
@@ -75,8 +75,8 @@ $mailService->attachMailListener(new class extends AcMailer\Event\AbstractMailLi
     }
 });
 
+// If "throw_on_cancel" is true, a MailCancelledException will be thrown here. Otherwise, $result->isCancelled() will return true
 $result = $mailService->send('contact', ['to' => ['me@gmail.com']]);
-var_dump($result->isCancelled()); // This will print true
 ```
 
 If you need to configure any service that could cause the email's template to produce a different result (like on localized emails), do it on the `onPreRender` method.
