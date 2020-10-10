@@ -5,11 +5,18 @@ declare(strict_types=1);
 namespace AcMailerTest\Model;
 
 use AcMailer\Exception\InvalidArgumentException;
+use AcMailer\Model\Attachment;
 use AcMailer\Model\Email;
 use Exception;
+use Laminas\Mime\Message;
 use Laminas\Mime\Part;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+
+use function get_class;
+use function implode;
+use function is_object;
+use function sprintf;
 
 class EmailTest extends TestCase
 {
@@ -27,6 +34,11 @@ class EmailTest extends TestCase
     public function setBodyThrowsExceptionIfValueIsNotValid(?object $invalidBody): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectErrorMessage(sprintf(
+            'Provided body is not valid. Expected one of ["%s"], but "%s" was provided',
+            implode('", "', ['string', Part::class, Message::class]),
+            is_object($invalidBody) ? get_class($invalidBody) : gettype($invalidBody),
+        ));
         $this->email->setBody($invalidBody);
     }
 
@@ -38,13 +50,16 @@ class EmailTest extends TestCase
     }
 
     /**
-     * @param array $invalidAttachments
      * @test
      * @dataProvider provideInvalidAttachments
      */
     public function setInvalidAttachmentsThrowsException(array $invalidAttachments): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectErrorMessage(sprintf(
+            'Provided attachment is not valid. Expected one of ["%s"], but',
+            implode('", "', ['string', 'array', 'resource', Part::class, Attachment::class]),
+        ));
         $this->email->setAttachments($invalidAttachments);
     }
 
@@ -78,5 +93,22 @@ class EmailTest extends TestCase
         $computed = $this->email->getComputedAttachments();
 
         $this->assertCount(4, $computed);
+    }
+
+    /**
+     * @test
+     * @dataProvider provideEmailsWithAttachments
+     */
+    public function hasAttachmentsReturnsExpectedValue(Email $email, bool $expected): void
+    {
+        $this->assertEquals($expected, $email->hasAttachments());
+    }
+
+    public function provideEmailsWithAttachments(): iterable
+    {
+        yield [new Email(), false];
+        yield [(new Email())->setAttachments([__FILE__]), true];
+        yield [(new Email())->setAttachmentsDir(['path' => __DIR__]), true];
+        yield [(new Email())->setAttachments([__FILE__])->setAttachmentsDir(['path' => __DIR__]), true];
     }
 }
