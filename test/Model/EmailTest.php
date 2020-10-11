@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use stdClass;
 
 use function get_class;
+use function gettype;
 use function implode;
 use function is_object;
 use function sprintf;
