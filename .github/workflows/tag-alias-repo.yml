@@ -9,5 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: Publish tag on acmailer/acmailer-alias
         run: bash ./publish-alias.sh ${GITHUB_REF#refs/tags/} "${{ secrets.ALIAS_PUBLISHING_GITHUB_TOKEN }}"
