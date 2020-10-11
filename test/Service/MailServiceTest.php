@@ -21,6 +21,7 @@ use AcMailer\Service\MailService;
 use AcMailer\View\MailViewRendererInterface;
 use Laminas\Mail\Message;
 use Laminas\Mail\Transport\TransportInterface;
+use Laminas\Mime\Mime;
 use Laminas\Mime\Part;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
@@ -180,7 +181,13 @@ class MailServiceTest extends TestCase
     {
         $expectedBody = '<p>rendering result</p>';
 
-        $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
+        $send = $this->transport->send(Argument::type(Message::class))->will(function (array $args): void {
+            /** @var Message $message */
+            [$message] = $args;
+            [$body] = $message->getBody()->getParts();
+
+            Assert::assertEquals(Mime::TYPE_HTML, $body->type);
+        });
         $trigger = $this->eventDispatcher->dispatch(Argument::cetera())->willReturn(new DispatchResult());
         $render = $this->renderer->render(Argument::cetera())->willReturn($expectedBody);
 
@@ -207,7 +214,14 @@ class MailServiceTest extends TestCase
         $getArrayParser = $this->attachmentParsers->get('array')->willReturn($attachmentParser->reveal());
         $getFooParser = $this->attachmentParsers->get('foo')->willReturn($attachmentParser->reveal());
 
-        $send = $this->transport->send(Argument::type(Message::class))->willReturn(null);
+        $send = $this->transport->send(Argument::type(Message::class))->will(
+            function (array $args) use ($attachments): void {
+                /** @var Message $message */
+                [$message] = $args;
+
+                Assert::assertCount(count($attachments) + 1, $message->getBody()->getParts());
+            },
+        );
         $trigger = $this->eventDispatcher->dispatch(Argument::cetera())->willReturn(new DispatchResult());
 
         $this->mailService->send((new Email())->setAttachments($attachments));
@@ -320,17 +334,18 @@ class MailServiceTest extends TestCase
         $email->addCustomHeader('something', 'else');
 
         $buildEmail = $this->emailBuilder->build(Argument::cetera())->willReturn(new Email());
-        $send = $this->transport->send(Argument::that(function (Message $message) {
+        $send = $this->transport->send(Argument::type(Message::class))->will(function (array $args): void {
+            /** @var Message $message */
+            [$message] = $args;
             $headers = $message->getHeaders()->toArray();
+
             Assert::assertArrayHasKey('Foo', $headers);
             Assert::assertEquals('bar', $headers['Foo']);
             Assert::assertArrayHasKey('Baz', $headers);
             Assert::assertEquals('foo', $headers['Baz']);
             Assert::assertArrayHasKey('Something', $headers);
             Assert::assertEquals('else', $headers['Something']);
-
-            return $message;
-        }))->willReturn(null);
+        });
         $trigger = $this->eventDispatcher->dispatch(Argument::cetera())->willReturn(new DispatchResult());
 
         $this->mailService->send($email);

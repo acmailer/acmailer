@@ -35,7 +35,8 @@
         "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "^0.12.32",
         "phpunit/phpunit": "^9.2",
-        "shlinkio/php-coding-standard": "~2.1.0"
+        "shlinkio/php-coding-standard": "~2.1.0",
+        "symfony/var-dumper": "^5.1"
     },
     "suggest": {
         "mezzio/mezzio-laminasviewrenderer": "If you want to render email templates using laminas/laminas-view in mezzio applications",
@@ -78,7 +79,7 @@
             "@test:ci",
             "@infection:ci"
         ],
-        "infection": "infection --threads=4 --min-msi=85 --log-verbosity=default --only-covered",
+        "infection": "infection --threads=4 --min-msi=90 --log-verbosity=default --only-covered",
         "infection:ci": "@infection --coverage=build",
         "infection:show": "@infection --show-mutations",
         "docs:serve": [
