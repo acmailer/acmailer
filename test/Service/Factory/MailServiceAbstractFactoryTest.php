@@ -471,6 +471,42 @@ class MailServiceAbstractFactoryTest extends TestCase
     }
 
     /**
+     * @test
+     * @dataProvider provideThrowOnCancelConfig
+     */
+    public function expectedThrowOnCancelValueIsSetBasedOnConfig(array $config, bool $expected): void
+    {
+        $this->container->get('config')->willReturn([
+            'acmailer_options' => [
+                'mail_services' => [
+                    'default' => $config,
+                ],
+            ],
+        ]);
+        $this->container->get(MailViewRendererInterface::class)->willReturn(
+            $this->prophesize(MailViewRendererInterface::class)->reveal(),
+        );
+        $this->container->get(EmailBuilder::class)->willReturn(
+            $this->prophesize(EmailBuilderInterface::class)->reveal(),
+        );
+        $this->container->get(AttachmentParserManager::class)->willReturn(
+            $this->prophesize(AttachmentParserManager::class)->reveal(),
+        );
+
+        $mailService = $this->factory->__invoke($this->container->reveal(), 'acmailer.mailservice.default');
+        $throwOnCancel = $this->getObjectProp($mailService, 'throwOnCancel');
+
+        $this->assertEquals($expected, $throwOnCancel);
+    }
+
+    public function provideThrowOnCancelConfig(): iterable
+    {
+        yield [['transport' => 'sendmail'], false];
+        yield [['transport' => 'sendmail', 'throw_on_cancel' => false], false];
+        yield [['transport' => 'sendmail', 'throw_on_cancel' => true], true];
+    }
+
+    /**
      * @return mixed
      */
     private function getObjectProp(object $obj, string $propName)

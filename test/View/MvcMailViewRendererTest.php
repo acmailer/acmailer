@@ -29,7 +29,10 @@ class MvcMailViewRendererTest extends TestCase
     /** @test */
     public function renderDelegatesIntoLaminasRendererWhenNoLayoutIsProvided(): void
     {
-        $innerRender = $this->innerRenderer->render(Argument::type(ViewModel::class))->willReturn('');
+        $innerRender = $this->innerRenderer->render(Argument::that(function (ViewModel $viewModel) {
+            Assert::assertEquals('foo', $viewModel->getTemplate());
+            return $viewModel;
+        }))->willReturn('');
 
         $this->mvcRenderer->render('foo');
 
@@ -39,7 +42,10 @@ class MvcMailViewRendererTest extends TestCase
     /** @test */
     public function renderDelegatesIntoLaminasRendererWhenLayoutIsProvided(): void
     {
-        $innerRender = $this->innerRenderer->render(Argument::type(ViewModel::class))->willReturn('');
+        $innerRender = $this->innerRenderer->render(Argument::that(function (ViewModel $viewModel) {
+            Assert::assertArrayNotHasKey('layout', $viewModel->getVariables());
+            return $viewModel;
+        }))->willReturn('');
 
         $this->mvcRenderer->render('foo', ['layout' => 'bar']);
 
@@ -49,12 +55,21 @@ class MvcMailViewRendererTest extends TestCase
     /** @test */
     public function parametersArePassedBothToLayoutAndChildTemplate(): void
     {
+        $callNum = 0;
         $innerRender = $this->innerRenderer->render(Argument::that(function (ViewModel $viewModel) {
             $variables = $viewModel->getVariables();
             Assert::assertArrayHasKey('foo', $variables);
             Assert::assertArrayHasKey('baz', $variables);
+
             return $viewModel;
-        }))->willReturn('');
+        }))->will(function (array $args) use (&$callNum) {
+            /** @var ViewModel $viewModel */
+            [$viewModel] = $args;
+            Assert::assertEquals($callNum === 0 ? 'foo' : 'bar', $viewModel->getTemplate());
+            $callNum++;
+
+            return '';
+        });
 
         $this->mvcRenderer->render('foo', ['layout' => 'bar', 'foo' => 'bar', 'baz' => 'foo']);
 
