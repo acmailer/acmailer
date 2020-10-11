@@ -12,6 +12,7 @@
 /infection.json export-ignore
 /CHANGELOG.md export-ignore
 /UPGRADE.md export-ignore
+/publish-alias.sh export-ignore
 /test export-ignore
 /test-resources export-ignore
 /docs export-ignore

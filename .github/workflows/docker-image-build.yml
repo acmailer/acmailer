@@ -1,0 +1,13 @@
+name: Replicate tags on alias repo
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish tag on acmailer/acmailer-alias
+        run: bash ./publish-alias.sh ${GITHUB_REF#refs/tags/} "${{ secrets.ALIAS_PUBLISHING_GITHUB_TOKEN }}"
