@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 #### Changed
 
 * [#270](https://github.com/acmailer/acmailer/issues/270) Improved docs, so that error handling is explained in "Usage" section.
+* [#263](https://github.com/acmailer/acmailer/issues/263) Increased required mutation score to 90%.
 
 #### Deprecated
 
