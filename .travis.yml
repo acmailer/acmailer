@@ -8,13 +8,7 @@ jobs:
   fast_finish: true
   include:
     - php: '7.4'
-      env:
-        - COMPOSER_FLAGS=''
-    - php: 'nightly'
-      env:
-        - COMPOSER_FLAGS='--ignore-platform-reqs'
-  allow_failures:
-    - php: 'nightly'
+    - php: '8.0snapshot'
 
 before_install:
   - phpenv config-rm xdebug.ini || return 0
@@ -22,7 +16,7 @@ before_install:
 install:
   - composer self-update --2
   - composer -V
-  - composer install --no-interaction $COMPOSER_FLAGS
+  - composer install --no-interaction
 
 before_script:
   - mkdir build
