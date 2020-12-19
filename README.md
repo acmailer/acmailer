@@ -1,8 +1,7 @@
 # AcMailer
 
-[![Build Status](https://img.shields.io/travis/acmailer/acmailer/main.svg?style=flat-square)](https://travis-ci.org/acmailer/acmailer)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/acmailer/acmailer.svg?style=flat-square)](https://scrutinizer-ci.com/g/acmailer/acmailer/?branch=main)
-[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/acmailer/acmailer.svg?style=flat-square)](https://scrutinizer-ci.com/g/acmailer/acmailer/?branch=main)
+[![Build Status](https://img.shields.io/github/workflow/status/acmailer/acmailer/Continuous%20integration/main?logo=github&style=flat-square)](https://github.com/acmailer/acmailer/actions?query=workflow%3A%22Continuous+integration%22)
+[![Code Coverage](https://img.shields.io/codecov/c/gh/acmailer/acmailer/main?style=flat-square)](https://app.codecov.io/gh/acmailer/acmailer)
 [![Latest Stable Version](https://img.shields.io/github/release/acmailer/acmailer.svg?style=flat-square)](https://packagist.org/packages/acelaya/zf2-acmailer)
 [![Total Downloads](https://img.shields.io/packagist/dt/acelaya/zf2-acmailer.svg?style=flat-square)](https://packagist.org/packages/acelaya/zf2-acmailer)
 [![License](https://img.shields.io/github/license/acmailer/acmailer.svg?style=flat-square)](https://github.com/acmailer/acmailer/blob/main/LICENSE.txt)

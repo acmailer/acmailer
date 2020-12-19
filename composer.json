@@ -10,14 +10,10 @@
         }
     ],
     "keywords": [
-        "laminas",
         "mezzio",
+        "laminas",
         "module",
-        "mail",
-        "expressive",
-        "zf3",
-        "zf2",
-        "zend"
+        "mail"
     ],
     "homepage": "https://github.com/acmailer/acmailer",
     "license": "MIT",
@@ -28,13 +24,13 @@
         "laminas/laminas-stdlib": "^3.0"
     },
     "require-dev": {
-        "infection/infection": "^0.16.4",
+        "infection/infection": "^0.20",
         "laminas/laminas-mvc": "^3.1",
         "laminas/laminas-view": "^2.9",
         "mezzio/mezzio-template": "^2.0",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpstan/phpstan": "^0.12.32",
-        "phpunit/phpunit": "^9.2",
+        "phpstan/phpstan": "^0.12.63",
+        "phpunit/phpunit": "^9.5",
         "shlinkio/php-coding-standard": "~2.1.0",
         "symfony/var-dumper": "^5.1"
     },
@@ -79,7 +75,7 @@
             "@test:ci",
             "@infection:ci"
         ],
-        "infection": "infection --threads=4 --min-msi=90 --log-verbosity=default --only-covered",
+        "infection": "infection --threads=4 --min-msi=85 --log-verbosity=default --only-covered",
         "infection:ci": "@infection --coverage=build",
         "infection:show": "@infection --show-mutations",
         "docs:serve": [
