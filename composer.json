@@ -75,7 +75,7 @@
             "@test:ci",
             "@infection:ci"
         ],
-        "infection": "infection --threads=4 --min-msi=90 --log-verbosity=default --only-covered",
+        "infection": "infection --threads=4 --min-msi=85 --log-verbosity=default --only-covered",
         "infection:ci": "@infection --coverage=build",
         "infection:show": "@infection --show-mutations",
         "docs:serve": [
