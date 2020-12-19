@@ -4,208 +4,158 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
-## 8.1.0 - 2020-10-11
-
-#### Added
-
+## [8.1.0] - 2020-10-11
+### Added
 * [#266](https://github.com/acmailer/acmailer/issues/266) Now it is possible to make emails which are cancelled to throw an exception instead of just return a MailResult with `isCancelled() === true`.
 
     In order to do it, set `throw_on_cancel` option with value `true` to the mail service config.
 
     When this is done and any of the event listener for `PreSendEvent` returns false, an `AcMailer\Exception\MailCancelledException` will be thrown.
 
-#### Changed
-
+### Changed
 * [#270](https://github.com/acmailer/acmailer/issues/270) Improved docs, so that error handling is explained in "Usage" section.
 * [#263](https://github.com/acmailer/acmailer/issues/263) Increased required mutation score to 90%.
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * *Nothing*
 
-#### Fixed
-
+### Fixed
 * [#262](https://github.com/acmailer/acmailer/issues/262) Fixed builds in scrutinizer-ci.com
 
 
-## 8.0.0 - 2020-07-19
-
-#### Added
-
+## [8.0.0] - 2020-07-19
+### Added
 * *Nothing*
 
-#### Changed
-
+### Changed
 * [#241](https://github.com/acmailer/acmailer/issues/241) Replaced dependency on [laminas/laminas-eventmanager] by own basic implementation.
 * [#220](https://github.com/acmailer/acmailer/issues/220) Removed `MailEvent` class in favor of individual `PreRenderEvent`, `PreSendEvent`, `PostSendEvent` and `SendErrorEvent` classes.
 * [#259](https://github.com/acmailer/acmailer/issues/259) Increased required mutation score to 85%.
 * [#248](https://github.com/acmailer/acmailer/issues/248) Updated to [shlinkio/php-coding-standard] v2.1
 * [#253](https://github.com/acmailer/acmailer/issues/253) Updated phpstan, infection and phpunti to latest versions.
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * [#243](https://github.com/acmailer/acmailer/issues/243) Dropped support for Zend Framework and Zend Expressive in favor of the new project brand, Laminas and Mezzio.
 * [#245](https://github.com/acmailer/acmailer/issues/245) Dropped support for PHP < 7.4.
 
-#### Fixed
-
+### Fixed
 * *Nothing*
 
 
-## 7.5.0 - 2019-12-18
-
-#### Added
-
+## [7.5.0] - 2019-12-18
+### Added
 * [#234](https://github.com/acmailer/acmailer/issues/234) and [#240](https://github.com/acmailer/acmailer/issues/240) Added support for PHP 7.4.
 
-#### Changed
-
+### Changed
 * [#235](https://github.com/acmailer/acmailer/issues/235) Updated to shlink coding standard v2.
 * [#242](https://github.com/acmailer/acmailer/issues/242) Updated to [phpstan](https://github.com/phpstan/phpstan) 0.12 and [infection](https://github.com/infection/infection) 0.15.
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * [#227](https://github.com/acmailer/acmailer/issues/227) Dropped support for PHP 7.1
 * [#237](https://github.com/acmailer/acmailer/issues/237) Dropped support for [zendframework/zend-expressive-template](https://github.com/zendframework/zend-expressive-template) v1.
 
-#### Fixed
-
+### Fixed
 * *Nothing*
 
 
-## 7.4.1 - 2019-05-27
-
-#### Added
-
+## [7.4.1] - 2019-05-27
+### Added
 * *Nothing*
 
-#### Changed
-
+### Changed
 * *Nothing*
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * *Nothing*
 
-#### Fixed
-
+### Fixed
 * [#232](https://github.com/acmailer/acmailer/issues/232) Fixed notice threw when `MailServiceAbstractFactory::canCreate` method is called and the name cannot be split in 3 parts.
 
 
-## 7.4.0 - 2019-05-26
-
-#### Added
-
+## [7.4.0] - 2019-05-26
+### Added
 * [#229](https://github.com/acmailer/acmailer/issues/229) Added support for mail services [dynamically configured at runtime](http://acelaya.github.io/ZF-AcMailer/#/configuring-services?id=dynamic-runtime-configuration).
 
-#### Changed
-
+### Changed
 * [#224](https://github.com/acmailer/acmailer/issues/224) and [#228](https://github.com/acmailer/acmailer/issues/228) Updated dev dependencies.
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * *Nothing*
 
-#### Fixed
-
+### Fixed
 * *Nothing*
 
 
-## 7.3.3 - 2019-01-18
-
-#### Added
-
+## [7.3.3] - 2019-01-18
+### Added
 * *Nothing*
 
-#### Changed
-
+### Changed
 * *Nothing*
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * *Nothing*
 
-#### Fixed
-
+### Fixed
 * [#222](https://github.com/acmailer/acmailer/issues/222) Fixed transport options being set on transports that have been configured as a plain instance or a service name. Now those transports are returned as they are in those two cases.
 
 
-## 7.3.2 - 2018-12-05
-
-#### Added
-
+## [7.3.2] - 2018-12-05
+### Added
 * [#211](https://github.com/acmailer/acmailer/issues/211) Added PHP 7.3 to the build matrix.
 
-#### Changed
-
+### Changed
 * [#212](https://github.com/acmailer/acmailer/issues/212) Performance and maintainability slightly improved by enforcing via code sniffer that all global namespace classes, functions and constants are explicitly imported.
 * [#215](https://github.com/acmailer/acmailer/issues/215) Updated infection to v0.11.
 * [#216](https://github.com/acmailer/acmailer/issues/216) Added dependency on [Shlinkio](https://github.com/shlinkio/php-coding-standard) coding standard.
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * *Nothing*
 
-#### Fixed
-
+### Fixed
 * [#218](https://github.com/acmailer/acmailer/issues/218) Fixed `FilePathAttachmentParser` trying to acquire write permissions on provided attachment when it does not really need that permission, which could result in filesystem errors.
 
 
-## 7.3.1 - 2018-09-02
-
-#### Added
-
+## [7.3.1] - 2018-09-02
+### Added
 * [#207](https://github.com/acmailer/acmailer/issues/207) Improved badges in readme file
 
-#### Changed
-
+### Changed
 * [#208](https://github.com/acmailer/acmailer/issues/208) Updated to Infection 0.10
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * *Nothing*
 
-#### Fixed
-
+### Fixed
 * *Nothing*
 
 
-## 7.3.0 - 2018-06-03
-
-#### Added
-
+## [7.3.0] - 2018-06-03
+### Added
 * [#201](https://github.com/acmailer/acmailer/issues/201) Added the ability to define custom email headers.
 
     Now you can easily add custom headers to pre-configured and inline emails.
@@ -230,217 +180,163 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 * [#204](https://github.com/acmailer/acmailer/issues/204) Updated some of the changelog entries to use the [keepachangelog.com](https://keepachangelog.com) recommendation.
 
-#### Changed
-
+### Changed
 * *Nothing*
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * *Nothing*
 
-#### Fixed
-
+### Fixed
 * *Nothing*
 
 
-## 7.2.1 - 2018-05-27
-
-#### Added
-
+## [7.2.1] - 2018-05-27
+### Added
 * *Nothing*
 
-#### Changed
-
+### Changed
 * *Nothing*
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * *Nothing*
 
-#### Fixed
-
+### Fixed
 * [#200](https://github.com/acmailer/acmailer/issues/200) Fixed rendered layouts not receiving template params when using zend/renderer with zend-mvc
 
 
-## 7.2.0 - 2018-03-18
-
-#### Added
-
+## [7.2.0] - 2018-03-18
+### Added
 * [#197](https://github.com/acmailer/acmailer/issues/197) Added support for Expressive 3 via zend expressive renderer v2
 * [#198](https://github.com/acmailer/acmailer/issues/198) Improved build matrix so that it passes build for lowest and latest supported dependencies
 
-#### Changed
-
+### Changed
 * *Nothing*
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * *Nothing*
 
-#### Fixed
-
+### Fixed
 * *Nothing*
 
 
-## 7.1.0 - 2018-03-04
-
-#### Added
-
+## [7.1.0] - 2018-03-04
+### Added
 * [#186](https://github.com/acmailer/acmailer/issues/186) Defined a MailListenerTrait that can be used when it is not possible to extend AbstractMailListener
 * [#185](https://github.com/acmailer/acmailer/issues/185) Allowed to register custom file attachment parsers
 * [#194](https://github.com/acmailer/acmailer/issues/194) Improved InvalidArgumentException::fromValidTypes message to provide more meaningful information
 * [#184](https://github.com/acmailer/acmailer/issues/184) Included infection in the build process to improve tests
 * [#195](https://github.com/acmailer/acmailer/issues/195) Included a docsify-powered documentation inside the repository in the docs folder
 
-#### Changed
-
+### Changed
 * *Nothing*
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * [#183](https://github.com/acmailer/acmailer/issues/183) Dropped support for PHP <7.1
 
-#### Fixed
-
+### Fixed
 * *Nothing*
 
 
-## 7.0.5 - 2018-03-02
-
-#### Added
-
+## [7.0.5] - 2018-03-02
+### Added
 * *Nothing*
 
-#### Changed
-
+### Changed
 * *Nothing*
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * *Nothing*
 
-#### Fixed
-
+### Fixed
 * [#192](https://github.com/acmailer/acmailer/issues/192) Fixed pre-render event so that it is properly registered when listeners are defined as services
 
 
-## 7.0.4 - 2018-02-28
-
-#### Added
-
+## [7.0.4] - 2018-02-28
+### Added
 * *Nothing*
 
-#### Changed
-
+### Changed
 * *Nothing*
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * *Nothing*
 
-#### Fixed
-
+### Fixed
 * [#190](https://github.com/acmailer/acmailer/issues/190) Fixed regression introduced in 7.0.3 preventing external services to be configured before rendering the email template
 
 
-## 7.0.3 - 2018-02-21
-
-#### Added
-
+## [7.0.3] - 2018-02-21
+### Added
 * *Nothing*
 
-#### Changed
-
+### Changed
 * *Nothing*
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * *Nothing*
 
-#### Fixed
-
+### Fixed
 * [#187](https://github.com/acmailer/acmailer/issues/187) Ensured email templates are rendered before the PRE_SEND event is triggered
 
 
-## 7.0.2 - 2018-01-03
-
-#### Added
-
+## [7.0.2] - 2018-01-03
+### Added
 * *Nothing*
 
-#### Changed
-
+### Changed
 * *Nothing*
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * *Nothing*
 
-#### Fixed
-
+### Fixed
 * [#182](https://github.com/acmailer/acmailer/issues/182) Fixed emails not containing the result of rendering a template as their body property
 
 
-## 7.0.1 - 2018-01-03
-
-#### Added
-
+## [7.0.1] - 2018-01-03
+### Added
 * *Nothing*
 
-#### Changed
-
+### Changed
 * [#180](https://github.com/acmailer/acmailer/issues/180) Increased phpstan level required in build matrix from 5 to 6
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * *Nothing*
 
-#### Fixed
-
+### Fixed
 * [#179](https://github.com/acmailer/acmailer/issues/179) Fixed ExceptionInterface so that it extends `Throwable`
 * [#174](https://github.com/acmailer/acmailer/issues/174) Removed the `layout` param which is automatically set when using expressive and zend/view, for emails only
 
 
-## 7.0.0 - 2017-12-09
-
-#### Added
-
+## [7.0.0] - 2017-12-09
+### Added
 * [#153](https://github.com/acmailer/acmailer/issues/153) Added real compatibility with Zend expressive
 * [#166](https://github.com/acmailer/acmailer/issues/166) Allowed preconfigured emails to extend among themeselves
 * [#167](https://github.com/acmailer/acmailer/issues/167) Allowed listeners cancel email sending on `PRE_SEND` when returning `false`
@@ -449,27 +345,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 * [#169](https://github.com/acmailer/acmailer/issues/169) Update documentation to explain new features and configuration structure
 * [#163](https://github.com/acmailer/acmailer/issues/163) Created `.gitattributes` dile defining elements to exclude when installing package from dist
 
-#### Changed
-
+### Changed
 * [#159](https://github.com/acmailer/acmailer/issues/159) Module completely rewritten, changing the focus, and making services truly stateless
 * [#172](https://github.com/acmailer/acmailer/issues/172) Improved quality on attachments business logic
 * [#170](https://github.com/acmailer/acmailer/issues/170) Extracted `mailviewrenderer` creation to a specific factory
 * [#155](https://github.com/acmailer/acmailer/issues/155) Used `::class` magic constant whenever possible
 * [#157](https://github.com/acmailer/acmailer/issues/157) Improved coding standards strictness by using slevomat/coding-standard
 
-#### Deprecated
-
+### Deprecated
 * *Nothing*
 
-#### Removed
-
+### Removed
 * [#168](https://github.com/acmailer/acmailer/issues/168) Dropped controller plugin, forcing the MailService to be injected in controllers
 * [#154](https://github.com/acmailer/acmailer/issues/154) Dropped PHP 5 support
 * [#160](https://github.com/acmailer/acmailer/issues/160) Removed everything which was deprecated in v6
 * [#161](https://github.com/acmailer/acmailer/issues/161) Removed config migration from AcMailer 4.5 and earlier to AcMailer 5.0
 
-#### Fixed
-
+### Fixed
 * [#173](https://github.com/acmailer/acmailer/issues/173) Ensured the charset is applied to all parts of the email body
 * [#171](https://github.com/acmailer/acmailer/issues/171) Ensured proper filename is discovered when adding an attachment without providing a name
 
