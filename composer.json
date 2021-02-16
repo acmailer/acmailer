@@ -18,21 +18,21 @@
     "homepage": "https://github.com/acmailer/acmailer",
     "license": "MIT",
     "require": {
-        "php": "^7.4",
+        "php": "^7.4 || ^8.0",
         "laminas/laminas-mail": "^2.10",
         "laminas/laminas-servicemanager": "^3.0",
         "laminas/laminas-stdlib": "^3.0"
     },
     "require-dev": {
-        "infection/infection": "^0.20",
+        "infection/infection": "^0.21",
         "laminas/laminas-mvc": "^3.1",
         "laminas/laminas-view": "^2.9",
         "mezzio/mezzio-template": "^2.0",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "^0.12.63",
         "phpunit/phpunit": "^9.5",
-        "shlinkio/php-coding-standard": "~2.1.0",
-        "symfony/var-dumper": "^5.1"
+        "shlinkio/php-coding-standard": "~2.1.1",
+        "symfony/var-dumper": "^5.2"
     },
     "suggest": {
         "mezzio/mezzio-laminasviewrenderer": "If you want to render email templates using laminas/laminas-view in mezzio applications",
