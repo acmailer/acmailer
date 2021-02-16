@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
-## [Unreleased]
+## [8.2.0] - 2021-02-16
 ### Added
-* *Nothing*
+* [#280](https://github.com/acmailer/acmailer/issues/280) Added support for PHP 8
 
 ### Changed
 * Migrated build to Github Actions.
