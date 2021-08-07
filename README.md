@@ -11,6 +11,10 @@ This module provides an easy and flexible way to send emails from **Mezzio** and
 
 You will be able to compose emails from templates, and easily add attachments using different strategies.
 
+## Important!
+
+**This package is abandoned.** [More info](https://github.com/acmailer/acmailer/issues/283)
+
 ## Installation
 
 The recommended way to install this module is by using composer.
